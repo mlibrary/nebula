@@ -2,3 +2,33 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 ---
+nebula::profile::dns::smartconnect::master_zones:
+- localhost:        local
+- 127.in-addr.arpa: 127
+- 0.in-addr.arpa:   0
+- 255.in-addr.arpa: 255
+nebula::profile::dns::smartconnect::domain: smartconnect.default.invalid
+nebula::profile::dns::smartconnect::nameserver: 1.2.3.4
+nebula::profile::metricbeat::logstash_auth_cert: ''
+nebula::profile::metricbeat::logstash_hosts:
+- logstash.default.invalid:1234
+nebula::profile::metricbeat::period: 90
+nebula::profile::ruby::install_dir: '/opt/rbenv'
+nebula::profile::ruby::plugins:
+- rbenv/rbenv-vars
+- rbenv/ruby-build
+- rbenv/rbenv-default-gems
+- tpope/rbenv-aliases
+nebula::profile::ruby::global_version: '2.4.3'
+nebula::profile::ruby::supported_versions:
+- '2.3.4'
+- '2.4.3'
+- '2.5.0'
+nebula::profile::vmhost::vms: {}
+nebula::profile::vmhost::defaults: {}
+
+nebula::resolv_conf::searchpath:
+- searchpath.default.invalid
+nebula::resolv_conf::nameservers:
+- 5.5.5.5
+- 4.4.4.4

@@ -1,0 +1,11 @@
+// Managed by puppet (nebula/profile/dns/smartconnect/named.conf.erb)
+//
+// This is the primary configuration file for the BIND DNS server named.
+//
+// The default-zones file is not enabled to prevent the local nameserver
+// from being primed with the root nameservers. The rfc compliance
+// defaults zones are defined in custom named.conf.local for this
+// install.
+
+include "/etc/bind/named.conf.options";
+include "/etc/bind/named.conf.local";

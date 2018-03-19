@@ -3,4 +3,33 @@
 ---
 fixtures:
   forge_modules:
-#     stdlib: "puppetlabs/stdlib"
+    stdlib:
+      repo: "puppetlabs/stdlib"
+      ref: "4.16.0"
+    apt:
+      repo: "puppetlabs/apt"
+      ref: "4.5.1"
+    concat:
+      repo: "puppetlabs/concat"
+      ref: "4.2.0"
+    firewall:
+      repo: "puppetlabs/firewall"
+      ref: "1.1.3"
+    inifile:
+      repo: "puppetlabs/inifile"
+      ref: "1.1.3"
+    postgresql:
+      repo: "puppetlabs/postgresql"
+      ref: "5.2.1"
+    puppetdb:
+      repo: "puppetlabs/puppetdb"
+      ref: "6.0.2"
+    kmod:
+      repo: "camptocamp/kmod"
+      ref: "2.1.0"
+    rbenv:
+      repo: "jdowning/rbenv"
+      ref: "2.2.0"
+    resolv_conf:
+      repo: "saz/resolv_conf"
+      ref: "3.1.0"
