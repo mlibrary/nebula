@@ -1,0 +1,8 @@
+# Copyright (c) 2018 The Regents of the University of Michigan.
+# All Rights Reserved. Licensed according to the terms of the Revised
+# BSD License. See LICENSE.txt for details.
+---
+version: 5
+hierarchy:
+- name: Common
+  path: common.yaml
