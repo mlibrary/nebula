@@ -1,0 +1,27 @@
+{
+  "name": "mlibrary-nebula",
+  "version": "1.0.0",
+  "author": "Matthew Alexander LaChance",
+  "summary": "Central MLibrary module",
+  "license": "BSD-3-Clause",
+  "source": "https://github.com/mlibrary/nebula",
+  "issues_url": "https://github.com/mlibrary/nebula/issues",
+  "dependencies": [
+
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": ["8", "9"]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.10.0 < 6.0.0"
+    }
+  ],
+  "pdk-version": "1.3.2",
+  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
+  "template-ref": "1.3.2-0-g07678c8"
+}
