@@ -14,14 +14,20 @@ describe 'nebula::profile::puppet::mgmt' do
       it do
         is_expected.to contain_rbenv__gem('r10k').with(
           ruby_version: '2.4.3',
-          require: 'Rbenv::Build[2.4.3]',
+          require: [
+            'Class[Nebula::Profile::Ruby]',
+            'Rbenv::Build[2.4.3]',
+          ],
         )
       end
 
       it do
         is_expected.to contain_rbenv__gem('librarian-puppet').with(
           ruby_version: '2.4.3',
-          require: 'Rbenv::Build[2.4.3]',
+          require: [
+            'Class[Nebula::Profile::Ruby]',
+            'Rbenv::Build[2.4.3]',
+          ],
         )
       end
 

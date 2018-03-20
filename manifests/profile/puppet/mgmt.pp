@@ -11,13 +11,17 @@
 class nebula::profile::puppet::mgmt {
   include puppetdb
   include puppetdb::master::config
-  require nebula::profile::ruby
+
+  include nebula::profile::ruby
   $global_version = lookup('nebula::profile::ruby::global_version')
 
   ['r10k', 'librarian-puppet'].each |$gem| {
     rbenv::gem { $gem:
       ruby_version => $global_version,
-      require      => Rbenv::Build[$global_version],
+      require      => [
+        Class['nebula::profile::ruby'],
+        Rbenv::Build[$global_version],
+      ],
     }
   }
 
