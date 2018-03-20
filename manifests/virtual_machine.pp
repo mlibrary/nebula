@@ -75,7 +75,7 @@ define nebula::virtual_machine(
   String  $filehost       = 'files.default.invalid',
   Integer $timeout        = 600,
 ) {
-  require nebula::prereqs::virtual_machine
+  require nebula::profile::vmhost
 
   $prefix = "nebula::virtual_machine::${title}"
   $tmpdir = "/tmp/.virtual.${title}"

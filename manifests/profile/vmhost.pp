@@ -17,6 +17,14 @@ class nebula::profile::vmhost (
   Hash $defaults,
   Hash $vms,
 ) {
+  package { 'libvirt-clients':
+    ensure => 'installed',
+  }
+
+  package { 'virtinst':
+    ensure => 'installed',
+  }
+
   $vms.each |$vm_name, $vm_settings| {
     nebula::virtual_machine {
       default:
