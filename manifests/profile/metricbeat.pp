@@ -34,7 +34,6 @@ class nebula::profile::metricbeat (
   }
 
   package { 'metricbeat':
-    ensure  => 'latest',
     require => Apt::Source['elastic.co'],
   }
 
@@ -68,7 +67,5 @@ class nebula::profile::metricbeat (
     }
   }
 
-  package { 'apt-transport-https':
-    ensure => 'latest',
-  }
+  package { 'apt-transport-https': }
 }

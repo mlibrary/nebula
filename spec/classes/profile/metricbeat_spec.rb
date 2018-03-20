@@ -17,10 +17,9 @@ describe 'nebula::profile::metricbeat' do
       end
 
       it do
-        is_expected.to contain_package('metricbeat').with(
-          ensure: 'latest',
-          require: 'Apt::Source[elastic.co]',
-        )
+        is_expected.to contain_package('metricbeat')
+          .without_ensure
+          .that_requires('Apt::Source[elastic.co]')
       end
 
       it do
@@ -41,11 +40,7 @@ describe 'nebula::profile::metricbeat' do
         )
       end
 
-      it do
-        is_expected.to contain_package('apt-transport-https').with(
-          ensure: 'latest',
-        )
-      end
+      it { is_expected.to contain_package('apt-transport-https').without_ensure }
 
       it do
         is_expected.to contain_file('/etc/metricbeat/metricbeat.yml').with(

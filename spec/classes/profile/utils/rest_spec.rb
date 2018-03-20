@@ -8,8 +8,8 @@ describe 'nebula::profile::utils::rest' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to contain_package('curl').with_ensure('latest') }
-      it { is_expected.to contain_package('jq').with_ensure('latest') }
+      it { is_expected.to contain_package('curl').without_ensure }
+      it { is_expected.to contain_package('jq').without_ensure }
     end
   end
 end

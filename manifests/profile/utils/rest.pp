@@ -9,11 +9,6 @@
 # @example
 #   include nebula::profile::utils::rest
 class nebula::profile::utils::rest {
-  package { 'curl':
-    ensure => 'latest',
-  }
-
-  package { 'jq':
-    ensure => 'latest',
-  }
+  package { 'curl': }
+  package { 'jq': }
 }
