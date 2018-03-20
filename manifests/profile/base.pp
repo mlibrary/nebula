@@ -2,21 +2,13 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::base
+# nebula::profile::base
 #
 # Disable mcollective on all machines and hpwdt on HP machines.
 #
 # @example
-#   include nebula::base
+#   include nebula::profile::base
 class nebula::profile::base {
-  service { 'mcollective':
-    ensure => 'stopped',
-    enable => false,
-  }
-
-  if $facts['dmi']['manufacturer'] == 'HP' {
-    kmod::blacklist { 'hpwdt':
-      file => '/etc/modprobe.d/kpwdt-blacklist.conf',
-    }
-  }
+  include nebula::profile::base::stop_mcollective
+  include nebula::profile::base::blacklist_hpwdt
 }
