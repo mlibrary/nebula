@@ -27,23 +27,19 @@ class nebula::profile::ruby (
     rbenv::plugin { $plugin: }
   }
 
+  rbenv::build { $global_version:
+    bundler_version => '~>1.14',
+    global          => true,
+  }
+
   $supported_versions.each |$version| {
     # Ruby < 2.4 is incompatible with debian stretch
     unless $::os['release']['major'] == '9' and $version =~ /^2\.3\./ {
-      rbenv::build { $version:
-        bundler_version => '~>1.14',
+      unless $version == $global_version {
+        rbenv::build { $version:
+          bundler_version => '~>1.14',
+        }
       }
     }
-  }
-
-  unless defined(Rbenv::Build[$global_version]) {
-    rbenv::build { $global_version:
-      bundler_version => '~>1.14',
-    }
-  }
-
-  exec { 'rbenv-global':
-    command => "${install_dir}/bin/rbenv global ${global_version}",
-    require => Rbenv::Build[$global_version],
   }
 }

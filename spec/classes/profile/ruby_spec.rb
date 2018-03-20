@@ -33,17 +33,13 @@ describe 'nebula::profile::ruby' do
 
       case os
       when 'debian-8-x86_64'
-        it { is_expected.to contain_rbenv__build('2.3.4') }
+        it { is_expected.to contain_rbenv__build('2.3.4').with_global(false) }
       when 'debian-9-x86_64'
         it { is_expected.not_to contain_rbenv__build('2.3.4') }
       end
 
-      it do
-        is_expected.to contain_exec('rbenv-global').with(
-          command: '/opt/rbenv/bin/rbenv global 2.4.3',
-          require: 'Rbenv::Build[2.4.3]',
-        )
-      end
+      it { is_expected.to contain_rbenv__build('2.4.3').with_global(true) }
+      it { is_expected.to contain_rbenv__build('2.5.0').with_global(false) }
 
       context 'when given install_dir of /usr/local/rbenv' do
         let(:params) { { install_dir: '/usr/local/rbenv' } }
@@ -54,12 +50,7 @@ describe 'nebula::profile::ruby' do
           )
         end
 
-        it do
-          is_expected.to contain_exec('rbenv-global').with(
-            command: '/usr/local/rbenv/bin/rbenv global 2.4.3',
-            require: 'Rbenv::Build[2.4.3]',
-          )
-        end
+        it { is_expected.to contain_rbenv__build('2.4.3').with_global(true) }
       end
 
       context 'when given supported_versions of [2.4.1]' do
@@ -76,13 +67,7 @@ describe 'nebula::profile::ruby' do
         it do
           is_expected.to contain_rbenv__build('2.4.1').with(
             bundler_version: '~>1.14',
-          )
-        end
-
-        it do
-          is_expected.to contain_exec('rbenv-global').with(
-            command: '/opt/rbenv/bin/rbenv global 2.4.1',
-            require: 'Rbenv::Build[2.4.1]',
+            global: true,
           )
         end
       end
