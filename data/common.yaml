@@ -37,3 +37,37 @@ nebula::resolv_conf::searchpath:
 nebula::resolv_conf::nameservers:
 - 5.5.5.5
 - 4.4.4.4
+
+nebula::users::key_file: /etc/secretkeys/invalid.default
+nebula::users::groups:
+  invalid_default_group: 1234
+  invalid_special_group: 2468
+nebula::users::default_group: invalid_default_group
+nebula::users::default_host: invalid.default
+nebula::users::sudoers:
+  invalid_normal_admin:
+    comment: Invalid normal admin
+    uid: 123456
+    home: /home/invalid_normal_admin
+    auth:
+      type: ssh-rsa
+      key: >-
+        AAAA
+        AAAA
+        AAAA
+  invalid_special_admin:
+    comment: Invalid special admin
+    group: invalid_special_group
+    uid: 123457
+    home: /home/invalid_special_admin
+    auth:
+      type: ssh-dsa
+      host: invalid.special
+      key: >-
+        BBBB
+        BBBB
+        BBBB
+  invalid_noauth_admin:
+    comment: Invalid no-authorization admin
+    uid: 123458
+    home: /home/invalid_noauth_admin

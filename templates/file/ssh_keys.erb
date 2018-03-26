@@ -1,0 +1,4 @@
+# Managed by puppet (nebula/file/ssh_keys)
+<% @keys.each do |key| -%>
+<%= key['type'] %> <%= key['data'] %> <%= key['comment'] %>
+<% end -%>
