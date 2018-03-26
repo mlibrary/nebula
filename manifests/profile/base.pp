@@ -11,4 +11,8 @@
 class nebula::profile::base {
   include nebula::profile::base::stop_mcollective
   include nebula::profile::base::blacklist_hpwdt
+
+  if $facts['os']['release']['major'] == '9' {
+    include nebula::profile::base::firewall::ipv4
+  }
 }

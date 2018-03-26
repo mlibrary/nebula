@@ -4,9 +4,20 @@
 require 'spec_helper'
 
 describe 'nebula::profile::base' do
+  def contain_base_class(name)
+    contain_class("nebula::profile::base::#{name}")
+  end
+
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
+
+      case os
+      when 'debian-8-x86_64'
+        it { is_expected.not_to contain_base_class('firewall::ipv4') }
+      when 'debian-9-x86_64'
+        it { is_expected.to contain_base_class('firewall::ipv4') }
+      end
 
       it do
         is_expected.to contain_service('mcollective').with(

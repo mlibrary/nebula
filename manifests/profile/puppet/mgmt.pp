@@ -9,7 +9,10 @@
 # @example
 #   include nebula::profile::puppet::mgmt
 class nebula::profile::puppet::mgmt {
-  include puppetdb
+  class { 'puppetdb':
+    manage_firewall => false,
+  }
+
   include puppetdb::master::config
 
   include nebula::profile::ruby

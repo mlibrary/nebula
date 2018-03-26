@@ -1,0 +1,17 @@
+# Managed by puppet (nebula/file/firewall.erb)
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+<% @rules.each do |rule| -%>
+<%= rule %>
+<% end -%>
+
+-A INPUT -j DROP
+-A FORWARD -j DROP
+
+COMMIT
