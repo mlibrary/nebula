@@ -9,7 +9,10 @@
 # @example
 #   include nebula::role::vmhost
 class nebula::role::vmhost {
-  include nebula::profile::base
+  class { 'nebula::profile::base':
+    bridge_network => true,
+  }
+
   include nebula::profile::dns::standard
   include nebula::profile::metricbeat
   include nebula::profile::vmhost

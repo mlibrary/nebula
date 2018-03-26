@@ -16,9 +16,17 @@ describe 'nebula::profile::base' do
       when 'debian-8-x86_64'
         it { is_expected.not_to contain_base_class('authorized_keys') }
         it { is_expected.not_to contain_base_class('firewall::ipv4') }
+        it { is_expected.not_to contain_base_class('sysctl') }
       when 'debian-9-x86_64'
         it { is_expected.to contain_base_class('authorized_keys') }
         it { is_expected.to contain_base_class('firewall::ipv4') }
+        it { is_expected.to contain_base_class('sysctl').with_bridge(false) }
+
+        context 'with bridge_network set to true' do
+          let(:params) { { bridge_network: true } }
+
+          it { is_expected.to contain_base_class('sysctl').with_bridge(true) }
+        end
       end
 
       it do

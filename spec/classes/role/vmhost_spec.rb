@@ -8,8 +8,12 @@ describe 'nebula::role::vmhost' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
+      it do
+        is_expected.to contain_class('nebula::profile::base')
+          .with_bridge_network(true)
+      end
+
       [
-        'base',
         'dns::standard',
         'metricbeat',
         'vmhost',
