@@ -12,6 +12,15 @@ describe 'nebula::profile::base::sysctl' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
+      it { is_expected.to contain_sysctl.that_notifies('Service[procps]') }
+
+      it do
+        is_expected.to contain_service('procps').only_with(
+          ensure: 'running',
+          enable: true,
+        )
+      end
+
       [
         %r{^net\.ipv4\.conf\.default\.rp_filter\s*=\s*1$},
         %r{^net\.ipv4\.conf\.all\.rp_filter\s*=\s*1$},

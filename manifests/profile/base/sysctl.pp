@@ -4,16 +4,20 @@
 
 # nebula::profile::base::sysctl
 #
-# A description of what this class does
-#
-# @summary A short summary of the purpose of this class
+# Configure /etc/sysctl.conf
 #
 # @example
 #   include nebula::profile::base::sysctl
 class nebula::profile::base::sysctl (
   Boolean $bridge = false,
 ) {
+  service { 'procps':
+    ensure => 'running',
+    enable => true,
+  }
+
   file { '/etc/sysctl.conf':
     content => template('nebula/profile/base/sysctl.conf.erb'),
+    notify  => Service['procps'],
   }
 }
