@@ -32,6 +32,11 @@ nebula::profile::base::firewall::ipv4::rules:
 - '-A INPUT -p tcp -s 1.2.3.4 -j ACCEPT'
 - '-A INPUT -p tcp -s 5.6.7.8 -j ACCEPT'
 
+nebula::profile::base::sshd::whitelist:
+- '10.1.1.0/24'
+- '10.2.2.0/24'
+- '!10.2.2.2'
+
 nebula::resolv_conf::searchpath:
 - searchpath.default.invalid
 nebula::resolv_conf::nameservers:

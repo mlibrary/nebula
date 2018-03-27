@@ -17,15 +17,40 @@ describe 'nebula::profile::base' do
         it { is_expected.not_to contain_base_class('authorized_keys') }
         it { is_expected.not_to contain_base_class('firewall::ipv4') }
         it { is_expected.not_to contain_base_class('sysctl') }
+        it { is_expected.not_to contain_base_class('sshd') }
       when 'debian-9-x86_64'
         it { is_expected.to contain_base_class('authorized_keys') }
         it { is_expected.to contain_base_class('firewall::ipv4') }
+
         it { is_expected.to contain_base_class('sysctl').with_bridge(false) }
 
         context 'with bridge_network set to true' do
           let(:params) { { bridge_network: true } }
 
           it { is_expected.to contain_base_class('sysctl').with_bridge(true) }
+        end
+
+        it { is_expected.to contain_base_class('sshd').with_gssapi_auth(false) }
+        it { is_expected.not_to contain_file('/etc/krb5.keytab') }
+
+        context 'when given a keytab file that has to exist' do
+          let(:params) { { keytab: 'hiera.yaml' } }
+
+          it { is_expected.to contain_base_class('sshd').with_gssapi_auth(true) }
+
+          it do
+            is_expected.to contain_file('/etc/krb5.keytab').with(
+              source: 'file://hiera.yaml',
+              mode: '0600',
+            )
+          end
+        end
+
+        context 'when given a keytab file that does not exist' do
+          let(:params) { { keytab: file_that_does_not_exist } }
+
+          it { is_expected.to contain_base_class('sshd').with_gssapi_auth(false) }
+          it { is_expected.not_to contain_file('/etc/krb5.keytab') }
         end
       end
 
@@ -57,4 +82,17 @@ describe 'nebula::profile::base' do
       end
     end
   end
+end
+
+def file_that_does_not_exist
+  1000.times do
+    filename = random_string
+    return filename unless File.exist? filename
+  end
+
+  raise "gave up trying to find a file that doesn't exist"
+end
+
+def random_string
+  (0...8).map { (0x61 + rand(26)).chr }.join
 end
