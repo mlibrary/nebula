@@ -85,14 +85,12 @@ describe 'nebula::profile::base' do
 end
 
 def file_that_does_not_exist
-  1000.times do
-    filename = random_string
-    return filename unless File.exist? filename
-  end
+  # Create a random new file and get its path.
+  file = Tempfile.new
+  path = file.path
 
-  raise "gave up trying to find a file that doesn't exist"
-end
+  # Close and unlink the file.
+  file.close!
 
-def random_string
-  (0...8).map { (0x61 + rand(26)).chr }.join
+  path
 end
