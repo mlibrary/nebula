@@ -11,12 +11,6 @@ describe 'nebula::profile::base::vim' do
       it { is_expected.to contain_package('vim') }
 
       it do
-        is_expected.to contain_package('nano')
-          .with_ensure('purged')
-          .that_requires('Package[vim]')
-      end
-
-      it do
         is_expected.to contain_file('/etc/vim/vimrc')
           .that_requires('Package[vim]')
       end

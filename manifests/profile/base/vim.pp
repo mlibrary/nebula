@@ -11,11 +11,6 @@
 class nebula::profile::base::vim {
   package { 'vim': }
 
-  package { 'nano':
-    ensure  => 'purged',
-    require => Package['vim'],
-  }
-
   file { '/etc/vim/vimrc':
     content => template('nebula/profile/base/vimrc.vim.erb'),
     require => Package['vim'],
