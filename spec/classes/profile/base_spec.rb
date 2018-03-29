@@ -19,6 +19,16 @@ describe 'nebula::profile::base' do
         it { is_expected.not_to contain_base_class('sysctl') }
         it { is_expected.not_to contain_base_class('sshd') }
       when 'debian-9-x86_64'
+        [
+          %r{^APT::Install-Recommends "0";$},
+          %r{^APT::Install-Suggests "0";$},
+        ].each do |line|
+          it do
+            is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
+              .with_content(line)
+          end
+        end
+
         it { is_expected.to contain_base_class('authorized_keys') }
         it { is_expected.to contain_base_class('firewall::ipv4') }
 

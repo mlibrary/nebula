@@ -16,10 +16,11 @@ class nebula::profile::base (
   Boolean $bridge_network = false,
   String  $keytab         = '',
 ) {
-  include nebula::profile::base::stop_mcollective
-  include nebula::profile::base::blacklist_hpwdt
-
   if $facts['os']['release']['major'] == '9' {
+    file { '/etc/apt/apt.conf.d/99no-recommends':
+      content => template('nebula/profile/base/apt_no_recommends.erb'),
+    }
+
     include nebula::profile::base::authorized_keys
     include nebula::profile::base::firewall::ipv4
 
@@ -40,4 +41,7 @@ class nebula::profile::base (
       include nebula::profile::base::sshd
     }
   }
+
+  include nebula::profile::base::stop_mcollective
+  include nebula::profile::base::blacklist_hpwdt
 }
