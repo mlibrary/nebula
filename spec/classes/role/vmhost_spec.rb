@@ -12,7 +12,7 @@ describe 'nebula::role::vmhost' do
         'base',
         'dns::standard',
         'metricbeat',
-        'vmhost',
+        'vmhost::host',
       ].each do |profile|
         it { is_expected.to contain_class("nebula::profile::#{profile}") }
       end
