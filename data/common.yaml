@@ -31,6 +31,8 @@ nebula::profile::ruby::supported_versions:
 nebula::profile::vmhost::vms: {}
 nebula::profile::vmhost::defaults: {}
 
+nebula::profile::base::timezone: US/Eastern
+
 nebula::profile::base::firewall::ipv4::filename: /etc/firewall.ipv4
 nebula::profile::base::firewall::ipv4::rules:
 - '-A INPUT -p tcp -s 1.2.3.4 -j ACCEPT'

@@ -11,6 +11,7 @@ describe 'nebula::profile::base' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
+      let(:fqdn) { facts[:fqdn] }
 
       case os
       when 'debian-8-x86_64'
@@ -19,14 +20,55 @@ describe 'nebula::profile::base' do
         it { is_expected.not_to contain_base_class('sysctl') }
         it { is_expected.not_to contain_base_class('sshd') }
       when 'debian-9-x86_64'
-        [
-          %r{^APT::Install-Recommends "0";$},
-          %r{^APT::Install-Suggests "0";$},
-        ].each do |line|
+        it "sets apt to never install recommended packages" do
+          is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
+            .with_content(%r{^APT::Install-Recommends "0";$})
+            .with_content(%r{^APT::Install-Suggests "0";$})
+        end
+
+        it { is_expected.to contain_package('dselect') }
+        it { is_expected.to contain_package('ifenslave') }
+        it { is_expected.to contain_package('linux-image-amd64') }
+        it { is_expected.to contain_package('vlan') }
+        it { is_expected.to contain_package('tiger') }
+        it { is_expected.to contain_package('dbus') }
+        it { is_expected.to contain_package('dkms') }
+
+        it do
+          is_expected.to contain_file('/etc/localtime')
+            .with_ensure('link')
+            .with_target('/usr/share/zoneinfo/US/Eastern')
+        end
+
+        it do
+          is_expected.to contain_file('/etc/timezone')
+            .with_content("US/Eastern\n")
+        end
+
+        context 'with timezone set to America/Detroit' do
+          let(:params) { { timezone: 'America/Detroit' } }
+
           it do
-            is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
-              .with_content(line)
+            is_expected.to contain_file('/etc/localtime')
+              .with_ensure('link')
+              .with_target('/usr/share/zoneinfo/America/Detroit')
           end
+
+          it do
+            is_expected.to contain_file('/etc/timezone')
+              .with_content("America/Detroit\n")
+          end
+        end
+
+        it do
+          is_expected.to contain_file('/etc/hostname')
+            .with_content("#{fqdn}\n")
+            .that_notifies("Exec[/bin/hostname #{fqdn}]")
+        end
+
+        it do
+          is_expected.to contain_exec("/bin/hostname #{fqdn}")
+            .with_refreshonly(true)
         end
 
         it { is_expected.to contain_base_class('authorized_keys') }

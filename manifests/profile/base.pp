@@ -15,6 +15,7 @@
 class nebula::profile::base (
   Boolean $bridge_network = false,
   String  $keytab         = '',
+  String  $timezone,
 ) {
   if $facts['os']['release']['major'] == '9' {
     # Ensure that apt knows to never ever install recommended packages
@@ -22,6 +23,32 @@ class nebula::profile::base (
     File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
     file { '/etc/apt/apt.conf.d/99no-recommends':
       content => template('nebula/profile/base/apt_no_recommends.erb'),
+    }
+
+    package { 'dselect': }
+    package { 'ifenslave': }
+    package { 'linux-image-amd64': }
+    package { 'vlan': }
+    package { 'tiger': }
+    package { 'dbus': }
+    package { 'dkms': }
+
+    file { '/etc/localtime':
+      ensure => 'link',
+      target => "/usr/share/zoneinfo/${timezone}",
+    }
+
+    file { '/etc/timezone':
+      content => "${timezone}\n",
+    }
+
+    file { '/etc/hostname':
+      content => "${::fqdn}\n",
+      notify  => Exec["/bin/hostname ${::fqdn}"],
+    }
+
+    exec { "/bin/hostname ${::fqdn}":
+      refreshonly => true,
     }
 
     include nebula::profile::base::authorized_keys
