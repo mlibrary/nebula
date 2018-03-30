@@ -1,0 +1,13 @@
+; Managed by puppet (nebula/profile/base/pam_duo.conf.erb)
+
+[duo]
+; Duo integration key
+ikey = <%= @ikey %>
+; Duo secret key
+skey = <%= @skey %>
+; Duo API host
+host = <%= @host %>
+; Send command for Duo Push authentication
+pushinfo = <%= @pushinfo %>
+; fail closed
+failmode = <%= @failmode %>

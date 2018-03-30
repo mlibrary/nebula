@@ -44,6 +44,12 @@ nebula::profile::base::exim4::relay_domain: exim.default.invalid
 nebula::profile::base::ntp::servers:
 - ntp.example.invalid
 
+nebula::profile::base::duo::ikey: ikey.default.invalid
+nebula::profile::base::duo::skey: skey.default.invalid
+nebula::profile::base::duo::host: host.default.invalid
+nebula::profile::base::duo::pushinfo: push.default.invalid
+nebula::profile::base::duo::failmode: fail.default.invalid
+
 nebula::profile::base::firewall::ipv4::filename: /etc/firewall.ipv4
 nebula::profile::base::firewall::ipv4::rules:
 - '-A INPUT -p tcp -s 1.2.3.4 -j ACCEPT'
