@@ -47,7 +47,7 @@ class nebula::profile::afs (
 
   debconf { 'openafs-client/cachesize':
     type  => 'string',
-    value => $cache_size,
+    value => "${cache_size}",
   }
 
   file { '/usr/local/skel/sys.login':
