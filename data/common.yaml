@@ -35,6 +35,8 @@ nebula::profile::base::contact_email: contact@default.invalid
 nebula::profile::base::keytab: ''
 nebula::profile::base::timezone: US/Eastern
 
+nebula::profile::base::environment::vars: {}
+
 nebula::profile::base::exim4::root_email: root@default.invalid
 nebula::profile::base::exim4::relay_domain: exim.default.invalid
 
