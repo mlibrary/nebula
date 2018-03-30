@@ -34,6 +34,9 @@ nebula::profile::vmhost::defaults: {}
 nebula::profile::base::keytab: ''
 nebula::profile::base::timezone: US/Eastern
 
+nebula::profile::base::ntp::servers:
+- ntp.example.invalid
+
 nebula::profile::base::firewall::ipv4::filename: /etc/firewall.ipv4
 nebula::profile::base::firewall::ipv4::rules:
 - '-A INPUT -p tcp -s 1.2.3.4 -j ACCEPT'
