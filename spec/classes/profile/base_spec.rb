@@ -24,6 +24,7 @@ describe 'nebula::profile::base' do
         it { is_expected.not_to contain_base_class('ntp') }
         it { is_expected.not_to contain_base_class('sysctl') }
         it { is_expected.not_to contain_base_class('sshd') }
+        it { is_expected.not_to contain_base_class('users') }
         it { is_expected.not_to contain_base_class('vim') }
       when 'debian-9-x86_64'
         it { is_expected.to contain_base_class('apt') }
@@ -33,6 +34,7 @@ describe 'nebula::profile::base' do
         it { is_expected.to contain_base_class('firewall::ipv4') }
         it { is_expected.to contain_base_class('grub') }
         it { is_expected.to contain_base_class('ntp') }
+        it { is_expected.to contain_base_class('users') }
         it { is_expected.to contain_base_class('vim') }
 
         it 'sets apt to never install recommended packages' do
