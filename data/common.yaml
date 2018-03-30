@@ -34,6 +34,9 @@ nebula::profile::vmhost::defaults: {}
 nebula::profile::base::keytab: ''
 nebula::profile::base::timezone: US/Eastern
 
+nebula::profile::base::exim4::root_email: root@default.invalid
+nebula::profile::base::exim4::relay_domain: exim.default.invalid
+
 nebula::profile::base::ntp::servers:
 - ntp.example.invalid
 
