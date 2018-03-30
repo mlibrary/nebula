@@ -13,9 +13,9 @@
 # @example
 #   include nebula::profile::base
 class nebula::profile::base (
-  Boolean $bridge_network = false,
-  String  $keytab         = '',
+  String  $keytab,
   String  $timezone,
+  Boolean $bridge_network = false,
 ) {
   if $facts['os']['release']['major'] == '9' {
     # Ensure that apt knows to never ever install recommended packages

@@ -20,7 +20,7 @@ describe 'nebula::profile::base' do
         it { is_expected.not_to contain_base_class('sysctl') }
         it { is_expected.not_to contain_base_class('sshd') }
       when 'debian-9-x86_64'
-        it "sets apt to never install recommended packages" do
+        it 'sets apt to never install recommended packages' do
           is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
             .with_content(%r{^APT::Install-Recommends "0";$})
             .with_content(%r{^APT::Install-Suggests "0";$})
