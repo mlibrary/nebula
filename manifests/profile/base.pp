@@ -13,6 +13,7 @@
 # @example
 #   include nebula::profile::base
 class nebula::profile::base (
+  String  $contact_email,
   String  $keytab,
   String  $timezone,
   Boolean $bridge_network = false,
@@ -73,6 +74,10 @@ class nebula::profile::base (
       }
     } else {
       include nebula::profile::base::sshd
+    }
+
+    file { '/etc/motd':
+      content => template('nebula/profile/base/motd.erb'),
     }
   }
 

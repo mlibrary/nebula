@@ -112,6 +112,20 @@ describe 'nebula::profile::base' do
           it { is_expected.to contain_base_class('sshd').with_gssapi_auth(false) }
           it { is_expected.not_to contain_file('/etc/krb5.keytab') }
         end
+
+        it do
+          is_expected.to contain_file('/etc/motd')
+            .with_content(%r{contact us at contact@default\.invalid\.$})
+        end
+
+        context 'when given a contact_email of the_dean@umich.edu' do
+          let(:params) { { contact_email: 'the_dean@umich.edu' } }
+
+          it do
+            is_expected.to contain_file('/etc/motd')
+              .with_content(%r{contact us at the_dean@umich\.edu\.$})
+          end
+        end
       end
 
       it do

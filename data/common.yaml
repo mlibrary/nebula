@@ -31,6 +31,7 @@ nebula::profile::ruby::supported_versions:
 nebula::profile::vmhost::vms: {}
 nebula::profile::vmhost::defaults: {}
 
+nebula::profile::base::contact_email: contact@default.invalid
 nebula::profile::base::keytab: ''
 nebula::profile::base::timezone: US/Eastern
 
