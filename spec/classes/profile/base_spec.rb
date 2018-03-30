@@ -17,9 +17,16 @@ describe 'nebula::profile::base' do
       when 'debian-8-x86_64'
         it { is_expected.not_to contain_base_class('authorized_keys') }
         it { is_expected.not_to contain_base_class('firewall::ipv4') }
+        it { is_expected.not_to contain_base_class('ntp') }
         it { is_expected.not_to contain_base_class('sysctl') }
         it { is_expected.not_to contain_base_class('sshd') }
+        it { is_expected.not_to contain_base_class('vim') }
       when 'debian-9-x86_64'
+        it { is_expected.to contain_base_class('authorized_keys') }
+        it { is_expected.to contain_base_class('firewall::ipv4') }
+        it { is_expected.to contain_base_class('ntp') }
+        it { is_expected.to contain_base_class('vim') }
+
         it 'sets apt to never install recommended packages' do
           is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
             .with_content(%r{^APT::Install-Recommends "0";$})
@@ -70,9 +77,6 @@ describe 'nebula::profile::base' do
           is_expected.to contain_exec("/bin/hostname #{fqdn}")
             .with_refreshonly(true)
         end
-
-        it { is_expected.to contain_base_class('authorized_keys') }
-        it { is_expected.to contain_base_class('firewall::ipv4') }
 
         it { is_expected.to contain_base_class('sysctl').with_bridge(false) }
 
