@@ -93,6 +93,21 @@ describe 'nebula::profile::afs' do
             .with_value('100')
         end
       end
+
+      %w[login profile].each do |suffix|
+        it do
+          is_expected.to contain_file("/usr/local/skel/sys.#{suffix}")
+            .with_source('puppet:///modules/nebula/skel.txt')
+            .that_requires('File[/usr/local/skel]')
+        end
+      end
+
+      it do
+        is_expected.to contain_file('/usr/local/skel').with(
+          ensure: 'directory',
+          mode: '0755',
+        )
+      end
     end
   end
 end

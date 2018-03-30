@@ -49,4 +49,17 @@ class nebula::profile::afs (
     type  => 'string',
     value => $cache_size,
   }
+
+  file { '/usr/local/skel/sys.login':
+    source => 'puppet:///modules/nebula/skel.txt',
+  }
+
+  file { '/usr/local/skel/sys.profile':
+    source  => 'puppet:///modules/nebula/skel.txt',
+  }
+
+  file { '/usr/local/skel':
+    ensure => 'directory',
+    mode   => '0755',
+  }
 }
