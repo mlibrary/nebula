@@ -28,7 +28,7 @@ describe 'nebula::profile::base::grub' do
             is_expected.to contain_file_line("/etc/default/grub: #{match}").with(
               path: '/etc/default/grub',
               line: line,
-              match: match,
+              match: "#{match}=",
               notify: 'Exec[/usr/sbin/update-grub]',
               before: 'Service[getty@hvc0]',
             )
@@ -53,7 +53,7 @@ describe 'nebula::profile::base::grub' do
               is_expected.to contain_file_line("/etc/default/grub: #{match}").with(
                 path: '/etc/default/grub',
                 line: line,
-                match: match,
+                match: "#{match}=",
                 notify: 'Exec[/usr/sbin/update-grub]',
                 before: 'Service[getty@hvc0]',
               )

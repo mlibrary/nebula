@@ -23,19 +23,19 @@ class nebula::profile::base::grub {
       ;
       '/etc/default/grub: ^GRUB_CMDLINE_LINUX':
         line  => 'GRUB_CMDLINE_LINUX="console=tty0 console=hvc0,9600n8"',
-        match => '^GRUB_CMDLINE_LINUX',
+        match => '^GRUB_CMDLINE_LINUX=',
       ;
       '/etc/default/grub: ^GRUB_CMDLINE_LINUX_DEFAULT':
         line  => 'GRUB_CMDLINE_LINUX_DEFAULT=""',
-        match => '^GRUB_CMDLINE_LINUX_DEFAULT',
+        match => '^GRUB_CMDLINE_LINUX_DEFAULT=',
       ;
       '/etc/default/grub: ^#?GRUB_SERIAL_COMMAND':
         line  => 'GRUB_SERIAL_COMMAND="serial --unit=0 --speed=9600"',
-        match => '^#?GRUB_SERIAL_COMMAND',
+        match => '^#?GRUB_SERIAL_COMMAND=',
       ;
       '/etc/default/grub: ^#?GRUB_TERMINAL':
         line  => 'GRUB_TERMINAL=serial',
-        match => '^#?GRUB_TERMINAL',
+        match => '^#?GRUB_TERMINAL=',
       ;
     }
   } else {
@@ -47,15 +47,15 @@ class nebula::profile::base::grub {
       ;
       '/etc/default/grub: ^GRUB_CMDLINE_LINUX':
         line  => 'GRUB_CMDLINE_LINUX="console=tty0 console=ttyS1,115200n8 ixgbe.allow_unsupported_sfp=1"',
-        match => '^GRUB_CMDLINE_LINUX',
+        match => '^GRUB_CMDLINE_LINUX=',
       ;
       '/etc/default/grub: ^GRUB_CMDLINE_LINUX_DEFAULT':
         line  => 'GRUB_CMDLINE_LINUX_DEFAULT=""',
-        match => '^GRUB_CMDLINE_LINUX_DEFAULT',
+        match => '^GRUB_CMDLINE_LINUX_DEFAULT=',
       ;
       '/etc/default/grub: ^#?GRUB_TERMINAL':
         line  => 'GRUB_TERMINAL=console',
-        match => '^#?GRUB_TERMINAL',
+        match => '^#?GRUB_TERMINAL=',
       ;
     }
   }
