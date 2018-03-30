@@ -24,4 +24,8 @@ class nebula::profile::base::sshd (
     content => template('nebula/profile/base/sshd_config.erb'),
     notify  => Service['sshd'],
   }
+
+  file { '/etc/ssh/ssh_config':
+    content => template('nebula/profile/base/ssh_config.erb'),
+  }
 }

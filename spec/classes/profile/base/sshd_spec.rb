@@ -63,6 +63,11 @@ describe 'nebula::profile::base::sshd' do
           )
         end
       end
+
+      it do
+        is_expected.to contain_file('/etc/ssh/ssh_config')
+          .with_content(%r{^\s*SendEnv LANG LC_\*$})
+      end
     end
   end
 end
