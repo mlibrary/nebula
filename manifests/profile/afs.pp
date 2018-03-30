@@ -9,12 +9,12 @@
 # @example
 #   include nebula::profile::afs
 class nebula::profile::afs (
-  Boolean $allow_auto_reboot,
+  String  $allow_auto_reboot_until,
   Integer $cache_size,
   String  $cell,
   String  $realm,
 ) {
-  if $allow_auto_reboot {
+  if nebula::date_is_in_the_future($allow_auto_reboot_until) {
     reboot { 'afs':
       apply     => 'finished',
       subscribe => Exec['reinstall kernel to enable afs'],

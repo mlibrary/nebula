@@ -9,6 +9,9 @@ describe 'nebula::profile::afs' do
       let(:facts) { os_facts }
       let(:kernelrelease) { os_facts[:kernelrelease] }
 
+      today = Date.today.strftime('%Y-%m-%d')
+      tomorrow = (Date.today + 1).strftime('%Y-%m-%d')
+
       it { is_expected.to contain_package('krb5-user') }
       it { is_expected.to contain_package('libpam-afs-session') }
       it { is_expected.to contain_package('libpam-krb5') }
@@ -27,8 +30,14 @@ describe 'nebula::profile::afs' do
 
       it { is_expected.not_to contain_reboot('afs') }
 
-      context 'when allow_auto_reboot is true' do
-        let(:params) { { allow_auto_reboot: true } }
+      context "when allow_auto_reboot_until is #{today}" do
+        let(:params) { { allow_auto_reboot_until: today } }
+
+        it { is_expected.not_to contain_reboot('afs') }
+      end
+
+      context "when allow_auto_reboot_until is #{tomorrow}" do
+        let(:params) { { allow_auto_reboot_until: tomorrow } }
 
         it do
           is_expected.to contain_reboot('afs')
