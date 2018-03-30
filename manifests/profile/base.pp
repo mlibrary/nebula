@@ -51,6 +51,7 @@ class nebula::profile::base (
       refreshonly => true,
     }
 
+    include nebula::profile::afs
     include nebula::profile::base::authorized_keys
     include nebula::profile::base::firewall::ipv4
     include nebula::profile::base::ntp
