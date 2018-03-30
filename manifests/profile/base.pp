@@ -17,6 +17,9 @@ class nebula::profile::base (
   String  $keytab         = '',
 ) {
   if $facts['os']['release']['major'] == '9' {
+    # Ensure that apt knows to never ever install recommended packages
+    # before it installs any packages.
+    File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
     file { '/etc/apt/apt.conf.d/99no-recommends':
       content => template('nebula/profile/base/apt_no_recommends.erb'),
     }
