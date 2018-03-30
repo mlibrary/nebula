@@ -15,6 +15,7 @@
 class nebula::profile::base (
   String  $contact_email,
   String  $keytab,
+  String  $sysadmin_dept,
   String  $timezone,
   Boolean $bridge_network = false,
 ) {

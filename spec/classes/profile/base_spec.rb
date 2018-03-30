@@ -116,6 +116,7 @@ describe 'nebula::profile::base' do
         it do
           is_expected.to contain_file('/etc/motd')
             .with_content(%r{contact us at contact@default\.invalid\.$})
+            .with_content(%r{administered by Default Incorrect Dept\.$})
         end
 
         context 'when given a contact_email of the_dean@umich.edu' do
@@ -124,6 +125,15 @@ describe 'nebula::profile::base' do
           it do
             is_expected.to contain_file('/etc/motd')
               .with_content(%r{contact us at the_dean@umich\.edu\.$})
+          end
+        end
+
+        context 'when given a sysadmin_dept of The Cool Team' do
+          let(:params) { { sysadmin_dept: 'The Cool Team' } }
+
+          it do
+            is_expected.to contain_file('/etc/motd')
+              .with_content(%r{administered by The Cool Team\.$})
           end
         end
       end
