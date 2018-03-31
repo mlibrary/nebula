@@ -21,7 +21,7 @@ describe 'nebula::profile::afs' do
 
       it do
         is_expected.to contain_exec('reinstall kernel to enable afs').with(
-          command: '/usr/bin/apt-get -y install --reinstall linux-image-amd64',
+          command: '/usr/bin/apt-get -y install --reinstall linux-headers-amd64',
           creates: "/lib/modules/#{kernelrelease}/updates/dkms/openafs.ko",
           timeout: 600,
           require: 'Package[openafs-modules-dkms]',

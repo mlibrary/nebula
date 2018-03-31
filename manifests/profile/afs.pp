@@ -29,7 +29,7 @@ class nebula::profile::afs (
   package { 'openafs-modules-dkms': }
 
   exec { 'reinstall kernel to enable afs':
-    command => '/usr/bin/apt-get -y install --reinstall linux-image-amd64',
+    command => '/usr/bin/apt-get -y install --reinstall linux-headers-amd64',
     creates => "/lib/modules/${::kernelrelease}/updates/dkms/openafs.ko",
     timeout => 600,
     require => Package['openafs-modules-dkms'],
