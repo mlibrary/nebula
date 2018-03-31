@@ -27,6 +27,7 @@ describe 'nebula::profile::base::exim4' do
             match: '^root: ',
             line: 'root: root@default.invalid',
             notify: 'Exec[load new email aliases]',
+            require: 'Package[exim4]',
           )
         end
       end
@@ -60,6 +61,7 @@ describe 'nebula::profile::base::exim4' do
           .with_content(%r{^dc_other_hostnames='#{fqdn}'$})
           .with_content(%r{^dc_relay_domains='exim\.default\.invalid'$})
           .that_notifies('Exec[update exim4 config]')
+          .that_requires('Package[exim4]')
       end
 
       context 'given a relay_domain of umich.edu' do
