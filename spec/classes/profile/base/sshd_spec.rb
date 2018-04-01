@@ -32,7 +32,7 @@ describe 'nebula::profile::base::sshd' do
         %r{^X11Forwarding yes$},
         %r{^PrintMotd no$},
         %r{^AcceptEnv LANG LC_\*$},
-        %r{^Subsystem sftp /usr/lib/openssh/sftp-server$},
+        %r{^Subsystem\s+sftp\s+/usr/lib/openssh/sftp-server$},
         %r{^Match Address 10\.1\.1\.0/24,10\.2\.2\.0/24,!10\.2\.2\.2\n\s*PubkeyAuthentication yes$}m,
       ].each do |line|
         it { is_expected.to contain_sshd.with_content(line) }
