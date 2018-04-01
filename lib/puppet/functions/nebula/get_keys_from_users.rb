@@ -2,8 +2,6 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::get_keys_from_users
-#
 # Get a list of key hashes from user data.
 Puppet::Functions.create_function(:'nebula::get_keys_from_users') do
   # Input userdata from a hiera lookup.
@@ -11,6 +9,8 @@ Puppet::Functions.create_function(:'nebula::get_keys_from_users') do
   # @param hiera_sudoers Hiera path to lookup
   # @param default_host Default hostname to put as a comment (set to ''
   #   to set no hostname)
+  # @return [Array[Hash[String, String]]] List of key hashes with values
+  #   for type, key, and comment.
   #
   # @example Extract from nebula::users::sudoers
   #   nebula::get_keys_from_users('nebula::users::sudoers')
@@ -26,6 +26,8 @@ Puppet::Functions.create_function(:'nebula::get_keys_from_users') do
   #   under the 'auth' key.
   # @param default_host Default hostname to put as a comment (set to ''
   #   to set no hostname)
+  # @return [Array[Hash[String, String]]] List of key hashes with values
+  #   for type, key, and comment.
   #
   # @example With a single user
   #   nebula::get_keys_from_users({
