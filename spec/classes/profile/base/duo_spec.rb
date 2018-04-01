@@ -20,6 +20,7 @@ describe 'nebula::profile::base::duo' do
           .with_path('/etc/pam.d/sshd')
           .with_line('auth required pam_duo.so')
           .with_after('^@include common-auth')
+          .that_requires(['Package[sudo]', 'Package[libpam-duo]'])
       end
 
       it do
@@ -27,6 +28,7 @@ describe 'nebula::profile::base::duo' do
           .with_path('/etc/pam.d/sudo')
           .with_line('auth required pam_duo.so')
           .with_after('^@include common-auth')
+          .that_requires(['Package[sudo]', 'Package[libpam-duo]'])
       end
 
       it do

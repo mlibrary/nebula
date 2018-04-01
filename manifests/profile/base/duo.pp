@@ -20,9 +20,10 @@ class nebula::profile::base::duo (
 
   ['sshd', 'sudo'].each |$pamfile| {
     file_line { "/etc/pam.d/${pamfile}: pam_duo":
-      path  => "/etc/pam.d/${pamfile}",
-      line  => 'auth required pam_duo.so',
-      after => '^@include common-auth',
+      path    => "/etc/pam.d/${pamfile}",
+      line    => 'auth required pam_duo.so',
+      after   => '^@include common-auth',
+      require => Package['sudo', 'libpam-duo'],
     }
   }
 

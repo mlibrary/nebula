@@ -27,6 +27,7 @@ describe 'nebula::profile::base::ntp' do
           match_for_absence: true,
           multiple: true,
           notify: 'Service[ntp]',
+          require: ['Package[ntp]', 'Package[ntpstat]']
         )
       end
 
@@ -36,6 +37,7 @@ describe 'nebula::profile::base::ntp' do
           line: 'server ntp.example.invalid',
           after: '^#?server',
           notify: 'Service[ntp]',
+          require: ['Package[ntp]', 'Package[ntpstat]']
         )
       end
 

@@ -27,14 +27,16 @@ class nebula::profile::base::ntp (
     match_for_absence => true,
     multiple          => true,
     notify            => Service['ntp'],
+    require           => Package['ntp', 'ntpstat'],
   }
 
   $servers.each |$server| {
     file_line { "ntp server ${server}":
-      path   => '/etc/ntp.conf',
-      line   => "server ${server}",
-      after  => '^#?server',
-      notify => Service['ntp'],
+      path    => '/etc/ntp.conf',
+      line    => "server ${server}",
+      after   => '^#?server',
+      notify  => Service['ntp'],
+      require => Package['ntp', 'ntpstat'],
     }
   }
 }
