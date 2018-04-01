@@ -14,6 +14,7 @@
 #   include nebula::profile::base
 class nebula::profile::base (
   String  $contact_email,
+  String  $default_keytab,
   String  $keytab,
   String  $sysadmin_dept,
   String  $timezone,
@@ -68,17 +69,19 @@ class nebula::profile::base (
       bridge => $bridge_network,
     }
 
-    if nebula::file_exists($keytab) {
+    $keytab_content = file($keytab, $default_keytab)
+
+    if $keytab_content == '' {
+      include nebula::profile::base::sshd
+    } else {
       class { 'nebula::profile::base::sshd':
         gssapi_auth => true,
       }
 
       file { '/etc/krb5.keytab':
-        source => "file://${keytab}",
-        mode   => '0600',
+        content => $keytab_content,
+        mode    => '0600',
       }
-    } else {
-      include nebula::profile::base::sshd
     }
 
     file { '/etc/motd':

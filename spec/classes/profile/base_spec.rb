@@ -101,21 +101,21 @@ describe 'nebula::profile::base' do
         it { is_expected.to contain_base_class('sshd').with_gssapi_auth(false) }
         it { is_expected.not_to contain_file('/etc/krb5.keytab') }
 
-        context 'when given a keytab file that has to exist' do
-          let(:params) { { keytab: 'hiera.yaml' } }
+        context 'when given an existing keytab file' do
+          let(:params) { { keytab: 'nebula/keytab.fake' } }
 
           it { is_expected.to contain_base_class('sshd').with_gssapi_auth(true) }
 
           it do
             is_expected.to contain_file('/etc/krb5.keytab').with(
-              source: 'file://hiera.yaml',
               mode: '0600',
+              content: %r{^This is not a real keytab.},
             )
           end
         end
 
-        context 'when given a keytab file that does not exist' do
-          let(:params) { { keytab: file_that_does_not_exist } }
+        context 'when given a nonexistent keytab file' do
+          let(:params) { { keytab: 'nebula/keytab.not_a_file' } }
 
           it { is_expected.to contain_base_class('sshd').with_gssapi_auth(false) }
           it { is_expected.not_to contain_file('/etc/krb5.keytab') }
@@ -174,15 +174,4 @@ describe 'nebula::profile::base' do
       end
     end
   end
-end
-
-def file_that_does_not_exist
-  # Create a random new file and get its path.
-  file = Tempfile.new
-  path = file.path
-
-  # Close and unlink the file.
-  file.close!
-
-  path
 end
