@@ -8,7 +8,7 @@
 #
 # @param bridge_network Whether to add bridge network interfaces
 # @param keytab Path to a source file to use as a kerberos keytab (leave
-#   blank or point to a nonexistant file to disable the keytab)
+#   blank or point to a nonexistent file to disable the keytab)
 #
 # @example
 #   include nebula::profile::base
@@ -16,6 +16,7 @@ class nebula::profile::base (
   String  $contact_email,
   String  $default_keytab,
   String  $keytab,
+  String  $keytab_source,
   String  $sysadmin_dept,
   String  $timezone,
   Boolean $bridge_network = false,
@@ -78,9 +79,16 @@ class nebula::profile::base (
         gssapi_auth => true,
       }
 
-      file { '/etc/krb5.keytab':
-        content => $keytab_content,
-        mode    => '0600',
+      if $keytab_source == '' {
+        file { '/etc/krb5.keytab':
+          content => $keytab_content,
+          mode    => '0600',
+        }
+      } else {
+        file { '/etc/krb5.keytab':
+          source => $keytab_source,
+          mode   => '0600',
+        }
       }
     }
 

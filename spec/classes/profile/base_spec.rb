@@ -121,6 +121,39 @@ describe 'nebula::profile::base' do
           it { is_expected.not_to contain_file('/etc/krb5.keytab') }
         end
 
+        context 'when given a keytab source and no keytab' do
+          let(:params) { { keytab_source: 'alternate source' } }
+
+          it { is_expected.not_to contain_file('/etc/krb5.keytab') }
+        end
+
+        context 'when given a keytab source and a nonexistent keytab' do
+          let :params do
+            {
+              keytab: 'nebula/keytab.not_a_file',
+              keytab_source: 'alternate source',
+            }
+          end
+
+          it { is_expected.not_to contain_file('/etc/krb5.keytab') }
+        end
+
+        context 'when given a keytab source and a real keytab' do
+          let :params do
+            {
+              keytab: 'nebula/keytab.fake',
+              keytab_source: 'alternate source',
+            }
+          end
+
+          it do
+            is_expected.to contain_file('/etc/krb5.keytab').with(
+              mode: '0600',
+              source: 'alternate source',
+            )
+          end
+        end
+
         it do
           is_expected.to contain_file('/etc/motd')
             .with_content(%r{contact us at contact@default\.invalid\.$})

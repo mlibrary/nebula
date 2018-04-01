@@ -35,6 +35,7 @@ nebula::profile::base::sysadmin_dept: Default Incorrect Dept
 nebula::profile::base::contact_email: contact@default.invalid
 nebula::profile::base::default_keytab: nebula/keytab.empty
 nebula::profile::base::keytab: ''
+nebula::profile::base::keytab_source: ''
 nebula::profile::base::timezone: US/Eastern
 
 nebula::profile::base::environment::vars: {}
