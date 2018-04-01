@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::vmhost
+# nebula::profile::vmhost::host
 #
 # Assert the existance of any number of virtual machines.
 #
@@ -12,19 +12,11 @@
 # @see nebula::virtual_machine
 #
 # @example
-#   include nebula::profile::vmhost
-class nebula::profile::vmhost (
+#   include nebula::profile::vmhost::host
+class nebula::profile::vmhost::host (
   Hash $defaults,
   Hash $vms,
 ) {
-  package { 'libvirt-clients':
-    ensure => 'installed',
-  }
-
-  package { 'virtinst':
-    ensure => 'installed',
-  }
-
   $vms.each |$vm_name, $vm_settings| {
     nebula::virtual_machine {
       default:

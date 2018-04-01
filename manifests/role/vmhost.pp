@@ -15,5 +15,5 @@ class nebula::role::vmhost {
 
   include nebula::profile::dns::standard
   include nebula::profile::metricbeat
-  include nebula::profile::vmhost
+  include nebula::profile::vmhost::host
 }

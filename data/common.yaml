@@ -28,8 +28,8 @@ nebula::profile::ruby::supported_versions:
 - '2.3.4'
 - '2.4.3'
 - '2.5.0'
-nebula::profile::vmhost::vms: {}
-nebula::profile::vmhost::defaults: {}
+nebula::profile::vmhost::host::vms: {}
+nebula::profile::vmhost::host::defaults: {}
 
 nebula::profile::base::sysadmin_dept: Default Incorrect Dept
 nebula::profile::base::contact_email: contact@default.invalid
