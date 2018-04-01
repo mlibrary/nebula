@@ -6,6 +6,24 @@
 #
 # Manage OpenAFS and kerberos.
 #
+# If you're setting up a new machine, you'll need to reboot it after
+# puppet's run all this. If you'd rather take a hands-off approach, you
+# can set $allow_auto_reboot_until to such as tomorrow's date, and
+# puppet will reboot for you.
+#
+# It's best practice to remove that setting when done, but this way, if
+# you forget, you don't have to worry about the machine getting caught
+# in a reboot loop for some reason in the future.
+#
+# Also, if you ever see any machines with this set to a date in the
+# past, feel free to delete the setting.
+#
+# @param allow_auto_reboot_until A YYYY-mm-dd date at which puppet will
+#   no longer automatically reboot the machine
+# @param cache_size debconf openafs-client/cachesize
+# @param cell debconf openafs-client/thiscell
+# @param realm debconf krb5-config/default_realm
+#
 # @example
 #   include nebula::profile::afs
 class nebula::profile::afs (

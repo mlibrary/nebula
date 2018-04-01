@@ -6,8 +6,34 @@
 #
 # Create a list of SSH keys.
 #
-# @example
-#   nebula::file::ssh_keys { 'namevar': }
+# @param keys Keys to add to the file, where each key is a hash
+#   containing type, data, and comment values
+# @param secret Whether to ensure that the parent directory is 0700
+#
+# @example A public key file
+#   nebula::file::ssh_keys { '/etc/keys':
+#     keys => [
+#       { type    => 'ssh-rsa',
+#         data    => 'AAAAAAAAAAAA',
+#         comment => 'user1@host' },
+#       { type    => 'ssh-rsa',
+#         data    => 'BBBBBBBBBBBB',
+#         comment => 'user2@host' },
+#     ]
+#   }
+#
+# @example A private key file (/etc/secret will be 0700)
+#   nebula::file::ssh_keys { '/etc/secret/keys':
+#     secret => true,
+#     keys   => [
+#       { type    => 'ssh-rsa',
+#         data    => 'CCCCCCCCCCCC',
+#         comment => 'user3@host' },
+#       { type    => 'ssh-rsa',
+#         data    => 'DDDDDDDDDDDD',
+#         comment => 'user4@host' },
+#     ]
+#   }
 define nebula::file::ssh_keys(
   Array   $keys = [],
   Boolean $secret = false,

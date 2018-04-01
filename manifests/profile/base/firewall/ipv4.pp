@@ -6,6 +6,9 @@
 #
 # Set up the firewall based on hieradata.
 #
+# @param filename Path to firewall
+# @param rules Rules to add to firewall
+#
 # @example
 #   include nebula::profile::base::firewall::ipv4
 class nebula::profile::base::firewall::ipv4 (

@@ -4,7 +4,7 @@
 
 # nebula::profile::base::tiger
 #
-# A description of what this class does
+# Manage tiger.
 #
 # @example
 #   include nebula::profile::base::tiger

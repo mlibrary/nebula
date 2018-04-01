@@ -4,7 +4,9 @@
 
 # nebula::profile::base::environment
 #
-# A description of what this class does
+# Set environment variables.
+#
+# @param vars Environment variables to export into the machine
 #
 # @example
 #   include nebula::profile::base::environment

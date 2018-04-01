@@ -4,7 +4,9 @@
 
 # nebula::profile::base::ntp
 #
-# Manage ntp settings
+# Manage ntp settings.
+#
+# @param servers List of ntp servers to use
 #
 # @example
 #   include nebula::profile::base::ntp

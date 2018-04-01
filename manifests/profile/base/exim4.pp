@@ -4,7 +4,10 @@
 
 # nebula::profile::base::exim4
 #
-# A description of what this class does
+# Manage exim4.
+#
+# @param relay_domain Relay domain
+# @param root_email Root email
 #
 # @example
 #   include nebula::profile::base::exim4

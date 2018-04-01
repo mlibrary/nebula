@@ -4,7 +4,13 @@
 
 # nebula::profile::base::duo
 #
-# A description of what this class does
+# Manage Duo.
+#
+# @param ikey Duo integration key
+# @param skey Duo secret key
+# @param host Duo API host
+# @param pushinfo Send command for Duo Push authentication
+# @param failmode Fail mode
 #
 # @example
 #   include nebula::profile::base::duo

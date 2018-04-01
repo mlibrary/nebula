@@ -124,4 +124,5 @@ extra_gemfiles.each do |gemfile|
   end
 end
 
+gem 'puppet-strings'
 gem 'semantic_puppet'

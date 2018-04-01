@@ -6,9 +6,16 @@
 #
 # Disable mcollective on all machines and hpwdt on HP machines.
 #
+# Fully manage debian >= 9 machines.
+#
+# @param contact_email Contact email for MOTD
+# @param default_keytab Path to fallback keytab file
+# @param keytab Path to desired keytab file
+# @param keytab_source File source value for keytab (to avoid sending
+#   the file's contents directly)
+# @param sysadmin_dept Current name of our department
+# @param timezone Timezone
 # @param bridge_network Whether to add bridge network interfaces
-# @param keytab Path to a source file to use as a kerberos keytab (leave
-#   blank or point to a nonexistent file to disable the keytab)
 #
 # @example
 #   include nebula::profile::base
@@ -22,13 +29,6 @@ class nebula::profile::base (
   Boolean $bridge_network = false,
 ) {
   if $facts['os']['release']['major'] == '9' {
-    # Ensure that apt knows to never ever install recommended packages
-    # before it installs any packages.
-    File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
-    file { '/etc/apt/apt.conf.d/99no-recommends':
-      content => template('nebula/profile/base/apt_no_recommends.erb'),
-    }
-
     package { 'dselect': }
     package { 'ifenslave': }
     package { 'linux-image-amd64': }

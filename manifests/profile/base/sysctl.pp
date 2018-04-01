@@ -6,6 +6,8 @@
 #
 # Configure /etc/sysctl.conf
 #
+# @param bridge Whether to enable net.bridge settings
+#
 # @example
 #   include nebula::profile::base::sysctl
 class nebula::profile::base::sysctl (

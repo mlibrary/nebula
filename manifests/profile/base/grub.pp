@@ -4,7 +4,7 @@
 
 # nebula::profile::base::grub
 #
-# @summary A short summary of the purpose of this class
+# Manage grub.
 #
 # @example
 #   include nebula::profile::base::grub
