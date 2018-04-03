@@ -32,6 +32,7 @@ describe 'nebula::profile::base::sshd' do
         %r{^UsePAM yes$},
         %r{^X11Forwarding yes$},
         %r{^PrintMotd no$},
+        %r{^UsePrivilegeSeparation yes$},
         %r{^AcceptEnv LANG LC_\*$},
         %r{^Subsystem\s+sftp\s+/usr/lib/openssh/sftp-server$},
         %r{^Match Address 10\.1\.1\.0/24,10\.2\.2\.0/24,!10\.2\.2\.2\n\s*PubkeyAuthentication yes$}m,
