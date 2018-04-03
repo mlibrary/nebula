@@ -14,9 +14,10 @@ class nebula::profile::base::ntp (
   Array[String] $servers,
 ) {
   service { 'ntp':
-    ensure  => 'running',
-    enable  => true,
-    require => Package['ntp', 'ntpstat'],
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+    require    => Package['ntp', 'ntpstat'],
   }
 
   package { 'ntp': }

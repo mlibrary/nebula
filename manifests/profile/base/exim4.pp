@@ -16,9 +16,10 @@ class nebula::profile::base::exim4 (
   String $root_email,
 ) {
   service { 'exim4':
-    ensure  => 'running',
-    enable  => true,
-    require => Package['exim4'],
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+    require    => Package['exim4'],
   }
 
   ['aliases', 'email-addresses'].each |$filename| {

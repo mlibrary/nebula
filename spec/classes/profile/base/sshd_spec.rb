@@ -18,6 +18,7 @@ describe 'nebula::profile::base::sshd' do
         is_expected.to contain_service('sshd').only_with(
           ensure: 'running',
           enable: true,
+          hasrestart: true,
         )
       end
 

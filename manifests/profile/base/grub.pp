@@ -10,8 +10,9 @@
 #   include nebula::profile::base::grub
 class nebula::profile::base::grub {
   service { 'getty@hvc0':
-    ensure => 'running',
-    enable => true,
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
   }
 
   if $::is_virtual and $::virtual == 'kvm' {

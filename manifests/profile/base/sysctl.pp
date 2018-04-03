@@ -14,8 +14,9 @@ class nebula::profile::base::sysctl (
   Boolean $bridge = false,
 ) {
   service { 'procps':
-    ensure => 'running',
-    enable => true,
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
   }
 
   file { '/etc/sysctl.conf':

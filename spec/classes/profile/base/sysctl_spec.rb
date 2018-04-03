@@ -18,6 +18,7 @@ describe 'nebula::profile::base::sysctl' do
         is_expected.to contain_service('procps').only_with(
           ensure: 'running',
           enable: true,
+          hasrestart: true,
         )
       end
 

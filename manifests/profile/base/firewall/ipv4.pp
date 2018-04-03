@@ -18,7 +18,8 @@ class nebula::profile::base::firewall::ipv4 (
   package { 'iptables-persistent': }
 
   service { 'netfilter-persistent':
-    require => Package['iptables-persistent'],
+    require    => Package['iptables-persistent'],
+    hasrestart => true,
   }
 
   nebula::file::firewall { $filename:

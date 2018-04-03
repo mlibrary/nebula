@@ -21,9 +21,10 @@ class nebula::profile::metricbeat (
   Integer $period,
 ) {
   service { 'metricbeat':
-    ensure  => 'running',
-    enable  => true,
-    require => File['/etc/metricbeat/metricbeat.yml'],
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+    require    => File['/etc/metricbeat/metricbeat.yml'],
   }
 
   file { '/etc/metricbeat/metricbeat.yml':

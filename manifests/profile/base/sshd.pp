@@ -16,8 +16,9 @@ class nebula::profile::base::sshd (
   Boolean       $gssapi_auth = false,
 ) {
   service { 'sshd':
-    ensure => 'running',
-    enable => true,
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
   }
 
   file { '/etc/ssh/sshd_config':
