@@ -3,22 +3,17 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::role::vmhost' do
+describe 'nebula::profile::base::tiger' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_class('nebula::profile::base')
-          .with_bridge_network(true)
-      end
-
-      [
-        'dns::standard',
-        'metricbeat',
-        'vmhost::host',
-      ].each do |profile|
-        it { is_expected.to contain_class("nebula::profile::#{profile}") }
+        is_expected.to contain_file_line('tiger dormant limit').with(
+          path: '/etc/tiger/tigerrc',
+          line: 'Tiger_Dormant_Limit=0',
+          match: '^Tiger_Dormant_Limit',
+        )
       end
     end
   end

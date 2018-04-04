@@ -1,0 +1,4 @@
+# this file exists on lit-cs servers because standard dot files
+# in ITCS AFS home directories assume it exists
+#
+# 2006-07-21 csnavely

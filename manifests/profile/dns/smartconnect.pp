@@ -32,7 +32,9 @@ class nebula::profile::dns::smartconnect (
   }
 
   service { 'bind9':
-    ensure => 'running',
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
   }
 
   if empty($other_ns_ips) {

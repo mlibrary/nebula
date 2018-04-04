@@ -1,0 +1,85 @@
+# Managed by puppet (nebula/profile/base/lit-cs.sh.erb)
+#
+# ensure settings only take effect for select groups
+if [ `/usr/bin/id -u` -ge 1000 ]; then
+
+  #
+  # static environment variables
+  #
+  CVS_RSH=sshcvs
+  EDITOR=vi
+  FCEDIT=vi
+  HOSTNAME=`hostname`
+  IGNOREEOF=0
+  NOREADER=true
+  NOZEPHYR=true
+  VISUAL=vi
+  XAPPLRESDIR=$HOME/.app-defaults
+  export CVS_RSH
+  export EDITOR FCEDIT HOSTNAME
+  export IGNOREEOF
+  export NOREADER NOZEPHYR
+  export VISUAL XAPPLRESDIR
+  export XAUTHORITY=~/.Xauthority
+
+  #
+  # conditional environment variables
+  #
+<% @vars.each do |name, value| -%>
+  export <%= name %>=<%= value %>
+<% end -%>
+
+  # java home, if present
+  # The only machines w/ both java 7 and 8 have $JAVA_HOME set to 7
+  # this will soon go away as we deprecate jessie
+  if [ -d /usr/lib/jvm/java-7-openjdk-amd64 ]
+  then
+    export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+  elif [ -d /usr/lib/jvm/java-8-openjdk-amd64 ]
+  then
+    export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+  fi
+
+  #
+  # rbenv, if present
+  #
+
+  RBENV_ROOT=/l/local/rbenv
+  if [ -d $RBENV_ROOT ]
+  then
+      export PATH="$RBENV_ROOT/bin:$RBENV_ROOT/shims:${PATH}"
+      export RBENV_ROOT
+      eval "$(rbenv init --no-rehash -)"          
+  fi
+
+  #
+  # variant terminal types
+  #
+  case $TERM in
+    linux|xterm-debian)
+      TERM=xterm
+    ;;
+  esac
+  export TERM
+
+  #
+  # paths
+  #
+  CLASSPATH="/l/local/saxon/saxon.jar:/l/local/xp/xp.jar:/l/local/xt/xt.jar:${CLASSPATH}"
+  MANPATH="/l/local/man:/l/local/xpat/man:/usr/local/man:/usr/share/man:/usr/man:${MANPATH}"
+  PATH="/l/local/fits:/l/local/bin:/usr/kerberos/bin:/l/local/java/bin:/usr/java/bin:${PATH}:${HOME}/bin"
+  export CLASSPATH MANPATH PATH
+
+  #
+  # prompt
+  #
+  if [ "$PS1" ]; then
+    PS1="[\u@\h \W]\\$ "
+  fi
+
+  #
+  # other
+  #
+  ulimit -c 0
+  umask 002
+fi

@@ -3,22 +3,21 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::role::vmhost' do
+describe 'nebula::profile::base::apt' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_class('nebula::profile::base')
-          .with_bridge_network(true)
+        is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
+          .with_content(%r{^Acquire::ForceIPv4 "true";$})
       end
 
-      [
-        'dns::standard',
-        'metricbeat',
-        'vmhost::host',
-      ].each do |profile|
-        it { is_expected.to contain_class("nebula::profile::#{profile}") }
+      it do
+        is_expected.to contain_cron('apt-get update')
+          .with_command('/usr/bin/apt-get update -qq')
+          .with_hour('1')
+          .with_minute('0')
       end
     end
   end

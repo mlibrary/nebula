@@ -2,6 +2,10 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 ---
+nebula::profile::afs::allow_auto_reboot_until: '1970-01-01'
+nebula::profile::afs::cache_size: 50000
+nebula::profile::afs::cell: cell.default.invalid
+nebula::profile::afs::realm: REALM.DEFAULT.INVALID
 nebula::profile::dns::smartconnect::master_zones:
 - localhost:        local
 - 127.in-addr.arpa: 127
@@ -27,8 +31,73 @@ nebula::profile::ruby::supported_versions:
 nebula::profile::vmhost::host::vms: {}
 nebula::profile::vmhost::host::defaults: {}
 
+nebula::profile::base::sysadmin_dept: Default Incorrect Dept
+nebula::profile::base::contact_email: contact@default.invalid
+nebula::profile::base::default_keytab: nebula/keytab.empty
+nebula::profile::base::keytab: ''
+nebula::profile::base::keytab_source: ''
+nebula::profile::base::timezone: US/Eastern
+
+nebula::profile::base::environment::vars: {}
+
+nebula::profile::base::exim4::root_email: root@default.invalid
+nebula::profile::base::exim4::relay_domain: exim.default.invalid
+
+nebula::profile::base::ntp::servers:
+- ntp.example.invalid
+
+nebula::profile::base::duo::ikey: ikey.default.invalid
+nebula::profile::base::duo::skey: skey.default.invalid
+nebula::profile::base::duo::host: host.default.invalid
+nebula::profile::base::duo::pushinfo: push.default.invalid
+nebula::profile::base::duo::failmode: fail.default.invalid
+
+nebula::profile::base::firewall::ipv4::filename: /etc/firewall.ipv4
+nebula::profile::base::firewall::ipv4::rules:
+- '-A INPUT -p tcp -s 1.2.3.4 -j ACCEPT'
+- '-A INPUT -p tcp -s 5.6.7.8 -j ACCEPT'
+
+nebula::profile::base::sshd::whitelist:
+- '10.1.1.0/24'
+- '10.2.2.0/24'
+- '!10.2.2.2'
+
 nebula::resolv_conf::searchpath:
 - searchpath.default.invalid
 nebula::resolv_conf::nameservers:
 - 5.5.5.5
 - 4.4.4.4
+
+nebula::users::key_file: /etc/secretkeys/invalid.default
+nebula::users::groups:
+  invalid_default_group: 1234
+  invalid_special_group: 2468
+nebula::users::default_group: invalid_default_group
+nebula::users::default_host: invalid.default
+nebula::users::sudoers:
+  invalid_normal_admin:
+    comment: Invalid normal admin
+    uid: 123456
+    home: /home/invalid_normal_admin
+    auth:
+      type: ssh-rsa
+      key: >-
+        AAAA
+        AAAA
+        AAAA
+  invalid_special_admin:
+    comment: Invalid special admin
+    group: invalid_special_group
+    uid: 123457
+    home: /home/invalid_special_admin
+    auth:
+      type: ssh-dsa
+      host: invalid.special
+      key: >-
+        BBBB
+        BBBB
+        BBBB
+  invalid_noauth_admin:
+    comment: Invalid no-authorization admin
+    uid: 123458
+    home: /home/invalid_noauth_admin
