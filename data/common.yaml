@@ -2,6 +2,9 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 ---
+nebula::puppetmaster: puppetmaster.default.invalid
+nebula::puppetdb: puppetdb.default.invalid
+
 nebula::profile::afs::allow_auto_reboot_until: '1970-01-01'
 nebula::profile::afs::cache_size: 50000
 nebula::profile::afs::cell: cell.default.invalid
