@@ -8,6 +8,8 @@ describe 'nebula::profile::puppet::master' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
+      it { is_expected.to contain_package('puppetserver') }
+
       it do
         is_expected.to contain_class('puppetdb::master::config')
           .with_puppetdb_server('puppetdb.default.invalid')

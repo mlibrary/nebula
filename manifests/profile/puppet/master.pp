@@ -9,6 +9,8 @@
 class nebula::profile::puppet::master (
   String $puppetdb_server = lookup('nebula::puppetdb'),
 ) {
+  package { 'puppetserver': }
+
   class { 'puppetdb::master::config':
     puppetdb_server => $puppetdb_server,
   }
