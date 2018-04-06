@@ -32,12 +32,27 @@ class nebula::profile::ruby (
     global          => true,
   }
 
+  rbenv::gem { "puma-${global_version}":
+    gem => 'puma',
+    ruby_version => $global_version,
+    require => [
+      Rbenv::Build[$global_version]
+    ]
+  }
+
   $supported_versions.each |$version| {
     # Ruby < 2.4 is incompatible with debian stretch
     unless $::os['release']['major'] == '9' and $version =~ /^2\.3\./ {
       unless $version == $global_version {
         rbenv::build { $version:
           bundler_version => '~>1.14',
+        }
+        rbenv::gem { "puma-${version}":
+          gem => 'puma',
+          ruby_version => $version,
+          require => [
+            Rbenv::Build[$version],
+          ],
         }
       }
     }
