@@ -18,6 +18,7 @@ class nebula::profile::ruby (
   Array  $supported_versions,
   String $install_dir,
   Array  $plugins,
+  Array  $gems,
 ) {
   class { 'rbenv':
     install_dir => $install_dir,
@@ -32,12 +33,12 @@ class nebula::profile::ruby (
     global          => true,
   }
 
-  rbenv::gem { "puma-${global_version}":
-    gem => 'puma',
-    ruby_version => $global_version,
-    require => [
-      Rbenv::Build[$global_version]
-    ]
+  $gems.each |$gem| {
+    rbenv::gem { "${gem} ${global_version}":
+      gem          => $gem,
+      ruby_version => $global_version,
+      require      => Rbenv::Build[$global_version],
+    }
   }
 
   $supported_versions.each |$version| {
@@ -47,12 +48,13 @@ class nebula::profile::ruby (
         rbenv::build { $version:
           bundler_version => '~>1.14',
         }
-        rbenv::gem { "puma-${version}":
-          gem => 'puma',
-          ruby_version => $version,
-          require => [
-            Rbenv::Build[$version],
-          ],
+
+        $gems.each |$gem| {
+          rbenv::gem { "${gem} ${version}":
+            gem          => $gem,
+            ruby_version => $version,
+            require      => Rbenv::Build[$version],
+          }
         }
       }
     }

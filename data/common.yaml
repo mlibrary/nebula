@@ -31,6 +31,9 @@ nebula::profile::ruby::supported_versions:
 - '2.3.4'
 - '2.4.3'
 - '2.5.0'
+nebula::profile::ruby::gems:
+- rspec
+- puma
 nebula::profile::vmhost::host::vms: {}
 nebula::profile::vmhost::host::defaults: {}
 

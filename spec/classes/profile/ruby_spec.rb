@@ -29,6 +29,16 @@ describe 'nebula::profile::ruby' do
             bundler_version: '~>1.14',
           )
         end
+
+        %w[puma rspec].each do |gem|
+          it do
+            is_expected.to contain_rbenv__gem("#{gem} #{version}").with(
+              gem: gem,
+              ruby_version: version,
+              require: "Rbenv::Build[#{version}]",
+            )
+          end
+        end
       end
 
       case os
@@ -70,6 +80,20 @@ describe 'nebula::profile::ruby' do
             global: true,
           )
         end
+      end
+
+      context 'when given gems ["pry", "json"]' do
+        let(:params) { { gems: %w[pry json] } }
+
+        it { is_expected.to contain_rbenv__gem('pry 2.4.3') }
+        it { is_expected.to contain_rbenv__gem('pry 2.5.0') }
+        it { is_expected.to contain_rbenv__gem('json 2.4.3') }
+        it { is_expected.to contain_rbenv__gem('json 2.5.0') }
+
+        it { is_expected.not_to contain_rbenv__gem('puma 2.4.3') }
+        it { is_expected.not_to contain_rbenv__gem('puma 2.5.0') }
+        it { is_expected.not_to contain_rbenv__gem('rspec 2.4.3') }
+        it { is_expected.not_to contain_rbenv__gem('rspec 2.5.0') }
       end
     end
   end
