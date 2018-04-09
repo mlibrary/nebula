@@ -9,15 +9,65 @@ describe 'nebula::profile::base::apt' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
-          .with_content(%r{^Acquire::ForceIPv4 "true";$})
+        is_expected.to contain_class('apt').with(
+          purge: {
+            'sources.list'   => true,
+            'sources.list.d' => true,
+            'preferences'    => true,
+            'preferences.d'  => true,
+          },
+        )
       end
 
       it do
-        is_expected.to contain_cron('apt-get update')
-          .with_command('/usr/bin/apt-get update -qq')
-          .with_hour('1')
-          .with_minute('0')
+        is_expected.to contain_apt__source('main').with(
+          location: 'http://ftp.us.debian.org/debian/',
+          repos: 'main contrib non-free',
+        )
+      end
+
+      it do
+        is_expected.to contain_apt__source('updates').with(
+          location: 'http://ftp.us.debian.org/debian/',
+          release: "#{facts[:lsbdistcodename]}-updates",
+          repos: 'main contrib non-free',
+        )
+      end
+
+      it do
+        is_expected.to contain_apt__source('security').with(
+          release: "#{facts[:lsbdistcodename]}/updates",
+          repos: 'main contrib non-free',
+        )
+      end
+
+      case os
+      when 'debian-8-x86_64'
+        it do
+          is_expected.to contain_apt__source('security')
+            .with_location('http://security.debian.org/')
+        end
+      when 'debian-9-x86_64'
+        it do
+          is_expected.to contain_apt__source('security')
+            .with_location('http://security.debian.org/debian-security')
+        end
+      end
+
+      context 'when given a mirror of http://debian.uchicago.edu/' do
+        let(:params) { { mirror: 'http://debian.uchicago.edu/' } }
+
+        %w[main updates].each do |title|
+          it do
+            is_expected.to contain_apt__source(title)
+              .with_location('http://debian.uchicago.edu/')
+          end
+        end
+      end
+
+      it do
+        is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
+          .with_content(%r{^Acquire::ForceIPv4 "true";$})
       end
     end
   end
