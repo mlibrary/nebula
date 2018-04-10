@@ -16,6 +16,9 @@ describe 'nebula::profile::base::apt' do
             'preferences'    => true,
             'preferences.d'  => true,
           },
+          update: {
+            'frequency' => 'daily',
+          },
         )
       end
 
@@ -63,6 +66,19 @@ describe 'nebula::profile::base::apt' do
               .with_location('http://debian.uchicago.edu/')
           end
         end
+      end
+
+      it do
+        is_expected.to contain_apt__source('puppet').with(
+          location: 'http://apt.puppetlabs.com',
+          repos: 'puppet5',
+        )
+      end
+
+      context 'when given a puppet_repo of PC1' do
+        let(:params) { { puppet_repo: 'PC1' } }
+
+        it { is_expected.to contain_apt__source('puppet').with_repos('PC1') }
       end
 
       it do

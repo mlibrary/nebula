@@ -10,6 +10,7 @@
 #   include nebula::profile::base::apt
 class nebula::profile::base::apt (
   String $mirror,
+  String $puppet_repo,
 ) {
   # Ensure that apt knows to never ever install recommended packages
   # before it installs any packages.
@@ -24,11 +25,14 @@ class nebula::profile::base::apt (
   }
 
   class { 'apt':
-    purge => {
+    purge  => {
       'sources.list'   => true,
       'sources.list.d' => true,
       'preferences'    => true,
       'preferences.d'  => true,
+    },
+    update => {
+      frequency => 'daily',
     },
   }
 
@@ -60,6 +64,11 @@ class nebula::profile::base::apt (
         location => 'http://security.debian.org/debian-security',
       }
     }
+  }
+
+  apt::source { 'puppet':
+    location => 'http://apt.puppetlabs.com',
+    repos    => $puppet_repo,
   }
 
   file { '/etc/apt/apt.conf.d/99no-recommends':
