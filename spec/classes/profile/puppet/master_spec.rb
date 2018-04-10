@@ -8,6 +8,15 @@ describe 'nebula::profile::puppet::master' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
+      it do
+        is_expected.to contain_service('puppetserver').with(
+          ensure: 'running',
+          enable: true,
+          hasrestart: true,
+          require: 'Package[puppetserver]',
+        )
+      end
+
       it { is_expected.to contain_package('puppetserver') }
 
       it do

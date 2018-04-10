@@ -9,6 +9,13 @@
 class nebula::profile::puppet::master (
   String $puppetdb_server = lookup('nebula::puppetdb'),
 ) {
+  service { 'puppetserver':
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+    require    => Package['puppetserver'],
+  }
+
   package { 'puppetserver': }
 
   class { 'puppetdb::master::config':
