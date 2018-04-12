@@ -7,6 +7,6 @@
 # @example
 #   include nebula::role::hathitrust::prep_app_host
 class nebula::role::hathitrust::prep_app_host {
-  include nebula::role::hathitrust
+  include nebula::role::hathitrust::prep
   include nebula::profile::ruby
 }
