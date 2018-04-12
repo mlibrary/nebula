@@ -20,20 +20,6 @@ describe 'nebula::profile::puppet::master' do
       it { is_expected.to contain_package('puppetserver') }
 
       it do
-        is_expected.to contain_class('puppetdb::master::config')
-          .with_puppetdb_server('puppetdb.default.invalid')
-      end
-
-      context 'when given a puppetdb_server of db.puppet.gov' do
-        let(:params) { { puppetdb_server: 'db.puppet.gov' } }
-
-        it do
-          is_expected.to contain_class('puppetdb::master::config')
-            .with_puppetdb_server('db.puppet.gov')
-        end
-      end
-
-      it do
         is_expected.to contain_rbenv__gem('r10k').with(
           ruby_version: '2.4.3',
           require: [

@@ -5,11 +5,10 @@
 # Puppet Master
 #
 # @example
-#   include nebula::role::puppet::master
-class nebula::role::puppet::master {
+#   include nebula::role::puppet::master_without_db
+class nebula::role::puppet::master_without_db {
   include nebula::profile::base
   include nebula::profile::dns::standard
   include nebula::profile::metricbeat
   include nebula::profile::puppet::master
-  include nebula::profile::puppet::master_with_db
 }
