@@ -2,14 +2,17 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::role::default
-#
-# Minimal server
+# Minimal umich server
 #
 # @example
-#   include nebula::role::default
-class nebula::role::default {
-  include nebula::profile::base
+#   include nebula::role::umich
+class nebula::role::umich (
+  $bridge_network = false,
+) {
+  class { 'nebula::profile::base':
+    bridge_network => $bridge_network,
+  }
+
   include nebula::profile::dns::standard
   include nebula::profile::metricbeat
 }

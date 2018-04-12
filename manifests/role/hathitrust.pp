@@ -2,13 +2,11 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::role::hathi::dev
-#
-# HathiTrust development
+# Minimal HathiTrust server
 #
 # @example
-#   include nebula::role::hathi::dev
-class nebula::role::hathi::dev {
+#   include nebula::role::hathitrust
+class nebula::role::hathitrust {
   include nebula::profile::base
   include nebula::profile::dns::smartconnect
   include nebula::profile::metricbeat

@@ -2,14 +2,10 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::role::hathi::prod
-#
 # HathiTrust production
 #
 # @example
-#   include nebula::role::hathi::prod
-class nebula::role::hathi::prod {
-  include nebula::profile::base
-  include nebula::profile::dns::smartconnect
-  include nebula::profile::metricbeat
+#   include nebula::role::hathitrust::prod
+class nebula::role::hathitrust::prod {
+  include nebula::role::hathitrust
 }
