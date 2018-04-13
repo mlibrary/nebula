@@ -10,6 +10,5 @@ class nebula::profile::puppet::db {
   class { 'puppetdb':
     disable_cleartext => true,
     manage_firewall   => false,
-    ssl_listen_port   => 443,
   }
 }

@@ -12,7 +12,6 @@ describe 'nebula::profile::puppet::db' do
         is_expected.to contain_class('puppetdb').with(
           disable_cleartext: true,
           manage_firewall: false,
-          ssl_listen_port: 443,
         )
       end
     end
