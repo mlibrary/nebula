@@ -7,6 +7,7 @@ ipaddress: "172.16.254.254"
 is_pe: false
 macaddress: "AA:AA:AA:AA:AA:AA"
 dmi: {}
+installed_backports: []
 
 # required by camptocamp/kmod 2.1.0
 augeasversion: '1.4.0'

@@ -71,6 +71,12 @@ class nebula::profile::base::apt (
     repos    => $puppet_repo,
   }
 
+  unless empty($::installed_backports) {
+    class { 'apt::backports':
+      location => $mirror,
+    }
+  }
+
   file { '/etc/apt/apt.conf.d/99no-recommends':
     content => template('nebula/profile/base/apt_no_recommends.erb'),
   }

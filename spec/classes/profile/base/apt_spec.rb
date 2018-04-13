@@ -81,6 +81,17 @@ describe 'nebula::profile::base::apt' do
         it { is_expected.to contain_apt__source('puppet').with_repos('PC1') }
       end
 
+      it { is_expected.not_to contain_class('apt::backports') }
+
+      context 'when abc is installed from backports' do
+        let(:facts) { os_facts.merge(installed_backports: ['abc']) }
+
+        it do
+          is_expected.to contain_class('apt::backports')
+            .with_location('http://ftp.us.debian.org/debian/')
+        end
+      end
+
       it do
         is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
           .with_content(%r{^Acquire::ForceIPv4 "true";$})
