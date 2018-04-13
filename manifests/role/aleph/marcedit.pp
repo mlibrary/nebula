@@ -8,4 +8,6 @@
 #   include nebula::role::aleph::marcedit
 class nebula::role::aleph::marcedit {
   include nebula::role::umich
+  include nebula::profile::apt::mono
+  include nebula::profile::apt::yaz
 }
