@@ -92,6 +92,20 @@ describe 'nebula::profile::base::apt' do
         end
       end
 
+      it { is_expected.not_to contain_apt__source('hp') }
+
+      context 'on an HP machine' do
+        let(:facts) { os_facts.merge('dmi' => { 'manufacturer' => 'HP' }) }
+
+        it do
+          is_expected.to contain_apt__source('hp').with(
+            location: 'http://downloads.linux.hpe.com/SDR/repo/mcp',
+            release: "#{facts[:lsbdistcodename]}/current",
+            repos: 'non-free',
+          )
+        end
+      end
+
       it do
         is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
           .with_content(%r{^Acquire::ForceIPv4 "true";$})

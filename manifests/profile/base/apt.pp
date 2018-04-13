@@ -77,6 +77,14 @@ class nebula::profile::base::apt (
     }
   }
 
+  if $facts['dmi']['manufacturer'] == 'HP' {
+    apt::source { 'hp':
+      location => 'http://downloads.linux.hpe.com/SDR/repo/mcp',
+      release  => "${::lsbdistcodename}/current",
+      repos    => 'non-free',
+    }
+  }
+
   file { '/etc/apt/apt.conf.d/99no-recommends':
     content => template('nebula/profile/base/apt_no_recommends.erb'),
   }
