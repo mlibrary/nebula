@@ -9,15 +9,106 @@ describe 'nebula::profile::base::apt' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
-          .with_content(%r{^Acquire::ForceIPv4 "true";$})
+        is_expected.to contain_class('apt').with(
+          purge: {
+            'sources.list'   => true,
+            'sources.list.d' => true,
+            'preferences'    => true,
+            'preferences.d'  => true,
+          },
+          update: {
+            'frequency' => 'daily',
+          },
+        )
       end
 
       it do
-        is_expected.to contain_cron('apt-get update')
-          .with_command('/usr/bin/apt-get update -qq')
-          .with_hour('1')
-          .with_minute('0')
+        is_expected.to contain_apt__source('main').with(
+          location: 'http://ftp.us.debian.org/debian/',
+          repos: 'main contrib non-free',
+        )
+      end
+
+      it do
+        is_expected.to contain_apt__source('updates').with(
+          location: 'http://ftp.us.debian.org/debian/',
+          release: "#{facts[:lsbdistcodename]}-updates",
+          repos: 'main contrib non-free',
+        )
+      end
+
+      it do
+        is_expected.to contain_apt__source('security').with(
+          release: "#{facts[:lsbdistcodename]}/updates",
+          repos: 'main contrib non-free',
+        )
+      end
+
+      case os
+      when 'debian-8-x86_64'
+        it do
+          is_expected.to contain_apt__source('security')
+            .with_location('http://security.debian.org/')
+        end
+      when 'debian-9-x86_64'
+        it do
+          is_expected.to contain_apt__source('security')
+            .with_location('http://security.debian.org/debian-security')
+        end
+      end
+
+      context 'when given a mirror of http://debian.uchicago.edu/' do
+        let(:params) { { mirror: 'http://debian.uchicago.edu/' } }
+
+        %w[main updates].each do |title|
+          it do
+            is_expected.to contain_apt__source(title)
+              .with_location('http://debian.uchicago.edu/')
+          end
+        end
+      end
+
+      it do
+        is_expected.to contain_apt__source('puppet').with(
+          location: 'http://apt.puppetlabs.com',
+          repos: 'puppet5',
+        )
+      end
+
+      context 'when given a puppet_repo of PC1' do
+        let(:params) { { puppet_repo: 'PC1' } }
+
+        it { is_expected.to contain_apt__source('puppet').with_repos('PC1') }
+      end
+
+      it { is_expected.not_to contain_class('apt::backports') }
+
+      context 'when abc is installed from backports' do
+        let(:facts) { os_facts.merge(installed_backports: ['abc']) }
+
+        it do
+          is_expected.to contain_class('apt::backports')
+            .with_location('http://ftp.us.debian.org/debian/')
+        end
+      end
+
+      it { is_expected.not_to contain_apt__source('hp') }
+
+      context 'on an HP machine' do
+        let(:facts) { os_facts.merge('dmi' => { 'manufacturer' => 'HP' }) }
+
+        it do
+          is_expected.to contain_apt__source('hp').with(
+            location: 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
+            release: "#{facts[:lsbdistcodename]}/current",
+            repos: 'non-free',
+          )
+        end
+      end
+
+      it do
+        is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
+          .with_content(%r{^Acquire::ForceIPv4 "true";$})
       end
     end
   end

@@ -6,14 +6,15 @@
 #
 # @example
 #   include nebula::profile::puppet::master
-class nebula::profile::puppet::master (
-  String $puppetdb_server = lookup('nebula::puppetdb'),
-) {
-  package { 'puppetserver': }
-
-  class { 'puppetdb::master::config':
-    puppetdb_server => $puppetdb_server,
+class nebula::profile::puppet::master {
+  service { 'puppetserver':
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+    require    => Package['puppetserver'],
   }
+
+  package { 'puppetserver': }
 
   include nebula::profile::ruby
   $global_version = lookup('nebula::profile::ruby::global_version')

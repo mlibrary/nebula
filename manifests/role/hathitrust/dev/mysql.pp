@@ -2,13 +2,10 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::role::jira::prod
-#
-# JIRA production
+# HathiTrust development/prep MySQL
 #
 # @example
-#   include nebula::role::jira::prod
-class nebula::role::jira::prod {
-  include nebula::role::umich
-  include nebula::profile::ruby
+#   include nebula::role::hathitrust::dev::mysql
+class nebula::role::hathitrust::dev::mysql {
+  include nebula::role::hathitrust::dev
 }

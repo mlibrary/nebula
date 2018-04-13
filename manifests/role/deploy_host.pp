@@ -9,8 +9,6 @@
 # @example
 #   include nebula::role::deploy_host
 class nebula::role::deploy_host {
-  include nebula::profile::base
-  include nebula::profile::dns::standard
-  include nebula::profile::metricbeat
+  include nebula::role::umich
   include nebula::profile::ruby
 }

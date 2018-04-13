@@ -2,15 +2,11 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::role::hathi::prep_app_host
-#
 # HathiTrust prep application host
 #
 # @example
-#   include nebula::role::hathi::prep_app_host
-class nebula::role::hathi::prep_app_host {
-  include nebula::profile::base
-  include nebula::profile::dns::smartconnect
-  include nebula::profile::metricbeat
+#   include nebula::role::hathitrust::prep_app_host
+class nebula::role::hathitrust::prep_app_host {
+  include nebula::role::hathitrust::prep
   include nebula::profile::ruby
 }

@@ -8,21 +8,16 @@ describe 'nebula::profile::puppet::master' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to contain_package('puppetserver') }
-
       it do
-        is_expected.to contain_class('puppetdb::master::config')
-          .with_puppetdb_server('puppetdb.default.invalid')
+        is_expected.to contain_service('puppetserver').with(
+          ensure: 'running',
+          enable: true,
+          hasrestart: true,
+          require: 'Package[puppetserver]',
+        )
       end
 
-      context 'when given a puppetdb_server of db.puppet.gov' do
-        let(:params) { { puppetdb_server: 'db.puppet.gov' } }
-
-        it do
-          is_expected.to contain_class('puppetdb::master::config')
-            .with_puppetdb_server('db.puppet.gov')
-        end
-      end
+      it { is_expected.to contain_package('puppetserver') }
 
       it do
         is_expected.to contain_rbenv__gem('r10k').with(

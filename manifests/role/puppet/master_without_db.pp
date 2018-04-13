@@ -2,13 +2,11 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::role::jira::prod
-#
-# JIRA production
+# Puppet Master
 #
 # @example
-#   include nebula::role::jira::prod
-class nebula::role::jira::prod {
+#   include nebula::role::puppet::master_without_db
+class nebula::role::puppet::master_without_db {
   include nebula::role::umich
-  include nebula::profile::ruby
+  include nebula::profile::puppet::master
 }

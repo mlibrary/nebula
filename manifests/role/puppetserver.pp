@@ -9,10 +9,6 @@
 # @example
 #   include nebula::role::puppetserver
 class nebula::role::puppetserver {
-  include nebula::profile::base
-  include nebula::profile::dns::standard
-  include nebula::profile::metricbeat
-  include nebula::profile::ruby
-  include nebula::profile::utils::rest
+  include nebula::role::sysadmin_box
   include nebula::profile::puppet::mgmt
 }

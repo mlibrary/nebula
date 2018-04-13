@@ -7,8 +7,6 @@
 # @example
 #   include nebula::role::puppet::db
 class nebula::role::puppet::db {
-  include nebula::profile::base
-  include nebula::profile::dns::standard
-  include nebula::profile::metricbeat
+  include nebula::role::umich
   include nebula::profile::puppet::db
 }

@@ -2,13 +2,12 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::role::jira::prod
-#
-# JIRA production
+# MarcEdit server
 #
 # @example
-#   include nebula::role::jira::prod
-class nebula::role::jira::prod {
+#   include nebula::role::aleph::marcedit
+class nebula::role::aleph::marcedit {
   include nebula::role::umich
-  include nebula::profile::ruby
+  include nebula::profile::apt::mono
+  include nebula::profile::apt::yaz
 }
