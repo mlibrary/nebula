@@ -51,6 +51,22 @@ describe 'nebula::profile::puppet::master' do
       end
 
       it do
+        is_expected.to contain_file('/etc/puppetlabs/puppet/autosign.conf')
+          .that_requires('Package[puppetserver]')
+          .without_content(%r{^[^#]})
+      end
+
+      context 'when given some trusted certnames' do
+        let(:params) { { autosign_whitelist: %w[aaa bbb] } }
+
+        it do
+          is_expected.to contain_file('/etc/puppetlabs/puppet/autosign.conf')
+            .with_content(%r{^aaa$})
+            .with_content(%r{^bbb$})
+        end
+      end
+
+      it do
         is_expected.to contain_file('/etc/ssl').with(
           ensure: 'directory',
           source: 'puppet:///ssl-certs',

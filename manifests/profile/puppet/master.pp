@@ -7,6 +7,7 @@
 # @example
 #   include nebula::profile::puppet::master
 class nebula::profile::puppet::master (
+  $autosign_whitelist,
   $fileservers,
   $r10k_source,
 ) {
@@ -41,6 +42,11 @@ class nebula::profile::puppet::master (
 
   file { '/etc/puppetlabs/puppet/fileserver.conf':
     content => template('nebula/profile/puppet/master/fileserver.conf.erb'),
+    require => Package['puppetserver'],
+  }
+
+  file { '/etc/puppetlabs/puppet/autosign.conf':
+    content => template('nebula/profile/puppet/master/autosign.conf.erb'),
     require => Package['puppetserver'],
   }
 

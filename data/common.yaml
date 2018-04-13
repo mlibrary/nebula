@@ -81,6 +81,7 @@ nebula::profile::puppet::master::r10k_source: /opt/r10k.git
 nebula::profile::puppet::master::fileservers:
   ssl-certs: /etc/ssl
   repos: /opt/repos
+nebula::profile::puppet::master::autosign_whitelist: []
 
 nebula::users::key_file: /etc/secretkeys/invalid.default
 nebula::users::groups:
