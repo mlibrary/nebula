@@ -79,7 +79,7 @@ class nebula::profile::base::apt (
 
   if $facts['dmi']['manufacturer'] == 'HP' {
     apt::source { 'hp':
-      location => 'http://downloads.linux.hpe.com/SDR/repo/mcp',
+      location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
       release  => "${::lsbdistcodename}/current",
       repos    => 'non-free',
     }

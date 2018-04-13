@@ -99,7 +99,7 @@ describe 'nebula::profile::base::apt' do
 
         it do
           is_expected.to contain_apt__source('hp').with(
-            location: 'http://downloads.linux.hpe.com/SDR/repo/mcp',
+            location: 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
             release: "#{facts[:lsbdistcodename]}/current",
             repos: 'non-free',
           )
