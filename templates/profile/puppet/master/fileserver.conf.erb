@@ -1,0 +1,6 @@
+# Managed by puppet (nebula/profile/puppet/master/fileserver.conf.erb)
+<% @fileservers.to_a.each do |name, path| -%>
+
+[<%= name %>]
+path <%= path %>
+<% end -%>

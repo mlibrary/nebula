@@ -77,6 +77,11 @@ nebula::resolv_conf::nameservers:
 - 5.5.5.5
 - 4.4.4.4
 
+nebula::profile::puppet::master::r10k_source: /opt/r10k.git
+nebula::profile::puppet::master::fileservers:
+  ssl-certs: /etc/ssl
+  repos: /opt/repos
+
 nebula::users::key_file: /etc/secretkeys/invalid.default
 nebula::users::groups:
   invalid_default_group: 1234

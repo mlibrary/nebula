@@ -13,11 +13,65 @@ describe 'nebula::profile::puppet::master' do
           ensure: 'running',
           enable: true,
           hasrestart: true,
+          require: 'Exec[/opt/rbenv/shims/r10k deploy environment production]',
+        )
+      end
+
+      it do
+        is_expected.to contain_exec(
+          '/opt/rbenv/shims/r10k deploy environment production',
+        ).with_creates('/etc/puppetlabs/code/environments/production')
+          .that_requires('File[/etc/puppetlabs/r10k/r10k.yaml]')
+          .that_notifies('Exec[/opt/rbenv/shims/librarian-puppet update]')
+      end
+
+      it do
+        is_expected.to contain_exec('/opt/rbenv/shims/librarian-puppet update')
+          .with_refreshonly(true)
+          .with_cwd('/etc/puppetlabs/code/environments/production')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/puppetlabs/r10k/r10k.yaml')
+          .that_requires('File[/etc/puppetlabs/r10k]')
+          .with_content(%r{^cachedir: /var/cache/r10k$})
+      end
+
+      it do
+        is_expected.to contain_file('/etc/puppetlabs/r10k')
+          .with_ensure('directory')
+          .that_requires('Package[puppetserver]')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/puppetlabs/puppet/fileserver.conf')
+          .with_content(%r{\[ssl-certs\]\n *path /etc/ssl}m)
+          .with_content(%r{\[repos\]\n *path /opt/repos}m)
+          .that_requires('Package[puppetserver]')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/ssl').with(
+          ensure: 'directory',
+          source: 'puppet:///ssl-certs',
+          recurse: true,
           require: 'Package[puppetserver]',
         )
       end
 
-      it { is_expected.to contain_package('puppetserver') }
+      it do
+        is_expected.to contain_file('/opt/repos').with(
+          ensure: 'directory',
+          source: 'puppet:///repos',
+          recurse: true,
+          require: 'Package[puppetserver]',
+        )
+      end
+
+      it do
+        is_expected.to contain_package('puppetserver')
+          .that_requires(['Rbenv::Gem[r10k]', 'Rbenv::Gem[librarian-puppet]'])
+      end
 
       it do
         is_expected.to contain_rbenv__gem('r10k').with(
