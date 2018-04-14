@@ -11,5 +11,5 @@
 class nebula::role::sysadmin_box {
   include nebula::role::umich
   include nebula::profile::ruby
-  include nebula::profile::utils::rest
+  include nebula::profile::puppet::query
 }
