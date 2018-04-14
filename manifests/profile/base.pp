@@ -95,6 +95,26 @@ class nebula::profile::base (
     file { '/etc/motd':
       content => template('nebula/profile/base/motd.erb'),
     }
+
+    # Fix AEIM-1064. This prevents `systemctl is-active` from returning
+    # a false negative when either of these is unmasked.
+    #
+    # To tell whether it's safe to remove this, try running the
+    # following:
+    #
+    #     systemctl unmask procps
+    #     systemctl unmask sshd
+    #     systemctl is-active procps \
+    #       && systemctl is-active sshd \
+    #       && echo "AEIM-1064 no longer applies; get rid of the fix" \
+    #       || echo "AEIM-1064 still applies; leave the ugly hack alone"
+    exec { default:
+        subscribe   => Service['procps', 'sshd'],
+        refreshonly => true,
+      ;
+      '/bin/systemctl status procps':;
+      '/bin/systemctl status sshd':;
+    }
   }
 
   include nebula::profile::base::stop_mcollective
