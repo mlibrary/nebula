@@ -50,11 +50,27 @@ class nebula::profile::puppet::master (
     require => Package['puppetserver'],
   }
 
-  $fileservers.each |$name, $path| {
+  $fileservers.each |$name, $data| {
+    if $data =~ String {
+      $path = $data
+      $options = {}
+    } else {
+      $path = $data['location']
+
+      if 'options' in $data {
+        $options = $data['options']
+      } else {
+        $options = {}
+      }
+    }
+
     file { $path:
       ensure  => 'directory',
       source  => "puppet:///${name}",
       recurse => true,
+      purge   => true,
+      force   => true,
+      *       => $options,
       require => Package['puppetserver'],
     }
   }

@@ -79,8 +79,15 @@ nebula::resolv_conf::nameservers:
 
 nebula::profile::puppet::master::r10k_source: /opt/r10k.git
 nebula::profile::puppet::master::fileservers:
-  ssl-certs: /etc/ssl
   repos: /opt/repos
+  long-form-without-options:
+    location: /opt/wherever
+  ssl-certs:
+    location: /etc/ssl
+    options:
+      owner: root
+      group: wheel
+      mode: '0700'
 nebula::profile::puppet::master::autosign_whitelist: []
 
 nebula::users::key_file: /etc/secretkeys/invalid.default

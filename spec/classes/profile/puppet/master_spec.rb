@@ -66,21 +66,34 @@ describe 'nebula::profile::puppet::master' do
         end
       end
 
-      it do
-        is_expected.to contain_file('/etc/ssl').with(
-          ensure: 'directory',
-          source: 'puppet:///ssl-certs',
-          recurse: true,
-          require: 'Package[puppetserver]',
-        )
+      %w[/opt/repos /opt/wherever /etc/ssl].each do |dir|
+        it do
+          is_expected.to contain_file(dir).with(
+            ensure: 'directory',
+            recurse: true,
+            purge: true,
+            force: true,
+            require: 'Package[puppetserver]',
+          )
+        end
       end
 
       it do
-        is_expected.to contain_file('/opt/repos').with(
-          ensure: 'directory',
-          source: 'puppet:///repos',
-          recurse: true,
-          require: 'Package[puppetserver]',
+        is_expected.to contain_file('/opt/repos')
+          .with_source('puppet:///repos')
+      end
+
+      it do
+        is_expected.to contain_file('/opt/wherever')
+          .with_source('puppet:///long-form-without-options')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/ssl').with(
+          source: 'puppet:///ssl-certs',
+          owner: 'root',
+          group: 'wheel',
+          mode: '0700',
         )
       end
 

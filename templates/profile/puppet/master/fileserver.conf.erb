@@ -2,5 +2,9 @@
 <% @fileservers.to_a.each do |name, path| -%>
 
 [<%= name %>]
+<% if path.is_a? String -%>
 path <%= path %>
+<% else -%>
+path <%= path['location'] %>
+<% end -%>
 <% end -%>
