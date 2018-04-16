@@ -3,7 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::metricbeat' do
+describe 'nebula::profile::beats' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
@@ -17,7 +17,21 @@ describe 'nebula::profile::metricbeat' do
       end
 
       it do
+        is_expected.to contain_service('filebeat').with(
+          ensure: 'running',
+          enable: true,
+          # require: 'File[/etc/filebeat/filebeat.yml]',
+        )
+      end
+
+      it do
         is_expected.to contain_package('metricbeat')
+          .without_ensure
+          .that_requires('Apt::Source[elastic.co]')
+      end
+
+      it do
+        is_expected.to contain_package('filebeat')
           .without_ensure
           .that_requires('Apt::Source[elastic.co]')
       end
@@ -56,6 +70,28 @@ describe 'nebula::profile::metricbeat' do
         %r{^\s*#ssl.certificate_authorities:},
       ].each do |content|
         it { is_expected.to contain_file('/etc/metricbeat/metricbeat.yml').with_content(content) }
+      end
+
+      it do
+        is_expected.to contain_file('/etc/filebeat/filebeat.yml').with(
+          ensure: 'present',
+          require: 'Package[filebeat]',
+          mode: '0644',
+        )
+      end
+
+      [
+        %r{^\s*config_dir: prospectors$},
+        %r{^\s*hosts:.*"logstash.umdl.umich.edu:5044"},
+      ].each do |content|
+        it { is_expected.to contain_file('/etc/filebeat/filebeat.yml').with_content(content) }
+      end
+
+      it do
+        is_expected.to contain_file('/etc/filebeat/prospectors').with(
+          ensure: 'directory',
+          require: 'Package[filebeat]',
+        )
       end
 
       it { is_expected.not_to contain_file('/etc/ssl/certs') }

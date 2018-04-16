@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::metricbeat
+# beats
 #
 # Install and configure metricbeat, and ensure that its service is
 # running.
@@ -14,8 +14,8 @@
 # @param period System module period in seconds
 #
 # @example
-#   include nebula::profile::metricbeat
-class nebula::profile::metricbeat (
+#   include nebula::profile::beats
+class nebula::profile::beats (
   String  $logstash_auth_cert,
   Array   $logstash_hosts,
   Integer $period,
@@ -27,14 +27,37 @@ class nebula::profile::metricbeat (
     require    => File['/etc/metricbeat/metricbeat.yml'],
   }
 
+  service { 'filebeat':
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+    # require    => File['/etc/metricbeat/metricbeat.yml'],
+  }
+
   file { '/etc/metricbeat/metricbeat.yml':
     ensure  => 'present',
     mode    => '0644',
-    content => template('nebula/profile/metricbeat/metricbeat.yml.erb'),
+    content => template('nebula/profile/beats/metricbeat.yml.erb'),
     require => Package['metricbeat'],
   }
 
+  file { '/etc/filebeat/filebeat.yml':
+    ensure  => 'present',
+    mode    => '0644',
+    content => template('nebula/profile/beats/filebeat.yml.erb'),
+    require => Package['filebeat'],
+  }
+
+  file { '/etc/filebeat/prospectors':
+    ensure  => 'directory',
+    require => Package['filebeat'],
+  }
+
   package { 'metricbeat':
+    require => Apt::Source['elastic.co'],
+  }
+
+  package { 'filebeat':
     require => Apt::Source['elastic.co'],
   }
 

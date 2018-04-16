@@ -16,10 +16,10 @@ nebula::profile::dns::smartconnect::master_zones:
 - 255.in-addr.arpa: 255
 nebula::profile::dns::smartconnect::domain: smartconnect.default.invalid
 nebula::profile::dns::smartconnect::nameserver: 1.2.3.4
-nebula::profile::metricbeat::logstash_auth_cert: ''
-nebula::profile::metricbeat::logstash_hosts:
+nebula::profile::beats::logstash_auth_cert: ''
+nebula::profile::beats::logstash_hosts:
 - logstash.default.invalid:1234
-nebula::profile::metricbeat::period: 90
+nebula::profile::beats::period: 90
 nebula::profile::ruby::install_dir: '/opt/rbenv'
 nebula::profile::ruby::plugins:
 - rbenv/rbenv-vars
