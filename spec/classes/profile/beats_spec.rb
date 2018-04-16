@@ -20,7 +20,7 @@ describe 'nebula::profile::beats' do
         is_expected.to contain_service('filebeat').with(
           ensure: 'running',
           enable: true,
-          # require: 'File[/etc/filebeat/filebeat.yml]',
+          require: 'File[/etc/filebeat/filebeat.yml]',
         )
       end
 
@@ -60,6 +60,7 @@ describe 'nebula::profile::beats' do
         is_expected.to contain_file('/etc/metricbeat/metricbeat.yml').with(
           ensure: 'present',
           require: 'Package[metricbeat]',
+          notify: 'Service[metricbeat]',
           mode: '0644',
         )
       end
@@ -76,6 +77,7 @@ describe 'nebula::profile::beats' do
         is_expected.to contain_file('/etc/filebeat/filebeat.yml').with(
           ensure: 'present',
           require: 'Package[filebeat]',
+          notify: 'Service[filebeat]',
           mode: '0644',
         )
       end

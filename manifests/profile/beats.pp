@@ -31,7 +31,7 @@ class nebula::profile::beats (
     ensure     => 'running',
     enable     => true,
     hasrestart => true,
-    # require    => File['/etc/metricbeat/metricbeat.yml'],
+    require    => File['/etc/filebeat/filebeat.yml'],
   }
 
   file { '/etc/metricbeat/metricbeat.yml':
@@ -39,6 +39,7 @@ class nebula::profile::beats (
     mode    => '0644',
     content => template('nebula/profile/beats/metricbeat.yml.erb'),
     require => Package['metricbeat'],
+    notify  => Service['metricbeat'],
   }
 
   file { '/etc/filebeat/filebeat.yml':
@@ -46,6 +47,7 @@ class nebula::profile::beats (
     mode    => '0644',
     content => template('nebula/profile/beats/filebeat.yml.erb'),
     require => Package['filebeat'],
+    notify  => Service['filebeat'],
   }
 
   file { '/etc/filebeat/prospectors':
