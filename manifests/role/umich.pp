@@ -14,5 +14,5 @@ class nebula::role::umich (
   }
 
   include nebula::profile::dns::standard
-  include nebula::profile::beats
+  include nebula::profile::elastic::metricbeat
 }
