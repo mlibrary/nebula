@@ -9,5 +9,5 @@
 class nebula::role::hathitrust {
   include nebula::profile::base
   include nebula::profile::dns::smartconnect
-  include nebula::profile::beats
+  include nebula::profile::elastic::metricbeat
 }
