@@ -1,0 +1,7 @@
+# Managed by puppet (nebula/profile/elastic/filebeat/prospectors/syslog.yml.erb)
+filebeat.prospectors:
+- paths:
+    - /var/log/auth.log
+    - /var/log/syslog
+  document_type: syslog
+

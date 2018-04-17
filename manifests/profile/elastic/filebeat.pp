@@ -18,7 +18,7 @@ class nebula::profile::elastic::filebeat {
   file { '/etc/filebeat/filebeat.yml':
     ensure  => 'present',
     mode    => '0644',
-    content => template('nebula/profile/elastic/filebeat.yml.erb'),
+    content => template('nebula/profile/elastic/filebeat/filebeat.yml.erb'),
     require => Package['filebeat'],
     notify  => Service['filebeat'],
   }
