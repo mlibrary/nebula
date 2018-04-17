@@ -9,7 +9,7 @@
 # @example
 #   include nebula::profile::elastic::filebeat::prospectors::apache
 class nebula::profile::elastic::filebeat::prospectors::apache {
-  require nebula::profile::elastic::filebeat
+  include nebula::profile::elastic::filebeat
 
   file { '/etc/filebeat/prospectors/apache.yml':
     content => template('nebula/profile/elastic/filebeat/prospectors/apache.yml.erb'),

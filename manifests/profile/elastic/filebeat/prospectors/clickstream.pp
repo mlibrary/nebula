@@ -9,7 +9,7 @@
 # @example
 #   include nebula::profile::elastic::filebeat::prospectors::clickstream
 class nebula::profile::elastic::filebeat::prospectors::clickstream {
-  require nebula::profile::elastic::filebeat
+  include nebula::profile::elastic::filebeat
 
   file { '/etc/filebeat/prospectors/clickstream.yml':
     content => template('nebula/profile/elastic/filebeat/prospectors/clickstream.yml.erb'),

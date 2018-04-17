@@ -15,11 +15,7 @@ describe 'nebula::profile::elastic::filebeat' do
         )
       end
 
-      it do
-        is_expected.to contain_package('filebeat')
-          .without_ensure
-          .that_requires('Apt::Source[elastic.co]')
-      end
+      it { is_expected.to contain_package('filebeat') }
 
       it do
         is_expected.to contain_file('/etc/filebeat/filebeat.yml').with(

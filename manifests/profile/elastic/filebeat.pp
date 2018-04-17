@@ -7,7 +7,7 @@
 # @example
 #   include nebula::profile::elastic::filebeat
 class nebula::profile::elastic::filebeat {
-  require nebula::profile::elastic
+  include nebula::profile::elastic
 
   service { 'filebeat':
     ensure     => 'running',

@@ -20,7 +20,7 @@ class nebula::profile::elastic::metricbeat (
   Array   $logstash_hosts = lookup('nebula::profile::elastic::logstash_hosts'),
   Integer $period = lookup('nebula::profile::elastic::period'),
 ) {
-  require nebula::profile::elastic
+  include nebula::profile::elastic
 
   service { 'metricbeat':
     ensure     => 'running',

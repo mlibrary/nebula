@@ -11,7 +11,7 @@
 class nebula::profile::elastic::filebeat::prospectors::mgetit (
   String $log_path,
 ) {
-  require nebula::profile::elastic::filebeat
+  include nebula::profile::elastic::filebeat
 
   file { '/etc/filebeat/prospectors/mgetit.yml':
     content => template('nebula/profile/elastic/filebeat/prospectors/mgetit.yml.erb'),
