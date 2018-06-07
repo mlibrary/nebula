@@ -11,7 +11,6 @@ describe 'nebula::profile::puppet::query' do
   def contain_ssl_key_dir
     contain_file('/etc/puppetlabs/puppet/ssl/private_keys')
       .with_ensure('directory')
-      .with_recurse('remote')
   end
 
   on_supported_os.each do |os, os_facts|

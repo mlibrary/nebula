@@ -19,13 +19,17 @@ class nebula::profile::puppet::query (
   }
 
   file { '/etc/puppetlabs/puppet/ssl/private_keys':
-    ensure  => 'directory',
-    recurse => 'remote',
+    ensure => 'directory',
   }
 
   if ($ssl_group != '') {
     File['/etc/puppetlabs/puppet/ssl/private_keys'] {
-      group  => $ssl_group,
+      group => $ssl_group,
+    }
+
+    $certname = $trusted['certname']
+    file { "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem":
+      group => $ssl_group,
     }
   }
 }
