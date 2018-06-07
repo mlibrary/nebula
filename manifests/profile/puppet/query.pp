@@ -18,13 +18,13 @@ class nebula::profile::puppet::query (
     content => template('nebula/profile/puppet/query.sh.erb'),
   }
 
-  if ($ssl_group == '') {
-    file { '/etc/puppetlabs/puppet/ssl/private_keys':
-      ensure => 'directory',
-    }
-  } else {
-    file { '/etc/puppetlabs/puppet/ssl/private_keys':
-      ensure => 'directory',
+  file { '/etc/puppetlabs/puppet/ssl/private_keys':
+    ensure  => 'directory',
+    recurse => 'remote',
+  }
+
+  if ($ssl_group != '') {
+    File['/etc/puppetlabs/puppet/ssl/private_keys'] {
       group  => $ssl_group,
     }
   }

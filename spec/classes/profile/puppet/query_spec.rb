@@ -11,6 +11,7 @@ describe 'nebula::profile::puppet::query' do
   def contain_ssl_key_dir
     contain_file('/etc/puppetlabs/puppet/ssl/private_keys')
       .with_ensure('directory')
+      .with_recurse('remote')
   end
 
   on_supported_os.each do |os, os_facts|
@@ -36,7 +37,7 @@ describe 'nebula::profile::puppet::query' do
         it { is_expected.to contain_puppet_query.with_content(line) }
       end
 
-      context "with ssl_group set to cool_cat" do
+      context 'with ssl_group set to cool_cat' do
         let(:params) { { ssl_group: 'cool_cat' } }
 
         it { is_expected.to contain_ssl_key_dir.with_group('cool_cat') }
