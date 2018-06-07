@@ -6,7 +6,9 @@
 #
 # @example
 #   include nebula::profile::puppet::query
-class nebula::profile::puppet::query {
+class nebula::profile::puppet::query (
+  $ssl_group = '',
+) {
   $puppetdb_server = lookup('nebula::puppetdb')
 
   package { 'curl': }
@@ -14,5 +16,16 @@ class nebula::profile::puppet::query {
   file { '/usr/local/sbin/puppet-query':
     mode    => '0755',
     content => template('nebula/profile/puppet/query.sh.erb'),
+  }
+
+  if ($ssl_group == '') {
+    file { '/etc/puppetlabs/puppet/ssl/private_keys':
+      ensure => 'directory',
+    }
+  } else {
+    file { '/etc/puppetlabs/puppet/ssl/private_keys':
+      ensure => 'directory',
+      group  => $ssl_group,
+    }
   }
 }

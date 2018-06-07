@@ -8,6 +8,11 @@ describe 'nebula::profile::puppet::query' do
     contain_file('/usr/local/sbin/puppet-query')
   end
 
+  def contain_ssl_key_dir
+    contain_file('/etc/puppetlabs/puppet/ssl/private_keys')
+      .with_ensure('directory')
+  end
+
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
@@ -15,6 +20,8 @@ describe 'nebula::profile::puppet::query' do
       it { is_expected.to contain_package('curl') }
 
       it { is_expected.to contain_puppet_query.with_mode('0755') }
+
+      it { is_expected.to contain_ssl_key_dir.without_group }
 
       [
         %r{^#!/bin/sh$},
@@ -27,6 +34,12 @@ describe 'nebula::profile::puppet::query' do
         %r{-d "\$@"},
       ].each do |line|
         it { is_expected.to contain_puppet_query.with_content(line) }
+      end
+
+      context "with ssl_group set to cool_cat" do
+        let(:params) { { ssl_group: 'cool_cat' } }
+
+        it { is_expected.to contain_ssl_key_dir.with_group('cool_cat') }
       end
     end
   end
