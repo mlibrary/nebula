@@ -10,4 +10,5 @@ Puppet Nebula
 
 1. git clone
 2. bundle
-3. `(bundle exec) rake spec`
+3. `(bundle exec) rake spec_prep`
+4. `(bundle exec) rspec # or rake spec_standalone`
