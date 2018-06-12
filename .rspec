@@ -1,2 +1,3 @@
 --color
 --format documentation
+--pattern spec/\{aliases,classes,defines,unit,functions,hosts,integration,plans,type_aliases,types\}/\*\*/\*_spec.rb
