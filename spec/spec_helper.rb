@@ -1,3 +1,7 @@
+RSpec.configure do |c|
+  c.mock_with :rspec
+end
+
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet-facts'
 include RspecPuppetFacts
@@ -20,5 +24,4 @@ end
 
 RSpec.configure do |c|
   c.default_facts = default_facts
-  c.mock_with :rspec
 end
