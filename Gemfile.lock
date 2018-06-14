@@ -131,6 +131,12 @@ GEM
       json
       mcollective-client
       puppet
+    rspec-puppet-utils (3.4.0)
+      mocha
+      puppet
+      puppetlabs_spec_helper
+      rspec
+      rspec-puppet
     rspec-support (3.7.1)
     rspec_junit_formatter (0.4.1)
       rspec-core (>= 2, < 4, != 2.12.0)
@@ -178,6 +184,7 @@ DEPENDENCIES
   puppet-module-posix-default-r2.4
   puppet-module-posix-dev-r2.4
   puppet-strings
+  rspec-puppet-utils
   semantic_puppet
 
 BUNDLED WITH
