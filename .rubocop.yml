@@ -105,3 +105,5 @@ Style/IfUnlessModifier:
   Enabled: false
 Style/SymbolProc:
   Enabled: false
+RSpec/LetSetup:
+  Enabled: false # let!() is required for mocking puppet functions
