@@ -14,6 +14,7 @@ Puppet::Functions.create_function(:nodes_for_datacenter) do
                    ['extract', ['certname'],
                     ['and',
                      ['=', 'name', 'datacenter'],
-                     ['=', 'value', datacenter]]]]).map { |x| x['certname'] }
+                     ['=', 'value', datacenter]]]])
+      .map { |fact| fact['certname'] }
   end
 end

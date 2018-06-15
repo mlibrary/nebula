@@ -10,19 +10,24 @@ Puppet::Functions.create_function(:fact_for) do
 
   def fact_for(node_id, fact_name)
     fact_keys = fact_name.split('.')
-    fact_base = fact_keys.shift
 
-    value = call_function('puppetdb_query',
-                          ['from', 'facts',
-                           ['extract', ['value'],
-                            ['and',
-                             ['=', 'certname', node_id],
-                             ['=', 'name', fact_base]]]])[0]['value']
+    value = run_query(node_id, fact_keys.shift)
 
-    fact_keys.each do |key|
-      value = value[key]
+    if fact_keys.empty?
+      value
+    else
+      value.dig(*fact_keys)
     end
+  end
 
-    value
+  private
+
+  def run_query(node_id, fact_name)
+    call_function('puppetdb_query',
+                  ['from', 'facts',
+                   ['extract', ['value'],
+                    ['and',
+                     ['=', 'certname', node_id],
+                     ['=', 'name', fact_name]]]])[0]['value']
   end
 end
