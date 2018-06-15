@@ -13,6 +13,9 @@ class nebula::profile::haproxy(String $floating_ip) {
     hasrestart => true,
   }
 
+  package { 'haproxy': }
+  package { 'haproxyctl': }
+
   file { '/etc/haproxy/haproxy.cfg':
     ensure  => 'present',
     mode    => '0644',
@@ -41,6 +44,12 @@ class nebula::profile::haproxy(String $floating_ip) {
     notify  => Service['haproxy'],
   }
 
-  package { 'haproxy': }
-  package { 'haproxyctl': }
+  file { '/etc/default/haproxy':
+    ensure  => 'present',
+    mode    => '0644',
+    content => template('nebula/profile/haproxy/default.erb'),
+    require => Package['haproxy'],
+    notify  => Service['haproxy'],
+  }
+
 }

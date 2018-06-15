@@ -6,6 +6,10 @@ require 'spec_helper'
 describe 'nebula::profile::haproxy' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
+      let(:default_file) { '/etc/default/haproxy' }
+      let(:base_file) { '/etc/haproxy/haproxy.cfg' }
+      let(:backend_file)  { '/etc/haproxy/backends.cfg' }
+      let(:frontend_file)  { '/etc/haproxy/frontends.cfg' }
       let(:facts) do
         os_facts.merge(
           datacenter: "hatcher",
@@ -54,8 +58,8 @@ describe 'nebula::profile::haproxy' do
         it { is_expected.to contain_package('haproxyctl') }
       end
 
-      describe '/etc/haproxy/haproxy.cfg' do
-        let(:file) { '/etc/haproxy/haproxy.cfg' }
+      describe 'base config file' do
+        let(:file) { base_file }
         it { is_expected.to contain_file(file).with(ensure: 'present') }
         it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
         it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
@@ -80,10 +84,30 @@ describe 'nebula::profile::haproxy' do
         end
       end
 
-      # TODO: /etc/default/haproxy must be configured
+      describe 'default file' do
+        let(:file) { default_file }
+        it { is_expected.to contain_file(file).with(ensure: 'present') }
+        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
+        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
+        it { is_expected.to contain_file(file).with(mode: '0644') }
 
-      describe '/etc/haproxy/frontends.cfg' do
-        let(:file) { '/etc/haproxy/frontends.cfg' }
+        it "says it is managed by puppet" do
+          is_expected.to contain_file(file).with_content(
+            /\A# Managed by puppet \(nebula\/profile\/haproxy\/default\.erb\)\n/
+          )
+        end
+        it "sets $CONFIG to the base config" do
+          is_expected.to contain_file(file).with_content(/^CONFIG="#{base_file}"\n/)
+        end
+        it "sets $EXTRAOPTS to include the backend and frontend configs" do
+          is_expected.to contain_file(file).with_content(
+            /EXTRAOPTS="-f \/etc\/haproxy\/backends\.cfg -f \/etc\/haproxy\/frontends\.cfg"\n/
+          )
+        end
+      end
+
+      describe 'frontends config file' do
+        let(:file) { frontend_file }
         it { is_expected.to contain_file(file).with(ensure: 'present') }
         it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
         it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
@@ -119,8 +143,8 @@ describe 'nebula::profile::haproxy' do
 
       end
 
-      describe '/etc/haproxy/backends.cfg' do
-        let(:file) { '/etc/haproxy/backends.cfg' }
+      describe 'backends config file' do
+        let(:file) { backend_file }
         it { is_expected.to contain_file(file).with(ensure: 'present') }
         it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
         it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
