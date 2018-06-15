@@ -21,6 +21,7 @@ nebula::profile::elastic::logstash_hosts:
 - logstash.default.invalid:1234
 nebula::profile::elastic::filebeat::prospectors::mgetit::log_path: /var/log/mgetit.default.invalid
 nebula::profile::elastic::period: 90
+nebula::profile::haproxy::floating_ip: '12.23.32.21'
 nebula::profile::ruby::install_dir: '/opt/rbenv'
 nebula::profile::ruby::plugins:
 - rbenv/rbenv-vars
