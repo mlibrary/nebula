@@ -5,6 +5,7 @@ end
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet-utils'
 require 'rspec-puppet-facts'
+require 'faker'
 include RspecPuppetFacts
 
 default_facts = {

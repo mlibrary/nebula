@@ -7,6 +7,7 @@ group :development do
   gem "puppet-module-posix-default-r#{minor_version}", require: false, platforms: [:ruby]
   gem "puppet-module-posix-dev-r#{minor_version}",     require: false, platforms: [:ruby]
   gem "rspec-puppet-utils"
+  gem "faker"
 end
 
 gem 'puppet'
