@@ -2,6 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 ---
+nebula::root_email: root@default.invalid
 nebula::puppetmaster: puppetmaster.default.invalid
 nebula::puppetdb: puppetdb.default.invalid
 
@@ -22,6 +23,7 @@ nebula::profile::elastic::logstash_hosts:
 nebula::profile::elastic::filebeat::prospectors::mgetit::log_path: /var/log/mgetit.default.invalid
 nebula::profile::elastic::period: 90
 nebula::profile::haproxy::floating_ip: '12.23.32.21'
+nebula::profile::keepalived::floating_ip: '12.23.32.22'
 nebula::profile::ruby::install_dir: '/opt/rbenv'
 nebula::profile::ruby::plugins:
 - rbenv/rbenv-vars
