@@ -52,6 +52,23 @@ describe 'nebula::profile::keepalived' do
         it { is_expected.to contain_package('ipset') }
       end
 
+      describe 'sysctl conf' do
+        let(:file) { '/etc/sysctl.d/keepalived.conf' }
+
+        it { is_expected.to contain_file(file).with(ensure: 'present') }
+        it { is_expected.to contain_file(file).with(mode: '0644') }
+
+        it 'says it is managed by puppet' do
+          is_expected.to contain_file(file).with_content(
+            %r{\A# Managed by puppet \(nebula\/profile\/keepalived\/sysctl\.conf\.erb\)\n},
+          )
+        end
+
+        it 'enables ip_nonlocal_bind' do
+          is_expected.to contain_file(file).with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
+        end
+      end
+
       describe 'base config file' do
         let(:file) { base_file }
 

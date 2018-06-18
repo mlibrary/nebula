@@ -31,4 +31,12 @@ class nebula::profile::keepalived(String $floating_ip) {
     mode => '0644',
     content => template('nebula/profile/keepalived/keepalived.conf.erb'),
   }
+
+  file { '/etc/sysctl.d/keepalived.conf':
+    ensure  => 'present',
+    require => Package['keepalived'],
+    notify => Service['keepalived'],
+    mode    => '0644',
+    content => template('nebula/profile/keepalived/sysctl.conf.erb'),
+  }
 }
