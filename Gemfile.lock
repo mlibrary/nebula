@@ -98,7 +98,7 @@ GEM
       rake
     puppet_pot_generator (1.0.1)
       puppet
-    puppetlabs_spec_helper (2.8.0)
+    puppetlabs_spec_helper (2.9.0)
       mocha (~> 1.0)
       puppet-lint (~> 2.0)
       puppet-syntax (~> 2.0)
@@ -123,7 +123,7 @@ GEM
     rspec-mocks (3.7.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
-    rspec-puppet (2.6.11)
+    rspec-puppet (2.6.12)
       rspec
     rspec-puppet-facts (1.9.0)
       facter
