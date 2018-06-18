@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Facter.add(:installed_backports) do
   setcode do
     Facter::Core::Execution.execute(
