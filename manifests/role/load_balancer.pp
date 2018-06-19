@@ -8,7 +8,7 @@
 #
 # @example
 #   include nebula::role::load_balancer
-class nebula::role::load_balancer
+class nebula::role::load_balancer {
   include nebula::role::umich
   include nebula::profile::haproxy
 }

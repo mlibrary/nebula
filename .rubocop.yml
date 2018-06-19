@@ -107,3 +107,7 @@ Style/SymbolProc:
   Enabled: false
 RSpec/LetSetup:
   Enabled: false # let!() is required for mocking puppet functions
+RSpec/AnyInstance:
+  Enabled: false # should be able to re-enable once we remove our own function mocking code
+RSpec/VerifiedDoubles:
+  Enabled: false # should be able to re-enable once we remove our own function mocking code
