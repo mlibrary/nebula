@@ -21,26 +21,46 @@ describe 'nebula::profile::haproxy' do
       let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
       let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
       let(:params) { { floating_ip: '1.2.3.4' } }
+      let(:pre_condition) do
+        'function nodes_for_role($role) {
+          if $role == "nebula::role::webhost::www_lib" {
+            return ["rolenode", "scotch", "soda"]
+          } else {
+            return 0
+          }
+        }
 
-      let!(:nodes_for_role) do
-        MockFunction.new('nodes_for_role') do |f|
-          f.stubbed.with('nebula::role::webhost::www_lib')
-           .returns(%w[rolenode scotch soda])
-        end
-      end
+        function nodes_for_datacenter($dc) {
+          if $dc == "hatcher" {
+            return ["dcnode", "scotch", "anotherdcnode", "soda"]
+          } else {
+            return 0
+          }
+        }
 
-      let!(:nodes_for_datacenter) do
-        MockFunction.new('nodes_for_datacenter') do |f|
-          f.stubbed.with('hatcher')
-           .returns(%w[dcnode scotch anotherdcnode soda])
-        end
-      end
+        function fact_for($node, $fact) {
+          if $fact != "networking" {
+            return 0
+          }
 
-      let!(:fact_for) do
-        MockFunction.new('fact_for') do |f|
-          f.stubbed.with('scotch', 'networking').returns(scotch)
-          f.stubbed.with('soda', 'networking').returns(soda)
-        end
+          case $node {
+            "scotch": {
+              $result = {
+                "ip" => "111.111.111.123",
+                "hostname" => "scotch",
+              }
+            }
+
+            "soda": {
+              $result = {
+                "ip" => "222.222.222.234",
+                "hostname" => "soda",
+              }
+            }
+          }
+
+          return $result
+        }'
       end
 
       describe 'services' do
