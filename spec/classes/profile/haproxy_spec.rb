@@ -1,14 +1,14 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-
 # Stub the default dependency loader to do normal resolution except where overridden
 def stub_loader!
   allow_any_instance_of(Puppet::Pops::Loader::DependencyLoader).to receive(:load).and_call_original
 end
-
 
 # Stub the dependency loader to resolve a named function to a double of some type
 #
@@ -19,7 +19,7 @@ end
 #        required if dbl is not supplied, and ignored if dbl is supplied
 def stub_function(name, dbl = nil, &func)
   func = dbl || func
-  stub = ->(scope, *args, &block) do
+  stub = ->(_scope, *args, &block) do
     func.call(*args, &block)
   end
   allow_any_instance_of(Puppet::Pops::Loader::DependencyLoader).to receive(:load).with(:function, name).and_return(stub)
@@ -59,11 +59,8 @@ describe 'nebula::profile::haproxy' do
         end
 
         stub_function('nodes_for_datacenter') do |dc|
-          if dc == 'hatcher'
-           %w[dcnode scotch anotherdcnode soda]
-          else
-            raise "Unexpected datacenter: #{dc}"
-          end
+          raise "Unexpected datacenter: #{dc}" unless dc == 'hatcher'
+          %w[dcnode scotch anotherdcnode soda]
         end
 
         stub_function('fact_for', fact_for)
