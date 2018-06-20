@@ -2,9 +2,6 @@
 
 RSpec.configure do |c|
   c.mock_with :rspec
-  c.before(:each) do
-    stub_loader!
-  end
 end
 
 require 'puppetlabs_spec_helper/module_spec_helper'
@@ -51,6 +48,15 @@ def stub_function(name, dbl = nil, &func)
     func.call(*args, &block)
   end
   allow_any_instance_of(Puppet::Pops::Loader::DependencyLoader).to receive(:load).with(:function, name).and_return(stub)
+end
+
+def stub_with_call(name)
+  double(name).tap do |dbl|
+    dbl.define_singleton_method(:allow_call) do
+      allow(dbl).to receive(:call)
+    end
+    stub_function(name, dbl)
+  end
 end
 
 def stub(name)

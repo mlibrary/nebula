@@ -42,7 +42,7 @@ describe 'nebula::profile::keepalived' do
 
         it 'says it is managed by puppet' do
           is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/keepalived\/sysctl\.conf\.erb\)\n},
+            %r{\A# Managed by puppet},
           )
         end
 
@@ -87,7 +87,6 @@ describe 'nebula::profile::keepalived' do
 
       describe 'service' do
         it { is_expected.to contain_service(service).that_requires('Package[keepalived]') }
-        xit { is_expected.to contain_service(service).that_requires('Package[haproxyctl]') }
         it { is_expected.to contain_service(service).with(enable: true) }
         it { is_expected.to contain_service(service).with(ensure: 'running') }
       end

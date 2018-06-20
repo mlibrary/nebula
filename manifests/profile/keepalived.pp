@@ -7,16 +7,14 @@
 # @example
 #   include nebula::profile::keepalived
 class nebula::profile::keepalived(String $floating_ip) {
-#  require nebula::profile::haproxy
   package { 'keepalived': }
   package { 'ipset': }
 
   service { 'keepalived':
-    ensure => 'running',
-    enable => true,
+    ensure     => 'running',
+    enable     => true,
     hasrestart => true,
-#    require => Package['keepalived','haproxyctl'],
-    require => Package['keepalived'],
+    require    => Package['keepalived'],
   }
 
   $nodes_for_role = nodes_for_role($title)
@@ -25,17 +23,17 @@ class nebula::profile::keepalived(String $floating_ip) {
   $datacenter = $::datacenter
 
   file { '/etc/keepalived/keepalived.conf':
-    ensure => 'present',
+    ensure  => 'present',
     require => Package['keepalived'],
-    notify => Service['keepalived'],
-    mode => '0644',
+    notify  => Service['keepalived'],
+    mode    => '0644',
     content => template('nebula/profile/keepalived/keepalived.conf.erb'),
   }
 
   file { '/etc/sysctl.d/keepalived.conf':
     ensure  => 'present',
     require => Package['keepalived'],
-    notify => Service['keepalived'],
+    notify  => Service['keepalived'],
     mode    => '0644',
     content => template('nebula/profile/keepalived/sysctl.conf.erb'),
   }
