@@ -1,0 +1,45 @@
+global_defs {
+  notification_email {
+    <%= @email %>
+  }
+  notification_email_from <%= @email %>
+  smtp_server localhost
+  smtp_connect_timeout 60
+  enable_script_security
+}
+
+vrrp_script check_haproxy {
+  script "/usr/bin/haproxyctl show health"
+  timeout 1
+  interval 2
+  weight 2
+}
+
+vrrp_instance haproxy {
+  state BACKUP
+
+  interface <%= @networking['primary'] %>
+  virtual_router_id 51
+  priority 100
+  virtual_ipaddress {
+    <%= @floating_ip %>
+  }
+
+  unicast_src_ip <%= @networking["ip"] %>
+  unicast_peer {
+    <%
+    nodes = (@nodes_for_role & @nodes_for_datacenter)
+      .map{|node_id| scope.call_function('fact_for', [node_id, 'networking'])}
+      .map{|networking| networking['ip']}
+      .select{ |ip| ip != @networking['ip'] }
+    -%>
+    <% nodes.each do |ip| -%>
+      <%= ip %>
+    <% end -%>
+  }
+
+  track_script {
+    check_haproxy
+  }
+}
+

@@ -4,26 +4,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
-
-# Stub the default dependency loader to do normal resolution except where overridden
-def stub_loader!
-  allow_any_instance_of(Puppet::Pops::Loader::DependencyLoader).to receive(:load).and_call_original
-end
-
-# Stub the dependency loader to resolve a named function to a double of some type
-#
-# @param name [String] The name of the puppet function to stub
-# @param dbl [RSpec double] Optional RSpeck double with `call` mocked;
-#        will be used instead of the block if supplied
-# @yield [*args] A block that takes all parameters given to the puppet function;
-#        required if dbl is not supplied, and ignored if dbl is supplied
-def stub_function(name, dbl = nil, &func)
-  func = dbl || func
-  stub = ->(_scope, *args, &block) do
-    func.call(*args, &block)
-  end
-  allow_any_instance_of(Puppet::Pops::Loader::DependencyLoader).to receive(:load).with(:function, name).and_return(stub)
-end
+require_relative '../../support/contexts/with_mocked_nodes'
 
 describe 'nebula::profile::haproxy' do
   on_supported_os.each do |os, os_facts|
@@ -32,6 +13,11 @@ describe 'nebula::profile::haproxy' do
       let(:base_file) { '/etc/haproxy/haproxy.cfg' }
       let(:backend_file) { '/etc/haproxy/backends.cfg' }
       let(:frontend_file) { '/etc/haproxy/frontends.cfg' }
+
+      let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
+      let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
+      let(:params) { { floating_ip: '1.2.3.4' } }
+
       let(:facts) do
         os_facts.merge(
           datacenter: 'hatcher',
@@ -40,31 +26,8 @@ describe 'nebula::profile::haproxy' do
           },
         )
       end
-      let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
-      let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
-      let(:params) { { floating_ip: '1.2.3.4' } }
 
-      let(:fact_for) do
-        double('fact_for').tap do |d|
-          allow(d).to receive(:call).with('scotch', 'networking').and_return(scotch)
-          allow(d).to receive(:call).with('soda', 'networking').and_return(soda)
-        end
-      end
-
-      before(:each) do
-        stub_loader!
-
-        stub_function('nodes_for_role') do
-          %w[rolenode scotch soda]
-        end
-
-        stub_function('nodes_for_datacenter') do |dc|
-          raise "Unexpected datacenter: #{dc}" unless dc == 'hatcher'
-          %w[dcnode scotch anotherdcnode soda]
-        end
-
-        stub_function('fact_for', fact_for)
-      end
+      include_context 'with mocked puppetdb functions', 'hatcher', %w[scotch soda]
 
       describe 'services' do
         it do
