@@ -1,0 +1,18 @@
+# Managed by puppet (nebula/profile/haproxy/backends.cfg.erb)
+
+<%
+nodes = (@nodes_for_role & @nodes_for_datacenter)
+  .map{|node_id| scope.call_function('fact_for', [node_id, 'networking'])}
+  .map{|networking| [networking['hostname'], networking['ip']]}
+-%>
+<%= "backend www-lib-#{@datacenter}-http-back" %>
+  http-check expect status 200
+<% nodes.each do |hostname, ip| -%>
+  <%= "server #{hostname} #{ip}:80 check cookie s#{ip.split('.').last}" %>
+<% end -%>
+
+<%= "backend www-lib-#{@datacenter}-https-back" %>
+  http-check expect status 200
+<% nodes.each do |hostname, ip| -%>
+  <%= "server #{hostname} #{ip}:443 check cookie s#{ip.split('.').last}" %>
+<% end -%>
