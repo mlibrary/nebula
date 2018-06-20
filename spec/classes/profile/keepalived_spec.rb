@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
+require_relative '../../support/contexts/with_mocked_nodes'
 
 describe 'nebula::profile::keepalived' do
   on_supported_os.each do |os, os_facts|
@@ -21,31 +24,10 @@ describe 'nebula::profile::keepalived' do
       let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
       let(:scotch) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'scotch' } }
       let(:soda)   { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'soda' } }
-
-      let!(:nodes_for_role) do
-        MockFunction.new('nodes_for_role') do |f|
-          f.stubbed.with('nebula::profile::keepalived')
-           .returns(%w[thisnode other_dc_keepalive_node scotch soda])
-        end
-      end
-
-      let!(:nodes_for_datacenter) do
-        MockFunction.new('nodes_for_datacenter') do |f|
-          f.stubbed.with(facts[:datacenter])
-           .returns(%w[thisnode dcnode scotch anotherdcnode soda])
-        end
-      end
-
-      let!(:fact_for) do
-        MockFunction.new('fact_for') do |f|
-          f.stubbed.with('scotch', 'networking').returns(scotch)
-          f.stubbed.with('soda', 'networking').returns(soda)
-          f.stubbed.with('thisnode', 'networking').returns(thisnode)
-        end
-      end
-
       let(:base_file) { '/etc/keepalived/keepalived.conf' }
       let(:service) { 'keepalived' }
+
+      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode scotch soda]
 
       describe 'packages' do
         it { is_expected.to contain_package('keepalived') }
