@@ -4,9 +4,9 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
-require_relative '../../support/contexts/with_mocked_nodes'
+require_relative '../../../support/contexts/with_mocked_nodes'
 
-describe 'nebula::profile::keepalived' do
+describe 'nebula::profile::haproxy::keepalived' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:my_ip) { Faker::Internet.ip_v4_address }
@@ -28,6 +28,10 @@ describe 'nebula::profile::keepalived' do
       let(:service) { 'keepalived' }
 
       include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode scotch soda]
+
+      describe 'roles' do
+        it { is_expected.to contain_class('nebula::profile::haproxy') }
+      end
 
       describe 'packages' do
         it { is_expected.to contain_package('keepalived') }
