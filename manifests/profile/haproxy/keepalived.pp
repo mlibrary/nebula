@@ -5,8 +5,12 @@
 # keepalived
 #
 # @example
-#   include nebula::profile::keepalived
-class nebula::profile::keepalived(String $floating_ip) {
+#   include nebula::profile::haproxy::keepalived
+class nebula::profile::haproxy::keepalived(String $floating_ip) {
+  class { 'nebula::profile::haproxy':
+    floating_ip => $floating_ip,
+  }
+
   package { 'keepalived': }
   package { 'ipset': }
 
@@ -27,7 +31,7 @@ class nebula::profile::keepalived(String $floating_ip) {
     require => Package['keepalived'],
     notify  => Service['keepalived'],
     mode    => '0644',
-    content => template('nebula/profile/keepalived/keepalived.conf.erb'),
+    content => template('nebula/profile/haproxy/keepalived/keepalived.conf.erb'),
   }
 
   file { '/etc/sysctl.d/keepalived.conf':
@@ -35,6 +39,6 @@ class nebula::profile::keepalived(String $floating_ip) {
     require => Package['keepalived'],
     notify  => Service['keepalived'],
     mode    => '0644',
-    content => template('nebula/profile/keepalived/sysctl.conf.erb'),
+    content => template('nebula/profile/haproxy/keepalived/sysctl.conf.erb'),
   }
 }
