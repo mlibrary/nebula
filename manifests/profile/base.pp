@@ -28,6 +28,10 @@ class nebula::profile::base (
   String  $timezone,
   Boolean $bridge_network = false,
 ) {
+  service { 'puppet':
+    enable => true,
+  }
+
   if $facts['os']['release']['major'] == '9' {
     package { 'dselect': }
     package { 'ifenslave': }

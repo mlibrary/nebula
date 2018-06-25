@@ -15,6 +15,9 @@ describe 'nebula::profile::base' do
       let(:facts) { os_facts }
       let(:fqdn) { facts[:fqdn] }
 
+      it { is_expected.to contain_service('puppet').without_ensure }
+      it { is_expected.to contain_service('puppet').with_enable(true) }
+
       case os
       when 'debian-8-x86_64'
         it { is_expected.not_to contain_class('nebula::profile::afs') }
