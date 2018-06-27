@@ -126,3 +126,15 @@ nebula::users::sudoers:
     comment: Invalid no-authorization admin
     uid: 123458
     home: /home/invalid_noauth_admin
+
+nebula::profile::vmhost::host::build: 'invalid-default'
+nebula::profile::vmhost::host::cpus: 0
+nebula::profile::vmhost::host::disk: 0
+nebula::profile::vmhost::host::ram: 0
+nebula::profile::vmhost::host::domain: 'default.domain.invalid'
+nebula::profile::vmhost::host::filehost: 'default.filehost.invalid'
+nebula::profile::vmhost::host::image_dir: 'default.image_dir.invalid'
+nebula::profile::vmhost::host::net_interface: 'default.iface.invalid'
+nebula::profile::vmhost::host::netmask: '0.0.0.0'
+nebula::profile::vmhost::host::gateway: '10.1.2.3'
+nebula::profile::vmhost::host::nameservers: "%{alias('nebula::resolv_conf::nameservers')}"
