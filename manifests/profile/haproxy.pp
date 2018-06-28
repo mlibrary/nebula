@@ -73,5 +73,8 @@ class nebula::profile::haproxy(String $floating_ip, String $cert_source) {
     }
   }
 
+  user { 'haproxyctl':
+    gid     => 'haproxy'
+  }
 
 }

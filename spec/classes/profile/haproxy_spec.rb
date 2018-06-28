@@ -72,6 +72,12 @@ describe 'nebula::profile::haproxy' do
         it 'does not have a frontend section' do
           is_expected.not_to contain_file(file).with_content(%r{^frontend\W+.*\n})
         end
+        it 'configures the admin socket in the correct place with group privileges' do
+          is_expected.to contain_file(file).with_content(%r{stats socket /run/haproxy/admin.sock mode 660 level admin})
+        end
+        it 'runs with the haproxy group' do
+          is_expected.to contain_file(file).with_content(%r{group haproxy})
+        end
       end
 
       describe 'default file' do
@@ -188,6 +194,13 @@ describe 'nebula::profile::haproxy' do
           it { is_expected.to contain_file(dest).with(links: 'follow') }
           it { is_expected.to contain_file(dest).with(purge: true) }
         end
+      end
+
+      describe 'users' do
+        it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl') }
+        it { is_expected.to contain_user('haproxyctl').with(gid: 'haproxy') }
+        it 'grants ssh access to the monitoring user'
+        it 'restricts ssh access for the monitoring user to running haproxyctl'
       end
     end
   end
