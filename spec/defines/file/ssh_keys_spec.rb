@@ -49,6 +49,26 @@ describe 'nebula::file::ssh_keys' do
         end
       end
 
+      context 'when given a key with a command' do
+        let(:params) do
+          {
+            keys: [
+              {
+                type: 'ssh-rsa',
+                data: 'AAAAAAAAAAAA',
+                comment: 'name',
+                command: '/usr/bin/whatever',
+              },
+            ],
+          }
+        end
+
+        it do
+          is_expected.to contain_file('/opt/keys')
+            .with_content(%r{^command="/usr/bin/whatever" ssh-rsa AAAAAAAAAAAA name$})
+        end
+      end
+
       context 'when called /etc/secret/keys and secret is true' do
         let(:title) { '/etc/secret/keys' }
         let(:params) { { secret: true } }

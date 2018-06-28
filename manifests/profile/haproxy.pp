@@ -6,7 +6,7 @@
 #
 # @example
 #   include nebula::profile::haproxy
-class nebula::profile::haproxy(String $floating_ip, String $cert_source) {
+class nebula::profile::haproxy(String $floating_ip, String $cert_source, Hash $monitoring_user) {
   service { 'haproxy':
     ensure     => 'running',
     enable     => true,
@@ -73,8 +73,11 @@ class nebula::profile::haproxy(String $floating_ip, String $cert_source) {
     }
   }
 
-  user { 'haproxyctl':
-    gid     => 'haproxy'
+  nebula::authzd_user { $monitoring_user['name']:
+    gid  => 'haproxy',
+    home => $monitoring_user['home'],
+    key  => merge($monitoring_user['key'],
+        { command => '/usr/sbin/haproxyctl' } )
   }
 
 }

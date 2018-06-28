@@ -197,10 +197,12 @@ describe 'nebula::profile::haproxy' do
       end
 
       describe 'users' do
-        it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl') }
-        it { is_expected.to contain_user('haproxyctl').with(gid: 'haproxy') }
-        it 'grants ssh access to the monitoring user'
-        it 'restricts ssh access for the monitoring user to running haproxyctl'
+        it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl', gid: 'haproxy', home: '/var/haproxyctl').that_requires('File[/var/haproxyctl]') }
+
+        it 'grants ssh access to the monitoring user with force command haproxyctl' do
+          is_expected.to contain_file('/var/haproxyctl/.ssh/authorized_keys')
+            .with_content(%r{^command="/usr/sbin/haproxyctl" ecdsa-sha2-nistp256 CCCCCCCCCCCC haproxyctl@default\.invalid$})
+        end
       end
     end
   end
