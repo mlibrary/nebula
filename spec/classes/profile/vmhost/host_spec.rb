@@ -6,12 +6,16 @@
 require 'spec_helper'
 
 describe 'nebula::profile::vmhost::host' do
+  def contain_vm(name)
+    contain_nebula__virtual_machine(name)
+  end
+
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 
       context 'when given nothing' do
-        it { is_expected.to compile }
+        it { is_expected.not_to contain_vm('vmname') }
       end
 
       context 'when given a single hostname with an ip' do
@@ -25,22 +29,84 @@ describe 'nebula::profile::vmhost::host' do
           }
         end
 
-        it { is_expected.to contain_nebula__virtual_machine('vmname') }
+        it { is_expected.to contain_vm('vmname').with_build('invalid-default') }
+        it { is_expected.to contain_vm('vmname').with_cpus(0) }
+        it { is_expected.to contain_vm('vmname').with_disk(0) }
+        it { is_expected.to contain_vm('vmname').with_ram(0) }
+        it { is_expected.to contain_vm('vmname').with_domain('default.domain.invalid') }
+        it { is_expected.to contain_vm('vmname').with_filehost('default.filehost.invalid') }
+        it { is_expected.to contain_vm('vmname').with_image_dir('default.image_dir.invalid') }
+        it { is_expected.to contain_vm('vmname').with_net_interface('default.iface.invalid') }
+        it { is_expected.to contain_vm('vmname').with_netmask('0.0.0.0') }
+        it { is_expected.to contain_vm('vmname').with_gateway('10.1.2.3') }
+        it { is_expected.to contain_vm('vmname').with_nameservers(['5.5.5.5', '4.4.4.4']) }
+
+        context 'and given a random number of cpus' do
+          let(:cpus)   { Faker::Number.between(1, 12) }
+          let(:params) { super().merge(cpus: cpus) }
+
+          it { is_expected.to contain_vm('vmname').with_cpus(cpus) }
+        end
+
+        context 'and given a random amount of disk space' do
+          let(:disk)   { Faker::Number.between(8, 200) }
+          let(:params) { super().merge(disk: disk) }
+
+          it { is_expected.to contain_vm('vmname').with_disk(disk) }
+        end
+
+        context 'and given a random amount of ram' do
+          let(:ram)    { Faker::Number.between(1, 64) }
+          let(:params) { super().merge(ram: ram) }
+
+          it { is_expected.to contain_vm('vmname').with_ram(ram) }
+        end
+
+        context 'and given a random domain' do
+          let(:domain) { Faker::Internet.domain_name }
+          let(:params) { super().merge(domain: domain) }
+
+          it { is_expected.to contain_vm('vmname').with_domain(domain) }
+        end
+
+        context 'and given a random filehost' do
+          let(:domain) { Faker::Internet.domain_name }
+          let(:params) { super().merge(filehost: domain) }
+
+          it { is_expected.to contain_vm('vmname').with_filehost(domain) }
+        end
+
+        context 'and given a net_interface of eth3' do
+          let(:params) { super().merge(net_interface: 'eth3') }
+
+          it { is_expected.to contain_vm('vmname').with_net_interface('eth3') }
+        end
+
+        context 'and given a random netmask' do
+          let(:ip)     { Faker::Internet.ip_v4_address }
+          let(:params) { super().merge(netmask: ip) }
+
+          it { is_expected.to contain_vm('vmname').with_netmask(ip) }
+        end
+
+        context 'and given a random gateway' do
+          let(:ip)     { Faker::Internet.ip_v4_address }
+          let(:params) { super().merge(gateway: ip) }
+
+          it { is_expected.to contain_vm('vmname').with_gateway(ip) }
+        end
+
+        context 'and given some random nameservers' do
+          let(:nameservers) { Array.new(Faker::Number.between(2, 4)) { Faker::Internet.ip_v4_address } }
+          let(:params)      { super().merge(nameservers: nameservers) }
+
+          it { is_expected.to contain_vm('vmname').with_nameservers(nameservers) }
+        end
 
         context 'and given an image_dir of /virt_imgs' do
-          let(:params) do
-            super().merge(
-              defaults: {
-                'image_dir' => '/virt_imgs',
-              },
-            )
-          end
+          let(:params) { super().merge(image_dir: '/virt_imgs') }
 
-          it do
-            is_expected.to contain_nebula__virtual_machine('vmname').with(
-              image_dir: '/virt_imgs',
-            )
-          end
+          it { is_expected.to contain_vm('vmname').with_image_dir('/virt_imgs') }
 
           context 'and given a vm with an image_dir of /special_img' do
             let(:params) do
@@ -57,17 +123,8 @@ describe 'nebula::profile::vmhost::host' do
               )
             end
 
-            it do
-              is_expected.to contain_nebula__virtual_machine('normalvm').with(
-                image_dir: '/virt_imgs',
-              )
-            end
-
-            it do
-              is_expected.to contain_nebula__virtual_machine('specialvm').with(
-                image_dir: '/special_img',
-              )
-            end
+            it { is_expected.to contain_vm('normalvm').with_image_dir('/virt_imgs') }
+            it { is_expected.to contain_vm('specialvm').with_image_dir('/special_img') }
           end
         end
       end
@@ -83,7 +140,7 @@ describe 'nebula::profile::vmhost::host' do
           }
         end
 
-        it { is_expected.to contain_nebula__virtual_machine('secondvm') }
+        it { is_expected.to contain_vm('secondvm') }
       end
     end
   end
