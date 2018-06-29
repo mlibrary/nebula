@@ -1,7 +1,7 @@
 # Managed by puppet (nebula/profile/haproxy/backends.cfg.erb)
 
 <%
-nodes = (@nodes_for_role & @nodes_for_datacenter)
+nodes = (@nodes_for_class & @nodes_for_datacenter)
   .map{|node_id| scope.call_function('fact_for', [node_id, 'networking'])}
   .map{|networking| [networking['hostname'], networking['ip']]}
 -%>

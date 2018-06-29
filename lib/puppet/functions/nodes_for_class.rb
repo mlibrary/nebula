@@ -4,17 +4,17 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-Puppet::Functions.create_function(:nodes_for_role) do
-  dispatch :nodes_for_role do
-    required_param 'String', :role
+Puppet::Functions.create_function(:nodes_for_class) do
+  dispatch :nodes_for_class do
+    required_param 'String', :class
     return_type 'Array[String]'
   end
 
-  def nodes_for_role(role)
+  def nodes_for_class(class_title)
     call_function('puppetdb_query',
                   ['from', 'resources',
                    ['extract', ['certname'],
-                    ['=', 'title', capitalize_each_namespace(role)]]])
+                    ['=', 'title', capitalize_each_namespace(class_title)]]])
       .map { |resource| resource['certname'] }
   end
 

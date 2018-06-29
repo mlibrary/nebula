@@ -22,7 +22,7 @@ class nebula::profile::haproxy::keepalived(String $floating_ip,
     require    => Package['keepalived'],
   }
 
-  $nodes_for_role = nodes_for_role($title)
+  $nodes_for_class = nodes_for_class($title)
   $nodes_for_datacenter = nodes_for_datacenter($::datacenter)
   $email = lookup('nebula::root_email')
   $datacenter = $::datacenter
