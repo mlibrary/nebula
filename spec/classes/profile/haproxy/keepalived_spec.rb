@@ -87,6 +87,20 @@ describe 'nebula::profile::haproxy::keepalived' do
 
         it { is_expected.to contain_file(file).with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m) }
         it { is_expected.to contain_file(file).with_content(%r{notification_email_from root@default.invalid}) }
+
+        context 'on a master node' do
+          let(:params) { { master: true } }
+
+          it { is_expected.to contain_file(file).with_content(%r{priority 101}) }
+          it { is_expected.to contain_file(file).with_content(%r{state MASTER}) }
+        end
+
+        context 'on a backup node' do
+          let(:params) { { master: false } }
+
+          it { is_expected.to contain_file(file).with_content(%r{priority 100}) }
+          it { is_expected.to contain_file(file).with_content(%r{state BACKUP}) }
+        end
       end
 
       describe 'service' do
