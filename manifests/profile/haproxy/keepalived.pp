@@ -6,7 +6,8 @@
 #
 # @example
 #   include nebula::profile::haproxy::keepalived
-class nebula::profile::haproxy::keepalived(String $floating_ip) {
+class nebula::profile::haproxy::keepalived(String $floating_ip,
+    Boolean $master = false) {
   class { 'nebula::profile::haproxy':
     floating_ip => $floating_ip,
   }
