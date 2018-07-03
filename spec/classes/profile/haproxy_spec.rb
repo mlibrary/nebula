@@ -16,7 +16,10 @@ describe 'nebula::profile::haproxy' do
 
       let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
       let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
-      let(:params) { { floating_ip: '1.2.3.4' } }
+      let(:params) do
+        { floating_ip: '1.2.3.4',
+          cert_source: '' }
+      end
 
       let(:facts) do
         os_facts.merge(
@@ -158,6 +161,32 @@ describe 'nebula::profile::haproxy' do
           it 'contains the stanza' do
             is_expected.to contain_file(file).with_content(%r{#{stanza}}m)
           end
+        end
+      end
+
+      describe 'ssl certs' do
+        let(:dest) { '/etc/ssl/private/www-lib' }
+
+        context 'with an empty source' do
+          it { is_expected.not_to contain_file(dest) }
+        end
+
+        context 'with a source' do
+          let(:params) do
+            { floating_ip: '1.2.3.4',
+              cert_source: '/some/location' }
+          end
+
+          it { is_expected.to contain_file(dest).with(ensure: 'directory') }
+          it { is_expected.to contain_file(dest).with(notify: 'Service[haproxy]') }
+          it { is_expected.to contain_file(dest).with(mode: '0700') }
+          it { is_expected.to contain_file(dest).with(owner: 'haproxy') }
+          it { is_expected.to contain_file(dest).with(group: 'haproxy') }
+          it { is_expected.to contain_file(dest).with(recurse: true) }
+          it { is_expected.to contain_file(dest).with(source: "puppet://#{params[:cert_source]}/www-lib") }
+          it { is_expected.to contain_file(dest).with(path: dest) }
+          it { is_expected.to contain_file(dest).with(links: 'follow') }
+          it { is_expected.to contain_file(dest).with(purge: true) }
         end
       end
     end

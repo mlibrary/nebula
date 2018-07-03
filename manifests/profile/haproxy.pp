@@ -6,7 +6,7 @@
 #
 # @example
 #   include nebula::profile::haproxy
-class nebula::profile::haproxy(String $floating_ip) {
+class nebula::profile::haproxy(String $floating_ip, String $cert_source) {
   service { 'haproxy':
     ensure     => 'running',
     enable     => true,
@@ -51,5 +51,27 @@ class nebula::profile::haproxy(String $floating_ip) {
     require => Package['haproxy'],
     notify  => Service['haproxy'],
   }
+
+  if $cert_source != '' {
+    file { '/etc/ssl/private' :
+      ensure => 'directory',
+      mode   => '0700',
+      owner  => 'root',
+      group  => 'root'
+    }
+
+    file { '/etc/ssl/private/www-lib':
+      ensure  => 'directory',
+      mode    => '0700',
+      owner   => 'haproxy',
+      group   => 'haproxy',
+      recurse => true,
+      purge   => true,
+      links   => 'follow',
+      notify  => Service['haproxy'],
+      source  => "puppet://${cert_source}/www-lib"
+    }
+  }
+
 
 }
