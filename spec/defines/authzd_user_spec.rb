@@ -26,8 +26,7 @@ describe 'nebula::authzd_user' do
       let(:facts) { os_facts }
 
       describe 'users' do
-        it { is_expected.to contain_user(title).with(name: title, gid: params[:gid], home: home).that_requires("File[#{home}]") }
-        it { is_expected.to contain_file(home).with(ensure: 'directory', mode: '0755') }
+        it { is_expected.to contain_user(title).with(name: title, gid: params[:gid], home: home, managehome: true) }
         it { is_expected.to contain_file("#{home}/.ssh").with(ensure: 'directory', mode: '0700') }
 
         it 'creates authorized_keys with the given key' do

@@ -11,20 +11,13 @@ define nebula::authzd_user(
   Hash $key,
   String $gid) {
 
-  $key_file = "${home}/.ssh/authorized_keys"
-
-  file { $home:
-    ensure => 'directory',
-    mode   => '0755'
-  }
-
   user { $title:
-    gid     => $gid,
-    home    => $home,
-    require => File[$home]
+    gid        => $gid,
+    home       => $home,
+    managehome => true
   }
 
-  nebula::file::ssh_keys { $key_file:
+  nebula::file::ssh_keys { "${home}/.ssh/authorized_keys":
     keys   => [ $key],
     secret => true,
   }

@@ -1,4 +1,8 @@
 # Managed by puppet (nebula/file/ssh_keys)
-<% @keys.each do |key| -%>
-<%= key.has_key?('command') ? "command=\"#{key['command']}\" " : '' %><%= key['type'] %> <%= key['data'] %> <%= key['comment'] %>
+<% @keys.each do |ssh_key| -%>
+<% if ssh_key.has_key?('command') -%>
+command="<%= ssh_key['command'] %>" <%= ssh_key['type'] %> <%= ssh_key['data'] %> <%= ssh_key['comment'] %>
+<% else -%>
+<%= ssh_key['type'] %> <%= ssh_key['data'] %> <%= ssh_key['comment'] %>
+<% end -%>
 <% end -%>
