@@ -32,7 +32,7 @@ describe 'nebula::profile::haproxy::keepalived' do
 
       before(:each) do
         stub('balanced_frontends') do |d|
-          allow_call(d).and_return({ 'www-lib': %w[scotch soda], 'svc2': %w[scotch coffee] })
+          allow_call(d).and_return('www-lib': %w[scotch soda], 'svc2': %w[scotch coffee])
         end
       end
 

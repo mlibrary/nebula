@@ -35,7 +35,7 @@ describe 'nebula::profile::haproxy' do
 
       before(:each) do
         stub('balanced_frontends') do |d|
-          allow_call(d).and_return({ 'www-lib': %w[scotch soda], 'svc2': %w[scotch third_server] })
+          allow_call(d).and_return('www-lib': %w[scotch soda], 'svc2': %w[scotch third_server])
         end
       end
 

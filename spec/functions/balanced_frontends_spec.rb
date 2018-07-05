@@ -10,7 +10,7 @@ describe 'balanced_frontends' do
     array.map { |val| { key => val } }
   end
 
-  let(:frontends) { %w[service1 service2 service3]*3 }
+  let(:frontends) { %w[service1 service2 service3] * 3 }
 
   let(:servers) do
     {
@@ -56,7 +56,7 @@ describe 'balanced_frontends' do
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      context "at datacenter dc1" do
+      context 'at datacenter dc1' do
         let(:facts) { os_facts.merge(datacenter: 'dc1') }
 
         it do
@@ -65,7 +65,7 @@ describe 'balanced_frontends' do
         end
       end
 
-      context "at datacenter dc2" do
+      context 'at datacenter dc2' do
         let(:facts) { os_facts.merge(datacenter: 'dc2') }
 
         it do
@@ -75,7 +75,7 @@ describe 'balanced_frontends' do
         end
       end
 
-      context "at datacenter dc3" do
+      context 'at datacenter dc3' do
         let(:facts) { os_facts.merge(datacenter: 'dc3') }
 
         it do
