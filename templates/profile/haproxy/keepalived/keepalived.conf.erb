@@ -32,15 +32,15 @@ vrrp_instance haproxy {
 
   unicast_src_ip <%= @networking["ip"] %>
   unicast_peer {
-    <%
-    nodes = (@nodes_for_class & @nodes_for_datacenter)
-      .map{|node_id| scope.call_function('fact_for', [node_id, 'networking'])}
-      .map{|networking| networking['ip']}
-      .select{ |ip| ip != @networking['ip'] }
-    -%>
-    <% nodes.each do |ip| -%>
-      <%= ip %>
-    <% end -%>
+  <%-
+  nodes = @frontends.values.flatten.sort.uniq
+    .map{|node_id| scope.call_function('fact_for', [node_id, 'networking'])}
+    .map{|networking| networking['ip']}
+    .select{ |ip| ip != @networking['ip'] }
+  -%>
+  <%- nodes.each do |ip| -%>
+    <%= ip %>
+  <%- end -%>
   }
 
   track_script {

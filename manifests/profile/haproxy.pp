@@ -24,9 +24,7 @@ class nebula::profile::haproxy(String $floating_ip, String $cert_source, Hash $m
     notify  => Service['haproxy'],
   }
 
-  $nodes_for_class = nodes_for_class('nebula::role::webhost::www_lib')
-  $nodes_for_datacenter = nodes_for_datacenter($::datacenter)
-  $datacenter = $::datacenter
+  $frontends = balanced_frontends()
 
   file { '/etc/haproxy/backends.cfg':
     ensure  => 'present',

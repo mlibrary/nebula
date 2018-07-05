@@ -16,6 +16,7 @@ describe 'nebula::profile::haproxy' do
 
       let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
       let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
+      let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
       let(:params) do
         { floating_ip: '1.2.3.4',
           cert_source: '' }
@@ -30,7 +31,13 @@ describe 'nebula::profile::haproxy' do
         )
       end
 
-      include_context 'with mocked puppetdb functions', 'hatcher', %w[scotch soda]
+      include_context 'with mocked puppetdb functions', 'hatcher', %w[scotch soda third_server]
+
+      before(:each) do
+        stub('balanced_frontends') do |d|
+          allow_call(d).and_return({ 'www-lib': %w[scotch soda], 'svc2': %w[scotch third_server] })
+        end
+      end
 
       describe 'services' do
         it do
@@ -159,14 +166,33 @@ describe 'nebula::profile::haproxy' do
             "  http-check expect status 200\n" \
             "  server scotch 111.111.111.123:80 check cookie s123\n" \
             "  server soda 222.222.222.234:80 check cookie s234\n",
+
           "backend www-lib-hatcher-https-back\n" \
             "  http-check expect status 200\n" \
             "  server scotch 111.111.111.123:443 check cookie s123\n" \
             "  server soda 222.222.222.234:443 check cookie s234\n",
         ].each do |stanza|
-          it 'contains the stanza' do
+          it "contains the stanza #{stanza.split("\n").first}" do
             is_expected.to contain_file(file).with_content(%r{#{stanza}}m)
           end
+        end
+
+        it 'contains the stanza backend svc2-hatcher-http-back' do
+          is_expected.to contain_file(file).with_content(%r{#{
+            "backend svc2-hatcher-http-back\n" \
+            "  http-check expect status 200\n" \
+            "  server scotch 111.111.111.123:80 check cookie s123\n" \
+            "  server #{third_server["hostname"]} #{third_server["ip"]}:80 check cookie s#{third_server["ip"].split('.').last}\n" \
+          }}m)
+        end
+
+        it 'contains the stanza backend svc2-hatcher-https-back' do
+          is_expected.to contain_file(file).with_content(%r{#{
+            "backend svc2-hatcher-https-back\n" \
+            "  http-check expect status 200\n" \
+            "  server scotch 111.111.111.123:443 check cookie s123\n" \
+            "  server #{third_server["hostname"]} #{third_server["ip"]}:443 check cookie s#{third_server["ip"].split('.').last}\n" \
+          }}m)
         end
       end
 
