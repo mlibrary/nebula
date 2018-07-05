@@ -24,6 +24,13 @@ nebula::profile::elastic::filebeat::prospectors::mgetit::log_path: /var/log/mget
 nebula::profile::elastic::period: 90
 nebula::profile::haproxy::keepalived::floating_ip: '12.23.32.22'
 nebula::profile::haproxy::cert_source: ''
+nebula::profile::haproxy::monitoring_user:
+  name: haproxyctl
+  home: /var/haproxyctl
+  key:
+    type: ecdsa-sha2-nistp256
+    data: CCCCCCCCCCCC
+    comment: 'haproxyctl@default.invalid'
 nebula::profile::ruby::install_dir: '/opt/rbenv'
 nebula::profile::ruby::plugins:
 - rbenv/rbenv-vars
