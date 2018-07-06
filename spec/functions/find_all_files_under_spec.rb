@@ -37,14 +37,9 @@ describe 'find_all_files_under' do
 
   it { is_expected.to run.with_params('spec/test_files/empty').and_return([]) }
 
-  it { is_expected.to run.with_params('spec/test_files/one_file').and_return(%w[spec/test_files/one_file/just_me.txt]) }
-  it { is_expected.to run.with_params('spec/test_files/one_file/just_me.txt').and_return(%w[spec/test_files/one_file/just_me.txt]) }
+  it { is_expected.to run.with_params('spec/test_files/one_file').and_return(%w[just_me.txt]) }
 
   it { is_expected.to run.with_params('spec/test_files/some_empty_subdirs').and_return([]) }
 
-  it do
-    is_expected.to run.with_params('spec/test_files/nested_files').and_return(
-      %w[spec/test_files/nested_files/a_file.txt spec/test_files/nested_files/a/another_file.txt spec/test_files/nested_files/b/c/yet_another_file.txt].sort,
-    )
-  end
+  it { is_expected.to run.with_params('spec/test_files/nested_files').and_return(%w[a_file.txt a/another_file.txt b/c/yet_another_file.txt].sort) }
 end

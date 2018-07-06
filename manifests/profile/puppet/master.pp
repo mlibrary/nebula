@@ -73,6 +73,13 @@ class nebula::profile::puppet::master (
       *       => $options,
       require => Package['puppetserver'],
     }
+
+    find_all_files_under($path).each |$f| {
+      file { "${path}/${f}":
+        ensure => 'file',
+        source => "puppet:///${name}/${f}",
+      }
+    }
   }
 
   package { 'puppetserver':

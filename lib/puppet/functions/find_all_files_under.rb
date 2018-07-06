@@ -11,22 +11,26 @@ Puppet::Functions.create_function(:find_all_files_under) do
   end
 
   def find_all_files_under(path)
-    if File.directory? path
-      all_files_under_dir(path).sort
+    get_all_files(path).map { |p| p[%r{(?<=#{path}/).*$}] }
+  end
 
-    elsif File.exist? path
-      [path]
+  private
+
+  def get_all_files(base)
+    if File.directory? base
+      all_files_under_dir(base).sort
+
+    elsif File.exist? base
+      [base]
 
     else
       []
     end
   end
 
-  private
-
   def all_files_under_dir(base)
     Dir.foreach(base).reject { |f| %w[. ..].include? f }.map { |filename|
-      find_all_files_under("#{base}/#{filename}")
+      get_all_files("#{base}/#{filename}")
     }.flatten
   end
 end
