@@ -47,8 +47,8 @@ describe 'nebula::profile::puppet::master' do
 
       it do
         is_expected.to contain_file('/etc/puppetlabs/puppet/fileserver.conf')
-          .with_content(%r{\[ssl-certs\]\n *path /etc/ssl}m)
-          .with_content(%r{\[repos\]\n *path /opt/repos}m)
+          .with_content(%r{\[ssl-certs\]\n *path /default_invalid/etc/ssl}m)
+          .with_content(%r{\[repos\]\n *path /default_invalid/opt/repos}m)
           .that_requires('Package[puppetserver]')
       end
 
@@ -68,7 +68,7 @@ describe 'nebula::profile::puppet::master' do
         end
       end
 
-      %w[/opt/repos /opt/wherever /etc/ssl].each do |dir|
+      %w[/default_invalid/opt/repos /default_invalid/opt/wherever /default_invalid/etc/ssl].each do |dir|
         it do
           is_expected.to contain_file(dir).with(
             ensure: 'directory',
@@ -81,17 +81,17 @@ describe 'nebula::profile::puppet::master' do
       end
 
       it do
-        is_expected.to contain_file('/opt/repos')
+        is_expected.to contain_file('/default_invalid/opt/repos')
           .with_source('puppet:///repos')
       end
 
       it do
-        is_expected.to contain_file('/opt/wherever')
+        is_expected.to contain_file('/default_invalid/opt/wherever')
           .with_source('puppet:///long-form-without-options')
       end
 
       it do
-        is_expected.to contain_file('/etc/ssl').with(
+        is_expected.to contain_file('/default_invalid/etc/ssl').with(
           source: 'puppet:///ssl-certs',
           owner: 'root',
           group: 'wheel',
