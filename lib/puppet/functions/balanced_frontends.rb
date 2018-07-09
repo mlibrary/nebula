@@ -28,9 +28,9 @@ Puppet::Functions.create_function(:balanced_frontends) do
   end
 
   def balanced_frontends
-    frontends
-      .map { |frontend| [frontend, nodes(frontend)] }
-      .to_h
-      .reject { |_frontend, servers| servers.empty? }
+    frontends.each_with_object({}) do |frontend, hash|
+      servers = nodes(frontend)
+      hash[frontend] = servers unless servers.empty?
+    end
   end
 end
