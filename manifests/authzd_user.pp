@@ -21,5 +21,7 @@ define nebula::authzd_user(
   nebula::file::ssh_keys { "${home}/.ssh/authorized_keys":
     keys   => [ $key],
     secret => true,
+    owner  => $title,
+    group  => $gid
   }
 }

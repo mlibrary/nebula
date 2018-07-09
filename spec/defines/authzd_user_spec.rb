@@ -35,6 +35,8 @@ describe 'nebula::authzd_user' do
         }
 
         it { is_expected.to contain_file("#{home}/.ssh").with(ensure: 'directory', mode: '0700') }
+        it { is_expected.to contain_file("#{home}/.ssh").with(owner: title, group: params[:gid]) }
+        it { is_expected.to contain_file("#{home}/.ssh/authorized_keys").with(owner: title, group: params[:gid]) }
 
         it 'creates authorized_keys with the given key' do
           is_expected.to contain_file("#{home}/.ssh/authorized_keys")

@@ -37,15 +37,21 @@
 define nebula::file::ssh_keys(
   Array   $keys = [],
   Boolean $secret = false,
+  String  $owner = 'root',
+  String  $group = 'root',
 ) {
   if $secret {
     file { dirname($title):
       ensure => 'directory',
       mode   => '0700',
+      owner  => $owner,
+      group  => $group,
     }
   }
 
   file { $title:
     content => template('nebula/file/ssh_keys.erb'),
+    owner   => $owner,
+    group   => $group
   }
 }

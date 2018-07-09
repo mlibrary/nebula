@@ -85,6 +85,24 @@ describe 'nebula::file::ssh_keys' do
             .that_requires('File[/etc/secret]')
         end
       end
+
+      context 'when given an owner and group' do
+        let(:params) do
+          {
+            owner: 'someuser',
+            group: 'somegroup',
+            keys: [
+              {
+                type: 'ssh-rsa',
+                data: 'AAAAAAAAAAAA',
+                comment: 'name',
+              },
+            ],
+          }
+        end
+
+        it { is_expected.to contain_file('/opt/keys').with(owner: 'someuser', group: 'somegroup') }
+      end
     end
   end
 end
