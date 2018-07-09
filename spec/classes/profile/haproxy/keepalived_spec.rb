@@ -74,14 +74,19 @@ describe 'nebula::profile::haproxy::keepalived' do
           is_expected.to contain_file(file).with_content(%r{^vrrp_script check_haproxy})
         end
 
-        it 'has the haproxy floating ip address' do
-          is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*}}m)
+        it 'has the haproxy floating ip addresses' do
+          is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*12\.23\.32\.23\n\s*}}m)
         end
 
         context 'with a floating ip address parameter' do
-          let(:params) { { floating_ip: Faker::Internet.ip_v4_address } }
+          let(:params) do
+            {
+              floating_ips: { svc1: Faker::Internet.ip_v4_address,
+                              svc2: Faker::Internet.ip_v4_address },
+            }
+          end
 
-          it { is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*#{params[:floating_ip]}\n\s*}}m) }
+          it { is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*#{params[:floating_ips][:svc1]}\n\s*#{params[:floating_ips][:svc2]}\n\s*}}m) }
         end
 
         it { is_expected.to contain_file(file).with_content(%r{unicast_src_ip #{my_ip}}) }

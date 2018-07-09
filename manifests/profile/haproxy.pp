@@ -6,7 +6,7 @@
 #
 # @example
 #   include nebula::profile::haproxy
-class nebula::profile::haproxy(String $floating_ip, String $cert_source, Hash $monitoring_user) {
+class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $monitoring_user) {
   service { 'haproxy':
     ensure     => 'running',
     enable     => true,
@@ -58,16 +58,18 @@ class nebula::profile::haproxy(String $floating_ip, String $cert_source, Hash $m
       group  => 'root'
     }
 
-    file { '/etc/ssl/private/www-lib':
-      ensure  => 'directory',
-      mode    => '0700',
-      owner   => 'haproxy',
-      group   => 'haproxy',
-      recurse => true,
-      purge   => true,
-      links   => 'follow',
-      notify  => Service['haproxy'],
-      source  => "puppet://${cert_source}/www-lib"
+    $frontends.each |$frontend, $nodes| {
+      file { "/etc/ssl/private/${frontend}":
+        ensure  => 'directory',
+        mode    => '0700',
+        owner   => 'haproxy',
+        group   => 'haproxy',
+        recurse => true,
+        purge   => true,
+        links   => 'follow',
+        notify  => Service['haproxy'],
+        source  => "puppet://${cert_source}/${frontend}"
+      }
     }
   }
 
