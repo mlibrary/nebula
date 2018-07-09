@@ -18,7 +18,7 @@ describe 'nebula::profile::haproxy' do
       let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
       let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
       let(:params) do
-        { floating_ip: '1.2.3.4',
+        { floating_ips: { 'svc1': '1.2.3.4', svc2: '1.2.3.5' },
           cert_source: '' }
       end
 
@@ -35,7 +35,7 @@ describe 'nebula::profile::haproxy' do
 
       before(:each) do
         stub('balanced_frontends') do |d|
-          allow_call(d).and_return('www-lib': %w[scotch soda], 'svc2': %w[scotch third_server])
+          allow_call(d).and_return('svc1': %w[scotch soda], 'svc2': %w[scotch third_server])
         end
       end
 
@@ -125,16 +125,16 @@ describe 'nebula::profile::haproxy' do
         end
 
         [
-          "frontend www-lib-hatcher-http-front\n" \
+          "frontend svc1-hatcher-http-front\n" \
             "  bind 1.2.3.4:80,40.41.42.43:80\n" \
             "  stats uri \/haproxy?stats\n" \
-            "  default_backend www-lib-hatcher-http-back\n" \
+            "  default_backend svc1-hatcher-http-back\n" \
             "  http-request set-header X-Client-IP %ci\n" \
             "  http-request set-header X-Forwarded-Proto http\n",
-          "frontend www-lib-hatcher-https-front\n" \
-            "  bind 1.2.3.4:443,40.41.42.43:443 ssl crt /etc/ssl/private/www-lib\n" \
+          "frontend svc1-hatcher-https-front\n" \
+            "  bind 1.2.3.4:443,40.41.42.43:443 ssl crt /etc/ssl/private/svc1\n" \
             "  stats uri /haproxy?stats\n" \
-            "  default_backend www-lib-hatcher-https-back\n" \
+            "  default_backend svc1-hatcher-https-back\n" \
             "  http-response set-header \"Strict-Transport-Security\" \"max-age=31536000\"\n" \
             "  http-request set-header X-Client-IP %ci\n" \
             "  http-request set-header X-Forwarded-Proto https\n",
@@ -162,12 +162,12 @@ describe 'nebula::profile::haproxy' do
         end
 
         [
-          "backend www-lib-hatcher-http-back\n" \
+          "backend svc1-hatcher-http-back\n" \
             "  http-check expect status 200\n" \
             "  server scotch 111.111.111.123:80 check cookie s123\n" \
             "  server soda 222.222.222.234:80 check cookie s234\n",
 
-          "backend www-lib-hatcher-https-back\n" \
+          "backend svc1-hatcher-https-back\n" \
             "  http-check expect status 200\n" \
             "  server scotch 111.111.111.123:443 check cookie s123\n" \
             "  server soda 222.222.222.234:443 check cookie s234\n",
@@ -197,7 +197,7 @@ describe 'nebula::profile::haproxy' do
       end
 
       describe 'ssl certs' do
-        let(:dest) { '/etc/ssl/private/www-lib' }
+        let(:dest) { '/etc/ssl/private/svc1' }
 
         context 'with an empty source' do
           it { is_expected.not_to contain_file(dest) }
@@ -205,7 +205,7 @@ describe 'nebula::profile::haproxy' do
 
         context 'with a source' do
           let(:params) do
-            { floating_ip: '1.2.3.4',
+            { floating_ips: { 'svc1': '1.2.3.4' },
               cert_source: '/some/location' }
           end
 
@@ -215,7 +215,7 @@ describe 'nebula::profile::haproxy' do
           it { is_expected.to contain_file(dest).with(owner: 'haproxy') }
           it { is_expected.to contain_file(dest).with(group: 'haproxy') }
           it { is_expected.to contain_file(dest).with(recurse: true) }
-          it { is_expected.to contain_file(dest).with(source: "puppet://#{params[:cert_source]}/www-lib") }
+          it { is_expected.to contain_file(dest).with(source: "puppet://#{params[:cert_source]}/svc1") }
           it { is_expected.to contain_file(dest).with(path: dest) }
           it { is_expected.to contain_file(dest).with(links: 'follow') }
           it { is_expected.to contain_file(dest).with(purge: true) }

@@ -6,10 +6,10 @@
 #
 # @example
 #   include nebula::profile::haproxy::keepalived
-class nebula::profile::haproxy::keepalived(String $floating_ip,
+class nebula::profile::haproxy::keepalived(Hash $floating_ips,
     Boolean $master = false) {
   class { 'nebula::profile::haproxy':
-    floating_ip => $floating_ip,
+    floating_ips => $floating_ips,
   }
 
   package { 'keepalived': }
