@@ -76,7 +76,7 @@ class nebula::profile::haproxy(String $floating_ip, String $cert_source, Hash $m
   nebula::authzd_user { $monitoring_user['name']:
     gid  => 'haproxy',
     home => $monitoring_user['home'],
-    key  => $monitoring_user['key'] + { command => '/usr/sbin/haproxyctl' }
+    key  => $monitoring_user['key']
   }
 
 }
