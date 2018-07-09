@@ -6,10 +6,10 @@
 #
 # @example
 #   include nebula::profile::haproxy::keepalived
-class nebula::profile::haproxy::keepalived(String $floating_ip,
+class nebula::profile::haproxy::keepalived(Hash $floating_ips,
     Boolean $master = false) {
   class { 'nebula::profile::haproxy':
-    floating_ip => $floating_ip,
+    floating_ips => $floating_ips,
   }
 
   package { 'keepalived': }
@@ -22,10 +22,8 @@ class nebula::profile::haproxy::keepalived(String $floating_ip,
     require    => Package['keepalived'],
   }
 
-  $nodes_for_role = nodes_for_role($title)
-  $nodes_for_datacenter = nodes_for_datacenter($::datacenter)
+  $frontends = balanced_frontends()
   $email = lookup('nebula::root_email')
-  $datacenter = $::datacenter
 
   file { '/etc/keepalived/keepalived.conf':
     ensure  => 'present',

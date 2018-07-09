@@ -1,16 +1,19 @@
 # Managed by puppet (nebula/profile/haproxy/frontends.cfg.erb)
 
-frontend www-lib-<%= @datacenter -%>-http-front
-  bind <%= @floating_ip -%>:80,<%= @networking['ip'] -%>:80
+<% @frontends.keys.map { |k| k.to_s }.sort.each do |frontend| -%>
+frontend <%= frontend %>-<%= @datacenter -%>-http-front
+  bind <%= @floating_ips[frontend] -%>:80,<%= @networking['ip'] -%>:80
   stats uri /haproxy?stats
-  default_backend www-lib-<%= @datacenter -%>-http-back
+  default_backend <%= frontend %>-<%= @datacenter -%>-http-back
   http-request set-header X-Client-IP %ci
   http-request set-header X-Forwarded-Proto http
 
-frontend www-lib-<%= @datacenter -%>-https-front
-  bind <%= @floating_ip -%>:443,<%= @networking['ip'] -%>:443 ssl crt /etc/ssl/private/www-lib
+frontend <%= frontend %>-<%= @datacenter -%>-https-front
+  bind <%= @floating_ips[frontend] -%>:443,<%= @networking['ip'] -%>:443 ssl crt /etc/ssl/private/<%= frontend %>
   stats uri /haproxy?stats
-  default_backend www-lib-<%= @datacenter -%>-https-back
+  default_backend <%= frontend %>-<%= @datacenter -%>-https-back
   http-response set-header "Strict-Transport-Security" "max-age=31536000"
   http-request set-header X-Client-IP %ci
   http-request set-header X-Forwarded-Proto https
+
+<% end -%>

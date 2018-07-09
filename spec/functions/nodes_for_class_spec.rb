@@ -5,19 +5,19 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nodes_for_role' do
-  let(:role) { '' }
+describe 'nodes_for_class' do
+  let(:class_title) { '' }
   let(:nodes) { [] }
   let!(:puppetdb_query) do
     MockFunction.new('puppetdb_query') do |f|
       f.stubbed
-       .with(['from', 'resources', ['extract', ['certname'], ['=', 'title', role]]])
+       .with(['from', 'resources', ['extract', ['certname'], ['=', 'title', class_title]]])
        .returns(nodes.map { |n| { 'certname' => n } })
     end
   end
 
   context 'when nodes node_a and node_b have the role my_role' do
-    let(:role) { 'My_role' }
+    let(:class_title) { 'My_role' }
     let(:nodes) { %w[node_a node_b] }
 
     it do
@@ -27,7 +27,7 @@ describe 'nodes_for_role' do
   end
 
   context 'when nodes node_1, node_2, and node_3 have the role nebula::default' do
-    let(:role) { 'Nebula::Default' }
+    let(:class_title) { 'Nebula::Default' }
     let(:nodes) { %w[node_1 node_2 node_3] }
 
     it do

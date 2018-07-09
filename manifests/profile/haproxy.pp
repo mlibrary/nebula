@@ -6,7 +6,7 @@
 #
 # @example
 #   include nebula::profile::haproxy
-class nebula::profile::haproxy(String $floating_ip, String $cert_source, Hash $monitoring_user) {
+class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $monitoring_user) {
   service { 'haproxy':
     ensure     => 'running',
     enable     => true,
@@ -24,9 +24,7 @@ class nebula::profile::haproxy(String $floating_ip, String $cert_source, Hash $m
     notify  => Service['haproxy'],
   }
 
-  $nodes_for_role = nodes_for_role('nebula::role::webhost::www_lib')
-  $nodes_for_datacenter = nodes_for_datacenter($::datacenter)
-  $datacenter = $::datacenter
+  $frontends = balanced_frontends()
 
   file { '/etc/haproxy/backends.cfg':
     ensure  => 'present',
@@ -60,16 +58,18 @@ class nebula::profile::haproxy(String $floating_ip, String $cert_source, Hash $m
       group  => 'root'
     }
 
-    file { '/etc/ssl/private/www-lib':
-      ensure  => 'directory',
-      mode    => '0700',
-      owner   => 'haproxy',
-      group   => 'haproxy',
-      recurse => true,
-      purge   => true,
-      links   => 'follow',
-      notify  => Service['haproxy'],
-      source  => "puppet://${cert_source}/www-lib"
+    $frontends.each |$frontend, $nodes| {
+      file { "/etc/ssl/private/${frontend}":
+        ensure  => 'directory',
+        mode    => '0700',
+        owner   => 'haproxy',
+        group   => 'haproxy',
+        recurse => true,
+        purge   => true,
+        links   => 'follow',
+        notify  => Service['haproxy'],
+        source  => "puppet://${cert_source}/${frontend}"
+      }
     }
   }
 

@@ -6,7 +6,7 @@ RSpec.shared_context 'with mocked puppetdb functions' do |datacenter, nodes|
   end
 
   before(:each) do
-    stub('nodes_for_role') do |d|
+    stub('nodes_for_class') do |d|
       allow_call(d).and_return(%w[rolenode] + nodes)
     end
 
