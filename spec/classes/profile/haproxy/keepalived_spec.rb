@@ -22,19 +22,14 @@ describe 'nebula::profile::haproxy::keepalived' do
       end
 
       let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
-      let(:scotch) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'scotch' } }
-      let(:soda)   { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'soda' } }
-      let(:coffee) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'coffee' } }
+      let(:haproxy2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
       let(:base_file) { '/etc/keepalived/keepalived.conf' }
       let(:service) { 'keepalived' }
 
-      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode scotch soda coffee]
+      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode haproxy2]
 
-      before(:each) do
-        stub('balanced_frontends') do |d|
-          allow_call(d).and_return('www-lib': %w[scotch soda], 'svc2': %w[scotch coffee])
-        end
-      end
+      # required for included haproxy role, but isn't tested here
+      before(:each) { stub('balanced_frontends') { |d| allow_call(d).and_return({}) } }
 
       describe 'roles' do
         it { is_expected.to contain_class('nebula::profile::haproxy') }
@@ -92,7 +87,7 @@ describe 'nebula::profile::haproxy::keepalived' do
         it { is_expected.to contain_file(file).with_content(%r{unicast_src_ip #{my_ip}}) }
 
         it 'has a unicast_peer block with the IP addresses of all nodes with the same profile at the same datancenter except for me' do
-          is_expected.to contain_file(file).with_content(%r{unicast_peer {\n\s*#{coffee['ip']}\n\s*#{scotch['ip']}\n\s*#{soda['ip']}\n\s*}})
+          is_expected.to contain_file(file).with_content(%r{unicast_peer {\n\s*#{haproxy2['ip']}\n\s*}\n\s*})
         end
 
         it { is_expected.to contain_file(file).with_content(%r{interface #{facts[:networking][:primary]}}) }
