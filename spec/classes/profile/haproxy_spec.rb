@@ -11,14 +11,14 @@ describe 'nebula::profile::haproxy' do
     context "on #{os}" do
       let(:default_file) { '/etc/default/haproxy' }
       let(:base_file) { '/etc/haproxy/haproxy.cfg' }
-      let(:backend_file) { '/etc/haproxy/backends.cfg' }
-      let(:frontend_file) { '/etc/haproxy/frontends.cfg' }
+      let(:svc1_file) { '/etc/haproxy/svc1.cfg' }
+      let(:svc2_file) { '/etc/haproxy/svc2.cfg' }
 
       let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
       let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
       let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
       let(:params) do
-        { floating_ips: { 'svc1': '1.2.3.4', svc2: '1.2.3.5' },
+        { floating_ips: { 'svc1' => '1.2.3.4', 'svc2' => '1.2.3.5' },
           cert_source: '' }
       end
 
@@ -35,7 +35,7 @@ describe 'nebula::profile::haproxy' do
 
       before(:each) do
         stub('balanced_frontends') do |d|
-          allow_call(d).and_return('svc1': %w[scotch soda], 'svc2': %w[scotch third_server])
+          allow_call(d).and_return('svc1' => %w[scotch soda], 'svc2' => %w[scotch third_server])
         end
       end
 
@@ -103,15 +103,16 @@ describe 'nebula::profile::haproxy' do
         it 'sets $CONFIG to the base config' do
           is_expected.to contain_file(file).with_content(%r{^CONFIG="#{base_file}"\n})
         end
-        it 'sets $EXTRAOPTS to include the backend and frontend configs' do
+        it 'sets $EXTRAOPTS to include the service configs' do
           is_expected.to contain_file(file).with_content(
-            %r{EXTRAOPTS="-f \/etc\/haproxy\/backends\.cfg -f \/etc\/haproxy\/frontends\.cfg"\n},
+            %r{EXTRAOPTS="-f \/etc\/haproxy\/svc1\.cfg -f \/etc\/haproxy\/svc2\.cfg "\n},
           )
         end
       end
 
-      describe 'frontends config file' do
-        let(:file) { frontend_file }
+      describe 'svc1 config file' do
+        let(:service) { 'svc1' }
+        let(:file) { svc1_file }
 
         it { is_expected.to contain_file(file).with(ensure: 'present') }
         it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
@@ -120,7 +121,7 @@ describe 'nebula::profile::haproxy' do
 
         it 'says it is managed by puppet' do
           is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/frontends\.cfg\.erb\)\n},
+            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/service\.cfg\.erb\)\n},
           )
         end
 
@@ -145,21 +146,6 @@ describe 'nebula::profile::haproxy' do
             expect(actual).to include(stanza)
           end
         end
-      end
-
-      describe 'backends config file' do
-        let(:file) { backend_file }
-
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
-
-        it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/backends\.cfg\.erb\)\n},
-          )
-        end
 
         [
           "backend svc1-hatcher-http-back\n" \
@@ -175,6 +161,22 @@ describe 'nebula::profile::haproxy' do
           it "contains the stanza #{stanza.split("\n").first}" do
             is_expected.to contain_file(file).with_content(%r{#{stanza}}m)
           end
+        end
+      end
+
+      context "svc2 config file" do
+        let(:service) { 'svc2' }
+        let(:file) { svc2_file }
+
+        it { is_expected.to contain_file(file).with(ensure: 'present') }
+        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
+        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
+        it { is_expected.to contain_file(file).with(mode: '0644') }
+
+        it 'says it is managed by puppet' do
+          is_expected.to contain_file(file).with_content(
+            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/service\.cfg\.erb\)\n},
+          )
         end
 
         it 'contains the stanza backend svc2-hatcher-http-back' do
