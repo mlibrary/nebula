@@ -62,8 +62,8 @@ nebula::profile::apt::puppet_repo: puppet5
 
 nebula::profile::base::environment::vars: {}
 
-nebula::profile::base::exim4::root_email: root@default.invalid
-nebula::profile::base::exim4::relay_domain: exim.default.invalid
+nebula::profile::exim4::root_email: root@default.invalid
+nebula::profile::exim4::relay_domain: exim.default.invalid
 
 nebula::profile::ntp::servers:
 - ntp.example.invalid

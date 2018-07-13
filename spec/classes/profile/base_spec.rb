@@ -22,7 +22,6 @@ describe 'nebula::profile::base' do
       when 'debian-8-x86_64'
         it { is_expected.not_to contain_class('nebula::profile::afs') }
         it { is_expected.not_to contain_base_class('authorized_keys') }
-        it { is_expected.not_to contain_base_class('exim4') }
         it { is_expected.not_to contain_base_class('firewall::ipv4') }
         it { is_expected.not_to contain_base_class('sysctl') }
         it { is_expected.not_to contain_base_class('sshd') }
@@ -30,7 +29,6 @@ describe 'nebula::profile::base' do
       when 'debian-9-x86_64'
         it { is_expected.to contain_class('nebula::profile::afs') }
         it { is_expected.to contain_base_class('authorized_keys') }
-        it { is_expected.to contain_base_class('exim4') }
         it { is_expected.to contain_base_class('firewall::ipv4') }
         it { is_expected.to contain_base_class('users') }
 

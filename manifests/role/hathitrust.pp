@@ -10,6 +10,7 @@ class nebula::role::hathitrust {
   include nebula::profile::base
   include nebula::profile::apt
   include nebula::profile::duo
+  include nebula::profile::exim4
   include nebula::profile::grub
   include nebula::profile::ntp
   include nebula::profile::vim
