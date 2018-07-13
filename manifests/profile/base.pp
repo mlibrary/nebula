@@ -65,7 +65,6 @@ class nebula::profile::base (
     include nebula::profile::base::firewall::ipv4
     include nebula::profile::base::ntp
     include nebula::profile::base::users
-    include nebula::profile::base::vim
 
     class { 'nebula::profile::base::sysctl':
       bridge => $bridge_network,
