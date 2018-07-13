@@ -1,5 +1,5 @@
 # Managed by puppet (nebula/profile/haproxy/default.erb)
 
 CONFIG="/etc/haproxy/haproxy.cfg"
-EXTRAOPTS="-f /etc/haproxy/backends.cfg -f /etc/haproxy/frontends.cfg"
+EXTRAOPTS="<% @balanced_frontends.keys.sort.each do |service| %>-f /etc/haproxy/<%= service %>.cfg <% end %>"
 

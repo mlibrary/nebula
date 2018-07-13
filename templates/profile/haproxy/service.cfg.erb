@@ -1,0 +1,31 @@
+# Managed by puppet (nebula/profile/haproxy/service.cfg.erb)
+<%- nodes = @node_names.sort
+  .map{|node_id| scope.call_function('fact_for', [node_id, 'networking'])}
+  .map{|networking| [networking['hostname'], networking['ip']]}
+-%>
+backend <%= @service %>-<%= @datacenter %>-http-back
+  http-check expect status 200
+<% nodes.each do |hostname, ip| -%>
+  <%= "server #{hostname} #{ip}:80 check cookie s#{ip.split('.').last}" %>
+<% end -%>
+
+backend <%= @service %>-<%= @datacenter %>-https-back
+  http-check expect status 200
+<% nodes.each do |hostname, ip| -%>
+  <%= "server #{hostname} #{ip}:443 check cookie s#{ip.split('.').last}" %>
+<% end -%>
+
+frontend <%= @service %>-<%= @datacenter -%>-http-front
+  bind <%= @floating_ips[@service] -%>:80,<%= @networking['ip'] -%>:80
+  stats uri /haproxy?stats
+  default_backend <%= @service %>-<%= @datacenter -%>-http-back
+  http-request set-header X-Client-IP %ci
+  http-request set-header X-Forwarded-Proto http
+
+frontend <%= @service %>-<%= @datacenter -%>-https-front
+  bind <%= @floating_ips[@service] -%>:443,<%= @networking['ip'] -%>:443 ssl crt /etc/ssl/private/<%= @service %>
+  stats uri /haproxy?stats
+  default_backend <%= @service %>-<%= @datacenter -%>-https-back
+  http-response set-header "Strict-Transport-Security" "max-age=31536000"
+  http-request set-header X-Client-IP %ci
+  http-request set-header X-Forwarded-Proto https

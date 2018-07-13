@@ -16,28 +16,12 @@ class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $mo
   package { 'haproxy': }
   package { 'haproxyctl': }
 
+  $balanced_frontends = balanced_frontends()
+
   file { '/etc/haproxy/haproxy.cfg':
     ensure  => 'present',
     mode    => '0644',
     content => template('nebula/profile/haproxy/haproxy.cfg.erb'),
-    require => Package['haproxy'],
-    notify  => Service['haproxy'],
-  }
-
-  $frontends = balanced_frontends()
-
-  file { '/etc/haproxy/backends.cfg':
-    ensure  => 'present',
-    mode    => '0644',
-    content => template('nebula/profile/haproxy/backends.cfg.erb'),
-    require => Package['haproxy'],
-    notify  => Service['haproxy'],
-  }
-
-  file { '/etc/haproxy/frontends.cfg':
-    ensure  => 'present',
-    mode    => '0644',
-    content => template('nebula/profile/haproxy/frontends.cfg.erb'),
     require => Package['haproxy'],
     notify  => Service['haproxy'],
   }
@@ -50,16 +34,26 @@ class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $mo
     notify  => Service['haproxy'],
   }
 
-  if $cert_source != '' {
-    file { '/etc/ssl/private' :
-      ensure => 'directory',
-      mode   => '0700',
-      owner  => 'root',
-      group  => 'root'
+  file { '/etc/ssl/private' :
+    ensure => 'directory',
+    mode   => '0700',
+    owner  => 'root',
+    group  => 'root'
+  }
+
+  $balanced_frontends.each |$service, $node_names| {
+    $floating_ip = $floating_ips[$service]
+
+    file { "/etc/haproxy/${service}.cfg":
+      ensure  => 'present',
+      mode    => '0644',
+      content => template('nebula/profile/haproxy/service.cfg.erb'),
+      require => Package['haproxy'],
+      notify  => Service['haproxy'],
     }
 
-    $frontends.each |$frontend, $nodes| {
-      file { "/etc/ssl/private/${frontend}":
+    if $cert_source != '' {
+      file { "/etc/ssl/private/${service}":
         ensure  => 'directory',
         mode    => '0700',
         owner   => 'haproxy',
@@ -68,7 +62,7 @@ class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $mo
         purge   => true,
         links   => 'follow',
         notify  => Service['haproxy'],
-        source  => "puppet://${cert_source}/${frontend}"
+        source  => "puppet://${cert_source}/${service}"
       }
     }
   }
