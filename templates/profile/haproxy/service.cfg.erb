@@ -1,31 +1,61 @@
 # Managed by puppet (nebula/profile/haproxy/service.cfg.erb)
-<%- nodes = @node_names.sort
+<%- 
+  use_throttling = @max_requests_burst > 0 and @max_requests_per_sec > 0
+  duration = (@max_requests_burst / @max_requests_per_sec).to_s + "s" if use_throttling
+  service_loc = "#{@service}-#{@datacenter}"
+
+  nodes = @node_names.sort
   .map{|node_id| scope.call_function('fact_for', [node_id, 'networking'])}
   .map{|networking| [networking['hostname'], networking['ip']]}
 -%>
-backend <%= @service %>-<%= @datacenter %>-http-back
+
+backend <%= service_loc %>-http-back
   http-check expect status 200
+<%- if use_throttling -%>
+  stick-table type ip size 200k expire <%= duration %> store http_req_rate(<%= duration %>),bytes_out_rate(<%= duration %>)
+  tcp-request content track-sc2 src
+  acl http_req_rate_abuse src_http_req_rate(<%= service_loc %>-http-back) gt 10
+  acl mark_as_abuser src_inc_gpc0(<%= service_loc %>-http-front) gt 0
+  http-request deny deny_status 503 if http_req_rate_abuse mark_as_abuser
+<%- end -%>
 <% nodes.each do |hostname, ip| -%>
   <%= "server #{hostname} #{ip}:80 check cookie s#{ip.split('.').last}" %>
 <% end -%>
 
-backend <%= @service %>-<%= @datacenter %>-https-back
+backend <%= service_loc %>-https-back
   http-check expect status 200
 <% nodes.each do |hostname, ip| -%>
   <%= "server #{hostname} #{ip}:443 check cookie s#{ip.split('.').last}" %>
 <% end -%>
 
-frontend <%= @service %>-<%= @datacenter -%>-http-front
+frontend <%= service_loc -%>-http-front
   bind <%= @floating_ip -%>:80,<%= @networking['ip'] -%>:80
   stats uri /haproxy?stats
-  default_backend <%= @service %>-<%= @datacenter -%>-http-back
+  default_backend <%= service_loc -%>-http-back
   http-request set-header X-Client-IP %ci
   http-request set-header X-Forwarded-Proto http
+  <%- if use_throttling -%>
+  stick-table type ip size 200k expire <%= duration %> store gpc0
+  acl <%= @service %>_source_is_abuser src_get_gpc0(<%= service_loc %>-http-front) gt 0
+  use_backend svc1_blocked if <%= @service %>_source_is_abuser
+  tcp-request connection track-sc0 src
+  <%- end -%>
 
-frontend <%= @service %>-<%= @datacenter -%>-https-front
+frontend <%= service_loc -%>-https-front
   bind <%= @floating_ip -%>:443,<%= @networking['ip'] -%>:443 ssl crt /etc/ssl/private/<%= @service %>
   stats uri /haproxy?stats
-  default_backend <%= @service %>-<%= @datacenter -%>-https-back
+  default_backend <%= service_loc -%>-https-back
   http-response set-header "Strict-Transport-Security" "max-age=31536000"
   http-request set-header X-Client-IP %ci
   http-request set-header X-Forwarded-Proto https
+  <%- if  use_throttling -%>
+  stick-table type ip size 200k expire <%= @max_requests_burst / @max_requests_per_sec %>s store gpc0
+  acl <%= @service %>_source_is_abuser src_get_gpc0(<%= service_loc %>-https-front) gt 0
+  use_backend <%= @service %>_blocked if <%= @service %>_source_is_abuser
+  tcp-request connection track-sc0 src
+  <%- end -%>
+
+<%- if use_throttling -%>
+backend <%= service_loc -%>-blocked
+  http-request deny deny_status 503
+<%- end -%>

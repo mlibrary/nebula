@@ -84,6 +84,39 @@ describe 'nebula::haproxy_service' do
             is_expected.to contain_file(file).with_content(%r{#{stanza}}m)
           end
         end
+        describe 'with throttling parameters' do
+          let(:params) do
+            { max_requests_per_sec: 2,
+              max_requests_burst: 400,
+              exempt_paths: %w(/some/where, /another/place),
+              exempt_suffixes: %w(.js .css .png),
+              exempt_ips: %w(1.2.3.4 10.1.0.0/16),
+              floating_ip: '1.2.3.4',
+              node_names: %w[scotch soda],
+              cert_source: ''
+            }
+          end
+
+         ["  stick-table type ip size 200k expire 200s store gpc0\n" \
+              "  acl svc1_source_is_abuser src_get_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
+              "  use_backend svc1_blocked if svc1_source_is_abuser\n" \
+              "  tcp-request connection track-sc0 src",
+
+              "  stick-table type ip size 200k expire 200s store http_req_rate\\(200s\\),bytes_out_rate\\(200s\\)\n" \
+              "  tcp-request content track-sc2 src\n" \
+              "  acl http_req_rate_abuse src_http_req_rate\\(svc1-hatcher-http-back\\) gt 10\n" \
+              "  acl mark_as_abuser src_inc_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
+              "  http-request deny deny_status 503 if http_req_rate_abuse mark_as_abuser\n",
+
+              "backend svc1-hatcher-blocked\n"\
+              "  http-request deny deny_status 503\n"
+         ].each do |stanza|
+
+            it "contains the throttling config stanza" do
+              is_expected.to contain_file(file).with_content(%r{#{stanza}}m)
+            end
+         end
+        end
       end
 
       describe 'ssl certs' do
@@ -111,6 +144,7 @@ describe 'nebula::haproxy_service' do
           it { is_expected.to contain_file(dest).with(purge: true) }
         end
       end
+
     end
   end
 end

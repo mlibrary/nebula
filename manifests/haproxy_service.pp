@@ -9,7 +9,12 @@
 define nebula::haproxy_service(
   String          $floating_ip,
   Array[String]   $node_names = [],
-  String          $cert_source = ''
+  String          $cert_source = '',
+  Integer         $max_requests_per_sec = 0,
+  Integer         $max_requests_burst = 0,
+  Array[String]   $exempt_paths = [],
+  Array[String]   $exempt_suffixes = [],
+  Array[String]   $exempt_ips = []
 ) {
 
   require nebula::profile::haproxy::prereqs
