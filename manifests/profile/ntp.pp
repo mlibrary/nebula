@@ -2,15 +2,15 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::ntp
+# nebula::profile::ntp
 #
 # Manage ntp settings.
 #
 # @param servers List of ntp servers to use
 #
 # @example
-#   include nebula::profile::base::ntp
-class nebula::profile::base::ntp (
+#   include nebula::profile::ntp
+class nebula::profile::ntp (
   Array[String] $servers,
 ) {
   service { 'ntp':

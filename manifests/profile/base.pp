@@ -63,7 +63,6 @@ class nebula::profile::base (
     include nebula::profile::base::authorized_keys
     include nebula::profile::base::exim4
     include nebula::profile::base::firewall::ipv4
-    include nebula::profile::base::ntp
     include nebula::profile::base::users
 
     class { 'nebula::profile::base::sysctl':
