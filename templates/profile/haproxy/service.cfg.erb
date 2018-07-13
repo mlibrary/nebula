@@ -16,14 +16,14 @@ backend <%= @service %>-<%= @datacenter %>-https-back
 <% end -%>
 
 frontend <%= @service %>-<%= @datacenter -%>-http-front
-  bind <%= @floating_ips[@service] -%>:80,<%= @networking['ip'] -%>:80
+  bind <%= @floating_ip -%>:80,<%= @networking['ip'] -%>:80
   stats uri /haproxy?stats
   default_backend <%= @service %>-<%= @datacenter -%>-http-back
   http-request set-header X-Client-IP %ci
   http-request set-header X-Forwarded-Proto http
 
 frontend <%= @service %>-<%= @datacenter -%>-https-front
-  bind <%= @floating_ips[@service] -%>:443,<%= @networking['ip'] -%>:443 ssl crt /etc/ssl/private/<%= @service %>
+  bind <%= @floating_ip -%>:443,<%= @networking['ip'] -%>:443 ssl crt /etc/ssl/private/<%= @service %>
   stats uri /haproxy?stats
   default_backend <%= @service %>-<%= @datacenter -%>-https-back
   http-response set-header "Strict-Transport-Security" "max-age=31536000"

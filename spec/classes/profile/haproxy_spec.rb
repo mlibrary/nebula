@@ -11,15 +11,13 @@ describe 'nebula::profile::haproxy' do
     context "on #{os}" do
       let(:default_file) { '/etc/default/haproxy' }
       let(:base_file) { '/etc/haproxy/haproxy.cfg' }
-      let(:svc1_file) { '/etc/haproxy/svc1.cfg' }
-      let(:svc2_file) { '/etc/haproxy/svc2.cfg' }
 
       let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
       let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
       let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
       let(:params) do
         { floating_ips: { 'svc1' => '1.2.3.4', 'svc2' => '1.2.3.5' },
-          cert_source: '' }
+          cert_source: '/some/where' }
       end
 
       let(:facts) do
@@ -110,120 +108,6 @@ describe 'nebula::profile::haproxy' do
         end
       end
 
-      describe 'svc1 config file' do
-        let(:service) { 'svc1' }
-        let(:file) { svc1_file }
-
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
-
-        it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/service\.cfg\.erb\)\n},
-          )
-        end
-
-        [
-          "frontend svc1-hatcher-http-front\n" \
-            "  bind 1.2.3.4:80,40.41.42.43:80\n" \
-            "  stats uri \/haproxy?stats\n" \
-            "  default_backend svc1-hatcher-http-back\n" \
-            "  http-request set-header X-Client-IP %ci\n" \
-            "  http-request set-header X-Forwarded-Proto http\n",
-          "frontend svc1-hatcher-https-front\n" \
-            "  bind 1.2.3.4:443,40.41.42.43:443 ssl crt /etc/ssl/private/svc1\n" \
-            "  stats uri /haproxy?stats\n" \
-            "  default_backend svc1-hatcher-https-back\n" \
-            "  http-response set-header \"Strict-Transport-Security\" \"max-age=31536000\"\n" \
-            "  http-request set-header X-Client-IP %ci\n" \
-            "  http-request set-header X-Forwarded-Proto https\n",
-        ].each do |stanza|
-          it 'contains the stanza' do
-            is_expected.to contain_file(file)
-            actual = catalogue.resource('file', file).send(:parameters)[:content]
-            expect(actual).to include(stanza)
-          end
-        end
-
-        [
-          "backend svc1-hatcher-http-back\n" \
-            "  http-check expect status 200\n" \
-            "  server scotch 111.111.111.123:80 check cookie s123\n" \
-            "  server soda 222.222.222.234:80 check cookie s234\n",
-
-          "backend svc1-hatcher-https-back\n" \
-            "  http-check expect status 200\n" \
-            "  server scotch 111.111.111.123:443 check cookie s123\n" \
-            "  server soda 222.222.222.234:443 check cookie s234\n",
-        ].each do |stanza|
-          it "contains the stanza #{stanza.split("\n").first}" do
-            is_expected.to contain_file(file).with_content(%r{#{stanza}}m)
-          end
-        end
-      end
-
-      context "svc2 config file" do
-        let(:service) { 'svc2' }
-        let(:file) { svc2_file }
-
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
-
-        it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/service\.cfg\.erb\)\n},
-          )
-        end
-
-        it 'contains the stanza backend svc2-hatcher-http-back' do
-          is_expected.to contain_file(file).with_content(%r{#{
-            "backend svc2-hatcher-http-back\n" \
-            "  http-check expect status 200\n" \
-            "  server scotch 111.111.111.123:80 check cookie s123\n" \
-            "  server #{third_server["hostname"]} #{third_server["ip"]}:80 check cookie s#{third_server["ip"].split('.').last}\n" \
-          }}m)
-        end
-
-        it 'contains the stanza backend svc2-hatcher-https-back' do
-          is_expected.to contain_file(file).with_content(%r{#{
-            "backend svc2-hatcher-https-back\n" \
-            "  http-check expect status 200\n" \
-            "  server scotch 111.111.111.123:443 check cookie s123\n" \
-            "  server #{third_server["hostname"]} #{third_server["ip"]}:443 check cookie s#{third_server["ip"].split('.').last}\n" \
-          }}m)
-        end
-      end
-
-      describe 'ssl certs' do
-        let(:dest) { '/etc/ssl/private/svc1' }
-
-        context 'with an empty source' do
-          it { is_expected.not_to contain_file(dest) }
-        end
-
-        context 'with a source' do
-          let(:params) do
-            { floating_ips: { 'svc1': '1.2.3.4' },
-              cert_source: '/some/location' }
-          end
-
-          it { is_expected.to contain_file(dest).with(ensure: 'directory') }
-          it { is_expected.to contain_file(dest).with(notify: 'Service[haproxy]') }
-          it { is_expected.to contain_file(dest).with(mode: '0700') }
-          it { is_expected.to contain_file(dest).with(owner: 'haproxy') }
-          it { is_expected.to contain_file(dest).with(group: 'haproxy') }
-          it { is_expected.to contain_file(dest).with(recurse: true) }
-          it { is_expected.to contain_file(dest).with(source: "puppet://#{params[:cert_source]}/svc1") }
-          it { is_expected.to contain_file(dest).with(path: dest) }
-          it { is_expected.to contain_file(dest).with(links: 'follow') }
-          it { is_expected.to contain_file(dest).with(purge: true) }
-        end
-      end
-
       describe 'users' do
         it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl', gid: 'haproxy', managehome: true, home: '/var/haproxyctl') }
 
@@ -231,6 +115,11 @@ describe 'nebula::profile::haproxy' do
           is_expected.to contain_file('/var/haproxyctl/.ssh/authorized_keys')
             .with_content(%r{^ecdsa-sha2-nistp256 CCCCCCCCCCCC haproxyctl@default\.invalid$})
         end
+      end
+
+      describe 'services' do
+        it { is_expected.to contain_nebula__haproxy_service('svc1').with(floating_ip: '1.2.3.4', node_names: %w[scotch soda], cert_source: '/some/where') }
+        it { is_expected.to contain_nebula__haproxy_service('svc2').with(floating_ip: '1.2.3.5', node_names: %w[scotch third_server], cert_source: '/some/where') }
       end
     end
   end

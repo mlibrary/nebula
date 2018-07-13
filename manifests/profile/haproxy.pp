@@ -6,15 +6,12 @@
 #
 # @example
 #   include nebula::profile::haproxy
-class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $monitoring_user) {
-  service { 'haproxy':
-    ensure     => 'running',
-    enable     => true,
-    hasrestart => true,
-  }
-
-  package { 'haproxy': }
-  package { 'haproxyctl': }
+class nebula::profile::haproxy(
+  Hash $floating_ips,
+  Hash $monitoring_user,
+  String $cert_source = '',
+) {
+  require nebula::profile::haproxy::prereqs
 
   $balanced_frontends = balanced_frontends()
 
@@ -42,28 +39,10 @@ class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $mo
   }
 
   $balanced_frontends.each |$service, $node_names| {
-    $floating_ip = $floating_ips[$service]
-
-    file { "/etc/haproxy/${service}.cfg":
-      ensure  => 'present',
-      mode    => '0644',
-      content => template('nebula/profile/haproxy/service.cfg.erb'),
-      require => Package['haproxy'],
-      notify  => Service['haproxy'],
-    }
-
-    if $cert_source != '' {
-      file { "/etc/ssl/private/${service}":
-        ensure  => 'directory',
-        mode    => '0700',
-        owner   => 'haproxy',
-        group   => 'haproxy',
-        recurse => true,
-        purge   => true,
-        links   => 'follow',
-        notify  => Service['haproxy'],
-        source  => "puppet://${cert_source}/${service}"
-      }
+    nebula::haproxy_service { $service :
+      floating_ip => $floating_ips[$service],
+      cert_source => $cert_source,
+      node_names  => $node_names
     }
   }
 
