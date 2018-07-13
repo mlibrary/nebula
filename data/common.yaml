@@ -57,8 +57,8 @@ nebula::profile::base::keytab: ''
 nebula::profile::base::keytab_source: ''
 nebula::profile::base::timezone: US/Eastern
 
-nebula::profile::base::apt::mirror: http://ftp.us.debian.org/debian/
-nebula::profile::base::apt::puppet_repo: puppet5
+nebula::profile::apt::mirror: http://ftp.us.debian.org/debian/
+nebula::profile::apt::puppet_repo: puppet5
 
 nebula::profile::base::environment::vars: {}
 

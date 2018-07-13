@@ -21,7 +21,6 @@ describe 'nebula::profile::base' do
       case os
       when 'debian-8-x86_64'
         it { is_expected.not_to contain_class('nebula::profile::afs') }
-        it { is_expected.not_to contain_base_class('apt') }
         it { is_expected.not_to contain_base_class('authorized_keys') }
         it { is_expected.not_to contain_base_class('exim4') }
         it { is_expected.not_to contain_base_class('firewall::ipv4') }
@@ -32,7 +31,6 @@ describe 'nebula::profile::base' do
         it { is_expected.not_to contain_base_class('users') }
         it { is_expected.not_to contain_base_class('vim') }
       when 'debian-9-x86_64'
-        it { is_expected.to contain_base_class('apt') }
         it { is_expected.to contain_class('nebula::profile::afs') }
         it { is_expected.to contain_base_class('authorized_keys') }
         it { is_expected.to contain_base_class('exim4') }
@@ -42,11 +40,6 @@ describe 'nebula::profile::base' do
         it { is_expected.to contain_base_class('users') }
         it { is_expected.to contain_base_class('vim') }
 
-        it 'sets apt to never install recommended packages' do
-          is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
-            .with_content(%r{^APT::Install-Recommends "0";$})
-            .with_content(%r{^APT::Install-Suggests "0";$})
-        end
 
         it { is_expected.to contain_package('dselect') }
         it { is_expected.to contain_package('ifenslave') }
