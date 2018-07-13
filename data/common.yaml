@@ -22,7 +22,7 @@ nebula::profile::elastic::logstash_hosts:
 - logstash.default.invalid:1234
 nebula::profile::elastic::filebeat::prospectors::mgetit::log_path: /var/log/mgetit.default.invalid
 nebula::profile::elastic::period: 90
-nebula::profile::haproxy::keepalived::floating_ips: 
+nebula::profile::haproxy::keepalived::floating_ips:
   svc1: '12.23.32.22'
   svc2: '12.23.32.23'
 nebula::profile::haproxy::cert_source: ''
@@ -68,11 +68,11 @@ nebula::profile::base::exim4::relay_domain: exim.default.invalid
 nebula::profile::base::ntp::servers:
 - ntp.example.invalid
 
-nebula::profile::base::duo::ikey: ikey.default.invalid
-nebula::profile::base::duo::skey: skey.default.invalid
-nebula::profile::base::duo::host: host.default.invalid
-nebula::profile::base::duo::pushinfo: push.default.invalid
-nebula::profile::base::duo::failmode: fail.default.invalid
+nebula::profile::duo::ikey: ikey.default.invalid
+nebula::profile::duo::skey: skey.default.invalid
+nebula::profile::duo::host: host.default.invalid
+nebula::profile::duo::pushinfo: push.default.invalid
+nebula::profile::duo::failmode: fail.default.invalid
 
 nebula::profile::base::firewall::ipv4::filename: /etc/firewall.ipv4
 nebula::profile::base::firewall::ipv4::rules:

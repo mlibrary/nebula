@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::duo
+# nebula::profile::duo
 #
 # Manage Duo.
 #
@@ -13,8 +13,8 @@
 # @param failmode Fail mode
 #
 # @example
-#   include nebula::profile::base::duo
-class nebula::profile::base::duo (
+#   include nebula::profile::duo
+class nebula::profile::duo (
   String $ikey,
   String $skey,
   String $host,
@@ -34,7 +34,7 @@ class nebula::profile::base::duo (
   }
 
   file { '/etc/security/pam_duo.conf':
-    content => template('nebula/profile/base/pam_duo.conf.erb'),
+    content => template('nebula/profile/duo/pam_duo.conf.erb'),
     mode    => '0600',
     require => Package['libpam-duo'],
   }

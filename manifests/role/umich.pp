@@ -13,6 +13,7 @@ class nebula::role::umich (
     bridge_network => $bridge_network,
   }
 
+  include nebula::profile::duo
   include nebula::profile::dns::standard
   include nebula::profile::elastic::metricbeat
 }

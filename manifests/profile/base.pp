@@ -62,7 +62,6 @@ class nebula::profile::base (
     include nebula::profile::afs
     include nebula::profile::base::apt
     include nebula::profile::base::authorized_keys
-    include nebula::profile::base::duo
     include nebula::profile::base::exim4
     include nebula::profile::base::firewall::ipv4
     include nebula::profile::base::grub
