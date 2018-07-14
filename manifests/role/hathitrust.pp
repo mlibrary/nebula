@@ -8,6 +8,7 @@
 #   include nebula::role::hathitrust
 class nebula::role::hathitrust {
   include nebula::profile::base
+  include nebula::profile::authorized_keys
   include nebula::profile::apt
   include nebula::profile::duo
   include nebula::profile::exim4
