@@ -22,11 +22,9 @@ describe 'nebula::profile::base' do
       when 'debian-8-x86_64'
         it { is_expected.not_to contain_class('nebula::profile::afs') }
         it { is_expected.not_to contain_base_class('firewall::ipv4') }
-        it { is_expected.not_to contain_base_class('users') }
       when 'debian-9-x86_64'
         it { is_expected.to contain_class('nebula::profile::afs') }
         it { is_expected.to contain_base_class('firewall::ipv4') }
-        it { is_expected.to contain_base_class('users') }
 
 
         it { is_expected.to contain_package('dselect') }

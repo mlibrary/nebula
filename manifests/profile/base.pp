@@ -52,7 +52,6 @@ class nebula::profile::base (
 
     include nebula::profile::afs
     include nebula::profile::base::firewall::ipv4
-    include nebula::profile::base::users
 
     file { '/etc/motd':
       content => template('nebula/profile/base/motd.erb'),
