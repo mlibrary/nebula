@@ -9,10 +9,7 @@
 class nebula::role::umich (
   $bridge_network = false,
 ) {
-  class { 'nebula::profile::base':
-    bridge_network => $bridge_network,
-  }
-
+  include nebula::profile::base
   include nebula::profile::apt
   include nebula::profile::duo
   include nebula::profile::exim4
@@ -21,4 +18,10 @@ class nebula::role::umich (
   include nebula::profile::vim
   include nebula::profile::dns::standard
   include nebula::profile::elastic::metricbeat
+
+  class { 'nebula::profile::networking':
+    bridge => $bridge_network,
+    keytab => true
+  }
+
 }

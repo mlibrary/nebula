@@ -16,4 +16,9 @@ class nebula::role::hathitrust {
   include nebula::profile::vim
   include nebula::profile::dns::smartconnect
   include nebula::profile::elastic::metricbeat
+
+  class { 'nebula::profile::networking':
+    bridge => false,
+    keytab => true
+  }
 }

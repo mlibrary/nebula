@@ -52,9 +52,9 @@ nebula::profile::vmhost::host::defaults: {}
 
 nebula::profile::base::sysadmin_dept: Default Incorrect Dept
 nebula::profile::base::contact_email: contact@default.invalid
-nebula::profile::base::default_keytab: nebula/keytab.empty
-nebula::profile::base::keytab: ''
-nebula::profile::base::keytab_source: ''
+nebula::profile::networking::keytab::default_keytab: nebula/keytab.empty
+nebula::profile::networking::keytab::keytab: ''
+nebula::profile::networking::keytab::keytab_source: ''
 nebula::profile::base::timezone: US/Eastern
 
 nebula::profile::apt::mirror: http://ftp.us.debian.org/debian/
@@ -79,7 +79,7 @@ nebula::profile::base::firewall::ipv4::rules:
 - '-A INPUT -p tcp -s 1.2.3.4 -j ACCEPT'
 - '-A INPUT -p tcp -s 5.6.7.8 -j ACCEPT'
 
-nebula::profile::base::sshd::whitelist:
+nebula::profile::networking::sshd::whitelist:
 - '10.1.1.0/24'
 - '10.2.2.0/24'
 - '!10.2.2.2'

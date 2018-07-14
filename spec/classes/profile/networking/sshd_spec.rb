@@ -5,7 +5,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::base::sshd' do
+describe 'nebula::profile::networking::sshd' do
   def contain_sshd
     contain_file('/etc/ssh/sshd_config')
   end

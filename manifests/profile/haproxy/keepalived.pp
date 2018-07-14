@@ -12,7 +12,7 @@ class nebula::profile::haproxy::keepalived(Hash $floating_ips,
     floating_ips => $floating_ips,
   }
 
-  require 'nebula::profile::base::sysctl'
+  require 'nebula::profile::networking::sysctl'
 
   package { 'keepalived': }
   package { 'ipset': }
