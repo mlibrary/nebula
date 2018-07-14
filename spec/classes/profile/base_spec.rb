@@ -33,7 +33,6 @@ describe 'nebula::profile::base' do
         it { is_expected.to contain_package('ifenslave') }
         it { is_expected.to contain_package('linux-image-amd64') }
         it { is_expected.to contain_package('vlan') }
-        it { is_expected.to contain_package('tiger') }
         it { is_expected.to contain_package('dbus') }
         it { is_expected.to contain_package('dkms') }
 

@@ -14,6 +14,7 @@ class nebula::role::hathitrust {
   include nebula::profile::exim4
   include nebula::profile::grub
   include nebula::profile::ntp
+  include nebula::profile::tiger
   include nebula::profile::vim
   include nebula::profile::dns::smartconnect
   include nebula::profile::elastic::metricbeat

@@ -29,7 +29,6 @@ class nebula::profile::base (
     package { 'ifenslave': }
     package { 'linux-image-amd64': }
     package { 'vlan': }
-    package { 'tiger': }
     package { 'dbus': }
     package { 'dkms': }
 
