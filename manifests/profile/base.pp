@@ -50,7 +50,6 @@ class nebula::profile::base (
       refreshonly => true,
     }
 
-    include nebula::profile::afs
     include nebula::profile::base::firewall::ipv4
 
     file { '/etc/motd':

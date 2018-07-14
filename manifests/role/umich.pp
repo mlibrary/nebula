@@ -9,6 +9,7 @@
 class nebula::role::umich (
   $bridge_network = false,
 ) {
+  include nebula::profile::afs
   include nebula::profile::base
   include nebula::profile::authorized_keys
   include nebula::profile::apt
