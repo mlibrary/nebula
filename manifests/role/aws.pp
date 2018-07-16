@@ -9,6 +9,8 @@
 class nebula::role::aws {
 
   include nebula::profile::base
+  include nebula::profile::aws::filesystem
+
   if $facts['os']['release']['major'] == '9' {
     include nebula::profile::apt
     include nebula::profile::authorized_keys
