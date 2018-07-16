@@ -16,7 +16,10 @@ describe 'nebula::profile::haproxy' do
       let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
       let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
       let(:params) do
-        { floating_ips: { 'svc1' => '1.2.3.4', 'svc2' => '1.2.3.5' },
+        { services: { 'svc1' => { 'floating_ip': '1.2.3.4', 
+                                  'max_requests_per_sec' => 10, 
+                                  'max_requests_burst' => 200 },
+                      'svc2' => { 'floating_ip': '1.2.3.5' }},
           cert_source: '/some/where' }
       end
 
@@ -118,8 +121,21 @@ describe 'nebula::profile::haproxy' do
       end
 
       describe 'services' do
-        it { is_expected.to contain_nebula__haproxy_service('svc1').with(floating_ip: '1.2.3.4', node_names: %w[scotch soda], cert_source: '/some/where') }
-        it { is_expected.to contain_nebula__haproxy_service('svc2').with(floating_ip: '1.2.3.5', node_names: %w[scotch third_server], cert_source: '/some/where') }
+        it do
+          is_expected.to contain_nebula__haproxy_service('svc1').with(
+          floating_ip: '1.2.3.4', 
+          node_names: %w[scotch soda], 
+          cert_source: '/some/where', 
+          max_requests_per_sec: 10, 
+          max_requests_burst: 200) 
+        end
+
+        it do
+          is_expected.to contain_nebula__haproxy_service('svc2').with(
+          floating_ip: '1.2.3.5', 
+          node_names: %w[scotch third_server], 
+          cert_source: '/some/where') 
+        end
       end
     end
   end
