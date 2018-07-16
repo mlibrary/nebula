@@ -21,10 +21,10 @@ define nebula::haproxy_service(
 
   $service = $title
 
-  $whitelists = { 
-    "path" => $exempt_paths,
-    "suffix" => $exempt_suffixes,
-    "ip" => $exempt_ips
+  $whitelists = {
+    'path' => $exempt_paths,
+    'suffix' => $exempt_suffixes,
+    'ip' => $exempt_ips
   }
 
   $whitelists.each |String $whitelist, Array[String] $exemptions| {
@@ -34,7 +34,7 @@ define nebula::haproxy_service(
         mode    => '0644',
         require => Package['haproxy'],
         notify  => Service['haproxy'],
-        content => $exemptions.map |$exemption| { "$exemption\n" }.join('')
+        content => $exemptions.map |$exemption| { "${exemption}\n" }.join('')
       }
     }
   }

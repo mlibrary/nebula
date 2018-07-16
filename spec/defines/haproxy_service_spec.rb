@@ -87,11 +87,11 @@ describe 'nebula::haproxy_service' do
         end
         describe 'with throttling parameters' do
           let(:throttling_params) do
-            base_params.merge({ max_requests_per_sec: 2,
-              max_requests_burst: 400,
-              floating_ip: '1.2.3.4',
-              node_names: %w[scotch soda],
-              cert_source: '' })
+            base_params.merge(max_requests_per_sec: 2,
+                              max_requests_burst: 400,
+                              floating_ip: '1.2.3.4',
+                              node_names: %w[scotch soda],
+                              cert_source: '')
           end
           let(:params) { throttling_params }
 
@@ -115,28 +115,26 @@ describe 'nebula::haproxy_service' do
           end
 
           context 'with no whitelists' do
-            it { is_expected.not_to contain_file("/etc/haproxy/svc1_whitelist_ip.txt") }
-            it { is_expected.not_to contain_file("/etc/haproxy/svc1_whitelist_path.txt") }
-            it { is_expected.not_to contain_file("/etc/haproxy/svc1_whitelist_suffix.txt") }
-            it "does not reference any whitelists" do
-              is_expected.to contain_file(service_config).with_content(%r((?!whitelist)))
+            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_ip.txt') }
+            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_path.txt') }
+            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_suffix.txt') }
+            it 'does not reference any whitelists' do
+              is_expected.to contain_file(service_config).with_content(%r{(?!whitelist)})
             end
           end
 
           context 'with IP exemptions' do
-            let(:params) { throttling_params.merge({ exempt_ips: ['10.0.0.1','10.2.32.0/24'] }) }
+            let(:params) { throttling_params.merge(exempt_ips: ['10.0.0.1', '10.2.32.0/24']) }
 
             it { is_expected.to contain_file(service_config).with_content(%r{acl svc1_whitelist_ip src -n -f svc1_whitelist_ip.txt}) }
             it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !svc1_whitelist_ip svc1_http_req_rate_abuse}) }
-            it { is_expected.to contain_file("/etc/haproxy/svc1_whitelist_ip.txt").with_content("10.0.0.1\n10.2.32.0/24\n") }
+            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_ip.txt').with_content("10.0.0.1\n10.2.32.0/24\n") }
           end
 
           context 'with path & suffix exemptions' do
             let(:params) do
-              throttling_params.merge({ 
-                exempt_paths: ['/some/where','/another/path'],
-                exempt_suffixes: ['.abc','.def'] 
-              })
+              throttling_params.merge(exempt_paths: ['/some/where', '/another/path'],
+                                      exempt_suffixes: ['.abc', '.def'])
             end
 
             it { is_expected.to contain_file(service_config).with_content(%r{acl svc1_whitelist_path src -n -f svc1_whitelist_path.txt}) }
@@ -144,8 +142,8 @@ describe 'nebula::haproxy_service' do
 
             it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !svc1_whitelist_path !svc1_whitelist_suffix svc1_http_req_rate_abuse}) }
 
-            it { is_expected.to contain_file("/etc/haproxy/svc1_whitelist_path.txt").with_content("/some/where\n/another/path\n") }
-            it { is_expected.to contain_file("/etc/haproxy/svc1_whitelist_suffix.txt").with_content(".abc\n.def\n") }
+            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path.txt').with_content("/some/where\n/another/path\n") }
+            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_suffix.txt').with_content(".abc\n.def\n") }
           end
         end
       end
