@@ -76,12 +76,12 @@ describe 'nebula::profile::haproxy::keepalived' do
         context 'with a floating ip address parameter' do
           let(:params) do
             {
-              floating_ips: { svc1: Faker::Internet.ip_v4_address,
-                              svc2: Faker::Internet.ip_v4_address },
+              services: { 'svc1' => { 'floating_ip' => Faker::Internet.ip_v4_address },
+                          'svc2' => { 'floating_ip' => Faker::Internet.ip_v4_address } },
             }
           end
 
-          it { is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*#{params[:floating_ips][:svc1]}\n\s*#{params[:floating_ips][:svc2]}\n\s*}}m) }
+          it { is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*#{params[:services]["svc1"]["floating_ip"]}\n\s*#{params[:services]["svc2"]["floating_ip"]}\n\s*}}m) }
         end
 
         it { is_expected.to contain_file(file).with_content(%r{unicast_src_ip #{my_ip}}) }

@@ -27,8 +27,8 @@ vrrp_instance haproxy {
   interface <%= @networking['primary'] %>
   virtual_router_id 51
   virtual_ipaddress {
-    <%- @floating_ips.each do |_,floating_ip| -%>
-      <%= floating_ip %>
+    <%- @services.each do |_,service| -%>
+      <%= service["floating_ip"] %>
     <%- end -%>
   }
 
