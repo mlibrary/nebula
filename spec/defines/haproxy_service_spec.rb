@@ -15,11 +15,12 @@ describe 'nebula::haproxy_service' do
       let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
       let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
       let(:third_server) { { 'ip' => '222.222.222.235', 'hostname' => 'third_server' } }
-      let(:params) do
+      let(:base_params) do
         { floating_ip: '1.2.3.4',
           node_names: %w[scotch soda],
           cert_source: '' }
       end
+      let(:params) { base_params }
 
       let(:facts) do
         os_facts.merge(
@@ -34,15 +35,15 @@ describe 'nebula::haproxy_service' do
 
       describe 'service config file' do
         let(:service) { title }
-        let(:file) { '/etc/haproxy/svc1.cfg' }
+        let(:service_config) { '/etc/haproxy/svc1.cfg' }
 
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
+        it { is_expected.to contain_file(service_config).with(ensure: 'present') }
+        it { is_expected.to contain_file(service_config).with(require: 'Package[haproxy]') }
+        it { is_expected.to contain_file(service_config).with(notify: 'Service[haproxy]') }
+        it { is_expected.to contain_file(service_config).with(mode: '0644') }
 
         it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
+          is_expected.to contain_file(service_config).with_content(
             %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/service\.cfg\.erb\)\n},
           )
         end
@@ -63,8 +64,8 @@ describe 'nebula::haproxy_service' do
           "  http-request set-header X-Forwarded-Proto https\n",
         ].each do |stanza|
           it 'contains the stanza' do
-            is_expected.to contain_file(file)
-            actual = catalogue.resource('file', file).send(:parameters)[:content]
+            is_expected.to contain_file(service_config)
+            actual = catalogue.resource('file', service_config).send(:parameters)[:content]
             expect(actual).to include(stanza)
           end
         end
@@ -81,41 +82,71 @@ describe 'nebula::haproxy_service' do
           "  server soda 222.222.222.234:443 check cookie s234\n",
         ].each do |stanza|
           it "contains the stanza #{stanza.split("\n").first}" do
-            is_expected.to contain_file(file).with_content(%r{#{stanza}}m)
+            is_expected.to contain_file(service_config).with_content(%r{#{stanza}}m)
           end
         end
         describe 'with throttling parameters' do
-          let(:params) do
-            { max_requests_per_sec: 2,
+          let(:throttling_params) do
+            base_params.merge({ max_requests_per_sec: 2,
               max_requests_burst: 400,
-              exempt_paths: %w(/some/where, /another/place),
-              exempt_suffixes: %w(.js .css .png),
-              exempt_ips: %w(1.2.3.4 10.1.0.0/16),
               floating_ip: '1.2.3.4',
               node_names: %w[scotch soda],
-              cert_source: ''
-            }
+              cert_source: '' })
+          end
+          let(:params) { throttling_params }
+
+          ["  stick-table type ip size 200k expire 200s store gpc0\n" \
+               "  acl svc1_source_is_abuser src_get_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
+               "  use_backend svc1_blocked if svc1_source_is_abuser\n" \
+               '  tcp-request connection track-sc0 src',
+
+           "  stick-table type ip size 200k expire 200s store http_req_rate\\(200s\\),bytes_out_rate\\(200s\\)\n" \
+           "  tcp-request content track-sc2 src\n" \
+           "  acl svc1_http_req_rate_abuse src_http_req_rate\\(svc1-hatcher-http-back\\) gt 10\n" \
+           "  acl svc1_mark_as_abuser src_inc_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
+           "  http-request deny deny_status 503 if svc1_http_req_rate_abuse mark_as_abuser\n",
+
+           "backend svc1-hatcher-blocked\n"\
+           "  http-request deny deny_status 503\n"].each do |stanza|
+
+            it 'contains the throttling config stanza' do
+              is_expected.to contain_file(service_config).with_content(%r{#{stanza}}m)
+            end
           end
 
-         ["  stick-table type ip size 200k expire 200s store gpc0\n" \
-              "  acl svc1_source_is_abuser src_get_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
-              "  use_backend svc1_blocked if svc1_source_is_abuser\n" \
-              "  tcp-request connection track-sc0 src",
-
-              "  stick-table type ip size 200k expire 200s store http_req_rate\\(200s\\),bytes_out_rate\\(200s\\)\n" \
-              "  tcp-request content track-sc2 src\n" \
-              "  acl http_req_rate_abuse src_http_req_rate\\(svc1-hatcher-http-back\\) gt 10\n" \
-              "  acl mark_as_abuser src_inc_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
-              "  http-request deny deny_status 503 if http_req_rate_abuse mark_as_abuser\n",
-
-              "backend svc1-hatcher-blocked\n"\
-              "  http-request deny deny_status 503\n"
-         ].each do |stanza|
-
-            it "contains the throttling config stanza" do
-              is_expected.to contain_file(file).with_content(%r{#{stanza}}m)
+          context 'with no whitelists' do
+            it { is_expected.not_to contain_file("/etc/haproxy/svc1_whitelist_ip.txt") }
+            it { is_expected.not_to contain_file("/etc/haproxy/svc1_whitelist_path.txt") }
+            it { is_expected.not_to contain_file("/etc/haproxy/svc1_whitelist_suffix.txt") }
+            it "does not reference any whitelists" do
+              is_expected.to contain_file(service_config).with_content(%r((?!whitelist)))
             end
-         end
+          end
+
+          context 'with IP exemptions' do
+            let(:params) { throttling_params.merge({ exempt_ips: ['10.0.0.1','10.2.32.0/24'] }) }
+
+            it { is_expected.to contain_file(service_config).with_content(%r{acl svc1_whitelist_ip src -n -f svc1_whitelist_ip.txt}) }
+            it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !svc1_whitelist_ip svc1_http_req_rate_abuse}) }
+            it { is_expected.to contain_file("/etc/haproxy/svc1_whitelist_ip.txt").with_content("10.0.0.1\n10.2.32.0/24\n") }
+          end
+
+          context 'with path & suffix exemptions' do
+            let(:params) do
+              throttling_params.merge({ 
+                exempt_paths: ['/some/where','/another/path'],
+                exempt_suffixes: ['.abc','.def'] 
+              })
+            end
+
+            it { is_expected.to contain_file(service_config).with_content(%r{acl svc1_whitelist_path src -n -f svc1_whitelist_path.txt}) }
+            it { is_expected.to contain_file(service_config).with_content(%r{acl svc1_whitelist_suffix src -n -f svc1_whitelist_suffix.txt}) }
+
+            it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !svc1_whitelist_path !svc1_whitelist_suffix svc1_http_req_rate_abuse}) }
+
+            it { is_expected.to contain_file("/etc/haproxy/svc1_whitelist_path.txt").with_content("/some/where\n/another/path\n") }
+            it { is_expected.to contain_file("/etc/haproxy/svc1_whitelist_suffix.txt").with_content(".abc\n.def\n") }
+          end
         end
       end
 
@@ -144,7 +175,6 @@ describe 'nebula::haproxy_service' do
           it { is_expected.to contain_file(dest).with(purge: true) }
         end
       end
-
     end
   end
 end

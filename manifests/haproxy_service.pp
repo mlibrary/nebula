@@ -21,6 +21,24 @@ define nebula::haproxy_service(
 
   $service = $title
 
+  $whitelists = { 
+    "path" => $exempt_paths,
+    "suffix" => $exempt_suffixes,
+    "ip" => $exempt_ips
+  }
+
+  $whitelists.each |String $whitelist, Array[String] $exemptions| {
+    if $exemptions.size() > 0 {
+      file { "/etc/haproxy/${service}_whitelist_${whitelist}.txt":
+        ensure  => 'present',
+        mode    => '0644',
+        require => Package['haproxy'],
+        notify  => Service['haproxy'],
+        content => $exemptions.map |$exemption| { "$exemption\n" }.join('')
+      }
+    }
+  }
+
   file { "/etc/haproxy/${service}.cfg":
     ensure  => 'present',
     mode    => '0644',
