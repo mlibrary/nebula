@@ -6,10 +6,10 @@
 #
 # @example
 #   include nebula::profile::haproxy::keepalived
-class nebula::profile::haproxy::keepalived(Hash $floating_ips,
+class nebula::profile::haproxy::keepalived(Hash $services,
     Boolean $master = false) {
   class { 'nebula::profile::haproxy':
-    floating_ips => $floating_ips,
+    services => $services,
   }
 
   require 'nebula::profile::base::sysctl'
