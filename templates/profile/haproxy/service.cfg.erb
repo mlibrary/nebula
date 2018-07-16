@@ -15,10 +15,21 @@
     <<EOT
   stick-table type ip size 200k expire #{duration} store http_req_rate(#{duration}),bytes_out_rate(#{duration})
   tcp-request content track-sc2 src
-  acl http_req_rate_abuse src_http_req_rate(#{service_prefix}-back) gt 10
-  acl mark_as_abuser src_inc_gpc0(#{service_prefix}-front) gt 0
-  http-request deny deny_status 503 if http_req_rate_abuse mark_as_abuser
+  acl #{@service}_http_req_rate_abuse src_http_req_rate(#{service_prefix}-back) gt 10
+  acl #{@service}_mark_as_abuser src_inc_gpc0(#{service_prefix}-front) gt 0
+  http-request deny deny_status 503 if #{backend_whitelist}#{@service}_http_req_rate_abuse mark_as_abuser
 EOT
+  end
+
+  def backend_server(hostname,ip,port)
+    "  server #{hostname} #{ip}:#{port} check cookie s#{ip.split('.').last}"
+  end
+
+  def backend_whitelist
+    @whitelists.select { |_,exemptions| exemptions.size() > 0 }
+      .map do |whitelist,_| 
+        "!#{@service}_whitelist_#{whitelist} "
+      end.join("")
   end
 
   def frontend_throttling(service_prefix)
@@ -30,12 +41,15 @@ EOT
 EOT
   end
 
-  def bind_options(port:,ssl: '')
-    "#{@floating_ip}:#{port},#{@networking["ip"]}:#{port}#{ssl}"
+  def frontend_whitelist
+    @whitelists.select { |_,exemptions| exemptions.size() > 0 }
+      .map do |whitelist,_| 
+        "  acl #{@service}_whitelist_#{whitelist} src -n -f #{@service}_whitelist_#{whitelist}.txt\n"
+      end.join("")
   end
 
-  def backend_server(hostname,ip,port)
-    "  server #{hostname} #{ip}:#{port} check cookie s#{ip.split('.').last}"
+  def bind_options(port:,ssl: '')
+    "#{@floating_ip}:#{port},#{@networking["ip"]}:#{port}#{ssl}"
   end
     
   protocols = { 
@@ -63,6 +77,7 @@ frontend <%= service_prefix %>-front
   http-request set-header X-Client-IP %ci
   http-request set-header X-Forwarded-Proto <%= protocol %>
 <%= frontend_throttling(service_prefix) if use_throttling -%>
+<%= frontend_whitelist %>
 
 <% end %>
 
