@@ -7,8 +7,8 @@ require 'spec_helper'
 require_relative '../../support/contexts/with_mocked_nodes'
 
 describe 'nebula::profile::haproxy' do
-  on_supported_os.each do |os, os_facts|
-    context "haproxy" do
+  on_supported_os.each do |_os, os_facts|
+    context 'haproxy' do
       let(:default_file) { '/etc/default/haproxy' }
       let(:base_file) { '/etc/haproxy/haproxy.cfg' }
 
@@ -62,6 +62,7 @@ describe 'nebula::profile::haproxy' do
         it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
         it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
         it { is_expected.to contain_file(file).with(mode: '0644') }
+        it { is_expected.to contain_file('/etc/haproxy/services.d').with(ensure: 'directory') }
 
         it 'says it is managed by puppet' do
           is_expected.to contain_file(file).with_content(
@@ -104,9 +105,10 @@ describe 'nebula::profile::haproxy' do
         it 'sets $CONFIG to the base config' do
           is_expected.to contain_file(file).with_content(%r{^CONFIG="#{base_file}"\n})
         end
-        it 'sets $EXTRAOPTS to include the service configs' do
+
+        it 'sets $EXTRAOPTS to include the service directory' do
           is_expected.to contain_file(file).with_content(
-            %r{EXTRAOPTS="-f \/etc\/haproxy\/svc1\.cfg -f \/etc\/haproxy\/svc2\.cfg "\n},
+            %r{EXTRAOPTS="-f \/etc\/haproxy\/services.d"\n},
           )
         end
       end
@@ -141,7 +143,7 @@ describe 'nebula::profile::haproxy' do
       end
     end
 
-    context "keepalived" do
+    context 'keepalived' do
       let(:my_ip) { Faker::Internet.ip_v4_address }
       let(:facts) do
         os_facts.merge(

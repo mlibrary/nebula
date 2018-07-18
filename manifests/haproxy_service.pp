@@ -32,18 +32,16 @@ define nebula::haproxy_service(
       file { "/etc/haproxy/${service}_whitelist_${whitelist}.txt":
         ensure  => 'present',
         mode    => '0644',
-        require => Package['haproxy'],
         notify  => Service['haproxy'],
         content => $exemptions.map |$exemption| { "${exemption}\n" }.join('')
       }
     }
   }
 
-  file { "/etc/haproxy/${service}.cfg":
+  file { "/etc/haproxy/services.d/${service}.cfg":
     ensure  => 'present',
     mode    => '0644',
     content => template('nebula/profile/haproxy/service.cfg.erb'),
-    require => Package['haproxy'],
     notify  => Service['haproxy'],
   }
 

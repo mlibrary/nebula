@@ -21,4 +21,8 @@ class nebula::profile::haproxy::prereqs {
     enable     => true,
     hasrestart => true,
   }
+
+  file { '/etc/haproxy/services.d':
+    ensure => 'directory'
+  }
 }
