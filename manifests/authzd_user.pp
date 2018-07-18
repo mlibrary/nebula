@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# keepalived
+# authzd_user
 #
 # @example
 #   include nebula::profile::authzd_user()
