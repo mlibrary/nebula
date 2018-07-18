@@ -14,4 +14,24 @@ class nebula::profile::vmhost::prereqs {
   package { 'virtinst':
     ensure => 'installed',
   }
+
+  package { 'libvirt-daemon':
+    ensure => 'installed'
+  }
+
+  package { 'libvirt-daemon-system':
+    ensure => 'installed'
+  }
+
+  package { 'virt-manager': 
+    ensure => 'installed'
+  }
+
+  package { 'virt-viewer':
+    ensure => 'installed'
+  }
+
+  package { 'qemu':
+    ensure => 'installed'
+  }
 }
