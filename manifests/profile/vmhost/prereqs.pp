@@ -23,7 +23,7 @@ class nebula::profile::vmhost::prereqs {
     ensure => 'installed'
   }
 
-  package { 'virt-manager': 
+  package { 'virt-manager':
     ensure => 'installed'
   }
 
