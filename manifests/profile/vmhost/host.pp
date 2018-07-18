@@ -26,7 +26,42 @@ class nebula::profile::vmhost::host (
   String  $netmask,
   String  $gateway,
   Array   $nameservers,
+  String  $local_storage = '',
+  String  $local_storage_size = '',
 ) {
+
+
+  if $local_storage != '' {
+    logical_volume { 'vmimages':
+      ensure       => 'present',
+      volume_group => 'internal',
+      size         => $local_storage_size
+    }
+
+    filesystem { '/dev/mapper/internal-vmimages':
+      ensure  => 'present',
+      fs_type => 'ext4',
+      require => ['Logical_volume[vmimages]']
+    }
+
+    file { $local_storage:
+      ensure => 'directory'
+    }
+
+    mount { $local_storage:
+      ensure  =>  'mounted',
+      device  =>  '/dev/mapper/internal-vmimages',
+      atboot  =>  true,
+      fstype  =>  'ext4',
+      options =>  'defaults',
+      require => ["File[${local_storage}]"]
+    }
+
+    $vm_requires = ["Mount[${local_storage}]"]
+  } else {
+    $vm_requires = []
+  }
+
   $vms.each |$vm_name, $vm_settings| {
     nebula::virtual_machine {
       default:
@@ -43,7 +78,8 @@ class nebula::profile::vmhost::host (
         nameservers   => $nameservers,
       ;
       $vm_name:
-        * => $vm_settings,
+        *       => $vm_settings,
+        require => $vm_requires
       ;
     }
   }

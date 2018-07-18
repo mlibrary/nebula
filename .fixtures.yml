@@ -18,6 +18,9 @@ fixtures:
     inifile:
       repo: "puppetlabs/inifile"
       ref: "1.1.3"
+    lvm:
+      repo: "puppetlabs/lvm"
+      ref: "1.0.1"
     postgresql:
       repo: "puppetlabs/postgresql"
       ref: "5.2.1"
