@@ -77,7 +77,7 @@ class nebula::profile::apt (
     }
   }
 
-  if $facts['dmi']['manufacturer'] == 'HP' {
+  if $facts['dmi'] and $facts['dmi']['manufacturer'] == 'HP' {
     apt::source { 'hp':
       location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
       release  => "${::lsbdistcodename}/current",
