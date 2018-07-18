@@ -35,10 +35,9 @@ describe 'nebula::haproxy_service' do
 
       describe 'service config file' do
         let(:service) { title }
-        let(:service_config) { '/etc/haproxy/svc1.cfg' }
+        let(:service_config) { '/etc/haproxy/services.d/svc1.cfg' }
 
         it { is_expected.to contain_file(service_config).with(ensure: 'present') }
-        it { is_expected.to contain_file(service_config).with(require: 'Package[haproxy]') }
         it { is_expected.to contain_file(service_config).with(notify: 'Service[haproxy]') }
         it { is_expected.to contain_file(service_config).with(mode: '0644') }
 
