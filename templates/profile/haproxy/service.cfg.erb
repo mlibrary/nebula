@@ -49,7 +49,7 @@ EOT
   end
 
   def bind_options(port:,ssl: '')
-    "#{@floating_ip}:#{port},#{@networking["ip"]}:#{port}#{ssl}"
+    "#{@floating_ip}:#{port}#{ssl}"
   end
     
   protocols = { 
