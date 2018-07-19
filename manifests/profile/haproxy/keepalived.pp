@@ -12,6 +12,8 @@ class nebula::profile::haproxy::keepalived(Hash $floating_ips,
     floating_ips => $floating_ips,
   }
 
+  require 'nebula::profile::base::sysctl'
+
   package { 'keepalived': }
   package { 'ipset': }
 
@@ -37,7 +39,7 @@ class nebula::profile::haproxy::keepalived(Hash $floating_ips,
   file { '/etc/sysctl.d/keepalived.conf':
     ensure  => 'present',
     require => Package['keepalived'],
-    notify  => Service['keepalived'],
+    notify  => [Service['keepalived'], Service['procps']],
     mode    => '0644',
     content => template('nebula/profile/haproxy/keepalived/sysctl.conf.erb'),
   }
