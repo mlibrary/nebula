@@ -17,17 +17,17 @@ class nebula::profile::aws::filesystem {
     }
 
     file { '/l':
-      path    => '/l',
       ensure  => 'directory',
+      path    => '/l',
       mode    => '0755',
       recurse => false
     }
 
     mount { '/l':
-      name    => '/l',
-      ensure  => 'mounted',
-      device  => '/dev/xvdb',
-      fstype  => 'ext4'
+      ensure => 'mounted',
+      name   => '/l',
+      device => '/dev/xvdb',
+      fstype => 'ext4'
     }
   }
 

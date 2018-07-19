@@ -9,8 +9,8 @@ describe 'nebula::profile::networking::keytab' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
-      it { is_expected.not_to contain_file('/etc/krb5.keytab') }
 
+      it { is_expected.not_to contain_file('/etc/krb5.keytab') }
 
       context 'when given an existing keytab file' do
         let(:params) { { keytab: 'nebula/keytab.fake' } }
