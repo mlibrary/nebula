@@ -142,6 +142,42 @@ describe 'nebula::profile::vmhost::host' do
 
         it { is_expected.to contain_vm('secondvm') }
       end
+
+      context 'without local storage' do
+        let(:params) do
+          {
+            vms: {
+              'itsavm' => {
+                'addr' => '1.2.3.4',
+              },
+            },
+          }
+        end
+
+        it { is_expected.not_to contain_mount('') }
+        it { is_expected.not_to contain_logical_volume('vmimages') }
+        it { is_expected.not_to contain_filesystem('/dev/mapper/internal-vmimages') }
+      end
+
+      context 'when given a local storage size' do
+        let(:params) do
+          {
+            vms: {
+              'itsavm' => {
+                'addr' => '1.2.3.4',
+              },
+            },
+            local_storage_size: '42G',
+            local_storage: "/#{Faker::Lorem.word}",
+          }
+        end
+
+        it { is_expected.to contain_vm('itsavm').that_requires("Mount[#{params[:local_storage]}]") }
+        it { is_expected.to contain_file(params[:local_storage]).with_ensure('directory') }
+        it { is_expected.to contain_mount(params[:local_storage]) }
+        it { is_expected.to contain_logical_volume('vmimages').with_size('42G') }
+        it { is_expected.to contain_filesystem('/dev/mapper/internal-vmimages').with_fs_type('ext4') }
+      end
     end
   end
 end

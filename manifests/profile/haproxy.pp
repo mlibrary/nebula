@@ -13,6 +13,7 @@ class nebula::profile::haproxy(
   String $cert_source = '',
 ) {
   require nebula::profile::haproxy::prereqs
+  require nebula::profile::base::sysctl
 
   $balanced_frontends = balanced_frontends()
 
@@ -78,7 +79,7 @@ class nebula::profile::haproxy(
   file { '/etc/sysctl.d/keepalived.conf':
     ensure  => 'present',
     require => Package['keepalived'],
-    notify  => Service['keepalived'],
+    notify  => [Service['keepalived'], Service['procps']],
     mode    => '0644',
     content => template('nebula/profile/haproxy/keepalived/sysctl.conf.erb'),
   }

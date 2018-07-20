@@ -86,10 +86,6 @@ describe 'nebula::profile::haproxy' do
         end
       end
 
-      describe 'roles' do
-        it { is_expected.to contain_class('nebula::profile::haproxy') }
-      end
-
       describe 'service' do
         it { is_expected.to contain_service(service).that_requires('Package[keepalived]') }
         it { is_expected.to contain_service(service).with(enable: true) }
