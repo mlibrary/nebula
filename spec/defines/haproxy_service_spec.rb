@@ -49,13 +49,13 @@ describe 'nebula::haproxy_service' do
 
         [
           "frontend svc1-hatcher-http-front\n" \
-          "  bind 1.2.3.4:80,40.41.42.43:80\n" \
+          "  bind 1.2.3.4:80\n" \
           "  stats uri \/haproxy?stats\n" \
           "  default_backend svc1-hatcher-http-back\n" \
           "  http-request set-header X-Client-IP %ci\n" \
           "  http-request set-header X-Forwarded-Proto http\n",
           "frontend svc1-hatcher-https-front\n" \
-          "  bind 1.2.3.4:443,40.41.42.43:443 ssl crt /etc/ssl/private/svc1\n" \
+          "  bind 1.2.3.4:443 ssl crt /etc/ssl/private/svc1\n" \
           "  stats uri /haproxy?stats\n" \
           "  default_backend svc1-hatcher-https-back\n" \
           "  http-response set-header \"Strict-Transport-Security\" \"max-age=31536000\"\n" \
