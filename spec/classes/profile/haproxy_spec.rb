@@ -50,14 +50,77 @@ describe 'nebula::profile::haproxy' do
             hasrestart: true,
           )
         end
+
+        it do
+          is_expected.to contain_nebula__haproxy_service('svc1').with(
+            floating_ip: '12.23.32.22',
+            node_names: %w[scotch soda],
+            cert_source: '/some/where',
+            max_requests_per_sec: 10,
+            max_requests_burst: 200,
+          )
+        end
+
+        it do
+          is_expected.to contain_nebula__haproxy_service('svc2').with(
+            floating_ip: '12.23.32.23',
+            node_names: %w[scotch third_server],
+            cert_source: '/some/where',
+          )
+        end
       end
 
       describe 'packages' do
         it { is_expected.to contain_package('haproxy') }
         it { is_expected.to contain_package('haproxyctl') }
+        it { is_expected.to contain_package('keepalived') }
+        it { is_expected.to contain_package('ipset') }
       end
 
-      describe 'base config file' do
+      describe 'users' do
+        it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl', gid: 'haproxy', managehome: true, home: '/var/haproxyctl') }
+
+        it 'grants ssh access to the monitoring user' do
+          is_expected.to contain_file('/var/haproxyctl/.ssh/authorized_keys')
+            .with_content(%r{^ecdsa-sha2-nistp256 CCCCCCCCCCCC haproxyctl@default\.invalid$})
+        end
+      end
+
+      describe 'roles' do
+        it { is_expected.to contain_class('nebula::profile::haproxy') }
+      end
+
+      describe 'service' do
+        it { is_expected.to contain_service(service).that_requires('Package[keepalived]') }
+        it { is_expected.to contain_service(service).with(enable: true) }
+        it { is_expected.to contain_service(service).with(ensure: 'running') }
+      end
+
+      describe 'haproxy default file' do
+        let(:file) { default_file }
+
+        it { is_expected.to contain_file(file).with(ensure: 'present') }
+        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
+        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
+        it { is_expected.to contain_file(file).with(mode: '0644') }
+
+        it 'says it is managed by puppet' do
+          is_expected.to contain_file(file).with_content(
+            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/default\.erb\)\n},
+          )
+        end
+        it 'sets $CONFIG to the base config' do
+          is_expected.to contain_file(file).with_content(%r{^CONFIG="#{haproxy_conf}"\n})
+        end
+
+        it 'sets $EXTRAOPTS to include the service directory' do
+          is_expected.to contain_file(file).with_content(
+            %r{EXTRAOPTS="-f \/etc\/haproxy\/services.d"\n},
+          )
+        end
+      end
+
+      describe 'base haproxy config file' do
         let(:file) { haproxy_conf }
 
         it { is_expected.to contain_file(file).with(ensure: 'present') }
@@ -91,86 +154,7 @@ describe 'nebula::profile::haproxy' do
         end
       end
 
-      describe 'default file' do
-        let(:file) { default_file }
-
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
-
-        it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/default\.erb\)\n},
-          )
-        end
-        it 'sets $CONFIG to the base config' do
-          is_expected.to contain_file(file).with_content(%r{^CONFIG="#{haproxy_conf}"\n})
-        end
-
-        it 'sets $EXTRAOPTS to include the service directory' do
-          is_expected.to contain_file(file).with_content(
-            %r{EXTRAOPTS="-f \/etc\/haproxy\/services.d"\n},
-          )
-        end
-      end
-
-      describe 'users' do
-        it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl', gid: 'haproxy', managehome: true, home: '/var/haproxyctl') }
-
-        it 'grants ssh access to the monitoring user' do
-          is_expected.to contain_file('/var/haproxyctl/.ssh/authorized_keys')
-            .with_content(%r{^ecdsa-sha2-nistp256 CCCCCCCCCCCC haproxyctl@default\.invalid$})
-        end
-      end
-
-      describe 'services' do
-        it do
-          is_expected.to contain_nebula__haproxy_service('svc1').with(
-            floating_ip: '12.23.32.22',
-            node_names: %w[scotch soda],
-            cert_source: '/some/where',
-            max_requests_per_sec: 10,
-            max_requests_burst: 200,
-          )
-        end
-
-        it do
-          is_expected.to contain_nebula__haproxy_service('svc2').with(
-            floating_ip: '12.23.32.23',
-            node_names: %w[scotch third_server],
-            cert_source: '/some/where',
-          )
-        end
-      end
-
-      describe 'roles' do
-        it { is_expected.to contain_class('nebula::profile::haproxy') }
-      end
-
-      describe 'packages' do
-        it { is_expected.to contain_package('keepalived') }
-        it { is_expected.to contain_package('ipset') }
-      end
-
-      describe 'sysctl conf' do
-        let(:file) { '/etc/sysctl.d/keepalived.conf' }
-
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
-
-        it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet},
-          )
-        end
-
-        it 'enables ip_nonlocal_bind' do
-          is_expected.to contain_file(file).with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
-        end
-      end
-
-      describe 'base config file' do
+      describe 'base keepalived config file' do
         let(:file) { keepalived_conf }
 
         it { is_expected.to contain_file(file).with(ensure: 'present') }
@@ -223,10 +207,21 @@ describe 'nebula::profile::haproxy' do
         end
       end
 
-      describe 'service' do
-        it { is_expected.to contain_service(service).that_requires('Package[keepalived]') }
-        it { is_expected.to contain_service(service).with(enable: true) }
-        it { is_expected.to contain_service(service).with(ensure: 'running') }
+      describe 'sysctl conf' do
+        let(:file) { '/etc/sysctl.d/keepalived.conf' }
+
+        it { is_expected.to contain_file(file).with(ensure: 'present') }
+        it { is_expected.to contain_file(file).with(mode: '0644') }
+
+        it 'says it is managed by puppet' do
+          is_expected.to contain_file(file).with_content(
+            %r{\A# Managed by puppet},
+          )
+        end
+
+        it 'enables ip_nonlocal_bind' do
+          is_expected.to contain_file(file).with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
+        end
       end
     end
   end
