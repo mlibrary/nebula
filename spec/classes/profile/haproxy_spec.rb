@@ -9,33 +9,36 @@ require_relative '../../support/contexts/with_mocked_nodes'
 describe 'nebula::profile::haproxy' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:default_file) { '/etc/default/haproxy' }
-      let(:base_file) { '/etc/haproxy/haproxy.cfg' }
-      let(:backend_file) { '/etc/haproxy/backends.cfg' }
-      let(:frontend_file) { '/etc/haproxy/frontends.cfg' }
-
-      let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
-      let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
-      let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
-      let(:params) do
-        { floating_ips: { 'svc1': '1.2.3.4', svc2: '1.2.3.5' },
-          cert_source: '' }
-      end
+      let(:my_ip) { Faker::Internet.ip_v4_address }
 
       let(:facts) do
         os_facts.merge(
-          datacenter: 'hatcher',
+          datacenter: 'somedc',
           networking: {
-            ip: '40.41.42.43',
+            ip: my_ip,
+            primary: 'eth0',
           },
+          hostname: 'thisnode',
         )
       end
 
-      include_context 'with mocked puppetdb functions', 'hatcher', %w[scotch soda third_server]
+      let(:default_file) { '/etc/default/haproxy' }
+      let(:haproxy_conf) { '/etc/haproxy/haproxy.cfg' }
+      let(:keepalived_conf) { '/etc/keepalived/keepalived.conf' }
+      let(:service) { 'keepalived' }
+
+      let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
+      let(:haproxy2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
+      let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
+      let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
+      let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
+      let(:params) { { cert_source: '/some/where' } }
+
+      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode haproxy2 scotch soda third_server], 'nebula::profile::haproxy' => %w[thisnode haproxy2]
 
       before(:each) do
         stub('balanced_frontends') do |d|
-          allow_call(d).and_return('svc1': %w[scotch soda], 'svc2': %w[scotch third_server])
+          allow_call(d).and_return('svc1' => %w[scotch soda], 'svc2' => %w[scotch third_server])
         end
       end
 
@@ -47,20 +50,80 @@ describe 'nebula::profile::haproxy' do
             hasrestart: true,
           )
         end
+
+        it do
+          is_expected.to contain_nebula__haproxy_service('svc1').with(
+            floating_ip: '12.23.32.22',
+            node_names: %w[scotch soda],
+            cert_source: '/some/where',
+            max_requests_per_sec: 10,
+            max_requests_burst: 200,
+          )
+        end
+
+        it do
+          is_expected.to contain_nebula__haproxy_service('svc2').with(
+            floating_ip: '12.23.32.23',
+            node_names: %w[scotch third_server],
+            cert_source: '/some/where',
+          )
+        end
       end
 
       describe 'packages' do
         it { is_expected.to contain_package('haproxy') }
         it { is_expected.to contain_package('haproxyctl') }
+        it { is_expected.to contain_package('keepalived') }
+        it { is_expected.to contain_package('ipset') }
       end
 
-      describe 'base config file' do
-        let(:file) { base_file }
+      describe 'users' do
+        it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl', gid: 'haproxy', managehome: true, home: '/var/haproxyctl') }
+
+        it 'grants ssh access to the monitoring user' do
+          is_expected.to contain_file('/var/haproxyctl/.ssh/authorized_keys')
+            .with_content(%r{^ecdsa-sha2-nistp256 CCCCCCCCCCCC haproxyctl@default\.invalid$})
+        end
+      end
+
+      describe 'service' do
+        it { is_expected.to contain_service(service).that_requires('Package[keepalived]') }
+        it { is_expected.to contain_service(service).with(enable: true) }
+        it { is_expected.to contain_service(service).with(ensure: 'running') }
+      end
+
+      describe 'haproxy default file' do
+        let(:file) { default_file }
 
         it { is_expected.to contain_file(file).with(ensure: 'present') }
         it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
         it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
         it { is_expected.to contain_file(file).with(mode: '0644') }
+
+        it 'says it is managed by puppet' do
+          is_expected.to contain_file(file).with_content(
+            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/default\.erb\)\n},
+          )
+        end
+        it 'sets $CONFIG to the base config' do
+          is_expected.to contain_file(file).with_content(%r{^CONFIG="#{haproxy_conf}"\n})
+        end
+
+        it 'sets $EXTRAOPTS to include the service directory' do
+          is_expected.to contain_file(file).with_content(
+            %r{EXTRAOPTS="-f \/etc\/haproxy\/services.d"\n},
+          )
+        end
+      end
+
+      describe 'base haproxy config file' do
+        let(:file) { haproxy_conf }
+
+        it { is_expected.to contain_file(file).with(ensure: 'present') }
+        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
+        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
+        it { is_expected.to contain_file(file).with(mode: '0644') }
+        it { is_expected.to contain_file('/etc/haproxy/services.d').with(ensure: 'directory') }
 
         it 'says it is managed by puppet' do
           is_expected.to contain_file(file).with_content(
@@ -87,147 +150,73 @@ describe 'nebula::profile::haproxy' do
         end
       end
 
-      describe 'default file' do
-        let(:file) { default_file }
+      describe 'base keepalived config file' do
+        let(:file) { keepalived_conf }
 
         it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
+        it { is_expected.to contain_file(file).with(require: 'Package[keepalived]') }
+        it { is_expected.to contain_file(file).with(notify: 'Service[keepalived]') }
         it { is_expected.to contain_file(file).with(mode: '0644') }
 
-        it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/default\.erb\)\n},
-          )
-        end
-        it 'sets $CONFIG to the base config' do
-          is_expected.to contain_file(file).with_content(%r{^CONFIG="#{base_file}"\n})
-        end
-        it 'sets $EXTRAOPTS to include the backend and frontend configs' do
-          is_expected.to contain_file(file).with_content(
-            %r{EXTRAOPTS="-f \/etc\/haproxy\/backends\.cfg -f \/etc\/haproxy\/frontends\.cfg"\n},
-          )
-        end
-      end
-
-      describe 'frontends config file' do
-        let(:file) { frontend_file }
-
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
-
-        it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/frontends\.cfg\.erb\)\n},
-          )
+        it 'has a vrrp_scripts check_haproxy section' do
+          is_expected.to contain_file(file).with_content(%r{^vrrp_script check_haproxy})
         end
 
-        [
-          "frontend svc1-hatcher-http-front\n" \
-            "  bind 1.2.3.4:80,40.41.42.43:80\n" \
-            "  stats uri \/haproxy?stats\n" \
-            "  default_backend svc1-hatcher-http-back\n" \
-            "  http-request set-header X-Client-IP %ci\n" \
-            "  http-request set-header X-Forwarded-Proto http\n",
-          "frontend svc1-hatcher-https-front\n" \
-            "  bind 1.2.3.4:443,40.41.42.43:443 ssl crt /etc/ssl/private/svc1\n" \
-            "  stats uri /haproxy?stats\n" \
-            "  default_backend svc1-hatcher-https-back\n" \
-            "  http-response set-header \"Strict-Transport-Security\" \"max-age=31536000\"\n" \
-            "  http-request set-header X-Client-IP %ci\n" \
-            "  http-request set-header X-Forwarded-Proto https\n",
-        ].each do |stanza|
-          it 'contains the stanza' do
-            is_expected.to contain_file(file)
-            actual = catalogue.resource('file', file).send(:parameters)[:content]
-            expect(actual).to include(stanza)
-          end
-        end
-      end
-
-      describe 'backends config file' do
-        let(:file) { backend_file }
-
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[haproxy]') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
-
-        it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/backends\.cfg\.erb\)\n},
-          )
+        it 'has the haproxy floating ip addresses' do
+          is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*12\.23\.32\.23\n\s*}}m)
         end
 
-        [
-          "backend svc1-hatcher-http-back\n" \
-            "  http-check expect status 200\n" \
-            "  server scotch 111.111.111.123:80 check cookie s123\n" \
-            "  server soda 222.222.222.234:80 check cookie s234\n",
-
-          "backend svc1-hatcher-https-back\n" \
-            "  http-check expect status 200\n" \
-            "  server scotch 111.111.111.123:443 check cookie s123\n" \
-            "  server soda 222.222.222.234:443 check cookie s234\n",
-        ].each do |stanza|
-          it "contains the stanza #{stanza.split("\n").first}" do
-            is_expected.to contain_file(file).with_content(%r{#{stanza}}m)
-          end
-        end
-
-        it 'contains the stanza backend svc2-hatcher-http-back' do
-          is_expected.to contain_file(file).with_content(%r{#{
-            "backend svc2-hatcher-http-back\n" \
-            "  http-check expect status 200\n" \
-            "  server scotch 111.111.111.123:80 check cookie s123\n" \
-            "  server #{third_server["hostname"]} #{third_server["ip"]}:80 check cookie s#{third_server["ip"].split('.').last}\n" \
-          }}m)
-        end
-
-        it 'contains the stanza backend svc2-hatcher-https-back' do
-          is_expected.to contain_file(file).with_content(%r{#{
-            "backend svc2-hatcher-https-back\n" \
-            "  http-check expect status 200\n" \
-            "  server scotch 111.111.111.123:443 check cookie s123\n" \
-            "  server #{third_server["hostname"]} #{third_server["ip"]}:443 check cookie s#{third_server["ip"].split('.').last}\n" \
-          }}m)
-        end
-      end
-
-      describe 'ssl certs' do
-        let(:dest) { '/etc/ssl/private/svc1' }
-
-        context 'with an empty source' do
-          it { is_expected.not_to contain_file(dest) }
-        end
-
-        context 'with a source' do
+        context 'with a floating ip address parameter' do
           let(:params) do
-            { floating_ips: { 'svc1': '1.2.3.4' },
-              cert_source: '/some/location' }
+            {
+              services: { 'svc1' => { 'floating_ip' => Faker::Internet.ip_v4_address },
+                          'svc2' => { 'floating_ip' => Faker::Internet.ip_v4_address } },
+            }
           end
 
-          it { is_expected.to contain_file(dest).with(ensure: 'directory') }
-          it { is_expected.to contain_file(dest).with(notify: 'Service[haproxy]') }
-          it { is_expected.to contain_file(dest).with(mode: '0700') }
-          it { is_expected.to contain_file(dest).with(owner: 'haproxy') }
-          it { is_expected.to contain_file(dest).with(group: 'haproxy') }
-          it { is_expected.to contain_file(dest).with(recurse: true) }
-          it { is_expected.to contain_file(dest).with(source: "puppet://#{params[:cert_source]}/svc1") }
-          it { is_expected.to contain_file(dest).with(path: dest) }
-          it { is_expected.to contain_file(dest).with(links: 'follow') }
-          it { is_expected.to contain_file(dest).with(purge: true) }
+          it { is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*#{params[:services]["svc1"]["floating_ip"]}\n\s*#{params[:services]["svc2"]["floating_ip"]}\n\s*}}m) }
+        end
+
+        it { is_expected.to contain_file(file).with_content(%r{unicast_src_ip #{my_ip}}) }
+
+        it 'has a unicast_peer block with the IP addresses of all nodes with the same profile at the same datancenter except for me' do
+          is_expected.to contain_file(file).with_content(%r{unicast_peer {\n\s*#{haproxy2['ip']}\n\s*}\n\s*})
+        end
+
+        it { is_expected.to contain_file(file).with_content(%r{interface #{facts[:networking][:primary]}}) }
+
+        it { is_expected.to contain_file(file).with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m) }
+        it { is_expected.to contain_file(file).with_content(%r{notification_email_from root@default.invalid}) }
+
+        context 'on a master node' do
+          let(:params) { { master: true } }
+
+          it { is_expected.to contain_file(file).with_content(%r{priority 101}) }
+          it { is_expected.to contain_file(file).with_content(%r{state MASTER}) }
+        end
+
+        context 'on a backup node' do
+          let(:params) { { master: false } }
+
+          it { is_expected.to contain_file(file).with_content(%r{priority 100}) }
+          it { is_expected.to contain_file(file).with_content(%r{state BACKUP}) }
         end
       end
 
-      describe 'users' do
-        it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl', gid: 'haproxy', managehome: true, home: '/var/haproxyctl') }
+      describe 'sysctl conf' do
+        let(:file) { '/etc/sysctl.d/keepalived.conf' }
 
-        it 'grants ssh access to the monitoring user' do
-          is_expected.to contain_file('/var/haproxyctl/.ssh/authorized_keys')
-            .with_content(%r{^ecdsa-sha2-nistp256 CCCCCCCCCCCC haproxyctl@default\.invalid$})
+        it { is_expected.to contain_file(file).with(ensure: 'present') }
+        it { is_expected.to contain_file(file).with(mode: '0644') }
+
+        it 'says it is managed by puppet' do
+          is_expected.to contain_file(file).with_content(
+            %r{\A# Managed by puppet},
+          )
+        end
+
+        it 'enables ip_nonlocal_bind' do
+          is_expected.to contain_file(file).with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
         end
       end
     end
