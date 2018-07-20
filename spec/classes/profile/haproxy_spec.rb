@@ -7,32 +7,34 @@ require 'spec_helper'
 require_relative '../../support/contexts/with_mocked_nodes'
 
 describe 'nebula::profile::haproxy' do
-  on_supported_os.each do |_os, os_facts|
-    context 'haproxy' do
-      let(:default_file) { '/etc/default/haproxy' }
-      let(:base_file) { '/etc/haproxy/haproxy.cfg' }
-
-      let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
-      let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
-      let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
-      let(:params) do
-        { services: { 'svc1' => { 'floating_ip': '1.2.3.4',
-                                  'max_requests_per_sec' => 10,
-                                  'max_requests_burst' => 200 },
-                      'svc2' => { 'floating_ip': '1.2.3.5' } },
-          cert_source: '/some/where' }
-      end
+  on_supported_os.each do |os, os_facts|
+    context "on #{os}" do
+      let(:my_ip) { Faker::Internet.ip_v4_address }
 
       let(:facts) do
         os_facts.merge(
-          datacenter: 'hatcher',
+          datacenter: 'somedc',
           networking: {
-            ip: '40.41.42.43',
+            ip: my_ip,
+            primary: 'eth0',
           },
+          hostname: 'thisnode',
         )
       end
 
-      include_context 'with mocked puppetdb functions', 'hatcher', %w[scotch soda third_server]
+      let(:default_file) { '/etc/default/haproxy' }
+      let(:haproxy_conf) { '/etc/haproxy/haproxy.cfg' }
+      let(:keepalived_conf) { '/etc/keepalived/keepalived.conf' }
+      let(:service) { 'keepalived' }
+
+      let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
+      let(:haproxy2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
+      let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
+      let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
+      let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
+      let(:params) { { cert_source: '/some/where' } }
+
+      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode haproxy2 scotch soda third_server], 'nebula::profile::haproxy' => %w[thisnode haproxy2]
 
       before(:each) do
         stub('balanced_frontends') do |d|
@@ -56,7 +58,7 @@ describe 'nebula::profile::haproxy' do
       end
 
       describe 'base config file' do
-        let(:file) { base_file }
+        let(:file) { haproxy_conf }
 
         it { is_expected.to contain_file(file).with(ensure: 'present') }
         it { is_expected.to contain_file(file).with(require: 'Package[haproxy]') }
@@ -103,7 +105,7 @@ describe 'nebula::profile::haproxy' do
           )
         end
         it 'sets $CONFIG to the base config' do
-          is_expected.to contain_file(file).with_content(%r{^CONFIG="#{base_file}"\n})
+          is_expected.to contain_file(file).with_content(%r{^CONFIG="#{haproxy_conf}"\n})
         end
 
         it 'sets $EXTRAOPTS to include the service directory' do
@@ -125,7 +127,7 @@ describe 'nebula::profile::haproxy' do
       describe 'services' do
         it do
           is_expected.to contain_nebula__haproxy_service('svc1').with(
-            floating_ip: '1.2.3.4',
+            floating_ip: '12.23.32.22',
             node_names: %w[scotch soda],
             cert_source: '/some/where',
             max_requests_per_sec: 10,
@@ -135,36 +137,12 @@ describe 'nebula::profile::haproxy' do
 
         it do
           is_expected.to contain_nebula__haproxy_service('svc2').with(
-            floating_ip: '1.2.3.5',
+            floating_ip: '12.23.32.23',
             node_names: %w[scotch third_server],
             cert_source: '/some/where',
           )
         end
       end
-    end
-
-    context 'keepalived' do
-      let(:my_ip) { Faker::Internet.ip_v4_address }
-      let(:facts) do
-        os_facts.merge(
-          datacenter: 'somedc',
-          networking: {
-            ip: my_ip,
-            primary: 'eth0',
-          },
-          hostname: 'thisnode',
-        )
-      end
-
-      let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
-      let(:haproxy2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
-      let(:base_file) { '/etc/keepalived/keepalived.conf' }
-      let(:service) { 'keepalived' }
-
-      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode haproxy2]
-
-      # required for included haproxy role, but isn't tested here
-      before(:each) { stub('balanced_frontends') { |d| allow_call(d).and_return({}) } }
 
       describe 'roles' do
         it { is_expected.to contain_class('nebula::profile::haproxy') }
@@ -193,7 +171,7 @@ describe 'nebula::profile::haproxy' do
       end
 
       describe 'base config file' do
-        let(:file) { base_file }
+        let(:file) { keepalived_conf }
 
         it { is_expected.to contain_file(file).with(ensure: 'present') }
         it { is_expected.to contain_file(file).with(require: 'Package[keepalived]') }

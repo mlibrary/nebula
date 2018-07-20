@@ -31,7 +31,7 @@ describe 'nebula::haproxy_service' do
         )
       end
 
-      include_context 'with mocked puppetdb functions', 'hatcher', %w[scotch soda third_server]
+      include_context 'with mocked puppetdb functions', 'hatcher', %w[scotch soda third_server], {}
 
       describe 'service config file' do
         let(:service) { title }

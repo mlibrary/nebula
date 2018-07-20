@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'with mocked puppetdb functions' do |datacenter, nodes|
+RSpec.shared_context 'with mocked puppetdb functions' do |datacenter, nodes, class_nodes|
   before(:each) do
     stub_loader!
   end
 
   before(:each) do
     stub('nodes_for_class') do |d|
-      allow_call(d).and_return(%w[rolenode] + nodes)
+      class_nodes.each do |node_class, nodes_in_class|
+        allow_call(d).with(node_class).and_return(%w[rolenode] + nodes_in_class)
+      end
     end
 
     stub('nodes_for_datacenter') do |d|
