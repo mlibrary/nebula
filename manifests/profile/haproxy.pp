@@ -6,38 +6,21 @@
 #
 # @example
 #   include nebula::profile::haproxy
-class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $monitoring_user) {
-  service { 'haproxy':
-    ensure     => 'running',
-    enable     => true,
-    hasrestart => true,
-  }
+class nebula::profile::haproxy(
+  Hash $services,
+  Hash $monitoring_user,
+  Boolean $master = false,
+  String $cert_source = '',
+) {
+  require nebula::profile::haproxy::prereqs
+  require nebula::profile::base::sysctl
 
-  package { 'haproxy': }
-  package { 'haproxyctl': }
+  $balanced_frontends = balanced_frontends()
 
   file { '/etc/haproxy/haproxy.cfg':
     ensure  => 'present',
     mode    => '0644',
     content => template('nebula/profile/haproxy/haproxy.cfg.erb'),
-    require => Package['haproxy'],
-    notify  => Service['haproxy'],
-  }
-
-  $frontends = balanced_frontends()
-
-  file { '/etc/haproxy/backends.cfg':
-    ensure  => 'present',
-    mode    => '0644',
-    content => template('nebula/profile/haproxy/backends.cfg.erb'),
-    require => Package['haproxy'],
-    notify  => Service['haproxy'],
-  }
-
-  file { '/etc/haproxy/frontends.cfg':
-    ensure  => 'present',
-    mode    => '0644',
-    content => template('nebula/profile/haproxy/frontends.cfg.erb'),
     require => Package['haproxy'],
     notify  => Service['haproxy'],
   }
@@ -50,26 +33,18 @@ class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $mo
     notify  => Service['haproxy'],
   }
 
-  if $cert_source != '' {
-    file { '/etc/ssl/private' :
-      ensure => 'directory',
-      mode   => '0700',
-      owner  => 'root',
-      group  => 'root'
-    }
+  file { '/etc/ssl/private' :
+    ensure => 'directory',
+    mode   => '0700',
+    owner  => 'root',
+    group  => 'root'
+  }
 
-    $frontends.each |$frontend, $nodes| {
-      file { "/etc/ssl/private/${frontend}":
-        ensure  => 'directory',
-        mode    => '0700',
-        owner   => 'haproxy',
-        group   => 'haproxy',
-        recurse => true,
-        purge   => true,
-        links   => 'follow',
-        notify  => Service['haproxy'],
-        source  => "puppet://${cert_source}/${frontend}"
-      }
+  $balanced_frontends.each |$service, $node_names| {
+    nebula::haproxy_service { $service :
+      cert_source => $cert_source,
+      node_names  => $node_names,
+      *           => $services[$service]
     }
   }
 
@@ -77,6 +52,36 @@ class nebula::profile::haproxy(Hash $floating_ips, String $cert_source, Hash $mo
     gid  => 'haproxy',
     home => $monitoring_user['home'],
     key  => $monitoring_user['key']
+  }
+
+  package { 'keepalived': }
+  package { 'ipset': }
+
+  service { 'keepalived':
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+    require    => Package['keepalived'],
+  }
+
+  $nodes_for_class = nodes_for_class($title)
+  $nodes_for_datacenter = nodes_for_datacenter($::datacenter)
+  $email = lookup('nebula::root_email')
+
+  file { '/etc/keepalived/keepalived.conf':
+    ensure  => 'present',
+    require => Package['keepalived'],
+    notify  => Service['keepalived'],
+    mode    => '0644',
+    content => template('nebula/profile/haproxy/keepalived/keepalived.conf.erb'),
+  }
+
+  file { '/etc/sysctl.d/keepalived.conf':
+    ensure  => 'present',
+    require => Package['keepalived'],
+    notify  => [Service['keepalived'], Service['procps']],
+    mode    => '0644',
+    content => template('nebula/profile/haproxy/keepalived/sysctl.conf.erb'),
   }
 
 }
