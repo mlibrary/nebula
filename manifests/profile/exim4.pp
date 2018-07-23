@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::exim4
+# nebula::profile::exim4
 #
 # Manage exim4.
 #
@@ -10,8 +10,8 @@
 # @param root_email Root email
 #
 # @example
-#   include nebula::profile::base::exim4
-class nebula::profile::base::exim4 (
+#   include nebula::profile::exim4
+class nebula::profile::exim4 (
   String $relay_domain,
   String $root_email,
 ) {
@@ -38,7 +38,7 @@ class nebula::profile::base::exim4 (
   }
 
   file { '/etc/exim4/update-exim4.conf.conf':
-    content => template('nebula/profile/base/update-exim4.conf.conf.erb'),
+    content => template('nebula/profile/exim4/update-exim4.conf.conf.erb'),
     require => Package['exim4'],
     notify  => Exec['update exim4 config'],
   }

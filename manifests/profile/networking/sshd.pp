@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::sshd
+# nebula::profile::networking::sshd
 #
 # Manage SSH
 #
@@ -10,11 +10,12 @@
 # @param gssapi_auth Whether to enable GSSAPI auth for whitelisted IPs
 #
 # @example
-#   include nebula::profile::base::sshd
-class nebula::profile::base::sshd (
+#   include nebula::profile::networking::sshd
+class nebula::profile::networking::sshd (
   Array[String] $whitelist,
   Boolean       $gssapi_auth = false,
 ) {
+
   service { 'sshd':
     ensure     => 'running',
     enable     => true,
@@ -22,11 +23,11 @@ class nebula::profile::base::sshd (
   }
 
   file { '/etc/ssh/sshd_config':
-    content => template('nebula/profile/base/sshd_config.erb'),
+    content => template('nebula/profile/networking/sshd_config.erb'),
     notify  => Service['sshd'],
   }
 
   file { '/etc/ssh/ssh_config':
-    content => template('nebula/profile/base/ssh_config.erb'),
+    content => template('nebula/profile/networking/ssh_config.erb'),
   }
 }

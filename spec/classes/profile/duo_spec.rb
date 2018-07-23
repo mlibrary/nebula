@@ -5,7 +5,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::base::duo' do
+describe 'nebula::profile::duo' do
   def contain_pam_duo
     contain_file('/etc/security/pam_duo.conf')
   end

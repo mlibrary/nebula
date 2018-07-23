@@ -7,7 +7,7 @@ require 'spec_helper'
 
 describe 'nebula::role::vmhost' do
   def contain_sysctl
-    contain_class('nebula::profile::base::sysctl')
+    contain_class('nebula::profile::networking::sysctl')
   end
 
   on_supported_os.each do |os, os_facts|

@@ -5,7 +5,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::base::sysctl' do
+describe 'nebula::profile::networking::sysctl' do
   def contain_sysctl
     contain_file('/etc/sysctl.conf')
   end

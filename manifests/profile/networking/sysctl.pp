@@ -2,15 +2,15 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::sysctl
+# nebula::profile::networking::sysctl
 #
 # Configure /etc/sysctl.conf
 #
 # @param bridge Whether to enable net.bridge settings
 #
 # @example
-#   include nebula::profile::base::sysctl
-class nebula::profile::base::sysctl (
+#   include nebula::profile::networking::sysctl
+class nebula::profile::networking::sysctl (
   Boolean $bridge = false,
 ) {
   service { 'procps':
@@ -20,7 +20,8 @@ class nebula::profile::base::sysctl (
   }
 
   file { '/etc/sysctl.conf':
-    content => template('nebula/profile/base/sysctl.conf.erb'),
+    content => template('nebula/profile/networking/sysctl.conf.erb'),
     notify  => Service['procps'],
   }
 }
+

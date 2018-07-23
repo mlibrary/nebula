@@ -2,13 +2,13 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::apt
+# nebula::profile::apt
 #
 # Manage apt.
 #
 # @example
-#   include nebula::profile::base::apt
-class nebula::profile::base::apt (
+#   include nebula::profile::apt
+class nebula::profile::apt (
   String $mirror,
   String $puppet_repo,
 ) {
@@ -77,7 +77,7 @@ class nebula::profile::base::apt (
     }
   }
 
-  if $facts['dmi']['manufacturer'] == 'HP' {
+  if $facts['dmi'] and $facts['dmi']['manufacturer'] == 'HP' {
     apt::source { 'hp':
       location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
       release  => "${::lsbdistcodename}/current",
@@ -86,10 +86,10 @@ class nebula::profile::base::apt (
   }
 
   file { '/etc/apt/apt.conf.d/99no-recommends':
-    content => template('nebula/profile/base/apt_no_recommends.erb'),
+    content => template('nebula/profile/apt/apt_no_recommends.erb'),
   }
 
   file { '/etc/apt/apt.conf.d/99force-ipv4':
-    content => template('nebula/profile/base/apt_no_ipv6.erb'),
+    content => template('nebula/profile/apt/apt_no_ipv6.erb'),
   }
 }

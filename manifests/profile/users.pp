@@ -2,13 +2,13 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::users
+# nebula::profile::users
 #
 # Provision users and groups.
 #
 # @example
-#   include nebula::profile::base::users
-class nebula::profile::base::users {
+#   include nebula::profile::users
+class nebula::profile::users {
   lookup('nebula::users::groups').each |$group, $gid| {
     group { $group:
       gid => $gid,

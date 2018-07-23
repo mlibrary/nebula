@@ -13,7 +13,7 @@ class nebula::profile::haproxy(
   String $cert_source = '',
 ) {
   require nebula::profile::haproxy::prereqs
-  require nebula::profile::base::sysctl
+  require nebula::profile::networking::sysctl
 
   $balanced_frontends = balanced_frontends()
 

@@ -2,27 +2,22 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Minimal umich server
+# Minimal aws server
 #
 # @example
-#   include nebula::role::umich
-class nebula::role::umich (
-  $bridge_network = false,
-) {
+#   include nebula::role::aws
+class nebula::role::aws {
 
   include nebula::role::minimum
+  include nebula::profile::aws::filesystem
 
   if $facts['os']['release']['major'] == '9' {
-    include nebula::profile::afs
-    include nebula::profile::duo
     include nebula::profile::exim4
-    include nebula::profile::grub
     include nebula::profile::ntp
     include nebula::profile::tiger
-    include nebula::profile::users
     class { 'nebula::profile::networking':
-      bridge => $bridge_network,
-      keytab => true
+      bridge => false,
+      keytab => false
     }
   }
 

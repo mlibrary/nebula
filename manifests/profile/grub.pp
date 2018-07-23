@@ -2,13 +2,13 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::grub
+# nebula::profile::grub
 #
 # Manage grub.
 #
 # @example
-#   include nebula::profile::base::grub
-class nebula::profile::base::grub {
+#   include nebula::profile::grub
+class nebula::profile::grub {
   service { 'getty@hvc0':
     ensure     => 'running',
     enable     => true,

@@ -5,7 +5,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::base::users' do
+describe 'nebula::profile::users' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }

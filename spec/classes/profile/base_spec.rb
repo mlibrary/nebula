@@ -20,41 +20,14 @@ describe 'nebula::profile::base' do
 
       case os
       when 'debian-8-x86_64'
-        it { is_expected.not_to contain_class('nebula::profile::afs') }
-        it { is_expected.not_to contain_base_class('apt') }
-        it { is_expected.not_to contain_base_class('authorized_keys') }
-        it { is_expected.not_to contain_base_class('duo') }
-        it { is_expected.not_to contain_base_class('exim4') }
         it { is_expected.not_to contain_base_class('firewall::ipv4') }
-        it { is_expected.not_to contain_base_class('grub') }
-        it { is_expected.not_to contain_base_class('ntp') }
-        it { is_expected.not_to contain_base_class('sysctl') }
-        it { is_expected.not_to contain_base_class('sshd') }
-        it { is_expected.not_to contain_base_class('users') }
-        it { is_expected.not_to contain_base_class('vim') }
       when 'debian-9-x86_64'
-        it { is_expected.to contain_base_class('apt') }
-        it { is_expected.to contain_class('nebula::profile::afs') }
-        it { is_expected.to contain_base_class('authorized_keys') }
-        it { is_expected.to contain_base_class('duo') }
-        it { is_expected.to contain_base_class('exim4') }
         it { is_expected.to contain_base_class('firewall::ipv4') }
-        it { is_expected.to contain_base_class('grub') }
-        it { is_expected.to contain_base_class('ntp') }
-        it { is_expected.to contain_base_class('users') }
-        it { is_expected.to contain_base_class('vim') }
-
-        it 'sets apt to never install recommended packages' do
-          is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
-            .with_content(%r{^APT::Install-Recommends "0";$})
-            .with_content(%r{^APT::Install-Suggests "0";$})
-        end
 
         it { is_expected.to contain_package('dselect') }
         it { is_expected.to contain_package('ifenslave') }
         it { is_expected.to contain_package('linux-image-amd64') }
         it { is_expected.to contain_package('vlan') }
-        it { is_expected.to contain_package('tiger') }
         it { is_expected.to contain_package('dbus') }
         it { is_expected.to contain_package('dkms') }
 
@@ -95,70 +68,6 @@ describe 'nebula::profile::base' do
             .with_refreshonly(true)
         end
 
-        it { is_expected.to contain_base_class('sysctl').with_bridge(false) }
-
-        context 'with bridge_network set to true' do
-          let(:params) { { bridge_network: true } }
-
-          it { is_expected.to contain_base_class('sysctl').with_bridge(true) }
-        end
-
-        it { is_expected.to contain_base_class('sshd').with_gssapi_auth(false) }
-        it { is_expected.not_to contain_file('/etc/krb5.keytab') }
-
-        context 'when given an existing keytab file' do
-          let(:params) { { keytab: 'nebula/keytab.fake' } }
-
-          it { is_expected.to contain_base_class('sshd').with_gssapi_auth(true) }
-
-          it do
-            is_expected.to contain_file('/etc/krb5.keytab').with(
-              mode: '0600',
-              content: %r{^This is not a real keytab.},
-            )
-          end
-        end
-
-        context 'when given a nonexistent keytab file' do
-          let(:params) { { keytab: 'nebula/keytab.not_a_file' } }
-
-          it { is_expected.to contain_base_class('sshd').with_gssapi_auth(false) }
-          it { is_expected.not_to contain_file('/etc/krb5.keytab') }
-        end
-
-        context 'when given a keytab source and no keytab' do
-          let(:params) { { keytab_source: 'alternate source' } }
-
-          it { is_expected.not_to contain_file('/etc/krb5.keytab') }
-        end
-
-        context 'when given a keytab source and a nonexistent keytab' do
-          let :params do
-            {
-              keytab: 'nebula/keytab.not_a_file',
-              keytab_source: 'alternate source',
-            }
-          end
-
-          it { is_expected.not_to contain_file('/etc/krb5.keytab') }
-        end
-
-        context 'when given a keytab source and a real keytab' do
-          let :params do
-            {
-              keytab: 'nebula/keytab.fake',
-              keytab_source: 'alternate source',
-            }
-          end
-
-          it do
-            is_expected.to contain_file('/etc/krb5.keytab').with(
-              mode: '0600',
-              source: 'alternate source',
-            )
-          end
-        end
-
         it do
           is_expected.to contain_file('/etc/motd')
             .with_content(%r{contact us at contact@default\.invalid\.$})
@@ -180,16 +89,6 @@ describe 'nebula::profile::base' do
           it do
             is_expected.to contain_file('/etc/motd')
               .with_content(%r{administered by The Cool Team\.$})
-          end
-        end
-
-        # This is an ugly hack for fixing AEIM-1064. See base.pp for
-        # more details about when it might be safe to remove this.
-        %w[procps sshd].each do |service|
-          it do
-            is_expected.to contain_exec("/bin/systemctl status #{service}")
-              .that_subscribes_to(['Service[procps]', 'Service[sshd]'])
-              .with_refreshonly(true)
           end
         end
       end

@@ -56,34 +56,34 @@ nebula::profile::vmhost::host::defaults: {}
 
 nebula::profile::base::sysadmin_dept: Default Incorrect Dept
 nebula::profile::base::contact_email: contact@default.invalid
-nebula::profile::base::default_keytab: nebula/keytab.empty
-nebula::profile::base::keytab: ''
-nebula::profile::base::keytab_source: ''
+nebula::profile::networking::keytab::default_keytab: nebula/keytab.empty
+nebula::profile::networking::keytab::keytab: ''
+nebula::profile::networking::keytab::keytab_source: ''
 nebula::profile::base::timezone: US/Eastern
 
-nebula::profile::base::apt::mirror: http://ftp.us.debian.org/debian/
-nebula::profile::base::apt::puppet_repo: puppet5
+nebula::profile::apt::mirror: http://ftp.us.debian.org/debian/
+nebula::profile::apt::puppet_repo: puppet5
 
 nebula::profile::base::environment::vars: {}
 
-nebula::profile::base::exim4::root_email: root@default.invalid
-nebula::profile::base::exim4::relay_domain: exim.default.invalid
+nebula::profile::exim4::root_email: root@default.invalid
+nebula::profile::exim4::relay_domain: exim.default.invalid
 
-nebula::profile::base::ntp::servers:
+nebula::profile::ntp::servers:
 - ntp.example.invalid
 
-nebula::profile::base::duo::ikey: ikey.default.invalid
-nebula::profile::base::duo::skey: skey.default.invalid
-nebula::profile::base::duo::host: host.default.invalid
-nebula::profile::base::duo::pushinfo: push.default.invalid
-nebula::profile::base::duo::failmode: fail.default.invalid
+nebula::profile::duo::ikey: ikey.default.invalid
+nebula::profile::duo::skey: skey.default.invalid
+nebula::profile::duo::host: host.default.invalid
+nebula::profile::duo::pushinfo: push.default.invalid
+nebula::profile::duo::failmode: fail.default.invalid
 
 nebula::profile::base::firewall::ipv4::filename: /etc/firewall.ipv4
 nebula::profile::base::firewall::ipv4::rules:
 - '-A INPUT -p tcp -s 1.2.3.4 -j ACCEPT'
 - '-A INPUT -p tcp -s 5.6.7.8 -j ACCEPT'
 
-nebula::profile::base::sshd::whitelist:
+nebula::profile::networking::sshd::whitelist:
 - '10.1.1.0/24'
 - '10.2.2.0/24'
 - '!10.2.2.2'

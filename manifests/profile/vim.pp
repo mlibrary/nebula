@@ -2,17 +2,17 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::vim
+# nebula::profile::vim
 #
 # Configure vim
 #
 # @example
-#   include nebula::profile::base::vim
-class nebula::profile::base::vim {
+#   include nebula::profile::vim
+class nebula::profile::vim {
   package { 'vim': }
 
   file { '/etc/vim/vimrc':
-    content => template('nebula/profile/base/vimrc.vim.erb'),
+    content => template('nebula/profile/vim/vimrc.vim.erb'),
     require => Package['vim'],
   }
 }

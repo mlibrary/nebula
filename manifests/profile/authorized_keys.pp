@@ -2,13 +2,13 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::base::authorized_keys
+# nebula::profile::authorized_keys
 #
 # Populate a list of keys from nebula::users.
 #
 # @example
-#   include nebula::profile::base::authorized_keys
-class nebula::profile::base::authorized_keys {
+#   include nebula::profile::authorized_keys
+class nebula::profile::authorized_keys {
   $key_file = lookup('nebula::users::key_file')
   $keys = nebula::get_keys_from_users(
     'nebula::users::sudoers',

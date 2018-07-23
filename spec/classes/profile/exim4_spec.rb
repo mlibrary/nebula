@@ -5,7 +5,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::base::exim4' do
+describe 'nebula::profile::exim4' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }

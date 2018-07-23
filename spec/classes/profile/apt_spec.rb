@@ -5,7 +5,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::base::apt' do
+describe 'nebula::profile::apt' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
@@ -22,6 +22,12 @@ describe 'nebula::profile::base::apt' do
             'frequency' => 'daily',
           },
         )
+      end
+
+      it 'sets apt to never install recommended packages' do
+        is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
+          .with_content(%r{^APT::Install-Recommends "0";$})
+          .with_content(%r{^APT::Install-Suggests "0";$})
       end
 
       it do
