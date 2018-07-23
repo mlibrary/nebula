@@ -17,7 +17,7 @@ define nebula::haproxy_service(
   Array[String]   $exempt_ips = []
 ) {
 
-  require nebula::profile::haproxy::prereqs
+  include nebula::profile::haproxy::prereqs
 
   $service = $title
 
