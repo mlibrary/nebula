@@ -48,7 +48,9 @@ EOT
       end.join("")
   end
 
-  def bind_options(port:,ssl: '')
+  def bind_options(args)
+    port = args[:port]
+    ssl = args.fetch(:ssl,'')
     "#{@floating_ip}:#{port}#{ssl}"
   end
     
