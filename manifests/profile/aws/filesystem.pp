@@ -10,7 +10,7 @@
 #   include nebula::profile::aws::filesystem
 class nebula::profile::aws::filesystem {
 
-  unless $facts['mountpoints']['/l'] {
+  if $facts['disks']['xvdb'] {
     filesystem { '/dev/xvdb':
       ensure  => present,
       fs_type => 'ext4',
