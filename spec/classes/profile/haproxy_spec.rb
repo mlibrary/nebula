@@ -34,14 +34,13 @@ describe 'nebula::profile::haproxy' do
       let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
       let(:base_params) do
         { cert_source: '/some/where',
-          services: {"svc1"=>
-           {"floating_ip"=>"12.23.32.22",
-            "max_requests_per_sec"=>10,
-            "max_requests_burst"=>200},
-            "svc2"=>{"floating_ip"=>"12.23.32.23"}}}
+          services: { 'svc1' =>
+           { 'floating_ip' => '12.23.32.22',
+             'max_requests_per_sec' => 10,
+             'max_requests_burst' => 200 },
+                      'svc2' => { 'floating_ip' => '12.23.32.23' } } }
       end
       let(:params) { base_params }
-
 
       include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode haproxy2 scotch soda third_server], 'nebula::profile::haproxy' => %w[thisnode haproxy2]
 
@@ -198,14 +197,14 @@ describe 'nebula::profile::haproxy' do
         it { is_expected.to contain_file(file).with_content(%r{notification_email_from root@default.invalid}) }
 
         context 'on a master node' do
-          let(:params) { base_params.merge({ master: true }) }
+          let(:params) { base_params.merge(master: true) }
 
           it { is_expected.to contain_file(file).with_content(%r{priority 101}) }
           it { is_expected.to contain_file(file).with_content(%r{state MASTER}) }
         end
 
         context 'on a backup node' do
-          let(:params) { base_params.merge({ master: false }) }
+          let(:params) { base_params.merge(master: false) }
 
           it { is_expected.to contain_file(file).with_content(%r{priority 100}) }
           it { is_expected.to contain_file(file).with_content(%r{state BACKUP}) }

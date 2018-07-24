@@ -40,7 +40,9 @@ class nebula::profile::haproxy(
     group  => 'root'
   }
 
-  $balanced_frontends.each |$service, $node_names| {
+  $balanced_frontends.filter |$service, $node_names| {
+    $services.has_key($service)
+  }.each |$service, $node_names| {
     nebula::haproxy_service { $service :
       cert_source => $cert_source,
       node_names  => $node_names,
