@@ -101,7 +101,7 @@ describe 'nebula::haproxy_service' do
 
            "  stick-table type ip size 200k expire 200s store http_req_rate\\(200s\\),bytes_out_rate\\(200s\\)\n" \
            "  tcp-request content track-sc2 src\n" \
-           "  acl http_req_rate_abuse src_http_req_rate\\(svc1-hatcher-http-back\\) gt 10\n" \
+           "  acl http_req_rate_abuse src_http_req_rate\\(svc1-hatcher-http-back\\) gt 400\n" \
            "  acl mark_as_abuser src_inc_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
            "  http-request deny deny_status 503 if http_req_rate_abuse mark_as_abuser\n",
 

@@ -15,7 +15,7 @@
     <<EOT
   stick-table type ip size 200k expire #{duration} store http_req_rate(#{duration}),bytes_out_rate(#{duration})
   tcp-request content track-sc2 src
-  acl http_req_rate_abuse src_http_req_rate(#{service_prefix}-back) gt 10
+  acl http_req_rate_abuse src_http_req_rate(#{service_prefix}-back) gt #{@max_requests_burst}
   acl mark_as_abuser src_inc_gpc0(#{service_prefix}-front) gt 0
   http-request deny deny_status 503 if #{backend_whitelist}http_req_rate_abuse mark_as_abuser
 EOT
