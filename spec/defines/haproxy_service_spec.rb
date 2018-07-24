@@ -95,17 +95,17 @@ describe 'nebula::haproxy_service' do
           let(:params) { throttling_params }
 
           ["  stick-table type ip size 200k expire 200s store gpc0\n" \
-               "  acl svc1_source_is_abuser src_get_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
-               "  use_backend svc1_blocked if svc1_source_is_abuser\n" \
+               "  acl source_is_abuser src_get_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
+               "  use_backend svc1-blocked if source_is_abuser\n" \
                '  tcp-request connection track-sc0 src',
 
            "  stick-table type ip size 200k expire 200s store http_req_rate\\(200s\\),bytes_out_rate\\(200s\\)\n" \
            "  tcp-request content track-sc2 src\n" \
-           "  acl svc1_http_req_rate_abuse src_http_req_rate\\(svc1-hatcher-http-back\\) gt 10\n" \
-           "  acl svc1_mark_as_abuser src_inc_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
-           "  http-request deny deny_status 503 if svc1_http_req_rate_abuse mark_as_abuser\n",
+           "  acl http_req_rate_abuse src_http_req_rate\\(svc1-hatcher-http-back\\) gt 10\n" \
+           "  acl mark_as_abuser src_inc_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
+           "  http-request deny deny_status 503 if http_req_rate_abuse mark_as_abuser\n",
 
-           "backend svc1-hatcher-blocked\n"\
+           "backend svc1-blocked\n"\
            "  http-request deny deny_status 503\n"].each do |stanza|
 
             it 'contains the throttling config stanza' do
@@ -114,35 +114,35 @@ describe 'nebula::haproxy_service' do
           end
 
           context 'with no whitelists' do
-            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_ip.txt') }
-            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_path.txt') }
-            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_suffix.txt') }
+            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_src.txt') }
+            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_path_beg.txt') }
+            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt') }
             it 'does not reference any whitelists' do
               is_expected.to contain_file(service_config).with_content(%r{(?!whitelist)})
             end
           end
 
           context 'with IP exemptions' do
-            let(:params) { throttling_params.merge(exempt_ips: ['10.0.0.1', '10.2.32.0/24']) }
+            let(:params) { throttling_params.merge(whitelists: { 'src' => ['10.0.0.1', '10.2.32.0/24'] }) }
 
-            it { is_expected.to contain_file(service_config).with_content(%r{acl svc1_whitelist_ip src -n -f svc1_whitelist_ip.txt}) }
-            it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !svc1_whitelist_ip svc1_http_req_rate_abuse}) }
-            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_ip.txt').with_content("10.0.0.1\n10.2.32.0/24\n") }
+            it { is_expected.to contain_file(service_config).with_content(%r{acl whitelist_src src -n -f /etc/haproxy/svc1_whitelist_src.txt}) }
+            it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !whitelist_src http_req_rate_abuse}) }
+            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_src.txt').with_content("10.0.0.1\n10.2.32.0/24\n") }
           end
 
           context 'with path & suffix exemptions' do
             let(:params) do
-              throttling_params.merge(exempt_paths: ['/some/where', '/another/path'],
-                                      exempt_suffixes: ['.abc', '.def'])
+              throttling_params.merge(whitelists: { 'path_beg' => ['/some/where', '/another/path'],
+                                                    'path_end' => ['.abc', '.def'] })
             end
 
-            it { is_expected.to contain_file(service_config).with_content(%r{acl svc1_whitelist_path src -n -f svc1_whitelist_path.txt}) }
-            it { is_expected.to contain_file(service_config).with_content(%r{acl svc1_whitelist_suffix src -n -f svc1_whitelist_suffix.txt}) }
+            it { is_expected.to contain_file(service_config).with_content(%r{acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt}) }
+            it { is_expected.to contain_file(service_config).with_content(%r{acl whitelist_path_end path_end -n -f /etc/haproxy/svc1_whitelist_path_end.txt}) }
 
-            it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !svc1_whitelist_path !svc1_whitelist_suffix svc1_http_req_rate_abuse}) }
+            it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !whitelist_path_beg !whitelist_path_end http_req_rate_abuse}) }
 
-            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path.txt').with_content("/some/where\n/another/path\n") }
-            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_suffix.txt').with_content(".abc\n.def\n") }
+            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_beg.txt').with_content("/some/where\n/another/path\n") }
+            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt').with_content(".abc\n.def\n") }
           end
         end
       end

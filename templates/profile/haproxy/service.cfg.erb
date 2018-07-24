@@ -15,9 +15,9 @@
     <<EOT
   stick-table type ip size 200k expire #{duration} store http_req_rate(#{duration}),bytes_out_rate(#{duration})
   tcp-request content track-sc2 src
-  acl #{@service}_http_req_rate_abuse src_http_req_rate(#{service_prefix}-back) gt 10
-  acl #{@service}_mark_as_abuser src_inc_gpc0(#{service_prefix}-front) gt 0
-  http-request deny deny_status 503 if #{backend_whitelist}#{@service}_http_req_rate_abuse mark_as_abuser
+  acl http_req_rate_abuse src_http_req_rate(#{service_prefix}-back) gt 10
+  acl mark_as_abuser src_inc_gpc0(#{service_prefix}-front) gt 0
+  http-request deny deny_status 503 if #{backend_whitelist}http_req_rate_abuse mark_as_abuser
 EOT
   end
 
@@ -28,22 +28,22 @@ EOT
   def whitelist_acl_files
     @whitelists.select { |_,exemptions| exemptions.size() > 0 }
       .map do |whitelist,_|
-        "  acl #{@service}_whitelist_#{whitelist} src -n -f #{@service}_whitelist_#{whitelist}.txt\n"
+      "  acl whitelist_#{whitelist} #{whitelist} -n -f /etc/haproxy/#{@service}_whitelist_#{whitelist}.txt\n"
       end.join("")
   end
 
   def backend_whitelist
     @whitelists.select { |_,exemptions| exemptions.size() > 0 }
       .map do |whitelist,_|
-        "!#{@service}_whitelist_#{whitelist} "
+        "!whitelist_#{whitelist} "
       end.join("")
   end
 
   def frontend_throttling(service_prefix)
     <<EOT
   stick-table type ip size 200k expire #{duration} store gpc0
-  acl #{@service}_source_is_abuser src_get_gpc0(#{service_prefix}-front) gt 0
-  use_backend #{@service}_blocked if #{@service}_source_is_abuser
+  acl source_is_abuser src_get_gpc0(#{service_prefix}-front) gt 0
+  use_backend #{@service}-blocked if source_is_abuser
   tcp-request connection track-sc0 src
 EOT
   end
@@ -84,6 +84,6 @@ frontend <%= service_prefix %>-front
 <% end %>
 
 <% if use_throttling -%>
-backend <%= service_loc %>-blocked
+backend <%= @service %>-blocked
   http-request deny deny_status 503
 <% end -%>

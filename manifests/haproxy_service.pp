@@ -12,20 +12,12 @@ define nebula::haproxy_service(
   String          $cert_source = '',
   Integer         $max_requests_per_sec = 0,
   Integer         $max_requests_burst = 0,
-  Array[String]   $exempt_paths = [],
-  Array[String]   $exempt_suffixes = [],
-  Array[String]   $exempt_ips = []
+  Hash            $whitelists = {}
 ) {
 
   include nebula::profile::haproxy::prereqs
 
   $service = $title
-
-  $whitelists = {
-    'path' => $exempt_paths,
-    'suffix' => $exempt_suffixes,
-    'ip' => $exempt_ips
-  }
 
   $whitelists.each |String $whitelist, Array[String] $exemptions| {
     if $exemptions.size() > 0 {
