@@ -1,5 +1,5 @@
 # Managed by puppet (nebula/profile/haproxy/service.cfg.erb)
-<% 
+<%
   use_throttling = @max_requests_burst > 0 and @max_requests_per_sec > 0
   service_loc = "#{@service}-#{@datacenter}"
 
@@ -25,9 +25,16 @@ EOT
     "  server #{hostname} #{ip}:#{port} check cookie s#{ip.split('.').last}"
   end
 
+  def whitelist_acl_files
+    @whitelists.select { |_,exemptions| exemptions.size() > 0 }
+      .map do |whitelist,_|
+        "  acl #{@service}_whitelist_#{whitelist} src -n -f #{@service}_whitelist_#{whitelist}.txt\n"
+      end.join("")
+  end
+
   def backend_whitelist
     @whitelists.select { |_,exemptions| exemptions.size() > 0 }
-      .map do |whitelist,_| 
+      .map do |whitelist,_|
         "!#{@service}_whitelist_#{whitelist} "
       end.join("")
   end
@@ -41,20 +48,13 @@ EOT
 EOT
   end
 
-  def frontend_whitelist
-    @whitelists.select { |_,exemptions| exemptions.size() > 0 }
-      .map do |whitelist,_| 
-        "  acl #{@service}_whitelist_#{whitelist} src -n -f #{@service}_whitelist_#{whitelist}.txt\n"
-      end.join("")
-  end
-
   def bind_options(args)
     port = args[:port]
     ssl = args.fetch(:ssl,'')
     "#{@floating_ip}:#{port}#{ssl}"
   end
-    
-  protocols = { 
+
+  protocols = {
     http: { port: 80 },
     https: { port: 443, ssl: " ssl crt /etc/ssl/private/#{@service}" }
   }
@@ -66,6 +66,7 @@ EOT
 
 backend <%= service_prefix %>-back
   http-check expect status 200
+<%= whitelist_acl_files -%>
 <%= backend_throttling(service_prefix) if use_throttling -%>
 <%= nodes.map { |hostname,ip| backend_server(hostname,ip,options[:port]) }.join("\n") %>
 
@@ -79,7 +80,6 @@ frontend <%= service_prefix %>-front
   http-request set-header X-Client-IP %ci
   http-request set-header X-Forwarded-Proto <%= protocol %>
 <%= frontend_throttling(service_prefix) if use_throttling -%>
-<%= frontend_whitelist %>
 
 <% end %>
 
