@@ -19,6 +19,15 @@ define nebula::haproxy_service(
 
   $service = $title
 
+  if $max_requests_per_sec > 0 {
+    file { "/etc/haproxy/errors/${service}509.http":
+      ensure => 'present',
+      mode   => '0644',
+      notify => Service['haproxy'],
+      source => "puppet://errorfiles/${service}509.http"
+    }
+  }
+
   $whitelists.each |String $whitelist, Array[String] $exemptions| {
     if $exemptions.size() > 0 {
       file { "/etc/haproxy/${service}_whitelist_${whitelist}.txt":
