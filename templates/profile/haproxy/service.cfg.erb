@@ -1,6 +1,5 @@
 # Managed by puppet (nebula/profile/haproxy/service.cfg.erb)
 <%
-  use_throttling = @max_requests_burst > 0 and @max_requests_per_sec > 0
   service_loc = "#{@service}-#{@datacenter}"
 
   nodes = @node_names.sort
@@ -11,18 +10,44 @@
     (@max_requests_burst / @max_requests_per_sec).to_s + "s"
   end
 
-  def backend_throttling(service_prefix)
+  def use_throttling?
+    @max_requests_burst > 0 and @max_requests_per_sec > 0
+  end
+
+  def throttling(service_loc)
     <<EOT
   stick-table type ip size 200k expire #{duration} store http_req_rate(#{duration}),bytes_out_rate(#{duration})
   tcp-request content track-sc2 src
-  acl http_req_rate_abuse src_http_req_rate(#{service_prefix}-back) gt #{@max_requests_burst}
-  acl mark_as_abuser src_inc_gpc0(#{service_prefix}-front) gt 0
-  http-request deny deny_status 503 if #{backend_whitelist}http_req_rate_abuse mark_as_abuser
+  http-request set-var(req.http_rate) src_http_req_rate(#{service_loc}-http-back)
+  http-request set-var(req.https_rate) src_http_req_rate(#{service_loc}-https-back)
+  acl http_req_rate_abuse var(req.http_rate),add(req.https_rate) gt #{@max_requests_burst}
+  errorfile 403 /etc/haproxy/errors/#{@service}509.http
+  http-request deny deny_status 403 if http_req_rate_abuse
 EOT
   end
 
-  def backend_server(hostname,ip,port)
-    "  server #{hostname} #{ip}:#{port} check cookie s#{ip.split('.').last}"
+  def check?(protocol)
+    protocol.to_s == "https"
+  end
+
+  def check_or_track(protocol,service_loc,hostname)
+    if check?(protocol)
+      "check"
+    else
+      track(service_loc,hostname)
+    end
+  end
+
+  def track(service_loc,hostname)
+    "track #{service_loc}-https-back/#{hostname}"
+  end
+
+  def backend_server(hostname,ip,port,check="check")
+    "  server #{hostname} #{ip}:#{port} #{check} cookie s#{ip.split('.').last}"
+  end
+
+  def any_whitelists?
+    @whitelists.find { |_,exemptions| exemptions.size() > 0 }
   end
 
   def whitelist_acl_files
@@ -32,20 +57,15 @@ EOT
       end.join("")
   end
 
-  def backend_whitelist
+  def whitelist_condition
     @whitelists.select { |_,exemptions| exemptions.size() > 0 }
       .map do |whitelist,_|
-        "!whitelist_#{whitelist} "
-      end.join("")
+        "whitelist_#{whitelist}"
+      end.join(" OR ")
   end
 
-  def frontend_throttling(service_prefix)
-    <<EOT
-  stick-table type ip size 200k expire #{duration} store gpc0
-  acl source_is_abuser src_get_gpc0(#{service_prefix}-front) gt 0
-  use_backend #{@service}-blocked if source_is_abuser
-  tcp-request connection track-sc0 src
-EOT
+  def whitelist(service_prefix)
+    whitelist_acl_files + "  use backend #{service_prefix}-back-exempt if #{whitelist_condition}\n"
   end
 
   def bind_options(args)
@@ -65,25 +85,27 @@ EOT
 <% service_prefix = "#{service_loc}-#{protocol}" -%>
 
 backend <%= service_prefix %>-back
+<% if check?(protocol) -%>
   http-check expect status 200
-<%= whitelist_acl_files -%>
-<%= backend_throttling(service_prefix) if use_throttling -%>
-<%= nodes.map { |hostname,ip| backend_server(hostname,ip,options[:port]) }.join("\n") %>
+<% end -%>
+<%= throttling(service_loc) if use_throttling? -%>
+<%= nodes.map { |hostname,ip| backend_server(hostname,ip,options[:port],check_or_track(protocol,service_loc,hostname)) }.join("\n") %>
+
+<% if any_whitelists? -%>
+backend <%= service_prefix %>-back-exempt
+<%= nodes.map { |hostname,ip| backend_server(hostname,ip,options[:port],track(service_loc,hostname)) }.join("\n") %>
+<% end -%>
 
 frontend <%= service_prefix %>-front
   bind <%= bind_options(options) %>
   stats uri /haproxy?stats
-  default_backend <%= service_prefix %>-back
 <% if protocol == :https -%>
   http-response set-header "Strict-Transport-Security" "max-age=31536000"
 <% end -%>
   http-request set-header X-Client-IP %ci
   http-request set-header X-Forwarded-Proto <%= protocol %>
-<%= frontend_throttling(service_prefix) if use_throttling -%>
+<%= whitelist(service_prefix) if any_whitelists? -%>
+  default_backend <%= service_prefix %>-back
 
 <% end %>
 
-<% if use_throttling -%>
-backend <%= @service %>-blocked
-  http-request deny deny_status 503
-<% end -%>

@@ -51,16 +51,16 @@ describe 'nebula::haproxy_service' do
           "frontend svc1-hatcher-http-front\n" \
           "  bind 1.2.3.4:80\n" \
           "  stats uri \/haproxy?stats\n" \
-          "  default_backend svc1-hatcher-http-back\n" \
           "  http-request set-header X-Client-IP %ci\n" \
-          "  http-request set-header X-Forwarded-Proto http\n",
+          "  http-request set-header X-Forwarded-Proto http\n" \
+          "  default_backend svc1-hatcher-http-back\n",
           "frontend svc1-hatcher-https-front\n" \
           "  bind 1.2.3.4:443 ssl crt /etc/ssl/private/svc1\n" \
           "  stats uri /haproxy?stats\n" \
-          "  default_backend svc1-hatcher-https-back\n" \
           "  http-response set-header \"Strict-Transport-Security\" \"max-age=31536000\"\n" \
           "  http-request set-header X-Client-IP %ci\n" \
-          "  http-request set-header X-Forwarded-Proto https\n",
+          "  http-request set-header X-Forwarded-Proto https\n" \
+          "  default_backend svc1-hatcher-https-back\n",
         ].each do |stanza|
           it 'contains the stanza' do
             is_expected.to contain_file(service_config)
@@ -71,9 +71,8 @@ describe 'nebula::haproxy_service' do
 
         [
           "backend svc1-hatcher-http-back\n" \
-          "  http-check expect status 200\n" \
-          "  server scotch 111.111.111.123:80 check cookie s123\n" \
-          "  server soda 222.222.222.234:80 check cookie s234\n",
+          "  server scotch 111.111.111.123:80 track svc1-hatcher-https-back/scotch cookie s123\n" \
+          "  server soda 222.222.222.234:80 track svc1-hatcher-https-back/soda cookie s234\n",
 
           "backend svc1-hatcher-https-back\n" \
           "  http-check expect status 200\n" \
@@ -94,24 +93,21 @@ describe 'nebula::haproxy_service' do
           end
           let(:params) { throttling_params }
 
-          ["  stick-table type ip size 200k expire 200s store gpc0\n" \
-               "  acl source_is_abuser src_get_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
-               "  use_backend svc1-blocked if source_is_abuser\n" \
-               '  tcp-request connection track-sc0 src',
-
+          ["backend svc1-hatcher-http-back\n" \
            "  stick-table type ip size 200k expire 200s store http_req_rate\\(200s\\),bytes_out_rate\\(200s\\)\n" \
            "  tcp-request content track-sc2 src\n" \
-           "  acl http_req_rate_abuse src_http_req_rate\\(svc1-hatcher-http-back\\) gt 400\n" \
-           "  acl mark_as_abuser src_inc_gpc0\\(svc1-hatcher-http-front\\) gt 0\n" \
-           "  http-request deny deny_status 503 if http_req_rate_abuse mark_as_abuser\n",
-
-           "backend svc1-blocked\n"\
-           "  http-request deny deny_status 503\n"].each do |stanza|
+           "  http-request set-var\\(req.http_rate\\) src_http_req_rate\\(svc1-hatcher-http-back\\)\n" \
+           "  http-request set-var\\(req.https_rate\\) src_http_req_rate\\(svc1-hatcher-https-back\\)\n" \
+           "  acl http_req_rate_abuse var\\(req.http_rate\\),add\\(req.https_rate\\) gt 400\n" \
+           "  errorfile 403 /etc/haproxy/errors/svc1509.http\n" \
+           "  http-request deny deny_status 403 if http_req_rate_abuse\n"].each do |stanza|
 
             it 'contains the throttling config stanza' do
               is_expected.to contain_file(service_config).with_content(%r{#{stanza}}m)
             end
           end
+
+          it { is_expected.to contain_file('/etc/haproxy/errors/svc1509.http').with_source('puppet://errorfiles/svc1509.http') }
 
           context 'with no whitelists' do
             it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_src.txt') }
@@ -120,14 +116,31 @@ describe 'nebula::haproxy_service' do
             it 'does not reference any whitelists' do
               is_expected.to contain_file(service_config).with_content(%r{(?!whitelist)})
             end
+            it 'does not reference the exemption backend' do
+              is_expected.to contain_file(service_config).with_content(%r{(?!svc1-hatcher-https?-back-exempt)})
+            end
           end
 
           context 'with IP exemptions' do
             let(:params) { throttling_params.merge(whitelists: { 'src' => ['10.0.0.1', '10.2.32.0/24'] }) }
 
-            it { is_expected.to contain_file(service_config).with_content(%r{acl whitelist_src src -n -f /etc/haproxy/svc1_whitelist_src.txt}) }
-            it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !whitelist_src http_req_rate_abuse}) }
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_src.txt').with_content("10.0.0.1\n10.2.32.0/24\n") }
+
+            [
+              "frontend svc1-hatcher-https-front\n" \
+              "(  \\w.*\n)+" \
+              "  acl whitelist_src src -n -f /etc/haproxy/svc1_whitelist_src.txt\n" \
+              "  use backend svc1-hatcher-https-back-exempt if whitelist_src\n" \
+              "  default_backend svc1-hatcher-https-back\n",
+
+              "backend svc1-hatcher-https-back-exempt\n" \
+              "  server scotch 111.111.111.123:443 track svc1-hatcher-https-back/scotch cookie s123\n" \
+              "  server soda 222.222.222.234:443 track svc1-hatcher-https-back/soda cookie s234\n",
+            ].each do |stanza|
+              it "contains the stanza #{stanza.split("\n").first}" do
+                is_expected.to contain_file(service_config).with_content(%r{#{stanza}}m)
+              end
+            end
           end
 
           context 'with path & suffix exemptions' do
@@ -139,7 +152,7 @@ describe 'nebula::haproxy_service' do
             it { is_expected.to contain_file(service_config).with_content(%r{acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt}) }
             it { is_expected.to contain_file(service_config).with_content(%r{acl whitelist_path_end path_end -n -f /etc/haproxy/svc1_whitelist_path_end.txt}) }
 
-            it { is_expected.to contain_file(service_config).with_content(%r{deny_status 503 if !whitelist_path_beg !whitelist_path_end http_req_rate_abuse}) }
+            it { is_expected.to contain_file(service_config).with_content(%r{use backend svc1-hatcher-http-back-exempt if whitelist_path_beg OR whitelist_path_end}) }
 
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_beg.txt').with_content("/some/where\n/another/path\n") }
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt').with_content(".abc\n.def\n") }
