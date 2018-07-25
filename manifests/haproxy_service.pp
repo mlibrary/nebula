@@ -24,7 +24,7 @@ define nebula::haproxy_service(
       ensure => 'present',
       mode   => '0644',
       notify => Service['haproxy'],
-      source => "puppet://errorfiles/${service}509.http"
+      source => "puppet:///errorfiles/${service}509.http"
     }
   }
 
