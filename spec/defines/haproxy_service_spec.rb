@@ -130,7 +130,7 @@ describe 'nebula::haproxy_service' do
               "frontend svc1-hatcher-https-front\n" \
               "(  \\w.*\n)+" \
               "  acl whitelist_src src -n -f /etc/haproxy/svc1_whitelist_src.txt\n" \
-              "  use backend svc1-hatcher-https-back-exempt if whitelist_src\n" \
+              "  use_backend svc1-hatcher-https-back-exempt if whitelist_src\n" \
               "  default_backend svc1-hatcher-https-back\n",
 
               "backend svc1-hatcher-https-back-exempt\n" \
@@ -152,7 +152,7 @@ describe 'nebula::haproxy_service' do
             it { is_expected.to contain_file(service_config).with_content(%r{acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt}) }
             it { is_expected.to contain_file(service_config).with_content(%r{acl whitelist_path_end path_end -n -f /etc/haproxy/svc1_whitelist_path_end.txt}) }
 
-            it { is_expected.to contain_file(service_config).with_content(%r{use backend svc1-hatcher-http-back-exempt if whitelist_path_beg OR whitelist_path_end}) }
+            it { is_expected.to contain_file(service_config).with_content(%r{use_backend svc1-hatcher-http-back-exempt if whitelist_path_beg OR whitelist_path_end}) }
 
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_beg.txt').with_content("/some/where\n/another/path\n") }
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt').with_content(".abc\n.def\n") }

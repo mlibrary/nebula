@@ -65,7 +65,7 @@ EOT
   end
 
   def whitelist(service_prefix)
-    whitelist_acl_files + "  use backend #{service_prefix}-back-exempt if #{whitelist_condition}\n"
+    whitelist_acl_files + "  use_backend #{service_prefix}-back-exempt if #{whitelist_condition}\n"
   end
 
   def bind_options(args)
