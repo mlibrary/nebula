@@ -1,0 +1,22 @@
+# Managed by puppet (nebula/named_instance/puma.service.erb)
+[Unit]
+Description=<%= @title -%> puma
+PartOf=<%= @title -%>.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+UMask=0002
+User=<%= @title %>
+Group=<%= @title %>
+Environment="RBENV_ROOT=<%= @rbenv_root %>"
+Environment="RAILS_ENV=production"
+WorkingDirectory=<%= @path -%>/current
+ExecStart=<%= @rbenv_root -%>/bin/rbenv exec puma -C <%= @puma_config %>
+
+TimeoutStartSec=20
+Restart=on-failure
+RestartSec=5
+
