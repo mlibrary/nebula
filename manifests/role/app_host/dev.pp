@@ -11,4 +11,5 @@
 class nebula::role::app_host::dev {
   include nebula::role::umich
   include nebula::profile::ruby
+  include nebula::profile::named_instances
 }
