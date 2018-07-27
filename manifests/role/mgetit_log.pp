@@ -9,4 +9,5 @@
 class nebula::role::mgetit_log {
   include nebula::role::umich
   include nebula::profile::elastic::filebeat::prospectors::mgetit
+  include nebula::profile::named_instances
 }
