@@ -8,4 +8,5 @@
 #   include nebula::role::hathitrust::dev
 class nebula::role::hathitrust::dev {
   include nebula::role::hathitrust
+  include nebula::profile::named_instances
 }
