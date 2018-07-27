@@ -38,26 +38,14 @@ describe 'nebula::named_instance' do
       end
 
       describe 'existing users' do
-        %w[
-          invalid_normal_admin
-          invalid_special_admin
-          invalid_noauth_admin
-        ].each do |user|
-          it do
-            is_expected.to contain_user("#{user}:#{title}")
-              .with_name(user)
-              .with_membership('minimum')
-              .with_groups([title])
-          end
-        end
         it 'adds the passed users' do
           users.each do |user|
-            is_expected.to contain_user("#{user}:#{title}")
-              .with_name(user)
-              .with_membership('minimum')
-              .with_groups([title])
+            is_expected.to contain_exec("#{user} #{title} membership")
           end
         end
+        it { is_expected.to contain_exec("invalid_normal_admin #{title} membership") }
+        it { is_expected.to contain_exec("invalid_special_admin #{title} membership") }
+        it { is_expected.to contain_exec("invalid_noauth_admin #{title} membership") }
       end
 
       describe 'application user' do
