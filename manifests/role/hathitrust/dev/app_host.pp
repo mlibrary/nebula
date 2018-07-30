@@ -2,12 +2,11 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Mgetit log preparer
+# HathiTrust development application host
 #
 # @example
-#   include nebula::role::mgetit_log
-class nebula::role::mgetit_log {
-  include nebula::role::umich
-  include nebula::profile::elastic::filebeat::prospectors::mgetit
+#   include nebula::role::hathitrust::dev::app_host
+class nebula::role::hathitrust::dev::app_host {
+  include nebula::role::hathitrust::dev
   include nebula::profile::named_instances
 }
