@@ -13,10 +13,10 @@
 class nebula::profile::named_instances (
   String      $fauxpaas_pubkey,
   String      $fauxpaas_puma_config,
-  Hash        $instances = {},
+  Array[Hash] $instances = [],
 ) {
-  $instances.each |$name, $instance| {
-    nebula::named_instance { $name:
+  $instances.each |$instance| {
+    nebula::named_instance { $instance['name']:
       path        => $instance['path'],
       uid         => $instance['uid'],
       gid         => $instance['gid'],
