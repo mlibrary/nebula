@@ -15,6 +15,8 @@ define nebula::named_instance(
   Array[String]     $subservices = [],
 ) {
 
+  include nebula::systemd::daemon_reload
+
   # Create the application user's group
   group { $title:
     ensure => 'present',
@@ -65,18 +67,34 @@ define nebula::named_instance(
     group  => $gid,
   }
 
+  # Stop and disable the old services
+  # This is setup to run after the files have been deleted but before daemon-reload,
+  # else systemd will not be able to find the service to stop it.
+  service { "app-puma@${title}.service":
+    ensure   => 'stopped',
+    enable   => false,
+    provider => 'systemd',
+    before  => Class['nebula::systemd::daemon_reload']
+  }
+
   # Remove the old style systemd puma file
   file { "/etc/systemd/system/app-puma@${title}.service.d":
     ensure  => 'absent',
     recurse => true,
     force   => true,
+    notify  => [
+      Class['nebula::systemd::daemon_reload'],
+      Service["app-puma@${title}.service"],
+    ],
   }
 
   # Remove the old style systemd resque-pool file
-  file { "/etc/systemd/system/resque-pool@${title}.service.d":
-    ensure  => 'absent',
-    recurse => true,
+  file { "/etc/systemd/system/resque-pool@${title}.service.d": ensure  => 'absent', recurse => true,
     force   => true,
+    notify  => [
+      Class['nebula::systemd::daemon_reload'],
+      Service["app-puma@${title}.service"],
+    ],
   }
 
   # Lookup rbenv root for use in templates
@@ -89,6 +107,10 @@ define nebula::named_instance(
     owner   => 'root',
     group   => 'root',
     content => template('nebula/named_instance/main.target.erb'),
+    notify  => [
+      Class['nebula::systemd::daemon_reload'],
+      Service["${title}.target"],
+    ],
   }
 
   # Add current-style systemd puma file
@@ -98,6 +120,10 @@ define nebula::named_instance(
     owner   => 'root',
     group   => 'root',
     content => template('nebula/named_instance/puma.service.erb'),
+    notify  => [
+      Class['nebula::systemd::daemon_reload'],
+      Service["${title}.target"],
+    ],
   }
 
   # Add a systemd service file for each subservice
@@ -108,7 +134,24 @@ define nebula::named_instance(
       owner   => 'root',
       group   => 'root',
       content => template('nebula/named_instance/subservice.service.erb'),
+      notify  => [
+        Class['nebula::systemd::daemon_reload'],
+        Service["${title}.target"],
+      ],
     }
+  }
+
+  # Enable and start the new service
+  # This is setup to run exactly once after we've made any changes,
+  # run daemon-reload, and installed the sudoers file.
+  service { "${title}.target":
+    ensure   => 'running',
+    enable   => true,
+    provider => 'systemd',
+    require  => [
+      Class['nebula::systemd::daemon_reload'],
+      File["/etc/sudoers.d/${title}"]
+    ]
   }
 
   # Remove old-style sudoers file
