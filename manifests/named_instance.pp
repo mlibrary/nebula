@@ -26,7 +26,7 @@ define nebula::named_instance(
     exec { "${user} ${title} membership":
       unless  => "/bin/grep -q ${title}\\S*${user} /etc/group",
       onlyif  => "/usr/bin/id ${user}",
-      command => "/sbin/usermod -aG ${title} ${user}",
+      command => "/usr/sbin/usermod -aG ${title} ${user}",
     }
   }
 
