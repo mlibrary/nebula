@@ -6,7 +6,7 @@
 #
 # @example
 class nebula::systemd::daemon_reload {
-  exec { '/usr/bin/systemctl daemon-reload':
+  exec { '/bin/systemctl daemon-reload':
     refreshonly => true,
   }
 }
