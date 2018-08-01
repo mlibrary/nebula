@@ -2,6 +2,8 @@
 [Unit]
 Description=<%= @subservice -%> subservice for <%= @title %>
 PartOf=<%= @title -%>.target
+StartLimitIntervalSec=900
+StartLimitBurst=5
 
 [Install]
 WantedBy=multi-user.target

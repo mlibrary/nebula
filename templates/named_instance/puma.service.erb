@@ -2,6 +2,8 @@
 [Unit]
 Description=<%= @title -%> puma
 PartOf=<%= @title -%>.target
+StartLimitIntervalSec=900
+StartLimitBurst=5
 
 [Install]
 WantedBy=multi-user.target
