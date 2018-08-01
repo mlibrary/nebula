@@ -33,6 +33,12 @@ describe 'nebula::profile::named_instances' do
       context 'with instances' do
         let(:params) { { instances: [myapp_testing, hydra_staging] } }
 
+        describe 'puma wrapper' do
+          let(:klass) { 'nebula::profile::named_instances::puma_wrapper' }
+
+          it { is_expected.to contain_class(klass).with(path: '/l/local/bin/profile_puma_wrap') }
+        end
+
         it do
           is_expected.to contain_nebula__named_instance(myapp_testing[:name]).with(
             path: myapp_testing[:path],
@@ -53,7 +59,7 @@ describe 'nebula::profile::named_instances' do
             pubkey: 'somepublickey',
             puma_config: 'config/fauxpaas_puma.rb',
             users: hydra_staging[:users],
-            subservices: hydra_staging[:subservices]
+            subservices: hydra_staging[:subservices],
           )
         end
       end

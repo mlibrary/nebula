@@ -18,7 +18,7 @@ Group=<%= @title %>
 Environment="RBENV_ROOT=<%= @rbenv_root %>"
 Environment="RAILS_ENV=production"
 WorkingDirectory=<%= @path -%>/current
-ExecStart=<%= @rbenv_root -%>/bin/rbenv exec puma -C <%= @puma_config %>
+ExecStart=<%= @puma_wrapper %>
 
 <% if @os['release']['major'] == '8' %>
 StartLimitIntervalSec=900
