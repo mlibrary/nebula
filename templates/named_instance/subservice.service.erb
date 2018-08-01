@@ -2,7 +2,7 @@
 [Unit]
 Description=<%= @subservice -%> subservice for <%= @title %>
 PartOf=<%= @title -%>.target
-<% if @os['release']['major'> == '9' %>
+<% if @os['release']['major'] == '9' %>
 StartLimitIntervalSec=900
 StartLimitBurst=5
 <% end %>
@@ -20,7 +20,7 @@ Environment="RAILS_ENV=production"
 WorkingDirectory=<%= @path -%>/current
 ExecStart=<%= @rbenv_root -%>/bin/rbenv exec bundle exec bin/<%= @subservice %>
 
-<% if @os['release']['major'> == '8' %>
+<% if @os['release']['major'] == '8' %>
 StartLimitIntervalSec=900
 StartLimitBurst=5
 <% end %>
