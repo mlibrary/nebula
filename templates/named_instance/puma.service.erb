@@ -16,7 +16,7 @@ Environment="RAILS_ENV=production"
 WorkingDirectory=<%= @path -%>/current
 ExecStart=<%= @rbenv_root -%>/bin/rbenv exec puma -C <%= @puma_config %>
 
-TimeoutStartSec=20
+TimeoutStartSec=60
 Restart=on-failure
 RestartSec=5
 
