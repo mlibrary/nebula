@@ -8,7 +8,9 @@
 #
 # @example
 class nebula::profile::named_instances::puma_wrapper(
-  String  $path
+  String  $path,
+  String  $rbenv_root,
+  String  $puma_config,
 ){
   file { $path:
     ensure  => 'present',

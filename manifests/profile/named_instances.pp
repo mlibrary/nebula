@@ -18,7 +18,9 @@ class nebula::profile::named_instances (
 ) {
 
   class { 'nebula::profile::named_instances::puma_wrapper':
-    path => $puma_wrapper
+    path        => $puma_wrapper,
+    puma_config => $fauxpaas_puma_config,
+    rbenv_root  => lookup('nebula::profile::ruby::install_dir'),
   }
 
   $instances.each |$instance| {

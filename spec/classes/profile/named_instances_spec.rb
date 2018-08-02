@@ -37,6 +37,8 @@ describe 'nebula::profile::named_instances' do
           let(:klass) { 'nebula::profile::named_instances::puma_wrapper' }
 
           it { is_expected.to contain_class(klass).with(path: '/l/local/bin/profile_puma_wrap') }
+          it { is_expected.to contain_class(klass).with(rbenv_root: '/opt/rbenv') }
+          it { is_expected.to contain_class(klass).with(puma_config: 'config/fauxpaas_puma.rb') }
         end
 
         it do
