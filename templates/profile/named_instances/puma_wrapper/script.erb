@@ -1,0 +1,27 @@
+#!/bin/bash
+# Managed by puppet (nebula/named_instance/fauxpuma.erb)
+
+RBENV="<%= @rbenv_root -%>/bin/rbenv"
+FAUXPAAS_PUMA_CONFIG="<%= @puma_config -%>"
+DEFAULT_PUMA_CONFIG="config/puma.rb"
+
+$RBENV exec bundle exec puma --version > /dev/null 2>&1
+PUMA_STATUS=$?
+
+if [ $PUMA_STATUS -eq 0 ]
+then
+  BIN="bundle exec puma"
+else
+  BIN="puma"
+fi
+
+if [ -e "$FAUXPAAS_PUMA_CONFIG" ]
+then
+  CONFIG="$FAUXPAAS_PUMA_CONFIG"
+else
+  CONFIG="$DEFAULT_PUMA_CONFIG"
+fi
+
+echo "running: $RBENV exec $BIN -C $CONFIG"
+$RBENV exec $BIN -C $CONFIG
+

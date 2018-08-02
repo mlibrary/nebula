@@ -147,5 +147,6 @@ nebula::profile::vmhost::host::netmask: '0.0.0.0'
 nebula::profile::vmhost::host::gateway: '10.1.2.3'
 nebula::profile::vmhost::host::nameservers: "%{alias('nebula::resolv_conf::nameservers')}"
 
+nebula::profile::named_instances::puma_wrapper: "/l/local/bin/profile_puma_wrap"
 nebula::profile::named_instances::fauxpaas_pubkey: "somepublickey"
 nebula::profile::named_instances::fauxpaas_puma_config: "config/fauxpaas_puma.rb"

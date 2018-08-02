@@ -13,6 +13,7 @@ describe 'nebula::named_instance' do
   let(:uid) { 30_001 }
   let(:gid) { 20_001 }
   let(:pubkey) { 'somepublickey' }
+  let(:puma_wrapper) { '/l/local/bin/puma_wrapper' }
   let(:puma_config) { 'config/fauxpaas_puma.rb' }
   let(:users) { %w[alice solr] }
   let(:params) do
@@ -22,6 +23,7 @@ describe 'nebula::named_instance' do
       gid: gid,
       subservices: subservices,
       pubkey: pubkey,
+      puma_wrapper: puma_wrapper,
       puma_config: puma_config,
       users: users,
     }
@@ -132,8 +134,8 @@ describe 'nebula::named_instance' do
         it { is_expected.to contain_file(puma).with_content(%r{^Environment=\"RBENV_ROOT=/opt/rbenv\"$}) }
         it { is_expected.to contain_file(puma).with_content(%r{^Environment=\"RAILS_ENV=production"$}) }
         it { is_expected.to contain_file(puma).with_content(%r{^WorkingDirectory=#{path}/current$}) }
-        it { is_expected.to contain_file(puma).with_content(%r{^ExecStart=/opt/rbenv/bin/rbenv exec puma -C #{puma_config}$}) }
-        it { is_expected.to contain_file(puma).with_content(%r{^TimeoutStartSec=20$}) }
+        it { is_expected.to contain_file(puma).with_content(%r{^ExecStart=#{puma_wrapper}$}) }
+        it { is_expected.to contain_file(puma).with_content(%r{^TimeoutStartSec=[0-9]+$}) }
       end
 
       describe 'subservices' do
@@ -153,7 +155,7 @@ describe 'nebula::named_instance' do
             it { is_expected.to contain_file(subservice_file).with_content(%r{^Environment=\"RAILS_ENV=production"$}) }
             it { is_expected.to contain_file(subservice_file).with_content(%r{^WorkingDirectory=#{path}/current$}) }
             it { is_expected.to contain_file(subservice_file).with_content(%r{^ExecStart=/opt/rbenv/bin/rbenv exec bundle exec bin/#{subservice}$}) }
-            it { is_expected.to contain_file(subservice_file).with_content(%r{^TimeoutStartSec=20$}) }
+            it { is_expected.to contain_file(subservice_file).with_content(%r{^TimeoutStartSec=[0-9]+$}) }
           end
         end
       end

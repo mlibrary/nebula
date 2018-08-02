@@ -11,6 +11,7 @@ define nebula::named_instance(
   Integer           $gid,
   String            $pubkey,
   String            $puma_config,
+  String            $puma_wrapper,
   Array[String]     $users = [],
   Array[String]     $subservices = [],
 ) {
@@ -74,7 +75,7 @@ define nebula::named_instance(
     ensure   => 'stopped',
     enable   => false,
     provider => 'systemd',
-    before  => Class['nebula::systemd::daemon_reload']
+    before   => Class['nebula::systemd::daemon_reload']
   }
 
   # Remove the old style systemd puma file
@@ -89,7 +90,9 @@ define nebula::named_instance(
   }
 
   # Remove the old style systemd resque-pool file
-  file { "/etc/systemd/system/resque-pool@${title}.service.d": ensure  => 'absent', recurse => true,
+  file { "/etc/systemd/system/resque-pool@${title}.service.d":
+    ensure  => 'absent',
+    recurse => true,
     force   => true,
     notify  => [
       Class['nebula::systemd::daemon_reload'],
