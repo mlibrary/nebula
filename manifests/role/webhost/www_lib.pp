@@ -8,6 +8,7 @@
 #   include nebula::role::webhost::www_lib
 class nebula::role::webhost::www_lib {
   nebula::balanced_frontend { 'www-lib': }
+  nebula::balanced_frontend { 'deepblue': }
   include nebula::role::umich
   include nebula::profile::elastic::filebeat::prospectors::clickstream
 }
