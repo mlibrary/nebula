@@ -7,12 +7,13 @@
 # @example
 #   nebula::haproxy_service { 'namevar': }
 define nebula::haproxy_service(
-  String          $floating_ip,
-  Array[String]   $node_names = [],
-  String          $cert_source = '',
-  Integer         $max_requests_per_sec = 0,
-  Integer         $max_requests_burst = 0,
-  Hash            $whitelists = {}
+  String           $floating_ip,
+  Array[String]    $node_names = [],
+  Optional[String] $cert_source = undef,
+  Optional[String] $throttle_condition = undef,
+  Integer          $max_requests_per_sec = 0,
+  Integer          $max_requests_burst = 0,
+  Hash             $whitelists = {}
 ) {
 
   include nebula::profile::haproxy::prereqs
@@ -46,7 +47,7 @@ define nebula::haproxy_service(
     notify  => Service['haproxy'],
   }
 
-  if $cert_source != '' {
+  if $cert_source {
     file { "/etc/ssl/private/${service}":
       ensure  => 'directory',
       mode    => '0700',
