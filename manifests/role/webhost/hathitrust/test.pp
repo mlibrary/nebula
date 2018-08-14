@@ -8,5 +8,5 @@
 #   include nebula::role::webhost::hathitrust::test
 class nebula::role::webhost::hathitrust::test {
   nebula::balanced_frontend { 'test-hathitrust': }
-  include nebula::role::hathitrust::dev
+  include nebula::role::hathitrust::dev::app_host
 }
