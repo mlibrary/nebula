@@ -10,7 +10,7 @@ class nebula::profile::haproxy(
   Hash $services,
   Hash $monitoring_user,
   Boolean $master = false,
-  String $cert_source = '',
+  Optional[String] $cert_source = undef,
 ) {
   include nebula::profile::haproxy::prereqs
   include nebula::profile::networking::sysctl

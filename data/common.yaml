@@ -23,7 +23,6 @@ nebula::profile::elastic::logstash_hosts:
 nebula::profile::elastic::filebeat::prospectors::mgetit::log_path: /var/log/mgetit.default.invalid
 nebula::profile::elastic::period: 90
 nebula::profile::haproxy::services: {}
-nebula::profile::haproxy::cert_source: ''
 nebula::profile::haproxy::monitoring_user:
   name: haproxyctl
   home: /var/haproxyctl

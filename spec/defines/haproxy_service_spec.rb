@@ -17,8 +17,7 @@ describe 'nebula::haproxy_service' do
       let(:third_server) { { 'ip' => '222.222.222.235', 'hostname' => 'third_server' } }
       let(:base_params) do
         { floating_ip: '1.2.3.4',
-          node_names: %w[scotch soda],
-          cert_source: '' }
+          node_names: %w[scotch soda] }
       end
       let(:params) { base_params }
 
@@ -156,6 +155,15 @@ describe 'nebula::haproxy_service' do
 
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_beg.txt').with_content("/some/where\n/another/path\n") }
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt').with_content(".abc\n.def\n") }
+          end
+
+          context 'with throttling condition' do
+            let(:params) do
+              throttling_params.merge(throttle_condition: 'path_beg /whatever')
+            end
+
+            it { is_expected.to contain_file(service_config).with_content(%r{acl throttle_condition path_beg /whatever}) }
+            it { is_expected.to contain_file(service_config).with_content(%r{use_backend svc1-hatcher-http-back-exempt if !throttle_condition}) }
           end
         end
       end

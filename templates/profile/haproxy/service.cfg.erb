@@ -46,26 +46,46 @@ EOT
     "  server #{hostname} #{ip}:#{port} #{check} cookie s#{ip.split('.').last}"
   end
 
-  def any_whitelists?
-    @whitelists.find { |_,exemptions| exemptions.size() > 0 }
+  def nonempty_whitelists
+    @whitelists.select { |_,exemptions| exemptions.size() > 0 }
   end
 
-  def whitelist_acl_files
-    @whitelists.select { |_,exemptions| exemptions.size() > 0 }
-      .map do |whitelist,_|
+  def any_exemptions?
+    nonempty_whitelists.size() > 0 or @throttle_condition
+  end
+
+  def whitelist_file_acls
+    nonempty_whitelists.map do |whitelist,_|
       "  acl whitelist_#{whitelist} #{whitelist} -n -f /etc/haproxy/#{@service}_whitelist_#{whitelist}.txt\n"
-      end.join("")
+    end.join("")
   end
 
-  def whitelist_condition
-    @whitelists.select { |_,exemptions| exemptions.size() > 0 }
-      .map do |whitelist,_|
-        "whitelist_#{whitelist}"
-      end.join(" OR ")
+  def throttle_condition_acl
+    if @throttle_condition
+      "  acl throttle_condition #{@throttle_condition}\n"
+    else
+      ""
+    end
   end
 
-  def whitelist(service_prefix)
-    whitelist_acl_files + "  use_backend #{service_prefix}-back-exempt if #{whitelist_condition}\n"
+  def whitelist_acl_names
+    nonempty_whitelists.map do |whitelist,_|
+      "whitelist_#{whitelist}"
+    end
+  end
+
+  def exemption_condition
+    acls = whitelist_acl_names
+    acls = acls + ["!throttle_condition"] if @throttle_condition
+    acls.join(" OR ")
+  end
+
+  def exemption(service_prefix)
+    if any_exemptions?
+      "  use_backend #{service_prefix}-back-exempt if #{exemption_condition}\n"
+    else
+      ""
+    end
   end
 
   def bind_options(args)
@@ -91,7 +111,7 @@ backend <%= service_prefix %>-back
 <%= throttling(service_loc) if use_throttling? -%>
 <%= nodes.map { |hostname,ip| backend_server(hostname,ip,options[:port],check_or_track(protocol,service_loc,hostname)) }.join("\n") %>
 
-<% if any_whitelists? -%>
+<% if any_exemptions? -%>
 backend <%= service_prefix %>-back-exempt
 <%= nodes.map { |hostname,ip| backend_server(hostname,ip,options[:port],track(service_loc,hostname)) }.join("\n") %>
 <% end -%>
@@ -104,7 +124,9 @@ frontend <%= service_prefix %>-front
 <% end -%>
   http-request set-header X-Client-IP %ci
   http-request set-header X-Forwarded-Proto <%= protocol %>
-<%= whitelist(service_prefix) if any_whitelists? -%>
+<%= whitelist_file_acls -%>
+<%= throttle_condition_acl -%>
+<%= exemption(service_prefix) -%>
   default_backend <%= service_prefix %>-back
 
 <% end %>
