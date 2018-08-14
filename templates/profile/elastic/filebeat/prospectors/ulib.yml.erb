@@ -1,0 +1,8 @@
+# Managed by puppet (nebula/profile/elastic/filebeat/prospectors/ulib.yml.erb)
+filebeat.prospectors:
+- paths:
+  <% @files.each do |file| -%>
+    - <%= file %>
+  <% end -%>
+  document_type: ulib
+
