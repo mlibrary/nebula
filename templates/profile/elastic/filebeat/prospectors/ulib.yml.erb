@@ -2,7 +2,7 @@
 filebeat.prospectors:
 - paths:
   <% @files.each do |file| -%>
-    - <%= file %>
-  <% end -%>
+  - "<%= file %>"
+  <% end %>
   document_type: ulib
 

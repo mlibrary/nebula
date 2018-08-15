@@ -20,8 +20,8 @@ describe 'nebula::profile::elastic::filebeat::prospectors::ulib' do
             .that_notifies('Service[filebeat]')
             .with_content(%r{^\s+document_type: ulib$})
         end
-        it { is_expected.to contain_file(file).with_content(%r{^\s+\- /var/log/1.log$}) }
-        it { is_expected.to contain_file(file).with_content(%r{^\s+\- /var/log/logger/2.txt$}) }
+        it { is_expected.to contain_file(file).with_content(%r{^    \- "/var/log/1.log"$}) }
+        it { is_expected.to contain_file(file).with_content(%r{^    \- "/var/log/logger/2.txt"$}) }
       end
       context "without params" do
         it "doesn't fail with no files specified" do
