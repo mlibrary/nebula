@@ -11,7 +11,6 @@
 class nebula::role::sysadmin_box {
   include nebula::role::umich
   include nebula::profile::ruby
-  include nebula::profile::elastic::filebeat::prospectors::ulib
 
   class { 'nebula::profile::puppet::query':
     ssl_group => 'sudo',
