@@ -3,5 +3,5 @@
 # Apache logs for clickstream; the JSON is parsed at the logstash level
 filebeat.prospectors:
 - paths:
-    - "/var/log/apache2/clickstream.log"
+    - "/var/log/apache2/clickstream_log-*[0-9]"
   document_type: clickstream
