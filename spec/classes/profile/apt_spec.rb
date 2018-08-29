@@ -63,6 +63,20 @@ describe 'nebula::profile::apt' do
           is_expected.to contain_apt__source('security')
             .with_location('http://security.debian.org/debian-security')
         end
+        context 'when given a local repo' do
+          let(:params) do
+            { local_repo:
+                             { 'location' => 'http://somehost.example.invalid/debs',
+                               'key'      => { 'id' => '12345678', 'source' => 'http://somehost.example.invalid/repo-key.gpg' } } }
+          end
+
+          it do
+            is_expected.to contain_apt__source('local').with(location: 'http://somehost.example.invalid/debs',
+                                                             release: 'stretch',
+                                                             key: params[:local_repo]['key'],
+                                                             repos: 'main')
+          end
+        end
       end
 
       context 'when given a mirror of http://debian.uchicago.edu/' do
