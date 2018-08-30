@@ -60,4 +60,5 @@ class nebula::profile::base (
 
   include nebula::profile::base::stop_mcollective
   include nebula::profile::base::blacklist_hpwdt
+  include nebula::profile::base::i40e
 }
