@@ -11,6 +11,7 @@
 class nebula::profile::apt (
   String $mirror,
   String $puppet_repo,
+  Optional[Hash] $local_repo = undef,
 ) {
   # Ensure that apt knows to never ever install recommended packages
   # before it installs any packages.
@@ -50,6 +51,14 @@ class nebula::profile::apt (
   apt::source { 'security':
     release => "${::lsbdistcodename}/updates",
     repos   => 'main contrib non-free',
+  }
+
+  if $local_repo {
+    apt::source { 'local':
+      *       => $local_repo,
+      release => $::lsbdistcodename,
+      repos   => 'main'
+    }
   }
 
   case $::lsbdistcodename {
