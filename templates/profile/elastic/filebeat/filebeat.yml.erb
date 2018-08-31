@@ -17,6 +17,10 @@ output:
 ############################# Logging #########################################
 
 logging:
+  level: warn
   files:
+    path: /var/log/filebeat
+    name: filebeat.log
+    keepfiles: 2
     rotateeverybytes: 10485760 # = 10MB
 
