@@ -9,7 +9,7 @@
 # @example
 #   include nebula::profile::base::i40e
 class nebula::profile::base::i40e {
-  if $facts['network_cards'] and $facts['network_cards'].filter |$card| { $card =~ /Intel.*X710/ } {
+  if $facts['network_cards'] and $facts['network_cards'].any |$card| { $card =~ /Intel.*X710/ } {
     package { 'i40e-dkms': }
   }
 }
