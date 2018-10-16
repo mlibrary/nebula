@@ -271,6 +271,10 @@ describe 'nebula::virtual_machine' do
             %r{ --location http://ftp\.us\.debian\.org/debian/dists/jessie/main/installer-amd64/},
           )
         end
+
+        it { is_expected.not_to contain_preseed }
+
+        it { is_expected.not_to contain_install.with_command(%r{--initrd-inject}) }
       end
 
       context 'with domain set to awesome.com' do

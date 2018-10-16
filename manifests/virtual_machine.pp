@@ -91,8 +91,14 @@ define nebula::virtual_machine(
     ensure => 'directory',
   }
 
-  file { "${tmpdir}/preseed.cfg":
-    content => template('nebula/virtual_machine/stretch.cfg.erb'),
+  if $build == 'stretch' {
+    file { "${tmpdir}/preseed.cfg":
+      content => template('nebula/virtual_machine/stretch.cfg.erb'),
+    }
+
+    $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
+  } else {
+    $initrd_inject = ''
   }
 
   exec { "${prefix}::virt-install":
@@ -120,9 +126,8 @@ define nebula::virtual_machine(
         --network bridge=br1,model=virtio                             \
         --console pty,target_type=virtio                              \
         --virt-type kvm                                               \
-        --graphics vnc                                                \
-        --extra-args 'auto netcfg/disable_dhcp=true'                  \
-        --initrd-inject '${tmpdir}/preseed.cfg'
+        --graphics vnc                   ${initrd_inject}             \
+        --extra-args 'auto netcfg/disable_dhcp=true'
       | VIRT_INSTALL_EOF
   }
 
