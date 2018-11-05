@@ -13,7 +13,8 @@ class nebula::profile::hathitrust::shibboleth () {
 
   package {
     [
-      'libmyodbc',
+# not in debian 9 - would need to install via https://downloads.mariadb.org/connector-odbc/
+#      'libmyodbc'
       'unixodbc',
       'libapache2-mod-shib2'
     ]:

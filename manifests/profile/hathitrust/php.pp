@@ -14,14 +14,14 @@ class nebula::profile::hathitrust::php () {
 
   package {
     [
-      'php5-cli',
-      'php5-common',
-      'php5-curl',
-      'php5-gd',
-      'php5-geoip',
-      'php5-ldap',
-      'php5-mysqlnd',
-      'php5-xsl',
+      'php7.0-cli',
+      'php7.0-common',
+      'php7.0-curl',
+      'php7.0-gd',
+      'php-geoip',
+      'php7.0-ldap',
+      'php7.0-mysql',
+      'php7.0-xsl',
       'php-date',
       'php-db',
       'php-http-request',
@@ -30,13 +30,15 @@ class nebula::profile::hathitrust::php () {
       'php-mdb2',
       'php-net-smtp',
       'php-net-url2',
-      'php-pager',
       'php-pear',
-      'php-xml-parser',
-      'php-xml-serializer',
-      'libapache2-mod-php5',
+      'libapache2-mod-php7.0',
       'pear-horde-channel'
     ]:
   }
+
+#      to install via pear
+#      'php-pager',
+#      'php-xml-parser',
+#      'php-xml-serializer',
 
 }

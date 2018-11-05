@@ -11,8 +11,10 @@
 class nebula::profile::hathitrust::apache () {
   package { [
       'apache2',
-      'apache2-mpm-prefork',
-      'libapache2-mod-fastcgi',
+# default?
+#      'apache2-mpm-prefork',
+# removed, will use fcgid or proxy?
+#      'libapache2-mod-fastcgi',
     ]:
   }
 }
