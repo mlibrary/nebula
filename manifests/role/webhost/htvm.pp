@@ -50,6 +50,7 @@ class nebula::role::webhost::htvm {
   include nebula::profile::hathitrust::apache
   include nebula::profile::hathitrust::perl
   include nebula::profile::hathitrust::php
+
   include nebula::profile::hathitrust::shibboleth
   include nebula::profile::hathitrust::unison
 }

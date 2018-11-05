@@ -6,6 +6,9 @@ fixtures:
     stdlib:
       repo: "puppetlabs/stdlib"
       ref: "4.16.0"
+    apache:
+      repo: "puppetlabs/apache"
+      ref: "3.4.0"
     apt:
       repo: "puppetlabs/apt"
       ref: "4.5.1"
