@@ -9,6 +9,7 @@
 class nebula::role::minimum {
   include nebula::profile::base
   include nebula::profile::work_around_puppet_bugs
+  include nebula::profile::base::firewall::ipv4
 
   if $facts['os']['release']['major'] == '9' {
     include nebula::profile::apt
