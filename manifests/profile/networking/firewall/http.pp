@@ -8,10 +8,7 @@
 #
 # @example
 #   include nebula::profile::networking::firewall::http
-class nebula::profile::networking::firewall::http (
-  Array $blocks = [],
-  Array $ranges = [],
-) {
+class nebula::profile::networking::firewall::http () {
   nodes_for_class('nebula::profile::haproxy').each |String $nodename| {
     $node_net = fact_for($nodename, 'networking')
 
