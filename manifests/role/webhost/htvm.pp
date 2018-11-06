@@ -38,7 +38,8 @@ class nebula::role::webhost::htvm {
   }
   # End minimum/hathitrust inclusion
 
-  nebula::balanced_frontend { 'hathitrust': }
+  # not ready for this yet
+  # nebula::balanced_frontend { 'htvm': }
 
   include nebula::profile::networking::firewall
   include nebula::profile::networking::firewall::http
