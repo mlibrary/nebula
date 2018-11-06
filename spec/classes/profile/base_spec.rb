@@ -22,7 +22,8 @@ describe 'nebula::profile::base' do
       when 'debian-8-x86_64'
         it { is_expected.not_to contain_base_class('firewall::ipv4') }
       when 'debian-9-x86_64'
-        it { is_expected.to contain_base_class('firewall::ipv4') }
+        # temporarily moved to minimum role
+        #        it { is_expected.to contain_base_class('firewall::ipv4') }
 
         it { is_expected.to contain_package('dselect') }
         it { is_expected.to contain_package('ifenslave') }

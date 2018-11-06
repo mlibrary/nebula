@@ -50,8 +50,6 @@ class nebula::profile::base (
       refreshonly => true,
     }
 
-    include nebula::profile::base::firewall::ipv4
-
     file { '/etc/motd':
       content => template('nebula/profile/base/motd.erb'),
     }
