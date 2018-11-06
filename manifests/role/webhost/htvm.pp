@@ -42,4 +42,13 @@ class nebula::role::webhost::htvm {
 
   include nebula::profile::networking::firewall
   include nebula::profile::networking::firewall::http
+
+  include nebula::profile::geoip
+  include nebula::profile::hathitrust::dependencies
+
+  include nebula::profile::hathitrust::apache
+  include nebula::profile::hathitrust::perl
+  include nebula::profile::hathitrust::php
+  include nebula::profile::hathitrust::shibboleth
+  include nebula::profile::hathitrust::unison
 }
