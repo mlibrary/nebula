@@ -4,11 +4,20 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
+require 'faker'
+
+require_relative '../../support/contexts/with_mocked_nodes'
 
 describe 'nebula::role::webhost::htvm' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
+
+
+      let(:haproxy) { { 'ip' => Faker::Internet.ip_v4_address , 'hostname' => 'haproxy' } }
+      let(:rolenode) { { 'ip' => Faker::Internet.ip_v4_address , 'hostname' => 'rolenode' } }
+
+      include_context 'with mocked puppetdb functions', 'somedc', %w[haproxy rolenode], {'nebula::profile::haproxy' => %w[haproxy]}
 
       it { is_expected.to compile }
     end

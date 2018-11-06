@@ -9,8 +9,8 @@
 # @example
 #   include nebula::profile::networking::firewall::ssh
 class nebula::profile::networking::firewall::ssh (
-  Array $blocks,
-  Array $ranges,
+  Array $blocks = [],
+  Array $ranges = [],
 ) {
   $blocks.each |$block| {
     firewall { "100 SSH: ${block['name']}":
