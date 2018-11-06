@@ -13,11 +13,10 @@ describe 'nebula::role::webhost::htvm' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
+      let(:haproxy) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy' } }
+      let(:rolenode) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'rolenode' } }
 
-      let(:haproxy) { { 'ip' => Faker::Internet.ip_v4_address , 'hostname' => 'haproxy' } }
-      let(:rolenode) { { 'ip' => Faker::Internet.ip_v4_address , 'hostname' => 'rolenode' } }
-
-      include_context 'with mocked puppetdb functions', 'somedc', %w[haproxy rolenode], {'nebula::profile::haproxy' => %w[haproxy]}
+      include_context 'with mocked puppetdb functions', 'somedc', %w[haproxy rolenode], 'nebula::profile::haproxy' => %w[haproxy]
 
       it { is_expected.to compile }
     end

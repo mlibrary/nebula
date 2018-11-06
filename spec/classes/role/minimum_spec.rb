@@ -18,7 +18,6 @@ describe 'nebula::role::minimum' do
       when 'debian-9-x86_64'
         it { is_expected.to contain_class('nebula::profile::base::firewall::ipv4') }
       end
-
     end
   end
 end
