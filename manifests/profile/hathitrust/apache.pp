@@ -20,7 +20,7 @@ class nebula::profile::hathitrust::apache (
     # changed from default 15 (puppet), 5 (debian) (copypasta)
     keepalive_timeout      => 2,
     log_formats            => {
-      combined => '%a %l %u %t "%r" %>s %b "%{Referer}i" "%{User-Agent}i" %v "%{X-HathiTrust-InCopyright}o"'
+      combined => '%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %v \"%{X-HathiTrust-InCopyright}o\"'
     },
     # configured below by explicitly declaring params for apache::mod::prefork class
     mpm_module             => false,
