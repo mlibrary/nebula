@@ -86,7 +86,7 @@ class nebula::profile::hathitrust::apache (
     requires        =>  {
       enforce  => 'any',
       # TODO look up staff IPs from hiera
-      requires => [ 'require local' ]
+      requires => [ 'local' ]
     }
   }
 
@@ -114,7 +114,7 @@ class nebula::profile::hathitrust::apache (
         allow_override => ['None'],
         requires       =>  {
           enforce  => 'any',
-          requires => [ 'require local' ] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
+          requires => [ 'local' ] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
         }
       },
 
@@ -127,7 +127,7 @@ class nebula::profile::hathitrust::apache (
           # TODO: also allow grog (nebula::role::hathitrust::dev::app_host),
           # squishees (currently nebula::role::hathitrust::prod; need a solr
           # role)
-          requires => ['require local'] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
+          requires => ['local'] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
         }
       }
 
