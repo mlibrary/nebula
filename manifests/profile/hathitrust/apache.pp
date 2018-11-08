@@ -50,35 +50,30 @@ class nebula::profile::hathitrust::apache (
   #
   # access_compat (but maybe we can get rid of this)
   # alias   WITH CONFIG; TODO VERIFY DEFAULT CONFIG (for icons)
-  # authn_core
-  # authz_core
-  # authz_host
+  class { 'apache::mod::authn_core': }
   # autoindex TODO VERIFY DEFAULT CONFIG
-  # cgi
-  # dir WITH CONFIG
-  # env
-  # expires
+  class { 'apache::mod::autoindex': }
+  class { 'apache::mod::cgi': }
+  # dir TODO CONFIG
+  class { 'apache::mod::dir': }
+  class { 'apache::mod::expires': }
   # fastcgi (not provided any more) (with config)
-  # filter
-  # headers
+  # TODO not sure if this is needed
+  class { 'apache::mod::include': }
   # include
   # macro NOPE
   # mime  WITH CONFIG; VERIFY DEFAULT CONFIG
   # mime_magic  WITH CONFIG; VERIFY DEFAULT CONFIG
-  # mpm_prefork (DONE with config)
+  class { 'apache::mod::mime_magic': }
   # negotiation WITH CONFIG; VERIFY DEFAULT CONFIG
+  class { 'apache::mod::negotiation': }
   # php7.0 WITH CONFIG; TODO migrate/verify config (AddType rather than the default)
-  # proxy (default config is empty)
-  # proxy_http
-  # remoteip WITH CONFIG; TODO collect haproxy nodes
+  class { 'apache::mod::php': }
   # reqtimeout WITH CONFIG; VERIFY DEFAULT CONFIG
-  # rewrite
-  # setenvif WITH CONFIG; VERIFY DEFAULT CONFIG
-
+  class { 'apache::mod::reqtimeout': }
   class { 'apache::mod::shib': }
 
-  # status WITH CONFIG; TODO get trusted IPs from hiera
-
+  # remoteip WITH CONFIG; TODO collect haproxy nodes
   class { 'apache::mod::remoteip':
     header    => 'X-Client-IP',
     proxy_ips => [] # TODO collect from haproxy nodes
