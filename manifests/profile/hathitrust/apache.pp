@@ -151,6 +151,13 @@ class nebula::profile::hathitrust::apache (
       access_log_format => 'combined',
       error_log_file    => "${vhost}/error.log"
     }
+
+    file { "/var/log/apache2/${vhost}":
+      ensure => 'directory',
+      mode   => '0755',
+      owner  => 'root',
+      group  => 'root',
+    }
   }
 
   apache::vhost { 'm.catalog.hathitrust.org redirection':
