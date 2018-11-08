@@ -7,7 +7,7 @@ require 'spec_helper'
 
 describe 'nebula::role::minimum' do
   on_supported_os.each do |os, os_facts|
-  let(:facts) { os_facts }
+    let(:facts) { os_facts }
 
     context "on #{os}" do
       let(:facts) { os_facts }

@@ -19,6 +19,11 @@ describe 'nebula::role::webhost::htvm' do
       include_context 'with mocked puppetdb functions', 'somedc', %w[haproxy rolenode], 'nebula::profile::haproxy' => %w[haproxy]
 
       it { is_expected.to compile }
+
+      it do
+        is_expected.to contain_file('/etc/systemd/system/shibd.service.d/increase-timeout.conf')
+          .with_content("[Service]\nTimeoutStartSec=900")
+      end
     end
   end
 end
