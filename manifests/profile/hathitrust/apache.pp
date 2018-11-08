@@ -134,7 +134,7 @@ class nebula::profile::hathitrust::apache (
       'Remote_Addr "::1" loopback',
       'Remote_Addr "127.0.0.1" loopback'
     ],
-    access_log_file    => "\${APACHE_LOG_DIR}/access.log",
+    access_log_file    => 'access.log',
     access_log_format  => 'combined',
     access_log_env_var => 'env=!loopback',
   }
@@ -147,9 +147,9 @@ class nebula::profile::hathitrust::apache (
       redirect_source   => '/',
       redirect_status   => 'permanent',
       redirect_dest     => "https://${vhost}.hathitrust.org",
-      access_log_file   => "\${APACHE_LOG_DIR}/${vhost}/access.log",
+      access_log_file   => "${vhost}/access.log",
       access_log_format => 'combined',
-      error_log_file    => "\${APACHE_LOG_DIR}/${vhost}/error.log"
+      error_log_file    => "${vhost}/error.log"
     }
   }
 
@@ -180,20 +180,20 @@ class nebula::profile::hathitrust::apache (
     redirect_dest   => 'https://www.hathitrust.org',
   }
 
-  file { "/etc/ssl/certs/www.hathitrust.org.crt":
-    mode    => '0644',
-    owner   => 'root',
-    group   => 'root',
-    notify  => Class['Apache::Service'],
-    source  => "puppet:///ssl-certs/www.hathitrust.org.crt"
+  file { '/etc/ssl/certs/www.hathitrust.org.crt':
+    mode   => '0644',
+    owner  => 'root',
+    group  => 'root',
+    notify => Class['Apache::Service'],
+    source => 'puppet:///ssl-certs/www.hathitrust.org.crt'
   }
 
-  file { "/etc/ssl/private/www.hathitrust.org.key":
-    mode    => '0600',
-    owner   => 'root',
-    group   => 'root',
-    notify  => Class['Apache::Service'],
-    source  => "puppet:///ssl-certs/www.hathitrust.org.key"
+  file { '/etc/ssl/private/www.hathitrust.org.key':
+    mode   => '0600',
+    owner  => 'root',
+    group  => 'root',
+    notify => Class['Apache::Service'],
+    source => 'puppet:///ssl-certs/www.hathitrust.org.key'
   }
 
   apache::vhost { 'babel.hathitrust.org ssl':
@@ -428,8 +428,8 @@ class nebula::profile::hathitrust::apache (
     serveraliases     => ['m.hathitrust.org'],
     manage_docroot    => false,
     docroot           => '/htapps/catalog/web',
-    error_log_file    => "\${APACHE_LOG_DIR}/catalog/error.log",
-    access_log_file   => '\%{APACHE_LOG_DIR}/catalog/access.log',
+    error_log_file    => 'catalog/error.log',
+    access_log_file   => 'catalog/access.log',
     access_log_format => 'combined',
     directoryindex    => 'index.html index.htm index.php index.phtml index.shtml',
     ssl               => true,
@@ -503,8 +503,8 @@ class nebula::profile::hathitrust::apache (
     port              => '443',
     manage_docroot    => false,
     docroot           => '/htapps/www',
-    error_log_file    => "\${APACHE_LOG_DIR}/www/error.log",
-    access_log_file   => "\${APACHE_LOG_DIR}/www/access.log",
+    error_log_file    => 'www/error.log',
+    access_log_file   => 'www/access.log',
     access_log_format => 'combined',
     setenv            => ['SDRROOT /htapps/www'],
     directoryindex    => 'index.html index.htm index.php index.phtml index.shtml',
