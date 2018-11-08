@@ -26,12 +26,11 @@ class nebula::profile::hathitrust::apache (
     mpm_module             => false,
     serveradmin            => 'lit-ae-systems@umich.edu',
     servername             => 'babel.hathitrust.org',
-    # default is 'On'
     trace_enable           => 'Off',
-    # default is 'false'
     root_directory_secured => true,
     scriptalias            => undef,
     docroot                => false,
+    default_mods           => false,
   }
 
   class { 'apache::mod::prefork':
@@ -75,35 +74,8 @@ class nebula::profile::hathitrust::apache (
   # reqtimeout WITH CONFIG; VERIFY DEFAULT CONFIG
   # rewrite
   # setenvif WITH CONFIG; VERIFY DEFAULT CONFIG
-  # shib2 WITH CONFIG; TODO:
-  # ADD
-  #  # An Apache handler needs to be established for the "handler" location.
-  #  # This applies the handler to any requests for a resource with a ".sso"
-  #  # extension.
-  #  #
-  #  # Note: this makes *.sso files (and therefore shib session initiation)
-  #  # public to any shib idp, but the alternatives (maintaining separate
-  #  # ACLs for *.sso in each vhost, or devising a scheme with environment
-  #  # variables and ugly IP range regexps) seem unacceptably complex
-  #  #
-  #  # 2011-12-07 csnavely, skorner
-  #  <Files *.sso>
-  #    SetHandler shib-handler
-  #    Order allow,deny
-  #    Allow from all
-  #  </Files>
-  #
-  #  #
-  #  # Used for example logo and style sheet in error templates.
-  #  #
-  #  <IfModule alias_module>
-  #    Alias /shibboleth-sp/main.css /usr/share/shibboleth/main.css
-  #  </IfModule>
-  #  <LocationMatch "^/shibboleth-sp/main.css$">
-  #      Order allow,deny
-  #      Allow from all
-  #      CosignProtected Off
-  #  </LocationMatch>
+
+  class { 'apache::mod::shib': }
 
   # status WITH CONFIG; TODO get trusted IPs from hiera
 
@@ -238,6 +210,11 @@ class nebula::profile::hathitrust::apache (
       {
         aliasmatch => '^/favicon.ico$',
         path       => '/htapps/babel/common/web/favicon.ico'
+      },
+      {
+        # Used for example logo and style sheet in error templates.
+        alias => '/shibboleth-sp/main.css',
+        path  => '/usr/share/shibboleth/main.css'
       }
     ],
 
@@ -403,6 +380,25 @@ class nebula::profile::hathitrust::apache (
         allow_override => 'None',
         options        => '+ExecCGI',
         sethandler     =>  'cgi-script'
+      },
+      {
+        # An Apache handler needs to be established for the "handler" location.
+        # This applies the handler to any requests for a resource with a ".sso"
+        # extension.
+        #
+        # Note: this makes *.sso files (and therefore shib session initiation)
+        # public to any shib idp, but the alternatives (maintaining separate
+        # ACLs for *.sso in each vhost, or devising a scheme with environment
+        # variables and ugly IP range regexps) seem unacceptably complex
+        provider   => 'files',
+        path       => '*.sso',
+        sethandler => 'shib-handler',
+        require    => 'all granted'
+      },
+      {
+        provider => 'locationmatch',
+        path     => '^/shibboleth-sp/main.css',
+        require  => 'all granted'
       }
     ]
 
