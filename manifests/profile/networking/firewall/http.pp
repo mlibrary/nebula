@@ -16,7 +16,7 @@ class nebula::profile::networking::firewall::http () {
       proto     => 'tcp',
       dport     => [80, 443],
       source    => $node_net['ip'],
-      tcp_flags => 'SYN,RST,ACK,FIN SYN', # equivalent to --syn
+      tcp_flags => 'FIN,SYN,RST,ACK SYN', # equivalent to --syn
       action    => 'accept',
     }
   }
