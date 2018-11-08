@@ -180,6 +180,22 @@ class nebula::profile::hathitrust::apache (
     redirect_dest   => 'https://www.hathitrust.org',
   }
 
+  file { "/etc/ssl/certs/www.hathitrust.org.crt":
+    mode    => '0644',
+    owner   => 'root',
+    group   => 'root',
+    notify  => Class['Apache::Service'],
+    source  => "puppet:///ssl-certs/www.hathitrust.org.crt"
+  }
+
+  file { "/etc/ssl/private/www.hathitrust.org.key":
+    mode    => '0600',
+    owner   => 'root',
+    group   => 'root',
+    notify  => Class['Apache::Service'],
+    source  => "puppet:///ssl-certs/www.hathitrust.org.key"
+  }
+
   apache::vhost { 'babel.hathitrust.org ssl':
     servername     => 'babel.hathitrust.org',
     serveraliases  => [ 'crms-training.babel.hathitrust.org' ],
@@ -407,7 +423,8 @@ class nebula::profile::hathitrust::apache (
   # - www
   # - production sites (catalog aliases, m.hathitrust.org redirect) - DONE
   apache::vhost { 'catalog.hathitrust.org ssl':
-    servername        => 'https://catalog.hathitrust.org',
+    servername        => 'catalog.hathitrust.org',
+    port              => 443,
     serveraliases     => ['m.hathitrust.org'],
     manage_docroot    => false,
     docroot           => '/htapps/catalog/web',
@@ -415,6 +432,9 @@ class nebula::profile::hathitrust::apache (
     access_log_file   => '\%{APACHE_LOG_DIR}/catalog/access.log',
     access_log_format => 'combined',
     directoryindex    => 'index.html index.htm index.php index.phtml index.shtml',
+    ssl               => true,
+    ssl_cert          => '/etc/ssl/certs/www.hathitrust.org.crt',
+    ssl_key           => '/etc/ssl/private/www.hathitrust.org.key',
 
     directories       => [
       {
@@ -479,7 +499,8 @@ class nebula::profile::hathitrust::apache (
   }
 
   apache::vhost { 'www.hathitrust.org ssl':
-    servername        => 'https://www.hathitrust.org',
+    servername        => 'www.hathitrust.org',
+    port              => '443',
     manage_docroot    => false,
     docroot           => '/htapps/www',
     error_log_file    => "\${APACHE_LOG_DIR}/www/error.log",
@@ -487,6 +508,9 @@ class nebula::profile::hathitrust::apache (
     access_log_format => 'combined',
     setenv            => ['SDRROOT /htapps/www'],
     directoryindex    => 'index.html index.htm index.php index.phtml index.shtml',
+    ssl               => true,
+    ssl_cert          => '/etc/ssl/certs/www.hathitrust.org.crt',
+    ssl_key           => '/etc/ssl/private/www.hathitrust.org.key',
 
     directories       => [
       {
@@ -547,7 +571,7 @@ class nebula::profile::hathitrust::apache (
       }
     ],
 
-    headers           => 'Header set "Strict-Transport-Security" "max-age=31536000"',
+    headers           => 'set "Strict-Transport-Security" "max-age=31536000"',
 
   }
 
