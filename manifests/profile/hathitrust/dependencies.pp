@@ -17,6 +17,8 @@ class nebula::profile::hathitrust::dependencies () {
       'libxerces-c-samples',
       'unzip',
       'zip',
+      'netpbm-sf',
+      'kakadu'
     ]:
   }
 }
