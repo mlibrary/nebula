@@ -21,6 +21,10 @@ class nebula::profile::hathitrust::apache (
     ]
   }
 
+  $haproxy_ips = nodes_for_class('nebula::profile::haproxy').map |String $nodename| {
+    fact_for($nodename, 'networking')['ip']
+  }
+
   class { 'apache':
     default_vhost          => false,
     default_ssl_vhost      => false,
@@ -56,71 +60,45 @@ class nebula::profile::hathitrust::apache (
 
   # Modules enabled
   #
-  # access_compat (but maybe we can get rid of this)
-  # alias   WITH CONFIG; TODO VERIFY DEFAULT CONFIG (for icons)
   class { 'apache::mod::authn_core': }
-  # autoindex TODO VERIFY DEFAULT CONFIG
   class { 'apache::mod::autoindex': }
   class { 'apache::mod::cgi': }
-  # dir TODO CONFIG
-  class { 'apache::mod::dir': }
+  class { 'apache::mod::dir':
+    indexes => ['index.html']
+  }
   class { 'apache::mod::expires': }
-  # fastcgi (not provided any more) (with config)
-  # TODO not sure if this is needed
+  # TODO fastcgi for imgsrv (not provided any more) (with config)
   class { 'apache::mod::include': }
-  # include
-  # macro NOPE
-  # mime  WITH CONFIG; VERIFY DEFAULT CONFIG
-  # mime_magic  WITH CONFIG; VERIFY DEFAULT CONFIG
   class { 'apache::mod::mime_magic': }
-  # negotiation WITH CONFIG; VERIFY DEFAULT CONFIG
   class { 'apache::mod::negotiation': }
-  # php7.0 WITH CONFIG; TODO migrate/verify config (AddType rather than the default)
-  class { 'apache::mod::php': }
-  # reqtimeout WITH CONFIG; VERIFY DEFAULT CONFIG
+  class { 'apache::mod::php':
+    extensions => ['.php','.phtml']
+  }
   class { 'apache::mod::reqtimeout': }
   class { 'apache::mod::shib': }
 
-  # remoteip WITH CONFIG; TODO collect haproxy nodes
   class { 'apache::mod::remoteip':
     header    => 'X-Client-IP',
-    proxy_ips => [] # TODO collect from haproxy nodes
+    proxy_ips => $haproxy_ips
   }
 
   class { 'apache::mod::status':
-    requires => [] # TODO lookup from hiera
+    requires        =>  {
+      enforce  => 'any',
+      # TODO look up staff IPs from hiera
+      requires => [ 'require local' ]
+    }
   }
 
   apache::vhost { 'default non-ssl':
-    # TODO merge with top-level defaults
-    # ServerName localhost
-    # # Allow access only from localhost and haproxy, and send a redirect for / so monitoring doesn't get a 403.
-    # #
-    # # 2012-02-02 aelkiss
-    # <Directory "/">
-    # AllowOverride none
-    # Order deny,allow
-    # Deny from all
-    # Allow from 127.0.0.1
-    # # Allow from haproxy
-    # </Directory>
-    # # Additionally, allow access from grog & the squishees so they can check the index release & cache warming flags
-    # #
-    # # 2013-09-30 skorner
-    # <DirectoryMatch "^(/htapps/babel/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/|/tmp/fastcgi/)(.*)">
-    # AllowOverride none
-    # Order deny,allow
-    # Deny from all
-    # Allow from 127.0.0.1
-    # # Allow from haproxy
-    # # Allow from grog
-    # # Allow from squishees
-    # </DirectoryMatch>
-    # RewriteEngine On
-    # RewriteRule ^(/$|/index.html$) https://babel.hathitrust.org/cgi/mb    [redirect=permanent,last]
-
     servername         => 'localhost',
     port               => 80,
+
+    rewrites           => [
+      {
+        rewrite_rule => '^(/$|/index.html$) https://babel.hathitrust.org/cgi/mb    [redirect=permanent,last]'
+      }
+    ],
 
     directoryindex     => 'index.html',
     directories        => [
@@ -129,12 +107,30 @@ class nebula::profile::hathitrust::apache (
         location =>  '~$',
         require  => 'all denied'
       },
+
       {
         provider       => 'directory',
         location       => '/',
         allow_override => ['None'],
-        require        =>  'all denied'
+        requires       =>  {
+          enforce  => 'any',
+          requires => [ 'require local' ] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
+        }
+      },
+
+      {
+        provider       => 'directorymatch',
+        path           => '^(/htapps/babel/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/|/tmp/fastcgi/)(.*)',
+        allow_override => ['None'],
+        requires       => {
+          enforce  => 'any',
+          # TODO: also allow grog (nebula::role::hathitrust::dev::app_host),
+          # squishees (currently nebula::role::hathitrust::prod; need a solr
+          # role)
+          requires => ['require local'] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
+        }
       }
+
     ],
     manage_docroot     => false,
     docroot            => '/htapps/babel',
@@ -250,8 +246,7 @@ class nebula::profile::hathitrust::apache (
     setenv         => [
       'SDRROOT /htapps/babel',
       'SDRDATAROOT /sdr1',
-      # TODO use a better address
-      'ASSERTION_EMAIL dlxs-system@umich.edu'
+      'ASSERTION_EMAIL hathitrust-system@umich.edu'
     ],
 
     setenvifnocase => [
@@ -425,13 +420,37 @@ class nebula::profile::hathitrust::apache (
 
   }
 
-  # TODO:
-  # - default virtual host (for monitoring)
-  # - catalog virtual host - DONE
-  # - m.babel (deprecate?)
-  # - mdp.lib (deprecate?)
-  # - www
-  # - production sites (catalog aliases, m.hathitrust.org redirect) - DONE
+  # TODO: should this be present in an ssl version? is it still necessary?
+  apache::vhost { 'm.babel.hathitrust.org redirection':
+    servername => 'm.babel.hathitrust.org',
+    port       => '80',
+    docroot    => false,
+    rewrites   => [
+      # is skin=mobile argument present?
+      {
+        # yes, just redirect
+        rewrite_cond => '%{QUERY_STRING} skin=mobile         [nocase]',
+        rewrite_rule => '/(.*)    https://babel.hathitrust.org/$1     [last,redirect]',
+      },
+      {
+        # no, prepend it
+        rewrite_cond => '%{QUERY_STRING} !skin=mobile          [nocase]',
+        rewrite_rule => '^/(.*)    https://babel.hathitrust.org/$1?skin=mobile [last,redirect,qsappend]'
+      }
+    ]
+  }
+
+  # TODO: should this be present in an ssl version? is it still necessary?
+  apache::vhost { 'mdp.lib.umich.edu redirection':
+    servername      => 'mdp.lib.umich.edu',
+    serveraliases   => ['sdr.lib.umich.edu'],
+    port            => '80',
+    docroot         => false,
+    redirect_dest   => 'https://babel.hathitrust.org',
+    redirect_source => '/',
+    redirect_status => 'permanent'
+  }
+
   apache::vhost { 'catalog.hathitrust.org ssl':
     servername        => 'catalog.hathitrust.org',
     port              => 443,
