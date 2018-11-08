@@ -32,7 +32,7 @@ class nebula::profile::hathitrust::php () {
       'php-net-url2',
       'php-pear',
       'libapache2-mod-php7.0',
-      'pear-horde-channel'
+      'pear-channels'
     ]:
   }
 
