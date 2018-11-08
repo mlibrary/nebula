@@ -12,6 +12,15 @@ class nebula::profile::hathitrust::apache (
   String $gwt_code = ''
 ) {
 
+  $default_access = {
+    enforce  => 'all',
+    requires => [
+      'not env badrobot',
+      'not env loadbalancer',
+      'all granted'
+    ]
+  }
+
   class { 'apache':
     default_vhost          => false,
     default_ssl_vhost      => false,
@@ -44,7 +53,6 @@ class nebula::profile::hathitrust::apache (
 
   # VERIFY no settings for <Directory /usr/share>
   # VERIFY no settings for <Directory /var/www>>
-
 
   # Modules enabled
   #
@@ -112,6 +120,7 @@ class nebula::profile::hathitrust::apache (
     # RewriteRule ^(/$|/index.html$) https://babel.hathitrust.org/cgi/mb    [redirect=permanent,last]
 
     servername         => 'localhost',
+    port               => 80,
 
     directoryindex     => 'index.html',
     directories        => [
@@ -381,13 +390,7 @@ class nebula::profile::hathitrust::apache (
         # 2010-10-01 skorner
         provider => 'directorymatch',
         location => '^(/htapps/babel/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/|/tmp/fastcgi/)(.*)">',
-        require  => {
-          enforce  => 'all',
-          requires => [
-            'not env badrobot',
-            'not env loadbalancer'
-          ]
-        }
+        require  => $default_access
       },
       {
         # Enable cgi execution under /htapps/babel/*/cgi.
@@ -454,24 +457,12 @@ class nebula::profile::hathitrust::apache (
         path           => '/htapps/catalog/web',
         options        => ['FollowSymlinks'],
         allow_override => ['all'],
-        require        => {
-          enforce  => 'all',
-          requires => [
-            'not env badrobot',
-            'not env loadbalancer'
-          ]
-        }
+        require        => $default_access,
       },
       {
         provider => 'directory',
         path     =>  '/htapps/babel/common/web',
-        require  => {
-          enforce  => 'all',
-          requires => [
-            'not env badrobot',
-            'not env loadbalancer'
-          ]
-        }
+        require  => $default_access,
       },
     ],
 
@@ -530,24 +521,12 @@ class nebula::profile::hathitrust::apache (
         path           => '/htapps/www',
         options        => ['IncludesNoExec','Indexes','FollowSymLinks','MultiViews'],
         allow_override => ['AuthConfig','FileInfo','Limit','Options'],
-        require        => {
-          enforce  => 'all',
-          requires => [
-            'not env badrobot',
-            'not env loadbalancer'
-          ]
-        }
+        require        => $default_access,
       },
       {
         provider => 'directory',
         path     =>  '/htapps/babel/common/web',
-        require  => {
-          enforce  => 'all',
-          requires => [
-            'not env badrobot',
-            'not env loadbalancer'
-          ]
-        }
+        require  => $default_access,
       },
     ],
 
