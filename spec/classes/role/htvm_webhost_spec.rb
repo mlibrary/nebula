@@ -11,7 +11,7 @@ require_relative '../../support/contexts/with_mocked_nodes'
 describe 'nebula::role::webhost::htvm' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts) { os_facts }
+      let(:facts) { os_facts.merge(networking: { ip: Faker::Internet.ip_v4_address, interfaces: {} }) }
 
       let(:haproxy) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy' } }
       let(:rolenode) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'rolenode' } }
@@ -19,6 +19,9 @@ describe 'nebula::role::webhost::htvm' do
       include_context 'with mocked puppetdb functions', 'somedc', %w[haproxy rolenode], 'nebula::profile::haproxy' => %w[haproxy]
 
       it { is_expected.to compile }
+
+      it { is_expected.to contain_package('nfs-common') }
+      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,ro') }
 
       it do
         is_expected.to contain_file('/etc/systemd/system/shibd.service.d/increase-timeout.conf')

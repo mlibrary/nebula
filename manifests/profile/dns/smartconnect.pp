@@ -48,6 +48,13 @@ class nebula::profile::dns::smartconnect (
     searchpath  => lookup('nebula::resolv_conf::searchpath'),
   }
 
+  file { '/etc/bind':
+    ensure  => 'directory',
+    owner   => 'root',
+    group   => 'bind',
+    require => ['Package[nebula::profile::dns::smartconnect::bind9]']
+  }
+
   file { '/etc/bind/named.conf':
     notify  => Service['bind9'],
     content => template('nebula/profile/dns/smartconnect/named.conf.erb'),
