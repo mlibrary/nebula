@@ -29,7 +29,7 @@ class nebula::profile::hathitrust::shibboleth () {
     require    => Package['shibboleth-sp2-utils'],
   }
 
-  file { "/etc/shibboleth":
+  file { '/etc/shibboleth':
     ensure  => 'directory',
     mode    => '0775',
     owner   => 'root',
@@ -38,10 +38,10 @@ class nebula::profile::hathitrust::shibboleth () {
     purge   => true,
     links   => 'follow',
     notify  => Service['shibd'],
-    source  => "puppet:///shibboleth"
+    source  => 'puppet:///shibboleth'
   }
 
-  file { "/etc/shibboleth/shibboleth2.xml":
+  file { '/etc/shibboleth/shibboleth2.xml':
     mode  => '0440',
     owner => '_shibd',
     group => 'nogroup'
