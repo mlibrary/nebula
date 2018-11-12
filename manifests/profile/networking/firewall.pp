@@ -19,10 +19,6 @@ class nebula::profile::networking::firewall {
     purge => true,
   }
 
-  resources { 'firewallchain':
-    purge => true,
-  }
-
   # Default items, sorted by title
   firewall { '001 accept related established rules':
     proto  => 'all',
