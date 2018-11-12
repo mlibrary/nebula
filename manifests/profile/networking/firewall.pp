@@ -15,6 +15,14 @@ class nebula::profile::networking::firewall {
   # Include standard SSH rules by default
   include nebula::profile::networking::firewall::ssh
 
+  resources { 'firewall':
+    purge => true,
+  }
+
+  resources { 'firewallchain':
+    purge => true,
+  }
+
   # Default items, sorted by title
   firewall { '001 accept related established rules':
     proto  => 'all',
