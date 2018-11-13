@@ -27,6 +27,8 @@ describe 'nebula::role::webhost::htvm' do
         is_expected.to contain_file('/etc/systemd/system/shibd.service.d/increase-timeout.conf')
           .with_content("[Service]\nTimeoutStartSec=900")
       end
+
+      it { is_expected.to contain_php__extension('File_MARC').with_provider('pear') }
     end
   end
 end

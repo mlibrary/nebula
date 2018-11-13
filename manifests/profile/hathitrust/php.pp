@@ -14,31 +14,49 @@ class nebula::profile::hathitrust::php () {
 
   package {
     [
-      'php7.0-cli',
-      'php7.0-common',
       'php7.0-curl',
       'php7.0-gd',
-      'php-geoip',
+      'php-geoip', # PECL
       'php7.0-ldap',
       'php7.0-mysql',
-      'php7.0-xsl',
-      'php-date',
-      'php-db',
-      'php-http-request',
-      'php-log',
-      'php-mail',
       'php-mdb2',
-      'php-net-smtp',
-      'php-net-url2',
-      'php-pear',
+      'php-mdb2-driver-mysql',
+      'php-smarty',
+      'php7.0-xsl',
       'libapache2-mod-php7.0',
       'pear-channels'
     ]:
   }
 
-#      to install via pear
-#      'php-pager',
-#      'php-xml-parser',
-#      'php-xml-serializer',
+  class { '::php':
+    ensure       => present,     # Don't touch stuff from above; should be equivalent
+    manage_repos => false, # Set true to add dotdeb repos
+    fpm          => false,          # We only use mod_php at present
+    composer     => false,     # System-wide composer seems iffy unless using dotdeb
+    pear         => true,          # We're using this for PEAR, so set to true
+    phpunit      => true,       # Unsure whether this should be system or app-level
 
+    extensions   => {
+      'Archive_Tar'           => { package_prefix => '', provider => 'pear' },
+      'DB'                    => { package_prefix => '', provider => 'pear' },
+      'DB_DataObject'         => { package_prefix => '', provider => 'pear' },
+      'Date'                  => { package_prefix => '', provider => 'pear' },
+      'File_MARC'             => { package_prefix => '', provider => 'pear' },
+      'HTTP_Request'          => { package_prefix => '', provider => 'pear' },
+      'HTTP_Request2'         => { package_prefix => '', provider => 'pear' },
+      'HTTP_Session2'         => { ensure => 'beta', package_prefix => '', provider => 'pear' },
+      'Log'                   => { package_prefix => '', provider => 'pear' },
+      'Mail'                  => { package_prefix => '', provider => 'pear' },
+      'Net_SMTP'              => { package_prefix => '', provider => 'pear' },
+      'Net_Socket'            => { package_prefix => '', provider => 'pear' },
+      'Net_URL'               => { package_prefix => '', provider => 'pear' },
+      'Net_URL2'              => { package_prefix => '', provider => 'pear' },
+      'Pager'                 => { package_prefix => '', provider => 'pear' },
+      'PhpDocumentor'         => { package_prefix => '', provider => 'pear' },
+      'Structures_DataGrid'   => { ensure => 'beta', package_prefix => '', provider => 'pear' },
+      'Structures_LinkedList' => { ensure => 'beta', package_prefix => '', provider => 'pear' },
+      'XML_Parser'            => { package_prefix => '', provider => 'pear' },
+      'XML_Serializer'        => { ensure => 'beta', package_prefix => '', provider => 'pear' },
+    },
+  }
 }
