@@ -21,4 +21,14 @@ class nebula::profile::hathitrust::dependencies () {
       'kakadu'
     ]:
   }
+
+  file { '/l/local':
+    ensure => 'directory'
+  }
+
+  file { '/l/local/bin':
+    ensure => 'symlink',
+    target => '/usr/bin'
+  }
+
 }
