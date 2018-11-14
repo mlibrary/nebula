@@ -23,6 +23,8 @@ describe 'nebula::role::webhost::htvm' do
       it { is_expected.to contain_package('nfs-common') }
       it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,ro') }
       it { is_expected.to contain_php__extension('File_MARC').with_provider('pear') }
+      # default from hiera
+      it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }
     end
   end
 end
