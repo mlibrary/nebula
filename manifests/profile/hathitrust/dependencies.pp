@@ -21,4 +21,13 @@ class nebula::profile::hathitrust::dependencies () {
       'kakadu'
     ]:
   }
+
+  file { ['/l/local','/l/local/bin']:
+    ensure => 'directory'
+  }
+
+  file { '/l/local/bin/unzip':
+    ensure => 'link',
+    target => '/usr/bin/unzip'
+  }
 }
