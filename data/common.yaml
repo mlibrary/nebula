@@ -152,3 +152,5 @@ nebula::profile::named_instances::fauxpaas_puma_config: "config/fauxpaas_puma.rb
 
 nebula::profile::work_around_puppet_bugs::state_yaml_path: '/opt/puppetlabs/puppet/cache/state/state.yaml'
 nebula::profile::work_around_puppet_bugs::state_yaml_max_size: '10m'
+
+nebula::profile::hathitrust::dbhost::address: '10.1.2.4'

@@ -29,6 +29,9 @@ describe 'nebula::role::webhost::htvm' do
       end
 
       it { is_expected.to contain_php__extension('File_MARC').with_provider('pear') }
+
+      # default from hiera
+      it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }
     end
   end
 end
