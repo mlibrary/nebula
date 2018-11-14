@@ -26,8 +26,12 @@ class nebula::profile::hathitrust::dependencies () {
     ensure => 'directory'
   }
 
-  file { '/l/local/bin/unzip':
-    ensure => 'link',
-    target => '/usr/bin/unzip'
+  ['unzip','kdu_expand'].each |String $binary|  {
+    file { "/l/local/bin/${binary}":
+      ensure => 'link',
+      target => "/usr/bin/${binary}"
+    }
   }
+
+
 }
