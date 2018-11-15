@@ -74,6 +74,7 @@ class nebula::profile::hathitrust::apache (
   class { 'apache::mod::php':
     extensions => ['.php','.phtml']
   }
+  class { 'apache::mod::proxy_fcgi': }
   class { 'apache::mod::reqtimeout': }
   class { 'apache::mod::shib': }
 
@@ -335,9 +336,8 @@ class nebula::profile::hathitrust::apache (
       {
         # If there is a FastCGI socket named APP, rewrite /APP/cgi/APP/PATHINFO to
         # /tmp/fastcgi/$APP.fcgi/PATHINFO
-        # TODO: needs to be updated for mod_proxy (preferably) or mod_fcgid
         rewrite_cond => ['       /tmp/fastcgi/$3.sock -x'],
-        rewrite_rule => ['       ^/([^/]+)/(shcgi|cgi)/([^/]+)(.*)$      /tmp/fastcgi/$3.fcgi$4                  [last]'],
+        rewrite_rule => ['       ^/([^/]+)/(shcgi|cgi)/([^/]+)(.*)$      unix:/tmp/fastcgi/$3.sock|fcgi://localhost/$4  [proxy,last]'],
 
       },
 

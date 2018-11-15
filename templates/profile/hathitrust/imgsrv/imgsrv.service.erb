@@ -1,0 +1,14 @@
+[Unit]
+Description=HathiTrust imgsrv
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=no
+User=nobody
+ExecStart=/usr/local/bin/startup_imgsrv
+ExecStopPost=/bin/rm -fv <%= @fcgi_ipc_dir %>/imgsrv.sock
+Restart=always
+
+[Install]
+

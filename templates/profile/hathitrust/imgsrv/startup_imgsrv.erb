@@ -1,0 +1,24 @@
+!/bin/bash
+
+# Usage: startup_imgsrv
+
+exec >> /tmp/imgsrv.out 2>> /tmp/imgsrv.err
+
+NPROC=<%= @num_procs %>
+SDRDATAROOT=<%= @sdrdataroot %>
+SDRROOT=<%= @sdrroot %>
+SDR_VIEW=<%= @sdrview %>
+FCGI_IPC_DIR=<%= @fcgi_ipc_dir %>
+SCRIPT=$SDRROOT/imgsrv/cgi/imgsrv
+
+export SDRROOT SDRDATAROOT SDR_VIEW
+
+/usr/bin/plackup -I $SDRROOT/plack-lib -E production \
+       -R $SCRIPT.psgi,$SCRIPT,$SDRROOT/imgsrv/bin/rdist.timestamp -s FCGI \
+       --manager=FCGI::ProcManager::HT --nproc $NPROC\
+       --listen $FCGI_IPC_DIR/imgsrv.sock $SCRIPT.psgi &
+
+trap "echo 'REMOVING imgsrv'; kill -TERM -$$; rm -fv /tmp/fastcgi/imgsrv.sock; exit" SIGINT SIGTERM SIGQUIT
+
+wait
+
