@@ -26,7 +26,8 @@ class nebula::profile::hathitrust::imgsrv (
   file { '/usr/local/bin/startup_imgsrv':
     ensure  => 'present',
     content => template('nebula/profile/hathitrust/imgsrv/startup_imgsrv.erb'),
-    notify  => Service['imgsrv']
+    notify  => Service['imgsrv'],
+    mode    => '0755'
   }
 
   file { '/etc/systemd/system/imgsrv.service':
