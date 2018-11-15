@@ -58,7 +58,7 @@ class nebula::role::webhost::htvm (String $private_address_template = '192.168.0
 
   class { 'nebula::profile::hathitrust::imgsrv':
     num_proc => 10,
-    sdrview => 'full'
+    sdrview  => 'full'
   }
 
   include nebula::profile::hathitrust::shibboleth

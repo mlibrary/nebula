@@ -44,6 +44,8 @@ class nebula::profile::hathitrust::apache (
     scriptalias            => undef,
     docroot                => false,
     default_mods           => false,
+    user                   => 'nobody',
+    group                  => 'nogroup',
   }
 
   class { 'apache::mod::prefork':
