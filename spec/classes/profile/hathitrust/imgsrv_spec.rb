@@ -12,7 +12,8 @@ describe 'nebula::profile::hathitrust::imgsrv' do
 
       it { is_expected.to contain_service('imgsrv') }
 
-      it { is_expected.to contain_file('/usr/local/bin/startup_imgsrv').with_content(%r{SDRROOT=/sdrroot}) }
+      it { is_expected.to contain_file('/usr/local/bin/startup_imgsrv').with_content(%r{^SDRROOT=/sdrroot$}) }
+      it { is_expected.to contain_file('/usr/local/bin/startup_imgsrv').with_content(%r{^NPROC=10$}) }
 
       it { is_expected.to contain_file('/etc/systemd/system/imgsrv.service').with_content(%r{/tmp/fastcgi/imgsrv.sock}) }
     end
