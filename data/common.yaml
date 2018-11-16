@@ -158,5 +158,5 @@ nebula::profile::hathitrust::dbhost::address: '10.1.2.4'
 nebula::profile::hathitrust::imgsrv::num_proc: 10
 nebula::profile::hathitrust::imgsrv::sdrroot: '/sdrroot'
 nebula::profile::hathitrust::imgsrv::sdrview: 'sdrview'
-nebula::profile::hathitrust::imgsrv::sdrdataroot: 'sdrview'
+nebula::profile::hathitrust::imgsrv::sdrdataroot: '/sdrdataroot'
 
