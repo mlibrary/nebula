@@ -145,6 +145,7 @@ class nebula::profile::hathitrust::apache (
     access_log_file    => 'access.log',
     access_log_format  => 'combined',
     access_log_env_var => 'env=!loopback',
+    error_log_file     => 'error.log'
   }
 
   ['babel', 'catalog', 'm', 'www'].each |String $vhost| {
@@ -457,7 +458,10 @@ class nebula::profile::hathitrust::apache (
         rewrite_cond => '%{QUERY_STRING} !skin=mobile          [nocase]',
         rewrite_rule => '^/(.*)    https://babel.hathitrust.org/$1?skin=mobile [last,redirect,qsappend]'
       }
-    ]
+    ],
+    error_log_file    => 'error.log',
+    access_log_file   => 'access.log',
+    access_log_format => 'combined',
   }
 
   # TODO: should this be present in an ssl version? is it still necessary?
