@@ -169,20 +169,23 @@ class nebula::profile::hathitrust::apache (
   }
 
   apache::vhost { 'm.catalog.hathitrust.org redirection':
-    servername      => 'm.catalog.hathitrust.org',
-    docroot         => false,
-    port            => '80',
-    serveraliases   => ['m.catalog'],
-    redirect_source => '/',
-    redirect_status => 'permanent',
-    redirect_dest   => 'https://m.hathitrust.org',
+    servername        => 'm.catalog.hathitrust.org',
+    docroot           => false,
+    port              => '80',
+    serveraliases     => ['m.catalog'],
+    redirect_source   => '/',
+    redirect_status   => 'permanent',
+    redirect_dest     => 'https://m.hathitrust.org',
+    error_log_file    => 'error.log',
+    access_log_file   => 'access.log',
+    access_log_format => 'combined',
   }
 
   apache::vhost { 'hathitrust canonical name redirection':
-    servername      => 'hathitrust.org',
-    docroot         => false,
-    port            => '80',
-    serveraliases   => [
+    servername        => 'hathitrust.org',
+    docroot           => false,
+    port              => '80',
+    serveraliases     => [
       'www.hathitrust.com',
       'hathitrust.com',
       'www.hathitrust.info',
@@ -190,9 +193,12 @@ class nebula::profile::hathitrust::apache (
       'www.hathitrust.net',
       'hathitrust.net'
     ],
-    redirect_source => '/',
-    redirect_status => 'permanent',
-    redirect_dest   => 'https://www.hathitrust.org',
+    redirect_source   => '/',
+    redirect_status   => 'permanent',
+    redirect_dest     => 'https://www.hathitrust.org',
+    error_log_file    => 'error.log',
+    access_log_file   => 'access.log',
+    access_log_format => 'combined',
   }
 
   file { '/etc/ssl/certs/www.hathitrust.org.crt':
@@ -220,18 +226,21 @@ class nebula::profile::hathitrust::apache (
   }
 
   apache::vhost { 'babel.hathitrust.org ssl':
-    servername     => 'babel.hathitrust.org',
-    serveraliases  => [ 'crms-training.babel.hathitrust.org' ],
-    port           => '443',
-    docroot        => '/htapps/babel',
-    ssl            => true,
-    ssl_cert       => '/etc/ssl/certs/www.hathitrust.org.crt',
-    ssl_key        => '/etc/ssl/private/www.hathitrust.org.key',
-    ssl_chain      => '/etc/ssl/certs/incommon_sha2.crt',
+    servername        => 'babel.hathitrust.org',
+    serveraliases     => [ 'crms-training.babel.hathitrust.org' ],
+    port              => '443',
+    docroot           => '/htapps/babel',
+    error_log_file    => 'babel/error.log',
+    access_log_file   => 'babel/access.log',
+    access_log_format => 'combined',
+    ssl               => true,
+    ssl_cert          => '/etc/ssl/certs/www.hathitrust.org.crt',
+    ssl_key           => '/etc/ssl/private/www.hathitrust.org.key',
+    ssl_chain         => '/etc/ssl/certs/incommon_sha2.crt',
 
     # from babel-common
 
-    aliases        => [
+    aliases           => [
       {
         aliasmatch => '^/robots.txt$',
         path       => '/htapps/babel/common/web/robots.txt'
@@ -253,20 +262,20 @@ class nebula::profile::hathitrust::apache (
       }
     ],
 
-    directoryindex => 'index.html',
+    directoryindex    => 'index.html',
 
-    setenv         => [
+    setenv            => [
       'SDRROOT /htapps/babel',
       'SDRDATAROOT /sdr1',
       'ASSERTION_EMAIL hathitrust-system@umich.edu'
     ],
 
-    setenvifnocase => [
+    setenvifnocase    => [
       'Host crms-training\.babel\.hathitrust\.org CRMS_INSTANCE=crms-training',
       'Host babel\.hathitrust\.org CRMS_INSTANCE=production'
     ],
 
-    rewrites       => [
+    rewrites          => [
       {
         # Map web content URLs to the web directories within each application repository,
         # if the file being requested exists.
@@ -368,7 +377,7 @@ class nebula::profile::hathitrust::apache (
 
     ],
 
-    directories    => [
+    directories       => [
       {
         provider => 'filesmatch',
         location =>  '~$',
@@ -453,13 +462,16 @@ class nebula::profile::hathitrust::apache (
 
   # TODO: should this be present in an ssl version? is it still necessary?
   apache::vhost { 'mdp.lib.umich.edu redirection':
-    servername      => 'mdp.lib.umich.edu',
-    serveraliases   => ['sdr.lib.umich.edu'],
-    port            => '80',
-    docroot         => false,
-    redirect_dest   => 'https://babel.hathitrust.org',
-    redirect_source => '/',
-    redirect_status => 'permanent'
+    servername        => 'mdp.lib.umich.edu',
+    serveraliases     => ['sdr.lib.umich.edu'],
+    port              => '80',
+    docroot           => false,
+    redirect_dest     => 'https://babel.hathitrust.org',
+    redirect_source   => '/',
+    redirect_status   => 'permanent',
+    error_log_file    => 'error.log',
+    access_log_file   => 'access.log',
+    access_log_format => 'combined',
   }
 
   apache::vhost { 'catalog.hathitrust.org ssl':
