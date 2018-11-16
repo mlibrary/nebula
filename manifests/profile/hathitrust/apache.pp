@@ -203,6 +203,14 @@ class nebula::profile::hathitrust::apache (
     source => 'puppet:///ssl-certs/www.hathitrust.org.crt'
   }
 
+  file { '/etc/ssl/certs/incommon_sha2.crt':
+    mode   => '0644',
+    owner  => 'root',
+    group  => 'root',
+    notify => Class['Apache::Service'],
+    source => 'puppet:///ssl-certs/incommon_sha2.crt'
+  }
+
   file { '/etc/ssl/private/www.hathitrust.org.key':
     mode   => '0600',
     owner  => 'root',
@@ -219,6 +227,7 @@ class nebula::profile::hathitrust::apache (
     ssl            => true,
     ssl_cert       => '/etc/ssl/certs/www.hathitrust.org.crt',
     ssl_key        => '/etc/ssl/private/www.hathitrust.org.key',
+    ssl_chain      => '/etc/ssl/certs/incommon_sha2.crt',
 
     # from babel-common
 
@@ -244,7 +253,7 @@ class nebula::profile::hathitrust::apache (
       }
     ],
 
-    directoryindex =>  'index.html',
+    directoryindex => 'index.html',
 
     setenv         => [
       'SDRROOT /htapps/babel',
@@ -466,6 +475,7 @@ class nebula::profile::hathitrust::apache (
     ssl               => true,
     ssl_cert          => '/etc/ssl/certs/www.hathitrust.org.crt',
     ssl_key           => '/etc/ssl/private/www.hathitrust.org.key',
+    ssl_chain         => '/etc/ssl/certs/incommon_sha2.crt',
 
     directories       => [
       {
@@ -530,6 +540,7 @@ class nebula::profile::hathitrust::apache (
     ssl               => true,
     ssl_cert          => '/etc/ssl/certs/www.hathitrust.org.crt',
     ssl_key           => '/etc/ssl/private/www.hathitrust.org.key',
+    ssl_chain         => '/etc/ssl/certs/incommon_sha2.crt',
 
     directories       => [
       {
