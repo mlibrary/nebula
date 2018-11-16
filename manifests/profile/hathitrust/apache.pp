@@ -363,7 +363,7 @@ class nebula::profile::hathitrust::apache (
         # babel home page of sorts
         #
         # 2008-10-24 csnavely per suzchap
-        rewrite_rule => ['  ^(/$|/index.html$)      https://$hostname/cgi/mb  [redirect=permanent,last]'],
+        rewrite_rule => ['  ^(/$|/index.html$)      https://babel.hathitrust.org/cgi/mb  [redirect=permanent,last]'],
       },
 
     ],
