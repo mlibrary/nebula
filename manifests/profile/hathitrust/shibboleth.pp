@@ -10,6 +10,7 @@
 #   include nebula::profile::hathitrust::shibboleth
 class nebula::profile::hathitrust::shibboleth () {
   include nebula::profile::hathitrust::apache
+  include nebula::systemd::daemon_reload
 
   package {
     [
@@ -45,6 +46,18 @@ class nebula::profile::hathitrust::shibboleth () {
     mode  => '0440',
     owner => '_shibd',
     group => 'nogroup'
+  }
+
+  file { '/etc/systemd/system/shibd.service.d/increase-timeout.conf':
+    ensure  => 'file',
+    content => "[Service]\nTimeoutStartSec=900",
+    mode => '0644',
+    owner => 'root',
+    group => 'root',
+    notify => [
+      Class['nebula::systemd::daemon_reload'],
+      Service['shibd']
+    ]
   }
 
 }

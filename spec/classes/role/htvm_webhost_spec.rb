@@ -25,6 +25,10 @@ describe 'nebula::role::webhost::htvm' do
       it { is_expected.to contain_php__extension('File_MARC').with_provider('pear') }
       # default from hiera
       it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }
+      it do
+        is_expected.to contain_file('/etc/systemd/system/shibd.service.d/increase-timeout.conf')
+          .with_content("[Service]\nTimeoutStartSec=900")
+      end
     end
   end
 end
