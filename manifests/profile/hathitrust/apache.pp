@@ -407,7 +407,7 @@ class nebula::profile::hathitrust::apache (
         #
         # 2010-10-01 skorner
         provider => 'directorymatch',
-        path     => '^(/htapps/babel/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/)(.*)">',
+        path     => '^(/htapps/babel/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/)(.*)',
         require  => $default_access
       },
       {
