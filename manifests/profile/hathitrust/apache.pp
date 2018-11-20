@@ -25,6 +25,8 @@ class nebula::profile::hathitrust::apache (
     fact_for($nodename, 'networking')['ip']
   }
 
+  $imgsrv_address = lookup('nebula::profile::hathitrust::imgsrv::bind');
+
   class { 'apache':
     default_vhost          => false,
     default_ssl_vhost      => false,
@@ -405,7 +407,7 @@ class nebula::profile::hathitrust::apache (
         #
         # 2010-10-01 skorner
         provider => 'directorymatch',
-        location => '^(/htapps/babel/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/|/tmp/fastcgi/)(.*)">',
+        path     => '^(/htapps/babel/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/)(.*)">',
         require  => $default_access
       },
       {
@@ -413,10 +415,11 @@ class nebula::profile::hathitrust::apache (
         #
         # 2010-10-01 skorner
         provider       => 'directorymatch',
-        location       => '^/htapps/babel/([^/]+)/cgi',
+        path           => '^/htapps/babel/([^/]+)/cgi',
         allow_override => 'None',
         options        => '+ExecCGI',
-        sethandler     =>  'cgi-script'
+        sethandler     => 'cgi-script',
+        require        => 'unmanaged'
       },
       {
         # An Apache handler needs to be established for the "handler" location.
@@ -436,17 +439,32 @@ class nebula::profile::hathitrust::apache (
         provider => 'locationmatch',
         path     => '^/shibboleth-sp/main.css',
         require  => 'all granted'
-      }
-    ]
+      },
+      {
+        provider        => 'directory',
+        path            => '/htapps/babel/imgsrv/cgi',
+        require         => 'unmanaged',
+        allow_override  => false,
+        custom_fragment => "
+    <Files \"imgsrv\">
+      SetHandler proxy:fcgi://${imgsrv_address}
+    </Files>",
+      },
+
+    ],
+
+    custom_fragment   =>  "
+    <Proxy \"fcgi://${imgsrv_address}\" enablereuse=on max=10>
+    </Proxy>",
 
   }
 
   # TODO: should this be present in an ssl version? is it still necessary?
   apache::vhost { 'm.babel.hathitrust.org redirection':
-    servername => 'm.babel.hathitrust.org',
-    port       => '80',
-    docroot    => false,
-    rewrites   => [
+    servername        => 'm.babel.hathitrust.org',
+    port              => '80',
+    docroot           => false,
+    rewrites          => [
       # is skin=mobile argument present?
       {
         # yes, just redirect

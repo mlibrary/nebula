@@ -13,15 +13,8 @@ class nebula::profile::hathitrust::imgsrv (
   String $sdrroot,
   String $sdrview,
   String $sdrdataroot,
-  String $fcgi_ipc_dir = '/tmp/fastcgi'
+  String $bind
 ) {
-
-  file { $fcgi_ipc_dir:
-    ensure => 'directory',
-    owner  => 'nobody',
-    group  => 'nogroup',
-    mode   => '0700'
-  }
 
   file { '/usr/local/bin/startup_imgsrv':
     ensure  => 'present',

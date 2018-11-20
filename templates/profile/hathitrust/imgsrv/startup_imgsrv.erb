@@ -8,7 +8,7 @@ NPROC=<%= @num_proc %>
 SDRDATAROOT=<%= @sdrdataroot %>
 SDRROOT=<%= @sdrroot %>
 SDR_VIEW=<%= @sdrview %>
-FCGI_IPC_DIR=<%= @fcgi_ipc_dir %>
+BIND=<%= @bind %>
 SCRIPT=$SDRROOT/imgsrv/cgi/imgsrv
 
 export SDRROOT SDRDATAROOT SDR_VIEW
@@ -16,7 +16,7 @@ export SDRROOT SDRDATAROOT SDR_VIEW
 /usr/bin/plackup -I $SDRROOT/plack-lib -E production \
        -R $SCRIPT.psgi,$SCRIPT,$SDRROOT/imgsrv/bin/rdist.timestamp -s FCGI \
        --manager=FCGI::ProcManager::HT --nproc $NPROC\
-       --listen $FCGI_IPC_DIR/imgsrv.sock $SCRIPT.psgi &
+       --listen $BIND $SCRIPT.psgi &
 
 trap "echo 'REMOVING imgsrv'; kill -TERM -$$; rm -fv /tmp/fastcgi/imgsrv.sock; exit" SIGINT SIGTERM SIGQUIT
 
