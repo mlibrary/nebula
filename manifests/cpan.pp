@@ -10,7 +10,7 @@
 #   nebula::cpan { 'Test::More': }
 define nebula::cpan {
   exec { "CPAN - ${title}":
-    command => "cpan -i ${title}",
-    unless => "perl -M${title} -e1 >/dev/null 2>&1",
+    command => "/usr/bin/cpan -i ${title}",
+    unless => "/usr/bin/env perl -M${title} -e1 >/dev/null 2>&1",
   }
 }
