@@ -11,6 +11,6 @@
 define nebula::cpan {
   exec { "CPAN - ${title}":
     command => "/usr/bin/cpan -i ${title}",
-    unless => "/usr/bin/env perl -M${title} -e1 >/dev/null 2>&1",
+    unless  => "/usr/bin/env perl -M${title} -e1 >/dev/null 2>&1",
   }
 }
