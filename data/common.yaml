@@ -160,4 +160,5 @@ nebula::profile::hathitrust::imgsrv::sdrroot: '/sdrroot'
 nebula::profile::hathitrust::imgsrv::sdrview: 'sdrview'
 nebula::profile::hathitrust::imgsrv::sdrdataroot: '/sdrdataroot'
 nebula::profile::hathitrust::imgsrv::bind: '127.0.0.1:31028'
+nebula::profile::hathitrust::apache::babel::gwt_code: 'somecode'
 
