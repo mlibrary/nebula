@@ -65,7 +65,6 @@ describe 'nebula::profile::hathitrust::apache' do
           }
         end
 
-        it { is_expected.to contain_apache__vhost('m.foo.babel.example.org redirection').with_servername('m.foo.babel.example.org') }
         it { is_expected.to contain_apache__vhost('foo.babel.example.org ssl').with_servername('foo.babel.example.org') }
         it { is_expected.to contain_apache__vhost('foo.catalog.example.org ssl').with_servername('foo.catalog.example.org') }
         it { is_expected.to contain_apache__vhost('foo.www.example.org ssl').with_servername('foo.www.example.org') }
