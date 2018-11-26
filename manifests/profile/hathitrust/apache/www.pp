@@ -12,12 +12,10 @@ class nebula::profile::hathitrust::apache::www (
   String $sdrroot,
   Hash $default_access,
   Array[String] $haproxy_ips,
-  String $ssl_cert,
-  String $ssl_key,
-  String $ssl_chain,
+  Hash $ssl_params,
   String $prefix,
   String $domain,
-  String $docroot = "/htapps/www"
+  String $docroot = '/htapps/www'
 ) {
 
   $servername = "${prefix}www.${domain}"
@@ -32,10 +30,7 @@ class nebula::profile::hathitrust::apache::www (
     access_log_format => 'combined',
     setenv            => ["SDRROOT ${docroot}"],
     directoryindex    => 'index.html index.htm index.php index.phtml index.shtml',
-    ssl               => true,
-    ssl_cert          => $ssl_cert,
-    ssl_key           => $ssl_key,
-    ssl_chain         => $ssl_chain,
+    *                 => $ssl_params,
 
     directories       => [
       {

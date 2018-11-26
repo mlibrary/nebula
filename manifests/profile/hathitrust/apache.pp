@@ -128,9 +128,12 @@ class nebula::profile::hathitrust::apache (
     sdrroot        => $sdrroot,
     default_access => $default_access,
     haproxy_ips    => $haproxy_ips,
-    ssl_cert       => $ssl_cert,
-    ssl_key        => $ssl_key,
-    ssl_chain      => $ssl_chain,
+    ssl_params     => {
+      ssl            => true,
+      ssl_cert       => $ssl_cert,
+      ssl_key        => $ssl_key,
+      ssl_chain      => $ssl_chain,
+    },
     prefix         => $prefix,
     domain         => $domain
   }

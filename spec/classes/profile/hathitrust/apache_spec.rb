@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # Copyright (c) 2018 The Regents of the University of Michigan.
@@ -6,7 +5,6 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 require_relative '../../../support/contexts/with_mocked_nodes'
-require 'pry'
 
 describe 'nebula::profile::hathitrust::apache' do
   def multiline2re(string)
@@ -43,6 +41,51 @@ describe 'nebula::profile::hathitrust::apache' do
 
       snippets.each do |snippet|
         it { is_expected.to contain_concat_fragment(vhost_config).with_content(multiline2re(snippet)) }
+      end
+
+      describe 'Production HT hostnames' do
+        %w[babel catalog www].each do |vhost|
+          it {
+            is_expected.to contain_apache__vhost("#{vhost}.hathitrust.org ssl").with(
+              servername: "#{vhost}.hathitrust.org",
+              ssl: true,
+              ssl_cert: '/etc/ssl/certs/www.hathitrust.org.crt',
+              ssl_key: '/etc/ssl/private/www.hathitrust.org.key',
+              ssl_chain: '/etc/ssl/certs/incommon_sha2.crt',
+            )
+          }
+        end
+      end
+
+      context 'with a domain and prefix specified' do
+        let(:params) do
+          {
+            domain: 'example.org',
+            prefix: 'foo.',
+          }
+        end
+
+        it { is_expected.to contain_apache__vhost('m.foo.babel.example.org redirection').with_servername('m.foo.babel.example.org') }
+        it { is_expected.to contain_apache__vhost('foo.babel.example.org ssl').with_servername('foo.babel.example.org') }
+        it { is_expected.to contain_apache__vhost('foo.catalog.example.org ssl').with_servername('foo.catalog.example.org') }
+        it { is_expected.to contain_apache__vhost('foo.www.example.org ssl').with_servername('foo.www.example.org') }
+
+        it {
+          is_expected.to contain_apache__vhost('foo.babel.example.org non-ssl').with(
+            redirect_dest: 'https://foo.babel.example.org',
+            servername: 'foo.babel.example.org',
+          )
+        }
+      end
+
+      context 'with a domain and no prefix specified' do
+        let(:params) do
+          {
+            domain: 'example.org',
+          }
+        end
+
+        it { is_expected.to contain_apache__vhost('babel.example.org ssl').with_servername('babel.example.org') }
       end
     end
   end

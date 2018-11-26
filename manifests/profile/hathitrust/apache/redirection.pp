@@ -13,27 +13,28 @@ class nebula::profile::hathitrust::apache::redirection (
   String $sdrroot,
   Hash $default_access,
   Array[String] $haproxy_ips,
-  String $ssl_cert,
-  String $ssl_key,
-  String $ssl_chain,
+  Hash $ssl_params,
   String $prefix,
   String $domain,
   Array[String] $alias_domains = []
 ) {
 
 
-  $babel_servername = "${prefix}babel.${domain}"
-  $www_servername = "${prefix}www.${domain}"
+  $babel_servername   = "${prefix}babel.${domain}"
+  $catalog_servername = "${prefix}catalog.${domain}"
+  $www_servername     = "${prefix}www.${domain}"
 
 
   ['babel', 'catalog', 'm', 'www'].each |String $vhost| {
-    apache::vhost { "${prefix}${vhost}.${domain} non-ssl":
-      servername        => $vhost,
+    $servername = "${prefix}${vhost}.${domain}"
+
+    apache::vhost { "${servername} non-ssl":
+      servername        => $servername,
       docroot           => false,
       port              => '80',
       redirect_source   => '/',
       redirect_status   => 'permanent',
-      redirect_dest     => "https://${prefix}${vhost}.${domain}",
+      redirect_dest     => "https://${servername}",
       access_log_file   => "${vhost}/access.log",
       access_log_format => 'combined',
       error_log_file    => "${vhost}/error.log"
@@ -46,7 +47,6 @@ class nebula::profile::hathitrust::apache::redirection (
       group  => 'root',
     }
   }
-
 
   apache::vhost { 'hathitrust canonical name redirection':
     servername        => $domain,
@@ -80,6 +80,18 @@ class nebula::profile::hathitrust::apache::redirection (
         rewrite_rule => "^/(.*)    https://${babel_servername}/\$1?skin=mobile [last,redirect,qsappend]"
       }
     ],
+    error_log_file    => 'error.log',
+    access_log_file   => 'access.log',
+    access_log_format => 'combined',
+  }
+
+  apache::vhost { "m.${catalog_servername} redirection":
+    servername        => "m.${catalog_servername}",
+    docroot           => false,
+    port              => '80',
+    redirect_source   => '/',
+    redirect_status   => 'permanent',
+    redirect_dest     => "https://m.${prefix}${domain}",
     error_log_file    => 'error.log',
     access_log_file   => 'access.log',
     access_log_format => 'combined',

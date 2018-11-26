@@ -13,9 +13,7 @@ class nebula::profile::hathitrust::apache::default (
   String $sdrroot,
   Hash $default_access,
   Array[String] $haproxy_ips,
-  String $ssl_cert,
-  String $ssl_key,
-  String $ssl_chain,
+  Hash $ssl_params,
   String $prefix,
   String $domain,
 ) {

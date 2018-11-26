@@ -12,27 +12,13 @@ class nebula::profile::hathitrust::apache::catalog (
   String $sdrroot,
   Hash $default_access,
   Array[String] $haproxy_ips,
-  String $ssl_cert,
-  String $ssl_key,
-  String $ssl_chain,
   String $prefix,
+  Hash $ssl_params,
   String $domain,
   String $docroot = '/htapps/catalog/web',
 ) {
 
   $servername = "${prefix}catalog.${domain}"
-
-  apache::vhost { "m.${servername} redirection":
-    servername        => "m.${servername}",
-    docroot           => false,
-    port              => '80',
-    redirect_source   => '/',
-    redirect_status   => 'permanent',
-    redirect_dest     => "https://m.${prefix}${domain}",
-    error_log_file    => 'error.log',
-    access_log_file   => 'access.log',
-    access_log_format => 'combined',
-  }
 
 
 
@@ -46,10 +32,7 @@ class nebula::profile::hathitrust::apache::catalog (
     access_log_file   => 'catalog/access.log',
     access_log_format => 'combined',
     directoryindex    => 'index.html index.htm index.php index.phtml index.shtml',
-    ssl               => true,
-    ssl_cert          => $ssl_cert,
-    ssl_key           => $ssl_key,
-    ssl_chain         => $ssl_chain,
+    *                 => $ssl_params,
 
     directories       => [
       {
