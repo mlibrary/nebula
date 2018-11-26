@@ -52,7 +52,6 @@ class nebula::profile::hathitrust::apache::redirection (
     servername        => $domain,
     docroot           => false,
     port              => '80',
-    # TODO test me
     serveraliases     => $alias_domains + $alias_domains.map |$alias_domain| { "www.${alias_domain}" },
     redirect_source   => '/',
     redirect_status   => 'permanent',
