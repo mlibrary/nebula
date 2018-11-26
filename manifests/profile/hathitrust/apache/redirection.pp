@@ -62,29 +62,6 @@ class nebula::profile::hathitrust::apache::redirection (
     access_log_format => 'combined',
   }
 
-  # TODO: should this be present in an ssl version? is it still necessary?
-  apache::vhost { "m.${babel_servername} redirection":
-    servername        => "m.${babel_servername}",
-    port              => '80',
-    docroot           => false,
-    rewrites          => [
-      # is skin=mobile argument present?
-      {
-        # yes, just redirect
-        rewrite_cond => '%{QUERY_STRING} skin=mobile         [nocase]',
-        rewrite_rule => "/(.*)    https://${babel_servername}/\$1     [last,redirect]",
-      },
-      {
-        # no, prepend it
-        rewrite_cond => '%{QUERY_STRING} !skin=mobile          [nocase]',
-        rewrite_rule => "^/(.*)    https://${babel_servername}/\$1?skin=mobile [last,redirect,qsappend]"
-      }
-    ],
-    error_log_file    => 'error.log',
-    access_log_file   => 'access.log',
-    access_log_format => 'combined',
-  }
-
   apache::vhost { "m.${catalog_servername} redirection":
     servername        => "m.${catalog_servername}",
     docroot           => false,
@@ -97,17 +74,4 @@ class nebula::profile::hathitrust::apache::redirection (
     access_log_format => 'combined',
   }
 
-  # TODO: should this be present in an ssl version? is it still necessary?
-  apache::vhost { 'mdp.lib.umich.edu redirection':
-    servername        => 'mdp.lib.umich.edu',
-    serveraliases     => ['sdr.lib.umich.edu'],
-    port              => '80',
-    docroot           => false,
-    redirect_dest     => "https://${babel_servername}",
-    redirect_source   => '/',
-    redirect_status   => 'permanent',
-    error_log_file    => 'error.log',
-    access_log_file   => 'access.log',
-    access_log_format => 'combined',
-  }
 }
