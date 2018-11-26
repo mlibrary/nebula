@@ -1,0 +1,7 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - hathitrust
+:yaml:
+  :datadir: 'spec/fixtures/hiera'

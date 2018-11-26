@@ -1,0 +1,3 @@
+nebula::profile::hathitrust::apache::redirection::alias_domains:
+  - domain.one
+  - domain.two
