@@ -12,9 +12,7 @@ class nebula::profile::hathitrust::apache::babel (
   String $sdrroot,
   Hash $default_access,
   Array[String] $haproxy_ips,
-  String $ssl_cert,
-  String $ssl_key,
-  String $ssl_chain,
+  Hash $ssl_params,
   String $prefix,
   String $domain,
   String $gwt_code
@@ -32,10 +30,7 @@ class nebula::profile::hathitrust::apache::babel (
     error_log_file    => 'babel/error.log',
     access_log_file   => 'babel/access.log',
     access_log_format => 'combined',
-    ssl               => true,
-    ssl_cert          => $ssl_cert,
-    ssl_key           => $ssl_key,
-    ssl_chain         => $ssl_chain,
+    *                 => $ssl_params,
 
     # from babel-common
 
