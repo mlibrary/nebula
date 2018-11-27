@@ -69,7 +69,6 @@ class nebula::profile::hathitrust::apache (
     indexes => ['index.html']
   }
   class { 'apache::mod::expires': }
-  # TODO fastcgi for imgsrv (not provided any more) (with config)
   class { 'apache::mod::include': }
   class { 'apache::mod::mime_magic': }
   class { 'apache::mod::negotiation': }

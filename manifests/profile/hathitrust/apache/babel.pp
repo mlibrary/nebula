@@ -149,14 +149,6 @@ class nebula::profile::hathitrust::apache::babel (
       },
 
       {
-        # If there is a FastCGI socket named APP, rewrite /APP/cgi/APP/PATHINFO to
-        # /tmp/fastcgi/$APP.fcgi/PATHINFO
-        rewrite_cond => ['       /tmp/fastcgi/$3.sock -x'],
-        rewrite_rule => ['       ^/([^/]+)/(shcgi|cgi)/([^/]+)(.*)$      unix:/tmp/fastcgi/$3.sock|fcgi://localhost/$4  [proxy,last]'],
-
-      },
-
-      {
         # If there is a PSGI "choke" wrapper, invoke that so that the
         # request is considered for throttling
         rewrite_cond => ['  %{DOCUMENT_ROOT}/$1/cgi/$3.choke -f'],
