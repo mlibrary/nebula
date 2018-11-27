@@ -120,6 +120,15 @@ class nebula::profile::hathitrust::apache (
     source => 'puppet:///ssl-certs/www.hathitrust.org.key'
   }
 
+  apache::custom_config { 'ip-detection':
+    source => 'puppet:///apache/ip-detection.conf'
+  }
+
+  apache::custom_config { 'badrobots':
+    source => 'puppet:///apache/badrobots.conf'
+  }
+
+
   $default_vhost_params = {
     sdrroot        => $sdrroot,
     default_access => $default_access,
