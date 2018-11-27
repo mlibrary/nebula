@@ -62,6 +62,7 @@ class nebula::profile::hathitrust::apache (
 
   # Modules enabled
   #
+  apache::mod { 'access_compat': }
   class { 'apache::mod::authn_core': }
   class { 'apache::mod::autoindex': }
   class { 'apache::mod::cgi': }

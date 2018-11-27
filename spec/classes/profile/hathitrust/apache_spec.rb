@@ -43,6 +43,19 @@ describe 'nebula::profile::hathitrust::apache' do
         it { is_expected.to contain_concat_fragment(vhost_config).with_content(multiline2re(snippet)) }
       end
 
+      it do
+        is_expected.to contain_file('access_compat.load')
+          .with(path: '/etc/apache2/mods-available/access_compat.load',
+                content: %r{LoadModule access_compat_module /usr/lib/apache2/modules/mod_access_compat.so})
+      end
+
+      it do
+        is_expected.to contain_file('access_compat.load symlink')
+          .with(ensure: 'link',
+                path: '/etc/apache2/mods-enabled/access_compat.load',
+                target: '/etc/apache2/mods-available/access_compat.load')
+      end
+
       describe 'Production HT hostnames' do
         %w[babel catalog www].each do |vhost|
           it {
