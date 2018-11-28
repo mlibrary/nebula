@@ -1,0 +1,7 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - http_fileserver
+:yaml:
+  :datadir: 'spec/fixtures/hiera'
