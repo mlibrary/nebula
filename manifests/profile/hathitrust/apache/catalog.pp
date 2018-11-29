@@ -20,7 +20,19 @@ class nebula::profile::hathitrust::apache::catalog (
 
   $servername = "${prefix}catalog.${domain}"
 
+  cron { 'purge catalog apache access logs':
+    command => '/usr/bin/find /var/log/apache2/catalog -type f -name "access_log*" -mtime +7 -exec /bin/rm {} \; > /dev/null 2>&1',
+    user    => 'root',
+    minute  => '27',
+    hour    => '1',
+  }
 
+  cron { 'compress catalog apache access logs':
+    command => '/usr/bin/find /var/log/apache2/catalog -type f -name "access_log*" ! -name "*.gz" -mtime +0 -exec /usr/bin/pigz -9 {} \; > /dev/null 2>&1',
+    user    => 'root',
+    minute  => '28',
+    hour    => '1',
+  }
 
   apache::vhost { "${servername} ssl":
     servername        => $servername,

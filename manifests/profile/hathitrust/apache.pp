@@ -150,4 +150,17 @@ class nebula::profile::hathitrust::apache (
     }
   }
 
+  cron { 'apache connection count check':
+    command => '/l/local/bin/ckapacheconn',
+    user    => 'root',
+    minute  => '*/15',
+  }
+
+  cron { 'apache restart':
+    command => '( /etc/init.d/apache2 stop; /bin/sleep 10; /etc/init.d/apache2 start ) > /dev/null',
+    user    => 'root',
+    minute  => '1',
+    hour    => '0',
+  }
+
 }
