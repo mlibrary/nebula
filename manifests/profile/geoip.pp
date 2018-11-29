@@ -11,4 +11,13 @@
 #   include nebula::profile::geoip
 class nebula::profile::geoip () {
   package { 'geoip-bin': }
+
+  cron { 'update GeoIP database':
+    command => '/l/local/bin/geoipupdate -f /etc/GeoIP.conf -d /usr/share/GeoIP',
+    user    => 'root',
+    minute  => '37',
+    hour    => '7',
+    weekday => '1'
+  }
+
 }
