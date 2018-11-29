@@ -19,7 +19,7 @@ class nebula::profile::networking::firewall::http_datacenters (
     action => 'accept'
   }
 
-  $blocks.each |$block| {
+  $blocks.flatten.each |$block| {
     firewall { "200 HTTP: ${block['name']}":
       source => $block['source'],
       *      => $params
