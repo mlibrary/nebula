@@ -17,6 +17,18 @@ class nebula::profile::hathitrust::dependencies () {
       'libxerces-c-samples',
       'unzip',
       'zip',
+      'netpbm-sf',
+      'kakadu'
     ]:
   }
+
+  file { '/l/local':
+    ensure => 'directory'
+  }
+
+  file { '/l/local/bin':
+    ensure => 'symlink',
+    target => '/usr/bin'
+  }
+
 }

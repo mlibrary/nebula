@@ -51,13 +51,13 @@ class nebula::profile::hathitrust::perl () {
     'libimage-info-perl',
     'libimage-size-perl',
     'libinline-perl',
-    'libio-compress-perl',
     'libio-socket-ssl-perl',
     'libio-string-perl',
     'libipc-run-perl',
     'libjson-perl',
     'libjson-xs-perl',
     'liblist-compare-perl',
+    'liblist-moreutils-perl',
     'liblog-log4perl-perl',
     'libmail-sendmail-perl',
     'libmailtools-perl',
@@ -97,4 +97,17 @@ class nebula::profile::hathitrust::perl () {
     'libyaml-perl',
     'perlmagick']:
   }
+
+  nebula::cpan { 'File::Value': }
+  nebula::cpan { 'File::ANVL': }
+  nebula::cpan { 'File::Namaste': }
+  nebula::cpan { 'File::Pairtree': }
+  nebula::cpan { 'CGI::Application::Plugin::Routes': }
+  nebula::cpan { 'Algorithm::LUHN': }
+  nebula::cpan { 'OAuth::Lite': }
+  nebula::cpan { 'EBook::EPUB': }
+  nebula::cpan { 'Sub::Uplevel': }
+  nebula::cpan { 'Test::Exception': }
+  nebula::cpan { 'Devel::Cycle': }
+  nebula::cpan { 'Test::Memory::Cycle': }
 }

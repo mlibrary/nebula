@@ -17,7 +17,7 @@ class nebula::profile::networking::firewall::ssh (
       proto     => 'tcp',
       dport     => 22,
       source    => $block['source'],
-      tcp_flags => 'SYN,RST,ACK,FIN SYN', # equivalent to --syn
+      tcp_flags => 'FIN,SYN,RST,ACK SYN', # equivalent to --syn
       action    => 'accept',
     }
   }

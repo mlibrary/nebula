@@ -1,0 +1,13 @@
+[Unit]
+Description=HathiTrust imgsrv
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=no
+User=nobody
+ExecStart=/usr/local/bin/startup_imgsrv
+Restart=always
+
+[Install]
+
