@@ -66,9 +66,16 @@ class nebula::profile::hathitrust::shibboleth () {
   }
 
   cron { 'shibd existence check':
-    command => '/l/local/bin/ckshibd',
+    command => '/usr/local/bin/ckshibd',
     user    => 'root',
     minute  => '*/10',
+  }
+
+  $http_files = lookup('nebula::http_files')
+  file { "/usr/local/bin/ckshibd":
+    ensure  => 'present',
+    mode    => '0755',
+    source => "https://${http_files}/ae-utils/bins/ckshibd"
   }
 
 }
