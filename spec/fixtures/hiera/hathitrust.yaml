@@ -1,6 +1,7 @@
 nebula::profile::hathitrust::apache::redirection::alias_domains:
   - domain.one
   - domain.two
+
 nebula::profile::hathitrust::dbhost::address: '10.1.2.4'
 nebula::profile::hathitrust::apache::babel::sdremail: somebody@invalid.default
 
@@ -10,3 +11,21 @@ nebula::profile::hathitrust::imgsrv::sdrview: 'sdrview'
 nebula::profile::hathitrust::imgsrv::sdrdataroot: '/sdrdataroot'
 nebula::profile::hathitrust::imgsrv::bind: '127.0.0.1:31028'
 nebula::profile::hathitrust::apache::babel::gwt_code: 'somecode'
+
+# Intentional, erroneous duplication here to verify flattening.
+# Apache would not balk at multiple requires, but other things may,
+# so we want to simulate the error and test for uniqueness.
+networks::one:
+  - name: 'Net One'
+    block: '10.0.1.0/24'
+  - name: 'VPN'
+    block: '10.0.3.0/24'
+networks::two:
+  - name: 'Net Two'
+    block: '10.0.2.0/24'
+  - name: 'VPN'
+    block: '10.0.3.0/24'
+
+hathitrust::networks::staff:
+  - "%{alias('networks::one')}"
+  - "%{alias('networks::two')}"
