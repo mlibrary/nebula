@@ -12,7 +12,7 @@ describe 'nebula::role::webhost::htvm' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts.merge(networking: { ip: Faker::Internet.ip_v4_address, interfaces: {} }) }
-
+      let(:hiera_config) { 'spec/fixtures/hiera/hathitrust_config.yaml' }
       let(:haproxy) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy' } }
       let(:rolenode) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'rolenode' } }
 

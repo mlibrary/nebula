@@ -9,6 +9,15 @@ describe 'nebula::profile::hathitrust::imgsrv' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
+      let(:params) do
+        {
+          num_proc: 10,
+          sdrroot: '/sdrroot',
+          sdrview: 'sdrview',
+          sdrdataroot: '/sdrdataroot',
+          bind: '127.0.0.1:31028',
+        }
+      end
 
       it { is_expected.to contain_service('imgsrv') }
 

@@ -15,7 +15,7 @@ describe 'nebula::profile::hathitrust::apache' do
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:vhost_config) { 'babel.hathitrust.org ssl-directories' }
-
+      let(:hiera_config) { 'spec/fixtures/hiera/hathitrust_config.yaml' }
       let(:haproxy) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy' } }
       let(:rolenode) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'rolenode' } }
 
@@ -99,22 +99,10 @@ describe 'nebula::profile::hathitrust::apache' do
 
         it { is_expected.to contain_apache__vhost('babel.example.org ssl').with_servername('babel.example.org') }
 
-        context 'and domain aliases in hiera data' do
-          let(:hiera_config) { 'spec/fixtures/hiera/hathitrust_config.yaml' }
-
-          it {
-            is_expected.to contain_apache__vhost('hathitrust canonical name redirection').with(
-              servername: 'example.org',
-              serveraliases: ['domain.one', 'domain.two', 'www.domain.one', 'www.domain.two'],
-              redirect_dest: 'https://www.example.org',
-            )
-          }
-        end
-
         it {
           is_expected.to contain_apache__vhost('hathitrust canonical name redirection').with(
             servername: 'example.org',
-            serveraliases: [],
+            serveraliases: ['domain.one', 'domain.two', 'www.domain.one', 'www.domain.two'],
             redirect_dest: 'https://www.example.org',
           )
         }

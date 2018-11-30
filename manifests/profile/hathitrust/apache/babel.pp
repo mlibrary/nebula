@@ -10,6 +10,7 @@
 #   include nebula::profile::hathitrust::apache::babel
 class nebula::profile::hathitrust::apache::babel (
   String $sdrroot,
+  String $sdremail,
   Hash $default_access,
   Array[String] $haproxy_ips,
   Hash $ssl_params,
@@ -61,7 +62,7 @@ class nebula::profile::hathitrust::apache::babel (
     setenv            => [
       "SDRROOT ${sdrroot}",
       'SDRDATAROOT /sdr1',
-      'ASSERTION_EMAIL hathitrust-system@umich.edu'
+      "ASSERTION_EMAIL ${sdremail}"
     ],
 
     setenvifnocase    => [
