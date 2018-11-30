@@ -128,6 +128,18 @@ class nebula::profile::hathitrust::apache (
     source => 'puppet:///apache/badrobots.conf'
   }
 
+  file { '/etc/apache2/conf-enabled':
+    ensure => 'absent',
+    force  => true,
+    purge  => true
+  }
+
+  file { '/etc/apache2/conf-available':
+    ensure => 'absent',
+    force  => true,
+    purge  => true
+  }
+
 
   $default_vhost_params = {
     sdrroot        => $sdrroot,
