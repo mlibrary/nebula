@@ -55,9 +55,6 @@ class nebula::profile::hathitrust::apache::default (
         allow_override => ['None'],
         requires       => {
           enforce  => 'any',
-          # TODO: also allow grog (nebula::role::hathitrust::dev::app_host),
-          # squishees (currently nebula::role::hathitrust::prod; need a solr
-          # role)
           requires => ['local'] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
         }
       }

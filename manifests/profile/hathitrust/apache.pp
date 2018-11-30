@@ -31,9 +31,7 @@ class nebula::profile::hathitrust::apache (
   class { 'apache':
     default_vhost          => false,
     default_ssl_vhost      => false,
-    # changed from default 300 (copypasta)
     timeout                => 900,
-    # changed from default 15 (puppet), 5 (debian) (copypasta)
     keepalive_timeout      => 2,
     log_formats            => {
       combined => '%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %v \"%{X-HathiTrust-InCopyright}o\"'
@@ -52,7 +50,6 @@ class nebula::profile::hathitrust::apache (
   }
 
   class { 'apache::mod::prefork':
-    # changed from default; copypasta from debian 8 config
     startservers           => 10,
     minspareservers        => 10,
     maxspareservers        => 15,
@@ -88,7 +85,6 @@ class nebula::profile::hathitrust::apache (
   class { 'apache::mod::status':
     requires        =>  {
       enforce  => 'any',
-      # TODO look up staff IPs from hiera
       requires => [ 'local' ]
     }
   }
