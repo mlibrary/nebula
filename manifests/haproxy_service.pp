@@ -19,13 +19,14 @@ define nebula::haproxy_service(
   include nebula::profile::haproxy::prereqs
 
   $service = $title
+  $http_files = lookup('nebula::http_files')
 
   if $max_requests_per_sec > 0 {
     file { "/etc/haproxy/errors/${service}509.http":
       ensure => 'present',
       mode   => '0644',
       notify => Service['haproxy'],
-      source => "puppet:///errorfiles/${service}509.http"
+      source => "https://${http_files}/errorfiles/${service}509.http"
     }
   }
 

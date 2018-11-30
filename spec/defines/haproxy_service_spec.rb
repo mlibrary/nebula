@@ -106,7 +106,7 @@ describe 'nebula::haproxy_service' do
             end
           end
 
-          it { is_expected.to contain_file('/etc/haproxy/errors/svc1509.http').with_source('puppet:///errorfiles/svc1509.http') }
+          it { is_expected.to contain_file('/etc/haproxy/errors/svc1509.http').with_source('https://default.http_files.invalid/errorfiles/svc1509.http') }
 
           context 'with no whitelists' do
             it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_src.txt') }
