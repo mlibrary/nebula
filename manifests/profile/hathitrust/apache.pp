@@ -27,6 +27,9 @@ class nebula::profile::hathitrust::apache (
     fact_for($nodename, 'networking')['ip']
   }
 
+  $staff_networks = lookup('hathitrust::networks::staff', default_value => []).flatten.unique.map |$network| {
+    "ip ${network['block']}"
+  }.sort
 
   class { 'apache':
     default_vhost          => false,
@@ -83,9 +86,9 @@ class nebula::profile::hathitrust::apache (
   }
 
   class { 'apache::mod::status':
-    requires        =>  {
+    requires => {
       enforce  => 'any',
-      requires => [ 'local' ]
+      requires => [ 'local' ] + $staff_networks
     }
   }
 
