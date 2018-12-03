@@ -135,7 +135,7 @@ class nebula::profile::hathitrust::apache (
     haproxy_ips    => $haproxy_ips,
     ssl_params     => {
       ssl            => true,
-      ssl_protocol   => 'all -SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2',
+      ssl_protocol   => '+TLSv1.2',
       ssl_cipher     => 'ECDHE-RSA-AES256-GCM-SHA384',
       ssl_cert       => $ssl_cert,
       ssl_key        => $ssl_key,
