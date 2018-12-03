@@ -1,0 +1,24 @@
+# Managed by puppet (nebula/templates/profile/apache/logrotate.d/apache2.erb)
+/var/log/apache2/*.log /var/log/apache2/*/*.log {
+	daily
+	missingok
+	rotate 14
+# tag by date - 2018-08-23 aelkiss
+	dateext
+	dateyesterday
+	compress
+	delaycompress
+	notifempty
+	create 644 root adm
+	sharedscripts
+	postrotate
+                if /etc/init.d/apache2 status > /dev/null ; then \
+                    /etc/init.d/apache2 reload > /dev/null; \
+                fi;
+	endscript
+	prerotate
+		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+			run-parts /etc/logrotate.d/httpd-prerotate; \
+		fi; \
+	endscript
+}
