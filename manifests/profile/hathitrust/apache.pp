@@ -140,6 +140,10 @@ class nebula::profile::hathitrust::apache (
     purge  => true
   }
 
+  file { '/etc/logrotate.d/apache2':
+    ensure  => file,
+    content => template('nebula/profile/apache/logrotate.d/apache2.erb'),
+  }
 
   $default_vhost_params = {
     sdrroot        => $sdrroot,

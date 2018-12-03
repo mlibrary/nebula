@@ -56,6 +56,10 @@ describe 'nebula::profile::hathitrust::apache' do
                 target: '/etc/apache2/mods-available/access_compat.load')
       end
 
+      it do
+        is_expected.to contain_file('/etc/logrotate.d/apache2')
+      end
+
       describe 'Production HT hostnames' do
         %w[babel catalog www].each do |vhost|
           it {
