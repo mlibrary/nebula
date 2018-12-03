@@ -62,7 +62,7 @@ describe 'nebula::profile::hathitrust::apache' do
             is_expected.to contain_apache__vhost("#{vhost}.hathitrust.org ssl").with(
               servername: "#{vhost}.hathitrust.org",
               ssl: true,
-              ssl_protocol: 'all -SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2',
+              ssl_protocol: '+TLSv1.2',
               ssl_cipher: 'ECDHE-RSA-AES256-GCM-SHA384',
               ssl_cert: '/etc/ssl/certs/www.hathitrust.org.crt',
               ssl_key: '/etc/ssl/private/www.hathitrust.org.key',
