@@ -43,15 +43,15 @@ class nebula::profile::hathitrust::imgsrv (
 
 
   $http_files = lookup('nebula::http_files')
-  file { "/usr/local/bin/check_imgsrv":
-    ensure  => 'present',
-    mode    => '0755',
+  file { '/usr/local/bin/check_imgsrv':
+    ensure => 'present',
+    mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/check_imgsrv"
   }
 
-  file { "/usr/local/bin/startup_app":
-    ensure  => 'present',
-    mode    => '0755',
+  file { '/usr/local/bin/startup_app':
+    ensure => 'present',
+    mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/startup_app"
   }
 

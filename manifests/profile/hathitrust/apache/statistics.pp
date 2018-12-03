@@ -56,10 +56,10 @@ class nebula::profile::hathitrust::apache::statistics {
   }
 
   cron { 'get pod volumes':
-    command => "SDRROOT=/htapps/www perl /htapps/www/sites/www.hathitrust.org/extra_perl/get_pod_volumes.pl > /htapps/www/sites/www.hathitrust.org/cron_reporting.6 2>&1 || /usr/bin/mail -s 'Get POD Volumes Cronjob failed' eliotwsc@umich.edu",
-    user    => 'libadm',
-    minute  => '0',
-    hour    => '0',
+    command  => "SDRROOT=/htapps/www perl /htapps/www/sites/www.hathitrust.org/extra_perl/get_pod_volumes.pl > /htapps/www/sites/www.hathitrust.org/cron_reporting.6 2>&1 || /usr/bin/mail -s 'Get POD Volumes Cronjob failed' eliotwsc@umich.edu",
+    user     => 'libadm',
+    minute   => '0',
+    hour     => '0',
     monthday => '1'
   }
 

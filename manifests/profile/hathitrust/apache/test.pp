@@ -12,11 +12,10 @@
 class nebula::profile::hathitrust::apache::test {
 
   cron { 'purge apache access logs':
-    command => "/usr/bin/find /var/log/apache2 -regextype posix-egrep -type f -mtime +14 -regex '.*/(access|error)_log.*-.*' -exec /bin/rm {} \; > /dev/null 2>&1"
-',
-    user    => 'root',
-    minute  => '7',
-    hour    => '1',
+    command  => "/usr/bin/find /var/log/apache2 -regextype posix-egrep -type f -mtime +14 -regex '.*/(access|error)_log.*-.*' -exec /bin/rm {} ';' > /dev/null 2>&1",
+    user     => 'root',
+    minute   => '7',
+    hour     => '1',
     monthday => '*'
   }
 
