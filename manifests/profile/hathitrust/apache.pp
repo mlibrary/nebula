@@ -178,7 +178,7 @@ class nebula::profile::hathitrust::apache (
   }
 
   cron { 'apache restart':
-    command => '( /etc/init.d/apache2 stop; /bin/sleep 10; /etc/init.d/apache2 start ) > /dev/null',
+    command => '( /bin/systemctl stop apache2; /bin/sleep 10; /bin/systemctl start apache2 ) > /dev/null',
     user    => 'root',
     minute  => '1',
     hour    => '0',
