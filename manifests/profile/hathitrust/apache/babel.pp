@@ -19,6 +19,20 @@ class nebula::profile::hathitrust::apache::babel (
   String $gwt_code
 ) {
 
+  cron { 'log anon cron':
+    command => "/htapps/babel/stats/bin/cron_apache_log.sh 2>&1 > /tmp/anon.out || /usr/bin/mail -s '${::hostname} log anon cron failed' lit-ae-automation@umich.edu 2>&1 > /dev/null",
+    user    => 'root',
+    minute  => '0',
+    hour    => '2',
+  }
+
+  cron { 'purge caches':
+    command => '/htapps/babel/mdp-misc/scripts/managecache.sh /htapps/babel/cache/download:99:1 /htapps/babel/cache:99:7 /ram/choke:50:7',
+    user    => 'nobody',
+    minute  => '23',
+    hour    => '1',
+  }
+
   $servername = "${prefix}babel.${domain}"
 
   $imgsrv_address = lookup('nebula::profile::hathitrust::imgsrv::bind');

@@ -164,4 +164,24 @@ class nebula::profile::hathitrust::apache (
     }
   }
 
+  cron { 'apache connection count check':
+    command => '/usr/local/bin/ckapacheconn',
+    user    => 'root',
+    minute  => '*/15',
+  }
+
+  $http_files = lookup('nebula::http_files')
+  file { '/usr/local/bin/ckapacheconn':
+    ensure => 'present',
+    mode   => '0755',
+    source => "https://${http_files}/ae-utils/bins/ckapacheconn"
+  }
+
+  cron { 'apache restart':
+    command => '( /bin/systemctl stop apache2; /bin/sleep 10; /bin/systemctl start apache2 ) > /dev/null',
+    user    => 'root',
+    minute  => '1',
+    hour    => '0',
+  }
+
 }

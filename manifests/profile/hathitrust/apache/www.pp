@@ -18,6 +18,20 @@ class nebula::profile::hathitrust::apache::www (
   String $docroot = '/htapps/www'
 ) {
 
+  cron { 'purge non-babel apache access logs':
+    command => '/usr/bin/find /var/log/apache2/www -type f -name "access_log*" -mtime +7 -exec /bin/rm {} \; > /dev/null 2>&1',
+    user    => 'root',
+    minute  => '27',
+    hour    => '1',
+  }
+
+  cron { 'compress non-babel apache access logs':
+    command => '/usr/bin/find /var/log/apache2/www -type f -name "access_log*" ! -name "*.gz" -mtime +0 -exec /usr/bin/pigz -9 {} \; > /dev/null 2>&1',
+    user    => 'root',
+    minute  => '28',
+    hour    => '1',
+  }
+
   $servername = "${prefix}www.${domain}"
 
   apache::vhost { "${servername} ssl":
