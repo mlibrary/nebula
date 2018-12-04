@@ -143,6 +143,5 @@ class nebula::profile::hathitrust::perl () {
   nebula::cpan { 'Test::Exception': }
   nebula::cpan { 'Devel::Cycle': }
   nebula::cpan { 'Test::Memory::Cycle': }
-  nebula::cpan { 'IO::Compress': }
   nebula::cpan { 'Mozilla::CA': }
 }
