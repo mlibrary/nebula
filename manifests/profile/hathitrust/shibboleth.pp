@@ -27,7 +27,11 @@ class nebula::profile::hathitrust::shibboleth () {
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
+    # Threading & pooling settings based on empirical testing to minimize crashes. 
+    # Tested on Debian 8 with Shibboleth SP 2.5.3 and MySQL ODBC driver 5.1.10. 
     content => @("ODBCINST")
+      [ODBC]
+      Pooling         = Yes
       [MySQL]
       Description     = MySQL driver
       Driver          = libmaodbc.so
