@@ -41,9 +41,10 @@ class nebula::profile::hathitrust::shibboleth () {
   }
 
   file { '/etc/shibboleth/shibboleth2.xml':
-    mode  => '0440',
-    owner => '_shibd',
-    group => 'nogroup'
+    mode   => '0440',
+    owner  => '_shibd',
+    group  => 'nogroup',
+    source => 'puppet:///shibboleth/shibboleth2.xml'
   }
 
   file { '/etc/systemd/system/shibd.service.d':
