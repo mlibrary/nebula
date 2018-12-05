@@ -1,5 +1,25 @@
 # frozen_string_literal: true
 
+RSpec.shared_context 'with mocked query for nodes in other datacenters' do |datacenters = [], nodes = []|
+  let!(:puppetdb_query) do
+    MockFunction.new('puppetdb_query') do |f|
+      f.stubbed
+       .with(['from', 'facts',
+              ['extract', %w[certname value],
+               ['and',
+                ['=', 'name', 'ipaddress'],
+                ['in', 'certname',
+                 ['extract', ['certname'],
+                  ['select_facts',
+                   ['and',
+                    ['=', 'name', 'datacenter'],
+                    ['not', ['in', 'value',
+                             ['array', datacenters]]]]]]]]]])
+       .returns(nodes.map { |name, ip| { 'certname' => name, 'value' => ip } })
+    end
+  end
+end
+
 RSpec.shared_context 'with mocked puppetdb functions' do |datacenter, nodes, class_nodes|
   before(:each) do
     stub_loader!

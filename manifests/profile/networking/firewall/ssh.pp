@@ -12,13 +12,13 @@ class nebula::profile::networking::firewall::ssh (
   Array $blocks = [],
 ) {
 
-  $blocks.each |$block| {
+  $blocks.flatten.each |$block| {
     firewall { "100 SSH: ${block['name']}":
-      proto     => 'tcp',
-      dport     => 22,
-      source    => $block['source'],
-      tcp_flags => 'FIN,SYN,RST,ACK SYN', # equivalent to --syn
-      action    => 'accept',
+      proto  => 'tcp',
+      dport  => 22,
+      source => $block['source'],
+      state  => 'NEW',
+      action => 'accept',
     }
   }
 }

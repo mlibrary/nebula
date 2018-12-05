@@ -13,11 +13,11 @@ class nebula::profile::networking::firewall::http () {
     $node_net = fact_for($nodename, 'networking')
 
     firewall { "200 HTTP: HAProxy ${nodename}":
-      proto     => 'tcp',
-      dport     => [80, 443],
-      source    => $node_net['ip'],
-      tcp_flags => 'FIN,SYN,RST,ACK SYN', # equivalent to --syn
-      action    => 'accept',
+      proto  => 'tcp',
+      dport  => [80, 443],
+      source => $node_net['ip'],
+      state  => 'NEW',
+      action => 'accept',
     }
   }
 

@@ -96,32 +96,8 @@ class nebula::profile::hathitrust::apache (
     }
   }
 
-  $ssl_cert = '/etc/ssl/certs/www.hathitrust.org.crt'
-  $ssl_key = '/etc/ssl/private/www.hathitrust.org.key'
-  $ssl_chain = '/etc/ssl/certs/incommon_sha2.crt'
-
-  file { $ssl_cert:
-    mode   => '0644',
-    owner  => 'root',
-    group  => 'root',
-    notify => Class['Apache::Service'],
-    source => 'puppet:///ssl-certs/www.hathitrust.org.crt'
-  }
-
-  file { $ssl_chain:
-    mode   => '0644',
-    owner  => 'root',
-    group  => 'root',
-    notify => Class['Apache::Service'],
-    source => 'puppet:///ssl-certs/incommon_sha2.crt'
-  }
-
-  file { $ssl_key:
-    mode   => '0600',
-    owner  => 'root',
-    group  => 'root',
-    notify => Class['Apache::Service'],
-    source => 'puppet:///ssl-certs/www.hathitrust.org.key'
+  class { 'nebula::profile::ssl_keypair':
+    common_name => 'www.hathitrust.org'
   }
 
   apache::custom_config { 'ip-detection':
@@ -149,6 +125,8 @@ class nebula::profile::hathitrust::apache (
     content => template('nebula/profile/apache/logrotate.d/apache2.erb'),
   }
 
+  $chain_crt = lookup('nebula::profile::ssl_keypair::chain_crt')
+
   $default_vhost_params = {
     sdrroot        => $sdrroot,
     default_access => $default_access,
@@ -157,9 +135,9 @@ class nebula::profile::hathitrust::apache (
       ssl            => true,
       ssl_protocol   => '+TLSv1.2',
       ssl_cipher     => 'ECDHE-RSA-AES256-GCM-SHA384',
-      ssl_cert       => $ssl_cert,
-      ssl_key        => $ssl_key,
-      ssl_chain      => $ssl_chain,
+      ssl_cert       => '/etc/ssl/certs/www.hathitrust.org.crt',
+      ssl_key        => '/etc/ssl/private/www.hathitrust.org.key',
+      ssl_chain      => "/etc/ssl/certs/${chain_crt}"
     },
     prefix         => $prefix,
     domain         => $domain
