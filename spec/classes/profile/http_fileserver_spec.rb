@@ -4,10 +4,13 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
+require_relative '../../support/contexts/with_mocked_nodes'
 
 describe 'nebula::profile::http_fileserver' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
+      include_context 'with mocked query for nodes in other datacenters'
+
       let(:facts) { os_facts }
       let(:hiera_config) { 'spec/fixtures/hiera/deb_server_config.yaml' }
       let(:fqdn) { facts[:fqdn] }
