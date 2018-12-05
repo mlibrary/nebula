@@ -14,6 +14,10 @@ class nebula::profile::hathitrust::apache (
   String $sdrroot = '/htapps/babel',
 ) {
 
+  package {
+    'bsd-mailx':
+  }
+
   $default_access = {
     enforce  => 'all',
     requires => [
