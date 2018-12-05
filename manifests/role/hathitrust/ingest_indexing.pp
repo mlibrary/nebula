@@ -6,10 +6,12 @@
 #
 # @example
 #   include nebula::role::hathitrust::ingest_indexing
-class nebula::role::hathitrust::ingest_indexing () {
+class nebula::role::hathitrust::ingest_indexing (String $private_address_template = '192.168.0.%s') {
   include nebula::role::hathitrust_new_firewall
 
-  include nebula::profile::networking::private
+  class { 'nebula::profile::networking::private':
+    address_template => $private_address_template
+  }
 
   include nebula::profile::hathitrust::dbhost
   include nebula::profile::hathitrust::mounts
