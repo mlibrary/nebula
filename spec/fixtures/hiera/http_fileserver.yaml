@@ -1,3 +1,0 @@
-nebula::profile::http_fileserver::storage_path: somehost:/somewhere
-nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt
-

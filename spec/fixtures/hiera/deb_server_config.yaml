@@ -2,6 +2,6 @@
 :backends:
   - yaml
 :hierarchy:
-  - http_fileserver
+  - deb_server
 :yaml:
   :datadir: 'spec/fixtures/hiera'

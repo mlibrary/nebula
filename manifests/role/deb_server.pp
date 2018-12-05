@@ -2,15 +2,15 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::role::http_fileserver
+# nebula::role::deb_server
 #
-# Role for a machine that serves a single directory of static files via
-# http/https
+# Role for a machine that serves a repository of debs via http/https
 #
 # @example
-#   include nebula::role::http_fileserver
-class nebula::role::http_fileserver {
+#   include nebula::role::deb_server
+class nebula::role::deb_server {
   include nebula::role::umich_new_firewall
 
   include nebula::profile::http_fileserver
+  include nebula::profile::deb_signing
 }
