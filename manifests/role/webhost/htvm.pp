@@ -18,7 +18,7 @@ class nebula::role::webhost::htvm (String $private_address_template = '192.168.0
 
   include nebula::profile::networking::firewall::http
 
-  include nebula::profile::hathitrust::dbhost
+  include nebula::profile::hathitrust::hosts
   include nebula::profile::hathitrust::mounts
 
   include nebula::profile::geoip
