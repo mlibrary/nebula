@@ -65,7 +65,6 @@ class nebula::profile::hathitrust::perl () {
     'libimage-info-perl',
     'libimage-size-perl',
     'libinline-perl',
-    'libio-compress-perl',
     'libio-html-perl',
     'libio-socket-ssl-perl',
     'libio-string-perl',
