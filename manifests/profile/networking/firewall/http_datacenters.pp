@@ -9,7 +9,7 @@
 # @example
 #   include nebula::profile::networking::firewall::ssh
 class nebula::profile::networking::firewall::http_datacenters (
-  Array $blocks = [],
+  Array $networks = [],
 ) {
 
   $params = {
@@ -19,14 +19,14 @@ class nebula::profile::networking::firewall::http_datacenters (
     action => 'accept'
   }
 
-  $blocks.flatten.each |$block| {
-    firewall { "200 HTTP: ${block['name']}":
-      source => $block['source'],
+  $networks.flatten.each |$network| {
+    firewall { "200 HTTP: ${network['name']}":
+      source => $network['block'],
       *      => $params
     }
   }
 
-  $block_datacenters = $blocks.flatten.map |$block| { $block['datacenter'] }.sort.unique
+  $datacenters = $networks.flatten.map |$network| { $network['datacenter'] }.sort.unique
 
   $other_dc_nodes_query = ['from','facts',
     ['extract', ['certname','value'],
@@ -37,7 +37,7 @@ class nebula::profile::networking::firewall::http_datacenters (
             ['and',
               ['=','name','datacenter'],
               ['not', ['in','value',
-              ['array', $block_datacenters]]]]]]]]]]
+              ['array', $datacenters]]]]]]]]]]
 
   puppetdb_query($other_dc_nodes_query).each |$node| {
     firewall { "200 HTTP: ${node['certname']}":
