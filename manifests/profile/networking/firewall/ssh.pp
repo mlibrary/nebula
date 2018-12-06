@@ -9,14 +9,14 @@
 # @example
 #   include nebula::profile::networking::firewall::ssh
 class nebula::profile::networking::firewall::ssh (
-  Array $blocks = [],
+  Array $networks = [],
 ) {
 
-  $blocks.flatten.each |$block| {
-    firewall { "100 SSH: ${block['name']}":
+  $networks.flatten.each |$network| {
+    firewall { "100 SSH: ${network['name']}":
       proto  => 'tcp',
       dport  => 22,
-      source => $block['source'],
+      source => $network['block'],
       state  => 'NEW',
       action => 'accept',
     }

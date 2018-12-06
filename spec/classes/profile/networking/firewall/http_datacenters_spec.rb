@@ -20,7 +20,7 @@ describe 'nebula::profile::networking::firewall::http_datacenters' do
       context 'with a CIDR range' do
         include_context 'with mocked query for nodes in other datacenters', ['somedc'], []
 
-        let(:params) { { blocks: [{ 'name' => 'somedc', 'source' => '10.1.2.0/24', 'datacenter' => 'somedc' }] } }
+        let(:params) { { networks: [{ 'name' => 'somedc', 'block' => '10.1.2.0/24', 'datacenter' => 'somedc' }] } }
 
         it { is_expected.to contain_firewall('200 HTTP: somedc').with_source('10.1.2.0/24') }
       end
@@ -32,14 +32,14 @@ describe 'nebula::profile::networking::firewall::http_datacenters' do
 
         let(:params) do
           {
-            blocks: [
+            networks: [
               [
-                { 'name' => 'test range 1-1', 'source' => '10.1.1.0/24', 'datacenter' => 'dc1' },
-                { 'name' => 'test range 1-2', 'source' => '10.1.2.0/24', 'datacenter' => 'dc2' },
+                { 'name' => 'test range 1-1', 'block' => '10.1.1.0/24', 'datacenter' => 'dc1' },
+                { 'name' => 'test range 1-2', 'block' => '10.1.2.0/24', 'datacenter' => 'dc2' },
               ],
               [
-                { 'name' => 'test range 2-1', 'source' => '10.2.1.0/24', 'datacenter' => 'dc2' },
-                { 'name' => 'test range 2-2', 'source' => '10.2.2.0/24', 'datacenter' => 'dc2' },
+                { 'name' => 'test range 2-1', 'block' => '10.2.1.0/24', 'datacenter' => 'dc2' },
+                { 'name' => 'test range 2-2', 'block' => '10.2.2.0/24', 'datacenter' => 'dc2' },
               ],
             ],
           }

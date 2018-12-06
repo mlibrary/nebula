@@ -15,7 +15,7 @@ describe 'nebula::profile::networking::firewall::ssh' do
       it { is_expected.to have_firewall_resource_count(0) }
 
       context 'with a CIDR range' do
-        let(:params) { { blocks: [{ 'name' => 'test range', 'source' => '10.1.2.0/24' }] } }
+        let(:params) { { networks: [{ 'name' => 'test range', 'block' => '10.1.2.0/24' }] } }
 
         it { is_expected.to contain_firewall('100 SSH: test range').with_source('10.1.2.0/24') }
       end
@@ -23,14 +23,14 @@ describe 'nebula::profile::networking::firewall::ssh' do
       context 'with deeply-nested ranges' do
         let(:params) do
           {
-            blocks: [
+            networks: [
               [
-                { 'name' => 'test range 1-1', 'source' => '10.1.1.0/24' },
-                { 'name' => 'test range 1-2', 'source' => '10.1.2.0/24' },
+                { 'name' => 'test range 1-1', 'block' => '10.1.1.0/24' },
+                { 'name' => 'test range 1-2', 'block' => '10.1.2.0/24' },
               ],
               [
-                { 'name' => 'test range 2-1', 'source' => '10.2.1.0/24' },
-                { 'name' => 'test range 2-2', 'source' => '10.2.2.0/24' },
+                { 'name' => 'test range 2-1', 'block' => '10.2.1.0/24' },
+                { 'name' => 'test range 2-2', 'block' => '10.2.2.0/24' },
               ],
             ],
           }
