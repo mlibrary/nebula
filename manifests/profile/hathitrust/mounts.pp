@@ -54,6 +54,7 @@ class nebula::profile::hathitrust::mounts (
       options => 'auto,hard',
       *       => $nfs_mount_options
     }
+
   }
 
   if($readonly) {

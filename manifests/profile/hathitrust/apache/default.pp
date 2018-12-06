@@ -20,21 +20,25 @@ class nebula::profile::hathitrust::apache::default (
 
   $servername = "${prefix}babel.${domain}"
   $docroot = $sdrroot
-  $monitor_dir = '/usr/local/lib/cgi-bin/monitor'
   $monitor_location = '/monitor'
-  $http_files = lookup('nebula::http_files')
+  $cgi_dir = '/usr/local/lib/cgi-bin'
+  $monitor_dir = "${cgi_dir}/monitor"
 
   $requires = {
     enforce  => 'any',
     requires => [ 'local' ] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
   }
 
-  file { "${monitor_dir}/monitor.pl":
-    ensure => 'file',
+  file { $cgi_dir:
+    ensure => 'directory',
     owner  => 'root',
     group  => 'root',
-    mode   => '0755',
-    source => "https://${http_files}/ae-utils/bins/monitor.pl"
+    mode   => '0755'
+  }
+
+  class { 'nebula::profile::monitor_pl':
+    directory  => $monitor_dir,
+    shibboleth => true
   }
 
   apache::vhost { 'default non-ssl':

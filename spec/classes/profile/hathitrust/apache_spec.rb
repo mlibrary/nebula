@@ -21,7 +21,7 @@ describe 'nebula::profile::hathitrust::apache' do
 
       include_context 'with mocked puppetdb functions', 'somedc', %w[haproxy rolenode], 'nebula::profile::haproxy' => %w[haproxy]
 
-      it { is_expected.to contain_file("/usr/local/lib/cgi-bin/monitor/monitor.pl") }
+      it { is_expected.to contain_file('/usr/local/lib/cgi-bin/monitor/monitor.pl') }
 
       snippets = [
         <<~EOT,
