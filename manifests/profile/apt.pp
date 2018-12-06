@@ -13,9 +13,29 @@ class nebula::profile::apt (
   String $puppet_repo,
   Optional[Hash] $local_repo = undef,
 ) {
+
+
+
+  # Run an initial apt update if the main package list is missing, primarily so
+  # that we can install apt-transport-https
+
+  # Remove initial http(s); replace / with _; add trailing _ if needed
+  $cache_mirror_prefix = $mirror.regsubst('^https?://','').regsubst('/','_','G').regsubst('([^_])$',"${1}_")
+  exec { 'initial apt update':
+    command => '/usr/bin/apt-get update',
+    creates => "/var/lib/apt/lists/${cache_mirror_prefix}dists_${::lsbdistcodename}_main_binary-${::architecture}_Packages"
+  }
+
+
   # Ensure that apt knows to never ever install recommended packages
   # before it installs any packages.
   File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
+
+  # Ensure that apt repos are set up and updated before attempting to install a
+  # new package, except for apt-transport-https, as that package is required to
+  # update some of the repositories.
+  Apt::Source <| |> -> Package <| title != 'apt-transport-https' |>
+  Class['apt::update'] -> Package <| title != 'apt-transport-https' |>
 
   # delete this after 2018-04-19
   cron { 'apt-get update':
@@ -53,11 +73,14 @@ class nebula::profile::apt (
     repos   => 'main contrib non-free',
   }
 
+  package { 'apt-transport-https': }
+
   if $local_repo {
     apt::source { 'local':
       *       => $local_repo,
       release => $::lsbdistcodename,
-      repos   => 'main'
+      repos   => 'main',
+      require => Package['apt-transport-https']
     }
   }
 

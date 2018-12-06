@@ -38,6 +38,11 @@ describe 'nebula::profile::apt' do
       end
 
       it do
+        is_expected.to contain_exec('initial apt update')
+          .with_creates("/var/lib/apt/lists/ftp.us.debian.org_debian_dists_#{facts[:lsbdistcodename]}_main_binary-amd64_Packages")
+      end
+
+      it do
         is_expected.to contain_apt__source('updates').with(
           location: 'http://ftp.us.debian.org/debian/',
           release: "#{facts[:lsbdistcodename]}-updates",

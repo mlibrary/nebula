@@ -15,20 +15,21 @@ class nebula::profile::hathitrust::shibboleth () {
   package {
     [
       'unixodbc',
-      'mariadb-unixodbc',
       'libapache2-mod-shib2',
       'shibboleth-sp2-common',
-      'shibboleth-sp2-utils'
+      'shibboleth-sp2-utils',
+      'mariadb-unixodbc'
     ]:
   }
+
 
   file { '/etc/odbcinst.ini':
     ensure  => 'file',
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    # Threading & pooling settings based on empirical testing to minimize crashes. 
-    # Tested on Debian 8 with Shibboleth SP 2.5.3 and MySQL ODBC driver 5.1.10. 
+    # Threading & pooling settings based on empirical testing to minimize crashes.
+    # Tested on Debian 8 with Shibboleth SP 2.5.3 and MySQL ODBC driver 5.1.10.
     content => @("ODBCINST")
       [ODBC]
       Pooling         = Yes
