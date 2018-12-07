@@ -37,6 +37,10 @@ class nebula::profile::networking::private (
       command => "/sbin/ifup ${real_interface}",
       onlyif  => "/usr/bin/test $(cat /sys/class/net/${real_interface}/operstate) = 'down'"
     }
+
+    Exec["ifup ${real_interface}"] -> Service <| tag == 'private_network' |>
+    Exec["ifup ${real_interface}"] -> Mount <| tag == 'private_network' |>
+
   } else {
     err('No network interface to configure')
   }

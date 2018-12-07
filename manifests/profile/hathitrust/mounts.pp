@@ -41,13 +41,18 @@ class nebula::profile::hathitrust::mounts (
     group  => 'root'
   }
 
-  mount { '/htapps':
+  $mount_options = {
     ensure  => 'mounted',
+    fstype  => 'nfs',
+    require => ['Package[nfs-common]','Service[bind9]'],
+    tag     => 'private_network'
+  }
+
+  mount { '/htapps':
     name    => '/htapps',
     device  => 'nas-macc.sc:/ifs/htapps',
-    fstype  => 'nfs',
     options => 'auto,hard',
-    require => ['Package[nfs-common]']
+    *       => $mount_options
   }
 
   if($readonly) {
@@ -62,12 +67,10 @@ class nebula::profile::hathitrust::mounts (
     }
 
     mount { "/sdr${partition}":
-      ensure  => 'mounted',
       name    => "/sdr${partition}",
       device  => "nas-macc.sc:/ifs/sdr/${partition}",
-      fstype  => 'nfs',
       options => $sdr_options,
-      require => ['Package[nfs-common]']
+      *       => $mount_options
     }
   }
 }

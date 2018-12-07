@@ -35,6 +35,7 @@ class nebula::profile::dns::smartconnect (
     ensure     => 'running',
     enable     => true,
     hasrestart => true,
+    tag        => 'private_network'
   }
 
   if empty($other_ns_ips) {
