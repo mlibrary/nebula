@@ -2,7 +2,6 @@ nebula::profile::hathitrust::apache::redirection::alias_domains:
   - domain.one
   - domain.two
 
-nebula::profile::hathitrust::dbhost::address: '10.1.2.4'
 nebula::profile::hathitrust::apache::babel::sdremail: somebody@invalid.default
 
 nebula::profile::hathitrust::imgsrv::num_proc: 10
@@ -11,6 +10,33 @@ nebula::profile::hathitrust::imgsrv::sdrview: 'sdrview'
 nebula::profile::hathitrust::imgsrv::sdrdataroot: '/sdrdataroot'
 nebula::profile::hathitrust::imgsrv::bind: '127.0.0.1:31028'
 nebula::profile::hathitrust::apache::babel::gwt_code: 'somecode'
+
+nebula::profile::hathitrust::hosts::mysql_sdr: '10.1.2.4'
+nebula::profile::hathitrust::hosts::mysql_htdev: '2.2.2.2'
+nebula::profile::hathitrust::hosts::apps_ht: '3.3.3.3'
+nebula::profile::hathitrust::hosts::solr_search:
+  - '4.4.4.4'
+  - '5.5.5.5'
+nebula::profile::hathitrust::hosts::solr_catalog: '6.6.6.6'
+nebula::profile::hathitrust::hosts::solr_ptsearch: '7.7.7.7'
+nebula::profile::hathitrust::hosts::solr_usfeddocs: '8.8.8.8'
+nebula::profile::hathitrust::hosts::solr_vufind_primary: '9.9.9.9'
+nebula::profile::hathitrust::hosts::solr_vufind_failover: '22.22.22.22'
+nebula::profile::hathitrust::ingest_hosts::mysql_sdr: '10.1.2.4'
+nebula::profile::hathitrust::ingest_hosts::mysql_quod: '2.2.2.2'
+nebula::profile::hathitrust::ingest_hosts::solr_search:
+  - '9.4.4.4'
+  - '9.5.5.5'
+nebula::profile::hathitrust::ingest_hosts::solr_build:
+  - '4.9.4.4'
+  - '5.9.5.5'
+nebula::profile::hathitrust::ingest_hosts::solr_build_new:
+  - '4.4.9.4'
+  - '5.5.9.5'
+nebula::profile::hathitrust::ingest_hosts::solr_dev: '8.8.8.8'
+nebula::profile::hathitrust::ingest_hosts::solr_catalog: '6.6.6.6'
+nebula::profile::hathitrust::ingest_hosts::solr_vufind_primary: '9.9.9.9'
+nebula::profile::hathitrust::ingest_hosts::solr_vufind_failover: '22.22.22.22'
 
 # Intentional, erroneous duplication here to verify flattening.
 # Apache would not balk at multiple requires, but other things may,

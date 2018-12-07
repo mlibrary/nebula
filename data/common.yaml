@@ -154,3 +154,4 @@ nebula::profile::work_around_puppet_bugs::state_yaml_path: '/opt/puppetlabs/pupp
 nebula::profile::work_around_puppet_bugs::state_yaml_max_size: '10m'
 
 nebula::http_files: 'default.http_files.invalid'
+
