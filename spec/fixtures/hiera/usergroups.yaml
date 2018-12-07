@@ -1,0 +1,29 @@
+# Copyright (c) 2018 The Regents of the University of Michigan.
+# All Rights Reserved. Licensed according to the terms of the Revised
+# BSD License. See LICENSE.txt for details.
+nebula::usergroup::membership:
+  examplegroup1:
+  - exampleuser1
+  - exampleuser2
+  examplegroup2:
+  - exampleuser2
+  - exampleuser3
+
+nebula::profile::groups::all_groups:
+  examplegroup1: 1234
+  examplegroup2: 2468
+
+nebula::virtual::users::default_group: staff
+nebula::virtual::users::all_users:
+  exampleuser1:
+    uid: 12345
+    comment: The first example user
+    home: /home/exampleuser1
+  exampleuser2:
+    uid: 12346
+    comment: The second example user
+    home: /home/exampleuser2
+  exampleuser3:
+    uid: 12347
+    comment: The third example user
+    home: /home/exampleuser3

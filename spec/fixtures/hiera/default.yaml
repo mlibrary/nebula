@@ -97,40 +97,6 @@ nebula::profile::puppet::master::fileservers:
       mode: '0700'
 nebula::profile::puppet::master::autosign_whitelist: []
 
-nebula::users::key_file: /etc/secretkeys/invalid.default
-nebula::users::groups:
-  invalid_default_group: 1234
-  invalid_special_group: 2468
-nebula::users::default_group: invalid_default_group
-nebula::users::default_host: invalid.default
-nebula::users::sudoers:
-  invalid_normal_admin:
-    comment: Invalid normal admin
-    uid: 123456
-    home: /home/invalid_normal_admin
-    auth:
-      type: ssh-rsa
-      key: >-
-        AAAA
-        AAAA
-        AAAA
-  invalid_special_admin:
-    comment: Invalid special admin
-    group: invalid_special_group
-    uid: 123457
-    home: /home/invalid_special_admin
-    auth:
-      type: ssh-dsa
-      host: invalid.special
-      key: >-
-        BBBB
-        BBBB
-        BBBB
-  invalid_noauth_admin:
-    comment: Invalid no-authorization admin
-    uid: 123458
-    home: /home/invalid_noauth_admin
-
 nebula::profile::vmhost::host::build: 'invalid-default'
 nebula::profile::vmhost::host::cpus: 0
 nebula::profile::vmhost::host::disk: 0
@@ -158,3 +124,11 @@ nebula::profile::apt::local_repo:
     id: 0123456789ABCDEF
     source: https://local-repo.default-invalid/debian-pubkey.txt
 
+nebula::profile::authorized_keys::key_file: /etc/secretkeys/default.invalid
+nebula::profile::authorized_keys::default_host: 'default.invalid'
+nebula::profile::authorized_keys::ssh_keys: {}
+
+nebula::usergroup::membership: {sudo: []}
+nebula::profile::groups::all_groups: {}
+nebula::virtual::users::default_group: staff
+nebula::virtual::users::all_users: {}

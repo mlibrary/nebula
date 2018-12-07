@@ -9,6 +9,7 @@ describe 'nebula::profile::users' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
+      let(:hiera_config) { 'spec/fixtures/hiera/ssh_keys_config.yaml' }
 
       it { is_expected.to contain_group('invalid_default_group').with_gid(1234) }
       it { is_expected.to contain_group('invalid_special_group').with_gid(2468) }

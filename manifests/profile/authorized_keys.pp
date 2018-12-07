@@ -8,15 +8,14 @@
 #
 # @example
 #   include nebula::profile::authorized_keys
-class nebula::profile::authorized_keys {
-  $key_file = lookup('nebula::users::key_file')
-  $keys = nebula::get_keys_from_users(
-    'nebula::users::sudoers',
-    lookup('nebula::users::default_host'))
-
+class nebula::profile::authorized_keys (
+  String $key_file,
+  String $default_host,
+  Hash   $ssh_keys,
+) {
   Nebula::File::Ssh_keys[$key_file] -> Package<| |>
   nebula::file::ssh_keys { $key_file:
-    keys   => $keys,
+    keys   => nebula::get_keys_from_users($ssh_keys, $default_host),
     secret => true,
   }
 }

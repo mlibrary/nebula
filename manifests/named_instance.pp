@@ -25,7 +25,7 @@ define nebula::named_instance(
   }
 
   # Add sudoers and passed users to the group
-  (lookup('nebula::users::sudoers').map |$user, $_data| { $user } + $users).each |$user| {
+  (lookup('nebula::usergroup::membership')['sudo'] + $users).each |$user| {
     exec { "${user} ${title} membership":
       unless  => "/bin/grep -q ${title}\\S*${user} /etc/group",
       onlyif  => "/usr/bin/id ${user}",
