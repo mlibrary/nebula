@@ -2,56 +2,39 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 ---
-nebula::root_email: root@default.invalid
-nebula::puppetmaster: puppetmaster.default.invalid
-nebula::puppetdb: puppetdb.default.invalid
 
 nebula::profile::afs::allow_auto_reboot_until: '1970-01-01'
 nebula::profile::afs::cache_size: 50000
-nebula::profile::afs::cell: cell.default.invalid
-nebula::profile::afs::realm: REALM.DEFAULT.INVALID
+
 nebula::profile::dns::smartconnect::master_zones:
 - localhost:        local
 - 127.in-addr.arpa: 127
 - 0.in-addr.arpa:   0
 - 255.in-addr.arpa: 255
-nebula::profile::dns::smartconnect::domain: smartconnect.default.invalid
-nebula::profile::dns::smartconnect::nameserver: 1.2.3.4
-nebula::profile::elastic::logstash_auth_cert: ''
-nebula::profile::elastic::logstash_hosts:
-- logstash.default.invalid:1234
-nebula::profile::elastic::filebeat::prospectors::mgetit::log_path: /var/log/mgetit.default.invalid
+
 nebula::profile::elastic::period: 90
 nebula::profile::haproxy::services: {}
-nebula::profile::haproxy::monitoring_user:
-  name: haproxyctl
-  home: /var/haproxyctl
-  key:
-    type: ecdsa-sha2-nistp256
-    data: CCCCCCCCCCCC
-    comment: 'haproxyctl@default.invalid'
+
 nebula::profile::ruby::install_dir: '/opt/rbenv'
 nebula::profile::ruby::plugins:
 - rbenv/rbenv-vars
 - rbenv/ruby-build
 - rbenv/rbenv-default-gems
 - tpope/rbenv-aliases
+
 nebula::profile::ruby::global_version: '2.4.3'
 nebula::profile::ruby::supported_versions:
-- '2.3.4'
-- '2.4.3'
-- '2.5.0'
+- '2.3.8'
+- '2.4.5'
+- '2.5.3'
+
 nebula::profile::ruby::gems:
 - rspec
 - puma
+
 nebula::profile::vmhost::host::vms: {}
 nebula::profile::vmhost::host::defaults: {}
 
-nebula::profile::base::sysadmin_dept: Default Incorrect Dept
-nebula::profile::base::contact_email: contact@default.invalid
-nebula::profile::networking::keytab::default_keytab: nebula/keytab.empty
-nebula::profile::networking::keytab::keytab: ''
-nebula::profile::networking::keytab::keytab_source: ''
 nebula::profile::base::timezone: US/Eastern
 
 nebula::profile::apt::mirror: http://ftp.us.debian.org/debian/
@@ -59,99 +42,6 @@ nebula::profile::apt::puppet_repo: puppet5
 
 nebula::profile::base::environment::vars: {}
 
-nebula::profile::exim4::root_email: root@default.invalid
-nebula::profile::exim4::relay_domain: exim.default.invalid
-
-nebula::profile::ntp::servers:
-- ntp.example.invalid
-
-nebula::profile::duo::ikey: ikey.default.invalid
-nebula::profile::duo::skey: skey.default.invalid
-nebula::profile::duo::host: host.default.invalid
-nebula::profile::duo::pushinfo: push.default.invalid
-nebula::profile::duo::failmode: fail.default.invalid
-
-nebula::profile::base::firewall::ipv4::filename: /etc/firewall.ipv4
-nebula::profile::base::firewall::ipv4::rules:
-- '-A INPUT -p tcp -s 1.2.3.4 -j ACCEPT'
-- '-A INPUT -p tcp -s 5.6.7.8 -j ACCEPT'
-
-nebula::profile::networking::sshd::whitelist:
-- '10.1.1.0/24'
-- '10.2.2.0/24'
-- '!10.2.2.2'
-
-nebula::resolv_conf::searchpath:
-- searchpath.default.invalid
-nebula::resolv_conf::nameservers:
-- 5.5.5.5
-- 4.4.4.4
-
-nebula::profile::puppet::master::r10k_source: /opt/r10k.git
-nebula::profile::puppet::master::fileservers:
-  repos: /default_invalid/opt/repos
-  long-form-without-options:
-    location: /default_invalid/opt/wherever
-  ssl-certs:
-    location: /default_invalid/etc/ssl
-    options:
-      owner: root
-      group: wheel
-      mode: '0700'
-nebula::profile::puppet::master::autosign_whitelist: []
-
-nebula::users::key_file: /etc/secretkeys/invalid.default
-nebula::users::groups:
-  invalid_default_group: 1234
-  invalid_special_group: 2468
-nebula::users::default_group: invalid_default_group
-nebula::users::default_host: invalid.default
-nebula::users::sudoers:
-  invalid_normal_admin:
-    comment: Invalid normal admin
-    uid: 123456
-    home: /home/invalid_normal_admin
-    auth:
-      type: ssh-rsa
-      key: >-
-        AAAA
-        AAAA
-        AAAA
-  invalid_special_admin:
-    comment: Invalid special admin
-    group: invalid_special_group
-    uid: 123457
-    home: /home/invalid_special_admin
-    auth:
-      type: ssh-dsa
-      host: invalid.special
-      key: >-
-        BBBB
-        BBBB
-        BBBB
-  invalid_noauth_admin:
-    comment: Invalid no-authorization admin
-    uid: 123458
-    home: /home/invalid_noauth_admin
-
-nebula::profile::vmhost::host::build: 'invalid-default'
-nebula::profile::vmhost::host::cpus: 0
-nebula::profile::vmhost::host::disk: 0
-nebula::profile::vmhost::host::ram: 0
-nebula::profile::vmhost::host::domain: 'default.domain.invalid'
-nebula::profile::vmhost::host::filehost: 'default.filehost.invalid'
-nebula::profile::vmhost::host::image_dir: 'default.image_dir.invalid'
-nebula::profile::vmhost::host::net_interface: 'default.iface.invalid'
-nebula::profile::vmhost::host::netmask: '0.0.0.0'
-nebula::profile::vmhost::host::gateway: '10.1.2.3'
-nebula::profile::vmhost::host::nameservers: "%{alias('nebula::resolv_conf::nameservers')}"
-
-nebula::profile::named_instances::puma_wrapper: "/l/local/bin/profile_puma_wrap"
-nebula::profile::named_instances::fauxpaas_pubkey: "somepublickey"
-nebula::profile::named_instances::fauxpaas_puma_config: "config/fauxpaas_puma.rb"
-
 nebula::profile::work_around_puppet_bugs::state_yaml_path: '/opt/puppetlabs/puppet/cache/state/state.yaml'
 nebula::profile::work_around_puppet_bugs::state_yaml_max_size: '10m'
-
-nebula::http_files: 'default.http_files.invalid'
 

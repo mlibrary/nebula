@@ -17,6 +17,8 @@ class nebula::profile::elastic (
   Array   $logstash_hosts,
   Integer $period,
 ) {
+  include nebula::profile::apt
+
   apt::source { 'elastic.co':
     comment  => 'Elastic.co apt source for beats and elastic search',
     location => 'https://artifacts.elastic.co/packages/5.x/apt',
@@ -46,6 +48,4 @@ class nebula::profile::elastic (
       mode   => '0755',
     }
   }
-
-  package { 'apt-transport-https': }
 }
