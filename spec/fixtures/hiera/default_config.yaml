@@ -3,6 +3,5 @@
   - yaml
 :hierarchy:
   - default
-  - hathitrust
 :yaml:
   :datadir: 'spec/fixtures/hiera'
