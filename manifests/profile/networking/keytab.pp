@@ -13,14 +13,14 @@
 # @example
 #   include nebula::profile::networking::keytab
 class nebula::profile::networking::keytab (
-  String  $default_keytab,
-  String  $keytab,
-  String  $keytab_source,
+  String $default_keytab = 'nebula/keytab.empty',
+  Optional[String]  $keytab = undef,
+  Optional[String]  $keytab_source = undef,
 ) {
   $keytab_content = file($keytab, $default_keytab)
 
   if $keytab_content != '' {
-    if $keytab_source == '' {
+    if !$keytab_source {
       file { '/etc/krb5.keytab':
         content => $keytab_content,
         mode    => '0600',

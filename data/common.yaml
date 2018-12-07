@@ -44,3 +44,4 @@ nebula::profile::base::environment::vars: {}
 
 nebula::profile::work_around_puppet_bugs::state_yaml_path: '/opt/puppetlabs/puppet/cache/state/state.yaml'
 nebula::profile::work_around_puppet_bugs::state_yaml_max_size: '10m'
+
