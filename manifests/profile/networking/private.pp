@@ -29,7 +29,13 @@ class nebula::profile::networking::private (
     $address = sprintf($address_template,split($facts['networking']['ip'],'\.')[-1])
 
     file { '/etc/network/interfaces.d/private':
-      content => template('nebula/profile/networking/private.erb'),
+      content      => template('nebula/profile/networking/private.erb'),
+      validate_cmd => "/sbin/ifdown ${real_interface}"
+    }
+
+    exec { "ifup ${real_interface}":
+      command => "/sbin/ifup ${real_interface}",
+      onlyif  => "/usr/bin/test $(cat /sys/class/net/${real_interface}/operstate) = 'down'"
     }
   } else {
     err('No network interface to configure')
