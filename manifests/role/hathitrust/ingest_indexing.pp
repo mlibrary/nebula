@@ -16,5 +16,6 @@ class nebula::role::hathitrust::ingest_indexing (String $private_address_templat
   include nebula::profile::hathitrust::ingest_hosts
   include nebula::profile::hathitrust::mounts
   include nebula::profile::hathitrust::dependencies
+  include nebula::profile::hathitrust::dependencies::ingest_indexing
   include nebula::profile::hathitrust::perl
 }
