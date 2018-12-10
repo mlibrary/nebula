@@ -15,7 +15,8 @@ describe 'nebula::role::hathitrust::ingest_indexing' do
       it { is_expected.to compile }
 
       it { is_expected.to contain_package('nfs-common') }
-      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,ro') }
+      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard') }
+      it { is_expected.to contain_mount('/htprep') }
 
       # default from hiera
       it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }

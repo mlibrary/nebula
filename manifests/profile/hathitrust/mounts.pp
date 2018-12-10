@@ -13,6 +13,7 @@
 #   include nebula::profile::hathitrust::mounts
 class nebula::profile::hathitrust::mounts (
   String $ramdisk_size = '4g',
+  Array[String] $mounts = ['/htapps'],
   Boolean $readonly = true
 ) {
   include nebula::profile::dns::smartconnect;
@@ -35,24 +36,26 @@ class nebula::profile::hathitrust::mounts (
 
   package { 'nfs-common': }
 
-  file { '/htapps':
-    ensure => 'directory',
-    owner  => 'root',
-    group  => 'root'
-  }
-
-  $mount_options = {
+  $nfs_mount_options = {
     ensure  => 'mounted',
     fstype  => 'nfs',
     require => ['Package[nfs-common]','Service[bind9]'],
     tag     => 'private_network'
   }
 
-  mount { '/htapps':
-    name    => '/htapps',
-    device  => 'nas-macc.sc:/ifs/htapps',
-    options => 'auto,hard',
-    *       => $mount_options
+  $mounts.each |$mount| {
+    file { $mount:
+      ensure => 'directory',
+      owner  => 'root',
+      group  => 'root'
+    }
+
+    mount { $mount:
+      name    => $mount,
+      device  => "nas-macc.sc:/ifs$mount",
+      options => 'auto,hard',
+      *       => $nfs_mount_options
+    }
   }
 
   if($readonly) {
@@ -70,7 +73,7 @@ class nebula::profile::hathitrust::mounts (
       name    => "/sdr${partition}",
       device  => "nas-macc.sc:/ifs/sdr/${partition}",
       options => $sdr_options,
-      *       => $mount_options
+      *       => $nfs_mount_options
     }
   }
 }
