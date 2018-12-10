@@ -14,10 +14,16 @@ class nebula::role::hathitrust::ingest_indexing (String $private_address_templat
   }
 
   include nebula::profile::hathitrust::ingest_hosts
+
+  file { '/htsolr':
+    ensure => 'directory'
+  }
+
   class { 'nebula::profile::hathitrust::mounts':
     mounts   => ['/htapps','/htprep','/htsolr/lss','/htsolr/lss-reindex'],
     readonly => false
   }
+
   include nebula::profile::hathitrust::dependencies
   include nebula::profile::hathitrust::dependencies::ingest_indexing
   include nebula::profile::hathitrust::perl
