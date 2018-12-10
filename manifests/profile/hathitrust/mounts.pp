@@ -52,7 +52,7 @@ class nebula::profile::hathitrust::mounts (
 
     mount { $mount:
       name    => $mount,
-      device  => "nas-macc.sc:/ifs$mount",
+      device  => "nas-macc.sc:/ifs${mount}",
       options => 'auto,hard',
       *       => $nfs_mount_options
     }

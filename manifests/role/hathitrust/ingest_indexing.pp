@@ -15,7 +15,7 @@ class nebula::role::hathitrust::ingest_indexing (String $private_address_templat
 
   include nebula::profile::hathitrust::ingest_hosts
   class { 'nebula::profile::hathitrust::mounts':
-    mounts => ['/htapps','/htprep','/htsolr/lss','/htsolr/lss-reindex'],
+    mounts   => ['/htapps','/htprep','/htsolr/lss','/htsolr/lss-reindex'],
     readonly => false
   }
   include nebula::profile::hathitrust::dependencies
