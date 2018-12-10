@@ -46,8 +46,6 @@ class nebula::profile::hathitrust::mounts (
   $mounts.each |$mount| {
     file { $mount:
       ensure => 'directory',
-      owner  => 'root',
-      group  => 'root'
     }
 
     mount { $mount:
