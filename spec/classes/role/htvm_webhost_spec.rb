@@ -29,6 +29,7 @@ describe 'nebula::role::webhost::htvm' do
       end
 
       it { is_expected.to contain_php__extension('File_MARC').with_provider('pear') }
+      it { is_expected.to contain_nebula__cpan('EBook::EPUB').that_requires('Package[libmoose-perl]') }
 
       # default from hiera
       it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }

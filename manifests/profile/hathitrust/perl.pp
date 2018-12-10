@@ -130,17 +130,20 @@ class nebula::profile::hathitrust::perl () {
     'perlmagick']:
   }
 
-  nebula::cpan { 'File::Value': }
-  nebula::cpan { 'File::ANVL': }
-  nebula::cpan { 'File::Namaste': }
-  nebula::cpan { 'File::Pairtree': }
-  nebula::cpan { 'CGI::Application::Plugin::Routes': }
-  nebula::cpan { 'Algorithm::LUHN': }
-  nebula::cpan { 'OAuth::Lite': }
-  nebula::cpan { 'EBook::EPUB': }
-  nebula::cpan { 'Sub::Uplevel': }
-  nebula::cpan { 'Test::Exception': }
-  nebula::cpan { 'Devel::Cycle': }
-  nebula::cpan { 'Test::Memory::Cycle': }
-  nebula::cpan { 'Mozilla::CA': }
+  -> nebula::cpan { [
+    'File::Value',
+    'File::ANVL',
+    'File::Namaste',
+    'File::Pairtree',
+    'CGI::Application::Plugin::Routes',
+    'Algorithm::LUHN',
+    'OAuth::Lite',
+    'EBook::EPUB',
+    'Sub::Uplevel',
+    'Test::Exception',
+    'Devel::Cycle',
+    'Test::Memory::Cycle',
+    'Mozilla::CA']:
+  }
+
 }
