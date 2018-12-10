@@ -26,9 +26,16 @@ class nebula::profile::apt (
     creates => "/var/lib/apt/lists/${cache_mirror_prefix}dists_${::lsbdistcodename}_main_binary-${::architecture}_Packages"
   }
 
-  package { ['apt-transport-https','dirmngr']:
-    tag      => 'package-apt-dependency',
+  package { 'apt-transport-https':
+    tag     => 'package-apt-dependency',
     require => Exec['initial apt update']
+  }
+
+  if $facts['os']['release']['major'] == '9' {
+    package { 'dirmngr':
+      tag     => 'package-apt-dependency',
+      require => Exec['initial apt update']
+    }
   }
 
   # Ensure that apt knows to never ever install recommended packages

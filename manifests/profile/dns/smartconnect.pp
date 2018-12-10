@@ -47,13 +47,14 @@ class nebula::profile::dns::smartconnect (
   class { 'resolv_conf':
     nameservers => concat(['127.0.0.1'], $nameservers),
     searchpath  => lookup('nebula::resolv_conf::searchpath'),
+    require     => Service['bind9']
   }
 
   file { '/etc/bind':
     ensure  => 'directory',
     owner   => 'root',
     group   => 'bind',
-    require => ['Package[nebula::profile::dns::smartconnect::bind9]']
+    require => Package[nebula::profile::dns::smartconnect::bind9]
   }
 
   file { '/etc/bind/named.conf':

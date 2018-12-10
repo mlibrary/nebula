@@ -28,6 +28,7 @@ describe 'nebula::profile::dns::smartconnect' do
             '4.4.4.4',    # nebula::resolv_conf::nameservers[1]
           ],
         ).with_searchpath(['searchpath.default.invalid'])
+                                                   .with_require('Service[bind9]')
       end
 
       [

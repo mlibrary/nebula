@@ -47,6 +47,8 @@ describe 'nebula::role::webhost::htvm' do
           end
 
           it { is_expected.to contain_mount('/htapps').that_requires('Exec[ifup ens4]') }
+          it { is_expected.to contain_mount('/htapps').that_requires('Class[resolv_conf]') }
+          it { is_expected.to contain_mount('/htapps').that_requires('Service[bind9]') }
           it { is_expected.to contain_mount('/sdr1').that_requires('Exec[ifup ens4]') }
           it { is_expected.to contain_service('bind9').that_requires('Exec[ifup ens4]') }
         end
