@@ -26,16 +26,21 @@ class nebula::profile::apt (
     creates => "/var/lib/apt/lists/${cache_mirror_prefix}dists_${::lsbdistcodename}_main_binary-${::architecture}_Packages"
   }
 
+  package { ['apt-transport-https','dirmngr']:
+    tag      => 'package-apt-dependency',
+    require => Exec['initial apt update']
+  }
 
   # Ensure that apt knows to never ever install recommended packages
   # before it installs any packages.
   File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
 
   # Ensure that apt repos are set up and updated before attempting to install a
-  # new package, except for apt-transport-https, as that package is required to
-  # update some of the repositories.
-  Apt::Source <| |> -> Package <| title != 'apt-transport-https' |>
-  Class['apt::update'] -> Package <| title != 'apt-transport-https' |>
+  # new package, except for packages that we have tagged as required to set up
+  # a repository
+  Apt::Source <| |> -> Package <| tag != 'package-apt-dependency' |>
+  Class['apt::update'] -> Package <| tag != 'package-apt-dependency' |>
+  Package <| tag == 'package-apt-dependency' |> -> Apt::Source <| |>
 
   # delete this after 2018-04-19
   cron { 'apt-get update':
@@ -73,14 +78,11 @@ class nebula::profile::apt (
     repos   => 'main contrib non-free',
   }
 
-  package { 'apt-transport-https': }
-
   if $local_repo {
     apt::source { 'local':
       *       => $local_repo,
       release => $::lsbdistcodename,
       repos   => 'main',
-      require => Package['apt-transport-https']
     }
   }
 
