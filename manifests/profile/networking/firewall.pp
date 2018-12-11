@@ -11,13 +11,21 @@
 #
 # @example
 #   include nebula::profile::networking::firewall
-class nebula::profile::networking::firewall {
+class nebula::profile::networking::firewall ( Hash $rules = {} ) {
   # Include standard SSH rules by default
   include nebula::profile::networking::firewall::ssh
 
   resources { 'firewall':
     purge => true,
   }
+
+  $firewall_defaults = {
+    proto  => 'tcp',
+    state  => 'NEW',
+    action => 'accept'
+  }
+
+  create_resources(firewall,$rules,$firewall_defaults)
 
   # Default items, sorted by title
   firewall { '001 accept related established rules':
