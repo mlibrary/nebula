@@ -27,8 +27,6 @@ describe 'nebula::profile::elastic' do
         )
       end
 
-      it { is_expected.to contain_package('apt-transport-https').without_ensure }
-
       it { is_expected.not_to contain_file('/etc/ssl/certs') }
       it { is_expected.not_to contain_file('/etc/ssl/certs/logstash-forwarder.crt') }
 

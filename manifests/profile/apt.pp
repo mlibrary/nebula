@@ -14,40 +14,17 @@ class nebula::profile::apt (
   Optional[Hash] $local_repo = undef,
 ) {
 
-
-
-  # Run an initial apt update if the main package list is missing, primarily so
-  # that we can install apt-transport-https
-
-  # Remove initial http(s); replace / with _; add trailing _ if needed
-  $cache_mirror_prefix = $mirror.regsubst('^https?://','').regsubst('/','_','G').regsubst('([^_])$',"${1}_")
-  exec { 'initial apt update':
-    command => '/usr/bin/apt-get update',
-    creates => "/var/lib/apt/lists/${cache_mirror_prefix}dists_${::lsbdistcodename}_main_binary-${::architecture}_Packages"
-  }
-
-  package { 'apt-transport-https':
-    tag     => 'package-apt-dependency',
-    require => Exec['initial apt update']
-  }
-
-  if $facts['os']['release']['major'] == '9' {
-    package { 'dirmngr':
-      tag     => 'package-apt-dependency',
-      require => Exec['initial apt update']
-    }
-  }
-
   # Ensure that apt knows to never ever install recommended packages
   # before it installs any packages.
   File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
 
   # Ensure that apt repos are set up and updated before attempting to install a
-  # new package, except for packages that we have tagged as required to set up
-  # a repository
-  Apt::Source <| |> -> Package <| tag != 'package-apt-dependency' |>
-  Class['apt::update'] -> Package <| tag != 'package-apt-dependency' |>
-  Package <| tag == 'package-apt-dependency' |> -> Apt::Source <| |>
+  # new package. Tag some packages as 'preinstalled' to avoid dependency cycles.
+  package { ['apt-transport-https','dirmngr']:
+    tag => 'package-preinstalled'
+  }
+  Apt::Source <| |> -> Package <| tag != 'package-preinstalled' |>
+  Class['apt::update'] -> Package <| |>
 
   # delete this after 2018-04-19
   cron { 'apt-get update':
