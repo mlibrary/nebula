@@ -39,7 +39,7 @@ class nebula::profile::hathitrust::mounts (
   $nfs_mount_options = {
     ensure  => 'mounted',
     fstype  => 'nfs',
-    require => ['Package[nfs-common]','Service[bind9]'],
+    require => ['Package[nfs-common]','Class[resolv_conf]'],
     tag     => 'private_network'
   }
 

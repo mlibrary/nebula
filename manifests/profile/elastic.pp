@@ -32,7 +32,6 @@ class nebula::profile::elastic (
       'src' => false,
       'deb' => true,
     },
-    require  => Package['apt-transport-https'],
   }
 
   if $logstash_auth_cert != '' {

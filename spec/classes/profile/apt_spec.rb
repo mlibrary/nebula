@@ -42,6 +42,14 @@ describe 'nebula::profile::apt' do
           .with_creates("/var/lib/apt/lists/ftp.us.debian.org_debian_dists_#{facts[:lsbdistcodename]}_main_binary-amd64_Packages")
       end
 
+      it { is_expected.to contain_apt__source('local').that_requires('Package[apt-transport-https]') }
+      it { is_expected.to contain_package('apt-transport-https').that_requires('Exec[initial apt update]') }
+
+      if os == 'debian-9-x86-64'
+        it { is_expected.to contain_apt__source('local').that_requires('Package[dirmngr]') }
+        it { is_expected.to contain_package('dirmngr').that_requires('Exec[initial apt update]') }
+      end
+
       it do
         is_expected.to contain_apt__source('updates').with(
           location: 'http://ftp.us.debian.org/debian/',
