@@ -50,6 +50,8 @@ class nebula::profile::dns::smartconnect (
     require     => Service['bind9']
   }
 
+  Service['bind9'] -> File['/etc/resolv.conf']
+
   file { '/etc/bind':
     ensure  => 'directory',
     owner   => 'root',
