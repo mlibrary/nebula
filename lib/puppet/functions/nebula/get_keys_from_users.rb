@@ -24,8 +24,7 @@ Puppet::Functions.create_function(:'nebula::get_keys_from_users') do
 
   # Input userdata directly from a hash.
   #
-  # @param sudoers Hash of hashes, some of which may contain a hash
-  #   under the 'auth' key.
+  # @param sudoers Hash of hashes
   # @param default_host Default hostname to put as a comment (set to ''
   #   to set no hostname)
   # @return [Array[Hash[String, String]]] List of key hashes with values
@@ -34,11 +33,9 @@ Puppet::Functions.create_function(:'nebula::get_keys_from_users') do
   # @example With a single user
   #   nebula::get_keys_from_users({
   #     'username' => {
-  #       'auth' => {
-  #         'type' => 'ssh-rsa',
-  #         'key'  => 'AAAAAAAA',
-  #         'host' => 'localhost',
-  #       },
+  #       'type' => 'ssh-rsa',
+  #       'key'  => 'AAAAAAAA',
+  #       'host' => 'localhost',
   #     },
   #   }) => [{'type'    => 'ssh-rsa',
   #           'key'     => 'AAAAAAAA',
@@ -57,9 +54,7 @@ Puppet::Functions.create_function(:'nebula::get_keys_from_users') do
     keys = []
 
     sudoers.each do |username, userdata|
-      next unless userdata.key? 'auth'
-      auth = userdata['auth']
-      host = auth['host'] || default_host
+      host = userdata['host'] || default_host
 
       comment = if host == ''
                   username
@@ -68,8 +63,8 @@ Puppet::Functions.create_function(:'nebula::get_keys_from_users') do
                 end
 
       keys << {
-        'type'    => userdata['auth']['type'],
-        'data'    => userdata['auth']['key'].gsub(%r{\s+}, ''),
+        'type'    => userdata['type'],
+        'data'    => userdata['key'].gsub(%r{\s+}, ''),
         'comment' => comment,
       }
     end

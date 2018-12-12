@@ -111,3 +111,5 @@ RSpec/AnyInstance:
   Enabled: false # should be able to re-enable once we remove our own function mocking code
 RSpec/VerifiedDoubles:
   Enabled: false # should be able to re-enable once we remove our own function mocking code
+RSpec/NamedSubject:
+  Enabled: false # would love to enable, but rspec-puppet plays by its own rules

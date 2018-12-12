@@ -1,0 +1,43 @@
+# Copyright (c) 2018 The Regents of the University of Michigan.
+# All Rights Reserved. Licensed according to the terms of the Revised
+# BSD License. See LICENSE.txt for details.
+nebula::profile::authorized_keys::ssh_keys:
+  invalid_normal_admin:
+    type: ssh-rsa
+    key: >-
+      AAAA
+      AAAA
+      AAAA
+  invalid_special_admin:
+    type: ssh-dsa
+    host: special.invalid
+    key: >-
+      BBBB
+      BBBB
+      BBBB
+
+nebula::profile::groups::all_groups:
+  invalid_default_group: 1234
+  invalid_special_group: 2468
+
+nebula::usergroup::membership:
+  sudo:
+  - invalid_normal_admin
+  - invalid_special_admin
+  - invalid_noauth_admin
+
+nebula::virtual::users::default_group: invalid_default_group
+nebula::virtual::users::all_users:
+  invalid_normal_admin:
+    uid: 123456
+    comment: Invalid normal admin
+    home: /home/invalid_normal_admin
+  invalid_special_admin:
+    uid: 123457
+    comment: Invalid special admin
+    gid: invalid_special_group
+    home: /home/invalid_special_admin
+  invalid_noauth_admin:
+    uid: 123458
+    comment: Invalid no-authorization admin
+    home: /home/invalid_noauth_admin
