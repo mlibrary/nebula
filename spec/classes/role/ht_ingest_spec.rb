@@ -20,17 +20,22 @@ describe 'nebula::role::hathitrust::ingest_indexing' do
 
       # default from hiera
       it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }
+      it { is_expected.not_to contain_file('/etc/firewall.ipv4') }
 
-      if os == 'debian-9-x86_64'
+      case os
+      when 'debian-8-x86_64'
+        it { is_expected.not_to contain_class('nebula::profile::base::firewall::ipv4') }
+        it { is_expected.to have_firewall_resource_count(0) }
+        it { is_expected.to contain_package('jhove') }
+        it { is_expected.to have_apt__pin_resource_count(0) }
+      when 'debian-9-x86_64'
+        it { is_expected.to contain_class('nebula::profile::networking::firewall') }
         it do
           is_expected.to contain_apt__pin('buster-jhove')
             .with(codename: 'buster', packages: ['jhove'])
         end
         it { is_expected.to contain_apt__source('testing') }
         it { is_expected.to contain_apt__pin('testing').with(priority: '-10', packages: '*') }
-      else
-        it { is_expected.to contain_package('jhove') }
-        it { is_expected.to have_apt__pin_resource_count(0) }
       end
     end
   end

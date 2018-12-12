@@ -12,3 +12,4 @@ nebula::profile::networking::firewall::rules:
     source: 10.4.5.6
     dport: 123
     proto: udp
+
