@@ -21,7 +21,7 @@ class nebula::role::aws {
     }
   }
 
-  include nebula::profile::dns::standard
+  include nebula::profile::dns::aws
   include nebula::profile::elastic::metricbeat
   include nebula::profile::elastic::filebeat::prospectors::ulib
 
