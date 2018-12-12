@@ -1,0 +1,14 @@
+nebula::profile::hathitrust::apache::redirection::alias_domains:
+  - domain.one
+  - domain.two
+
+nebula::profile::networking::firewall::rules:
+  "200 HTTP: custom rule":
+    source: 10.2.3.4
+    dport:
+      - 8081
+      - 8082
+  "200 NTP: custom rule":
+    source: 10.4.5.6
+    dport: 123
+    proto: udp
