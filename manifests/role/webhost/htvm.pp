@@ -7,7 +7,7 @@
 # @example
 #   include nebula::role::webhost::htvm
 class nebula::role::webhost::htvm (String $private_address_template = '192.168.0.%s') {
-  include nebula::role::hathitrust_new_firewall
+  include nebula::role::hathitrust
 
   # not ready for this yet
   # nebula::balanced_frontend { 'htvm': }

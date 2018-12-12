@@ -57,3 +57,5 @@ hathitrust::networks::staff:
   - "%{alias('networks::two')}"
 
 nebula::profile::ssl_keypair::chain_crt: 'intermediate_ca.crt'
+
+nebula::role::minimum::manage_firewall_resources: true

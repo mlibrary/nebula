@@ -38,6 +38,7 @@ describe 'nebula::role::webhost::htvm' do
 
       # default from hiera
       it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }
+      it { is_expected.not_to contain_file('/etc/firewall.ipv4') }
 
       if os == 'debian-9-x86_64'
         context 'with ens4' do
@@ -55,6 +56,8 @@ describe 'nebula::role::webhost::htvm' do
           it { is_expected.to contain_mount('/sdr1').that_requires('Exec[ifup ens4]') }
           it { is_expected.to contain_service('bind9').that_requires('Exec[ifup ens4]') }
         end
+
+        it { is_expected.to contain_class('nebula::profile::networking::firewall') }
       end
     end
   end

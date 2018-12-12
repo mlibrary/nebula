@@ -9,7 +9,7 @@
 # @example
 #   include nebula::role::deb_server
 class nebula::role::deb_server {
-  include nebula::role::umich_new_firewall
+  include nebula::role::umich
 
   include nebula::profile::http_fileserver
   include nebula::profile::deb_signing
