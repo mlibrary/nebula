@@ -10,6 +10,7 @@ dmi: {}
 installed_backports: []
 datacenter: "mydatacenter"
 mountpoints: {}
+disks: {}
 root_home: "/root"
 
 # required by camptocamp/kmod 2.1.0
@@ -17,3 +18,5 @@ augeasversion: '1.4.0'
 
 # required by apt with update => { frequency => 'daily' }
 apt_update_last_success: '1523250000'
+
+ec2_tag_role: nebula::role::aws
