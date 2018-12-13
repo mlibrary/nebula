@@ -16,15 +16,6 @@ describe 'nebula::role::deb_server' do
       let(:hiera_config) { 'spec/fixtures/hiera/deb_server_config.yaml' }
 
       it { is_expected.to compile }
-      it { is_expected.not_to contain_file('/etc/firewall.ipv4') }
-
-      case os
-      when 'debian-8-x86_64'
-        it { is_expected.not_to contain_class('nebula::profile::base::firewall::ipv4') }
-        it { is_expected.to have_firewall_resource_count(0) }
-      when 'debian-9-x86_64'
-        it { is_expected.to contain_class('nebula::profile::networking::firewall') }
-      end
     end
   end
 end
