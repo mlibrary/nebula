@@ -9,22 +9,32 @@
 #
 # @example
 #   include nebula::profile::geoip
-class nebula::profile::geoip () {
-  package { 'geoip-bin': }
+class nebula::profile::geoip (
+  String $license_key,
+  String $user_id,
+  # MaxMind GeoIP Country
+  String $product_id = '106'
+) {
+  package { ['geoip-bin', 'geoipupdate']: }
 
   cron { 'update GeoIP database':
-    command => '/usr/local/bin/geoipupdate -f /etc/GeoIP.conf -d /usr/share/GeoIP',
+    command => '/usr/bin/geoipupdate -f /etc/GeoIP.conf -d /usr/share/GeoIP',
     user    => 'root',
     minute  => '37',
     hour    => '7',
     weekday => '1'
   }
 
-  $http_files = lookup('nebula::http_files')
-  file { '/usr/local/bin/geoipupdate':
-    ensure => 'present',
-    mode   => '0755',
-    source => "https://${http_files}/ae-utils/bins/geoipupdate"
+  file { '/etc/GeoIP.conf':
+    ensure  => 'present',
+    mode    => '0640',
+    owner   => 'root',
+    group   => 'root',
+    content => inline_template(@("GEOIP_CONF"))
+      LicenseKey ${license_key}
+      UserId ${user_id}
+      ProductIds ${product_id}
+      | GEOIP_CONF
   }
 
 }
