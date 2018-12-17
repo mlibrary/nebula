@@ -34,4 +34,6 @@ class nebula::role::webhost::htvm (String $private_address_template = '192.168.0
   include nebula::profile::hathitrust::shibboleth
   include nebula::profile::hathitrust::apache
   include nebula::profile::hathitrust::unison
+
+  nebula::usergroup { 'htprod': }
 }

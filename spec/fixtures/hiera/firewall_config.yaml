@@ -2,7 +2,7 @@
 :backends:
   - yaml
 :hierarchy:
-  - default
   - firewall
+  - default
 :yaml:
   :datadir: 'spec/fixtures/hiera'

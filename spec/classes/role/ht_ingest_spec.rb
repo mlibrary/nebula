@@ -32,7 +32,15 @@ describe 'nebula::role::hathitrust::ingest_indexing' do
         end
         it { is_expected.to contain_apt__source('testing') }
         it { is_expected.to contain_apt__pin('testing').with(priority: '-10', packages: '*') }
+
       end
+
+      # not specified explicitly as a usergroup, just brought in as part of 'all groups'
+      it { is_expected.to contain_group('htprod') }
+      it { is_expected.to contain_group('htingest') }
+      # not specified explicitly - realized through Nebula::Usergroup[htingest]
+      it { is_expected.to contain_user('htingest') }
+      it { is_expected.not_to contain_user('htweb') }
     end
   end
 end
