@@ -109,7 +109,7 @@ class nebula::profile::hathitrust::apache (
   }
 
   file { '/etc/apache2/conf-enabled':
-    ensure => 'absent',
+    ensure => 'present',
     force  => true,
     purge  => true
   }
