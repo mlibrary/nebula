@@ -60,3 +60,21 @@ nebula::profile::ssl_keypair::chain_crt: 'intermediate_ca.crt'
 
 nebula::profile::geoip::license_key: defaultkey
 nebula::profile::geoip::user_id: "12345"
+
+nebula::usergroup::membership:
+  htprod: ['htingest', 'htweb']
+  htingest: ['htingest']
+
+nebula::profile::groups::all_groups:
+  htprod: 12345
+  htingest: 12346
+
+nebula::virtual::users::all_users:
+  htingest:
+    comment: HT Ingest User
+    uid: 123456
+    home: /home/htingest
+  htweb:
+    comment: HT Ingest User
+    uid: 123457
+    home: /home/htingest

@@ -2,7 +2,7 @@
 :backends:
   - yaml
 :hierarchy:
-  - default
   - hathitrust
+  - default
 :yaml:
   :datadir: 'spec/fixtures/hiera'

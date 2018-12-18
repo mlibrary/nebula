@@ -58,6 +58,13 @@ describe 'nebula::role::webhost::htvm' do
 
         it { is_expected.to contain_class('nebula::profile::networking::firewall') }
       end
+
+      # not specified explicitly as a usergroup, just brought in as part of 'all groups'
+      it { is_expected.to contain_group('htprod') }
+      it { is_expected.to contain_group('htingest') }
+      # not specified explicitly - realized through Nebula::Usergroup[htprod]
+      it { is_expected.to contain_user('htingest') }
+      it { is_expected.to contain_user('htweb') }
     end
   end
 end
