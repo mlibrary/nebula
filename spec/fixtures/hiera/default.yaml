@@ -91,6 +91,7 @@ nebula::profile::puppet::master::fileservers:
       group: wheel
       mode: '0700'
 nebula::profile::puppet::master::autosign_whitelist: []
+nebula::profile::puppet::master::reports_dir: '/opt/puppetlabs/server/data/puppetserver/reports'
 
 nebula::profile::vmhost::host::build: 'invalid-default'
 nebula::profile::vmhost::host::cpus: 0

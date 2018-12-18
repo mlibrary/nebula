@@ -10,6 +10,7 @@ class nebula::profile::puppet::master (
   $autosign_whitelist,
   $fileservers,
   $r10k_source,
+  $reports_dir,
 ) {
   $rbenv = lookup('nebula::profile::ruby::install_dir')
 
@@ -99,7 +100,7 @@ class nebula::profile::puppet::master (
     }
   }
 
-  tidy { '/opt/puppetlabs/server/data/puppetserver/reports':
+  tidy { $reports_dir:
     age     => '1w',
     recurse => true,
   }
