@@ -78,3 +78,11 @@ nebula::virtual::users::all_users:
     comment: HT Ingest User
     uid: 123457
     home: /home/htingest
+
+nebula::hathitrust::monitor::solr_cores:
+  - solrcore1
+  - solrcore2
+
+nebula::hathitrust::monitor::mysql:
+  param1: value1
+  param2: value2

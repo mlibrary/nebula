@@ -38,7 +38,9 @@ class nebula::profile::hathitrust::apache::default (
 
   class { 'nebula::profile::monitor_pl':
     directory  => $monitor_dir,
-    shibboleth => true
+    shibboleth => true,
+    solr_cores => lookup('nebula::hathitrust::monitor::solr_cores'),
+    mysql      => lookup('nebula::hathitrust::monitor::mysql')
   }
 
   apache::vhost { 'default non-ssl':
