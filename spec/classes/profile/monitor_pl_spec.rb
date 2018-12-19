@@ -13,24 +13,24 @@ describe 'nebula::profile::monitor_pl' do
       let(:params) { { directory: '/somewhere' } }
       let(:outfile) { '/somewhere/monitor_config.yaml' }
 
-      it { is_expected.to contain_concat(outfile).with_format('yaml') }
+      it { is_expected.to contain_concat_file(outfile).with(format: 'yaml', tag: 'monitor_config') }
 
       context 'with default parameters' do
         it {
           is_expected.to contain_concat_fragment('monitor nfs mounts')
-            .with(target: outfile, content: "---\nnfs: []\n")
+            .with(tag: 'monitor_config', content: "---\nnfs: []\n")
         }
         it {
           is_expected.to contain_concat_fragment('monitor solr cores')
-            .with(target: outfile, content: "---\nsolr: []\n")
+            .with(tag: 'monitor_config', content: "---\nsolr: []\n")
         }
         it {
           is_expected.to contain_concat_fragment('monitor mysql')
-            .with(target: outfile, content: "---\nmysql: \n")
+            .with(tag: 'monitor_config', content: "---\nmysql: \n")
         }
         it {
           is_expected.to contain_concat_fragment('monitor shibboleth')
-            .with(target: outfile, content: "---\nshibd: false\n")
+            .with(tag: 'monitor_config', content: "---\nshibd: false\n")
         }
       end
 
@@ -48,19 +48,19 @@ describe 'nebula::profile::monitor_pl' do
 
         it {
           is_expected.to contain_concat_fragment('monitor nfs mounts')
-            .with(target: outfile, content: YAML.dump('nfs' => params[:nfs_mounts]))
+            .with(tag: 'monitor_config', content: YAML.dump('nfs' => params[:nfs_mounts]))
         }
         it {
           is_expected.to contain_concat_fragment('monitor solr cores')
-            .with(target: outfile, content: YAML.dump('solr' => params[:solr_cores]))
+            .with(tag: 'monitor_config', content: YAML.dump('solr' => params[:solr_cores]))
         }
         it {
           is_expected.to contain_concat_fragment('monitor mysql')
-            .with(target: outfile, content: YAML.dump('mysql' => params[:mysql]))
+            .with(tag: 'monitor_config', content: YAML.dump('mysql' => params[:mysql]))
         }
         it {
           is_expected.to contain_concat_fragment('monitor shibboleth')
-            .with(target: outfile, content: YAML.dump('shibd' => params[:shibboleth]))
+            .with(tag: 'monitor_config', content: YAML.dump('shibd' => params[:shibboleth]))
         }
       end
     end

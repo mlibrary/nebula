@@ -48,7 +48,8 @@ class nebula::profile::monitor_pl (
 
   $monitor_file = "${directory}/monitor_config.yaml"
 
-  concat {  $monitor_file:
+  concat_file {  $monitor_file:
+    tag    => 'monitor_config',
     owner  => 'root',
     group  => 'root',
     format => 'yaml',
@@ -57,7 +58,7 @@ class nebula::profile::monitor_pl (
 
   concat_fragment {
     default:
-      target  => $monitor_file;
+      tag  => 'monitor_config';
 
     'monitor nfs mounts':
       content => { 'nfs' => $nfs_mounts }.to_yaml();

@@ -55,6 +55,11 @@ class nebula::profile::hathitrust::mounts (
       *       => $nfs_mount_options
     }
 
+    concat_fragment { "monitor nfs ${mount}":
+      tag     => 'monitor_config',
+      content => { 'nfs' => [$mount] }.to_yaml
+    }
+
   }
 
   if($readonly) {
@@ -64,15 +69,22 @@ class nebula::profile::hathitrust::mounts (
   }
 
   Integer[1, 24].each |$partition| {
-    file { "/sdr${partition}":
+    $mount = "/sdr${partition}"
+
+    file { $mount:
       ensure => 'directory',
     }
 
-    mount { "/sdr${partition}":
-      name    => "/sdr${partition}",
+    mount { $mount:
+      name    => $mount,
       device  => "nas-macc.sc:/ifs/sdr/${partition}",
       options => $sdr_options,
       *       => $nfs_mount_options
+    }
+
+    concat_fragment { "monitor nfs ${mount}":
+      tag     => 'monitor_config',
+      content => { 'nfs' => [$mount] }.to_yaml
     }
   }
 }
