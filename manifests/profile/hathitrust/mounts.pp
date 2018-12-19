@@ -13,7 +13,8 @@
 #   include nebula::profile::hathitrust::mounts
 class nebula::profile::hathitrust::mounts (
   String $ramdisk_size = '4g',
-  Array[String] $mounts = ['/htapps'],
+  Array[String] $smartconnect_mounts = ['/htapps'],
+  Hash $other_nfs_mounts = {},
   Boolean $readonly = true
 ) {
   include nebula::profile::dns::smartconnect;
@@ -34,57 +35,29 @@ class nebula::profile::hathitrust::mounts (
     options => "size=${ramdisk_size}"
   }
 
-  package { 'nfs-common': }
-
-  $nfs_mount_options = {
-    ensure  => 'mounted',
-    fstype  => 'nfs',
-    require => ['Package[nfs-common]','File[/etc/resolv.conf]'],
-    tag     => 'private_network'
+  $smartconnect_mounts.each |$mount| {
+    nebula::nfs_mount { $mount:
+      remote_target   => "nas-${::datacenter}.sc:/ifs${mount}",
+      tag             => 'smartconnect',
+      private_network => true,
+      monitored       => true
+    }
   }
 
-  $mounts.each |$mount| {
-    file { $mount:
-      ensure => 'directory',
-    }
-
-    mount { $mount:
-      name    => $mount,
-      device  => "nas-macc.sc:/ifs${mount}",
-      options => 'auto,hard',
-      *       => $nfs_mount_options
-    }
-
-    concat_fragment { "monitor nfs ${mount}":
-      tag     => 'monitor_config',
-      content => { 'nfs' => [$mount] }.to_yaml
-    }
-
-  }
+  create_resources(nebula::nfs_mount,$other_nfs_mounts)
 
   if($readonly) {
-    $sdr_options = 'auto,hard,ro'
+    $sdr_options = 'auto,hard,nfsvers=3,ro'
   } else {
-    $sdr_options = 'auto,hard'
+    $sdr_options = 'auto,hard,nfsvers=3'
   }
 
   Integer[1, 24].each |$partition| {
-    $mount = "/sdr${partition}"
-
-    file { $mount:
-      ensure => 'directory',
-    }
-
-    mount { $mount:
-      name    => $mount,
-      device  => "nas-macc.sc:/ifs/sdr/${partition}",
-      options => $sdr_options,
-      *       => $nfs_mount_options
-    }
-
-    concat_fragment { "monitor nfs ${mount}":
-      tag     => 'monitor_config',
-      content => { 'nfs' => [$mount] }.to_yaml
+    nebula::nfs_mount { "/sdr${partition}":
+      options       => $sdr_options,
+      remote_target => "nas-${::datacenter}.sc:/ifs/sdr/${partition}",
+      tag           => 'smartconnect',
+      monitored     => true
     }
   }
 }

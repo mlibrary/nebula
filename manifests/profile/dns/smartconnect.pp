@@ -51,6 +51,7 @@ class nebula::profile::dns::smartconnect (
   }
 
   Service['bind9'] -> File['/etc/resolv.conf']
+  File['/etc/resolv.conf'] -> Nebula::Nfs_mount <| tag == 'smartconnect' |>
 
   file { '/etc/bind':
     ensure  => 'directory',

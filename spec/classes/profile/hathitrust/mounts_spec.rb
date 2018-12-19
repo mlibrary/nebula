@@ -13,15 +13,36 @@ describe 'nebula::profile::hathitrust::mounts' do
       let(:hiera_config) { 'spec/fixtures/hiera/hathitrust_config.yaml' }
 
       it { is_expected.to contain_package('nfs-common') }
-      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,ro') }
+      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,nfsvers=3,ro') }
+      it { is_expected.to contain_nebula__nfs_mount('/sdr1') }
       it { is_expected.to contain_concat_fragment('monitor nfs /sdr1').with(tag: 'monitor_config', content: { 'nfs' => ['/sdr1'] }.to_yaml) }
 
       it { is_expected.to contain_mount('/htapps').that_requires('File[/etc/resolv.conf]') }
       it { is_expected.to contain_mount('/htapps').that_requires('Service[bind9]') }
+      it { is_expected.to contain_nebula__nfs_mount('/htapps') }
+
       it {
         is_expected.to contain_concat_fragment('monitor nfs /htapps')
           .with(tag: 'monitor_config', content: { 'nfs' => ['/htapps'] }.to_yaml)
       }
+
+      context 'with /htapps specified as a non-smartconnect mount' do
+        let(:params) do
+          {
+            smartconnect_mounts: [],
+            other_nfs_mounts: {
+              '/htapps' => { 'remote_target' => 'somehost:/htapps' },
+            },
+          }
+        end
+
+        it do
+          is_expected.to contain_mount('/htapps').with(
+            device: 'somehost:/htapps',
+            fstype: 'nfs',
+          )
+        end
+      end
     end
   end
 end

@@ -20,7 +20,7 @@ describe 'nebula::role::webhost::htvm' do
 
       it { is_expected.to compile }
 
-      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,ro') }
+      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,nfsvers=3,ro') }
 
       it do
         is_expected.to contain_file('/etc/systemd/system/shibd.service.d/increase-timeout.conf')

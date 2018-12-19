@@ -10,6 +10,7 @@
 #
 # @example
 # class { 'nebula::profile::monitor_pl':
+#   directory  => '/usr/lib/cgi-bin/monitor',
 #   nfs_mounts => ['/www']
 #   solr_cores => ['http://solr-host:8080/solr/core1']
 #   mysql      => {
@@ -19,8 +20,7 @@
 #     database => 'mydatabase'
 #   },
 #   shibboleth => true
-#   directory  => '/usr/lib/cgi-bin/monitor',
-#   }
+# }
 class nebula::profile::monitor_pl (
   String  $directory,
   Array[String] $nfs_mounts = [],
