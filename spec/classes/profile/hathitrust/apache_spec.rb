@@ -124,6 +124,20 @@ describe 'nebula::profile::hathitrust::apache' do
           )
         }
       end
+
+      it do
+        is_expected.to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('monitor solr cores').with(tag: 'monitor_config',
+                                                                          content: { 'solr' => %w[solrcore1 solrcore2] }.to_yaml)
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('monitor mysql').with(tag: 'monitor_config',
+                                                                     content: { 'mysql' => { 'param1' => 'value1', 'param2' => 'value2' } }.to_yaml)
+      end
     end
   end
 end
