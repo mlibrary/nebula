@@ -1,0 +1,8 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - tools_lib
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'

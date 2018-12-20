@@ -1,0 +1,1 @@
+nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt
