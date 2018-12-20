@@ -20,6 +20,28 @@ class nebula::profile::hathitrust::apache::default (
 
   $servername = "${prefix}babel.${domain}"
   $docroot = $sdrroot
+  $monitor_location = '/monitor'
+  $cgi_dir = '/usr/local/lib/cgi-bin'
+  $monitor_dir = "${cgi_dir}/monitor"
+
+  $requires = {
+    enforce  => 'any',
+    requires => [ 'local' ] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
+  }
+
+  file { $cgi_dir:
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755'
+  }
+
+  class { 'nebula::profile::monitor_pl':
+    directory  => $monitor_dir,
+    shibboleth => true,
+    solr_cores => lookup('nebula::hathitrust::monitor::solr_cores'),
+    mysql      => lookup('nebula::hathitrust::monitor::mysql')
+  }
 
   apache::vhost { 'default non-ssl':
     servername         => 'localhost',
@@ -28,6 +50,13 @@ class nebula::profile::hathitrust::apache::default (
     rewrites           => [
       {
         rewrite_rule => "^(/$|/index.html$) https://${servername}/cgi/mb    [redirect=permanent,last]"
+      }
+    ],
+
+    aliases            => [
+      {
+        scriptalias => $monitor_location,
+        path        => $monitor_dir
       }
     ],
 
@@ -43,21 +72,21 @@ class nebula::profile::hathitrust::apache::default (
         provider       => 'directory',
         location       => '/',
         allow_override => ['None'],
-        requires       =>  {
-          enforce  => 'any',
-          requires => [ 'local' ] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
-        }
+        requires       => $requires
       },
 
       {
         provider       => 'directorymatch',
         path           => "^(${docroot}/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/|/tmp/fastcgi/)(.*)",
         allow_override => ['None'],
-        requires       => {
-          enforce  => 'any',
-          requires => ['local'] + $haproxy_ips.map |String $ip| { "require ip ${ip}" }
-        }
-      }
+        requires       => $requires
+      },
+
+      {
+        provider => 'location',
+        path     => '/monitor',
+        requires => $requires
+      },
 
     ],
     manage_docroot     => false,

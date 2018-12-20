@@ -20,8 +20,7 @@ describe 'nebula::role::webhost::htvm' do
 
       it { is_expected.to compile }
 
-      it { is_expected.to contain_package('nfs-common') }
-      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,ro') }
+      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,nfsvers=3,ro') }
 
       it do
         is_expected.to contain_file('/etc/systemd/system/shibd.service.d/increase-timeout.conf')
@@ -33,8 +32,6 @@ describe 'nebula::role::webhost::htvm' do
 
       it { is_expected.to contain_file('/etc/resolv.conf').with_content(%r{nameserver 127.0.0.1}) }
       it { is_expected.to contain_service('bind9') }
-      it { is_expected.to contain_mount('/htapps').that_requires('File[/etc/resolv.conf]') }
-      it { is_expected.to contain_mount('/htapps').that_requires('Service[bind9]') }
 
       # default from hiera
       it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }

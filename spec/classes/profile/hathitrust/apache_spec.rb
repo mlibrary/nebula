@@ -21,6 +21,8 @@ describe 'nebula::profile::hathitrust::apache' do
 
       include_context 'with mocked puppetdb functions', 'somedc', %w[haproxy rolenode], 'nebula::profile::haproxy' => %w[haproxy]
 
+      it { is_expected.to contain_file('/usr/local/lib/cgi-bin/monitor/monitor.pl') }
+
       snippets = [
         <<~EOT,
           <Directory "/htapps/babel/imgsrv/cgi">
@@ -121,6 +123,20 @@ describe 'nebula::profile::hathitrust::apache' do
             redirect_dest: 'https://www.example.org',
           )
         }
+      end
+
+      it do
+        is_expected.to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('monitor solr cores').with(tag: 'monitor_config',
+                                                                          content: { 'solr' => %w[solrcore1 solrcore2] }.to_yaml)
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('monitor mysql').with(tag: 'monitor_config',
+                                                                     content: { 'mysql' => { 'param1' => 'value1', 'param2' => 'value2' } }.to_yaml)
       end
     end
   end

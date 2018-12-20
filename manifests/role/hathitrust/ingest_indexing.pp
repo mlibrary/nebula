@@ -20,8 +20,8 @@ class nebula::role::hathitrust::ingest_indexing (String $private_address_templat
   }
 
   class { 'nebula::profile::hathitrust::mounts':
-    mounts   => ['/htapps','/htprep','/htsolr/lss','/htsolr/lss-reindex'],
-    readonly => false
+    smartconnect_mounts => ['/htapps','/htprep','/htsolr/lss','/htsolr/lss-reindex'],
+    readonly            => false
   }
 
   include nebula::profile::hathitrust::dependencies

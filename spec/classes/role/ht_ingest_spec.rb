@@ -15,7 +15,7 @@ describe 'nebula::role::hathitrust::ingest_indexing' do
       it { is_expected.to compile }
 
       it { is_expected.to contain_package('nfs-common') }
-      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard') }
+      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,nfsvers=3') }
       it { is_expected.to contain_mount('/htprep') }
 
       # default from hiera
