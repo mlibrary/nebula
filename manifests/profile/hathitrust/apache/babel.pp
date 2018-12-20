@@ -42,6 +42,7 @@ class nebula::profile::hathitrust::apache::babel (
     serveraliases     => [ "crms-training.${servername}" ],
     port              => '443',
     docroot           => $sdrroot,
+    manage_docroot    => false,
     error_log_file    => 'babel/error.log',
     access_log_file   => 'babel/access.log',
     access_log_format => 'combined',
