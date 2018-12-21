@@ -82,7 +82,6 @@ class nebula::profile::hathitrust::perl () {
     'libmime-types-perl',
     'libmodule-implementation-perl',
     'libmodule-runtime-perl',
-    'libmoo-perl',
     'libmoose-perl',
     'libmouse-perl',
     'libmro-compat-perl',
