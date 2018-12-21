@@ -75,6 +75,7 @@ class nebula::profile::hathitrust::perl () {
     'liblist-compare-perl',
     'liblist-moreutils-perl',
     'liblog-log4perl-perl',
+    'liblwp-authen-oauth2-perl',
     'liblwp-mediatypes-perl',
     'libmail-sendmail-perl',
     'libmailtools-perl',
