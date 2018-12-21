@@ -44,7 +44,7 @@ define nebula::nfs_mount(
     }
   }
 
-  if($monitored) {
+  if(defined(Class[nebula::profile::monitor_pl]) and $monitored) {
     concat_fragment { "monitor nfs ${title}":
       tag     => 'monitor_config',
       content => { 'nfs' => [$title] }.to_yaml
