@@ -36,6 +36,16 @@ describe 'nebula::role::webhost::htvm' do
       # default from hiera
       it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }
 
+      it do
+        is_expected.to contain_concat_fragment('monitor nfs /sdr1')
+          .with(tag: 'monitor_config', content: { 'nfs' => ['/sdr1'] }.to_yaml)
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('monitor nfs /htapps')
+          .with(tag: 'monitor_config', content: { 'nfs' => ['/htapps'] }.to_yaml)
+      end
+
       if os == 'debian-9-x86_64'
         context 'with ens4' do
           let(:facts) do

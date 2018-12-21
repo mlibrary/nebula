@@ -16,6 +16,9 @@ describe 'nebula::role::hathitrust::ingest_indexing' do
 
       it { is_expected.to contain_package('nfs-common') }
       it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,nfsvers=3') }
+      # causes a warning if concat fragment is included but monitor_pl isn't
+      # (which we don't need on ingest servers)
+      it { is_expected.not_to contain_concat_fragment('monitor nfs /sdr1') }
       it { is_expected.to contain_mount('/htprep') }
 
       # default from hiera
