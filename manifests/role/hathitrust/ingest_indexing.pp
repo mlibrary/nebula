@@ -15,6 +15,12 @@ class nebula::role::hathitrust::ingest_indexing (String $private_address_templat
 
   include nebula::profile::hathitrust::ingest_hosts
 
+  file { '/home/libadm':
+    ensure => 'directory',
+    owner  => 'libadm',
+    group  => 'htprod'
+  }
+
   file { '/htsolr':
     ensure => 'directory'
   }
