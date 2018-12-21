@@ -34,6 +34,13 @@ class nebula::profile::hathitrust::dependencies::ingest_indexing () {
     }
   }
 
+  $http_files = lookup('nebula::http_files')
+  file { '/usr/local/bin/kdu_munge':
+    ensure => 'present',
+    mode   => '0755',
+    source => "https://${http_files}/ae-utils/bins/kdu_munge"
+  }
+
   package {
     'openjdk-8-jdk-headless':
   }
