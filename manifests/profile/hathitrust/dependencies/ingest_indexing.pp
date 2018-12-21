@@ -42,7 +42,11 @@ class nebula::profile::hathitrust::dependencies::ingest_indexing () {
   }
 
   package {
-    'openjdk-8-jdk-headless':
+    [
+      'openjdk-8-jdk-headless',
+      'lftp',
+      'mariadb-client-10.1'
+    ]
   }
 
 }
