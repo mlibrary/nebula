@@ -86,3 +86,6 @@ nebula::hathitrust::monitor::solr_cores:
 nebula::hathitrust::monitor::mysql:
   param1: value1
   param2: value2
+
+nebula::profile::hathitrust::ingest_service::config: '/default/feedd.yaml'
+

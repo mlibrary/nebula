@@ -1,0 +1,14 @@
+[Unit]
+Description=HathiTrust ingest
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=no
+User=libadm
+Environment="HTFEED_CONFIG=<%= @config %>"
+ExecStart=/usr/bin/perl /htapps/babel/feed/bin/feedd.pl
+Restart=always
+
+[Install]
+
