@@ -3,7 +3,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::hathitrust::ingest_jobs
+# nebula::profile::hathitrust::ingest_service
 #
 # Manage the ingest systemd service for hathitrust
 #
@@ -26,14 +26,14 @@ class nebula::profile::hathitrust::ingest_service(
   }
 
   cron { 'stop ingest':
-    command => "/bin/systemctl stop feedd.service > /dev/null 2>&1",
+    command => '/bin/systemctl stop feedd.service > /dev/null 2>&1',
     user    => 'root',
     minute  => '45',
     hour    => '2',
   }
 
   cron { 'start ingest':
-    command => "/bin/systemctl start feedd.service > /dev/null 2>&1",
+    command => '/bin/systemctl start feedd.service > /dev/null 2>&1',
     user    => 'root',
     minute  => '30',
     hour    => '3'

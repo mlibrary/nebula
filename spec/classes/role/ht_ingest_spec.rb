@@ -48,7 +48,7 @@ describe 'nebula::role::hathitrust::ingest_indexing' do
       it { is_expected.to contain_service('feedd').with_enable(true) }
       it do
         is_expected.to contain_file('/etc/systemd/system/feedd.service')
-        .with_content(%r(HTFEED_CONFIG=/default/feedd.yaml))
+          .with_content(%r{HTFEED_CONFIG=/default/feedd.yaml})
       end
     end
   end
