@@ -13,10 +13,11 @@ class nebula::profile::hathitrust::php () {
   include nebula::profile::geoip
 
   package {
-    [
+    [          
       'php7.0-curl',
       'php7.0-gd',
       'php-geoip', # PECL
+      'php-http', # PECL
       'php7.0-ldap',
       'php7.0-mysql',
       'php-mdb2',
