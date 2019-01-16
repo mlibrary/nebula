@@ -6,7 +6,9 @@
 #
 # @example
 #   include nebula::role::webhost::htvm
-class nebula::role::webhost::htvm (String $private_address_template = '192.168.0.%s') {
+class nebula::role::webhost::htvm (
+  String $private_address_template = '192.168.0.%s',
+) {
   include nebula::role::hathitrust
 
   # not ready for this yet
@@ -33,7 +35,7 @@ class nebula::role::webhost::htvm (String $private_address_template = '192.168.0
 
   include nebula::profile::hathitrust::shibboleth
   include nebula::profile::hathitrust::apache
-  include nebula::profile::hathitrust::unison
+  include nebula::profile::unison
 
   nebula::usergroup { 'htprod': }
 }

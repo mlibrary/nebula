@@ -1,0 +1,17 @@
+nebula::unison::instance1:
+  port: 2647
+  root: /somewhere
+  paths:
+    - something
+    - somethingelse
+  filesystems:
+    - somewhere
+
+nebula::unison::instance2:
+  port: 2648
+  root: /elsewhere
+  paths:
+    - otherthing
+    - yetanotherthing
+  filesystems:
+    - elsewhere

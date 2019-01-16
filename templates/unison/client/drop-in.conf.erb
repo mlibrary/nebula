@@ -1,0 +1,9 @@
+[Unit]
+<% @filesystems.each do |filesystem| %>
+  Requires=<%= filesystem %>.mount
+<% end %>
+
+[Service]
+
+ExecStart=/usr/local/bin/unisonsync <%= @title %>
+
