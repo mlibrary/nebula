@@ -1,0 +1,45 @@
+#! /bin/sh
+
+PREF=$1
+
+LOG=/tmp/unison_${PREF}_sync.log
+RUN=1
+
+trap 'RUN=0' EXIT INT TERM QUIT
+
+while [ $RUN -eq 1 ]; do
+  PAUSE=5
+
+  echo '----------'                                     >  $LOG 2>&1
+  echo "unison $PREF sync"                              >> $LOG 2>&1
+  /bin/date                                             >> $LOG 2>&1
+
+  echo '----------'                                     >> $LOG 2>&1
+  echo 'syncing...'                                     >> $LOG 2>&1
+  echo '(detailed log in /var/log/unison_${PREF}.log)'  >> $LOG 2>&1
+
+  # run unison, sending email and aborting on nonzero return code
+  #
+  # sync preferences file is in /.unison
+  /bin/systemd-notify WATCHDOG=1
+  /usr/bin/unison $PREF                               >> $LOG 2>&1
+  /bin/systemd-notify WATCHDOG=1
+
+  if [ $? -gt 0 ]; then
+    echo '----------'                                 >> $LOG 2>&1
+    echo 'pausing for 2 minutes; please investigate!' >> $LOG 2>&1
+    echo '----------'                                 >> $LOG 2>&1
+
+    /usr/bin/tr -s '\r ' '\n ' < $LOG | \
+    /bin/egrep -v '^ $' | \
+    /usr/bin/mail -s "$PREF unison sync error" <%= @mail_recipient %>
+
+    PAUSE=120
+  fi
+
+  # don't bother sleeping if we are exiting anyway
+  if [ $RUN -eq 1 ]; then
+    sleep $PAUSE
+  fi
+done
+

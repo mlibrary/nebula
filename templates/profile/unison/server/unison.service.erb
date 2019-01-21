@@ -1,0 +1,12 @@
+[Unit]
+Description=%i Unison
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=no
+Restart=always
+Environment=HOME=<%= @home %>
+
+[Install]
+WantedBy=multi-user.target

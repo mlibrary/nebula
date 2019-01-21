@@ -1,0 +1,15 @@
+root = <%= @root %>
+root = <%= @remote_root %>
+
+<% @paths.each do |path| -%>
+path = <%= path %>
+<% end -%>
+
+batch		      = true
+confirmbigdel	= true
+prefer		    = newer
+group		      = true
+logfile		    = /var/log/unison_<%= @title %>.log
+owner		      = true
+times		      = true
+numericids	  = true
