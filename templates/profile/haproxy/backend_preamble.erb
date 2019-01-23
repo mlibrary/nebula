@@ -1,0 +1,5 @@
+backend <%= @service_prefix %>-back
+<% if check?(protocol) -%>
+  http-check expect status 200
+<% end -%>
+<%= throttling(service_loc) if use_throttling? -%>

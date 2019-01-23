@@ -1,0 +1,25 @@
+<%
+  def exemption_condition
+    acls = @nonempty_whitelists.keys.map { |name| "whitelist_#{name}" }
+    acls = acls + ["!throttle_condition"] if @throttle_condition
+    acls.join(" OR ")
+  end
+-%>
+frontend <%= @service_prefix %>-front
+  bind <%= @floating_ip %>:<%= @protocol_options['port'] %><%= @protocol_options['ssl'] %>
+  stats uri /haproxy?stats
+<% if @protocol == "https" -%>
+  http-response set-header "Strict-Transport-Security" "max-age=31536000"
+<% end -%>
+  http-request set-header X-Client-IP %ci
+  http-request set-header X-Forwarded-Proto <%= @protocol %>
+<% @nonempty_whitelists.each do |whitelist,_| -%>
+  acl whitelist_<%= whitelist %> <%= whitelist %> -n -f /etc/haproxy/<%= @service %>_whitelist_<%= whitelist %>.txt
+<% end -%>
+<% if @throttle_condition -%>
+  acl throttle_condition <%= @throttle_condition %>
+<% end -%>
+<% if @nonempty_whitelists.size() > 0 or @throttle_condition -%>
+  use_backend <%= @service_prefix %>-back-exempt if <%= exemption_condition %>
+<% end -%>
+  default_backend <%= @service_prefix %>-back
