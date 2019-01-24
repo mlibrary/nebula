@@ -2,12 +2,11 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# A server with this role will have docker and pretty much nothing else.
-class nebula::role::minimal_docker ()
-{
+# Kubernetes controller plane and etcd server
+class nebula::role::kubernetes::controller {
   class { 'nebula::role::minimum':
-    internal_routing => 'docker',
+    internal_routing => 'kubernetes_calico',
   }
 
-  include nebula::profile::docker
+  include nebula::profile::kubernetes::stacked_controller
 }

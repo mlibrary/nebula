@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018-2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -60,6 +60,22 @@ describe 'nebula::profile::networking::firewall' do
 
       it { is_expected.to contain_package('iptables-persistent') }
       it { is_expected.to contain_package('netfilter-persistent') }
+
+      it { is_expected.to contain_resources('firewall').with_purge(true) }
+
+      context 'when internal_routing is set to kubernetes_calico' do
+        let(:params) { { internal_routing: 'kubernetes_calico' } }
+
+        it { is_expected.not_to contain_resources('firewall') }
+
+        %w[INPUT OUTPUT FORWARD].each do |chain|
+          it do
+            is_expected.to contain_firewallchain("#{chain}:filter:IPv4")
+              .with_ensure('present')
+              .with_purge(true)
+          end
+        end
+      end
     end
   end
 end
