@@ -12,6 +12,8 @@ describe 'nebula::profile::named_instances' do
       let(:myapp_testing) do
         {
           name: 'myapp-testing',
+          public_hostname: 'myapp-testing.default.invalid',
+          port: 456,
           path: '/my/app/path/myapp-testing',
           uid: 20_001,
           gid: 30_001,
@@ -22,6 +24,8 @@ describe 'nebula::profile::named_instances' do
       let(:hydra_staging) do
         {
           name: 'hydra-staging',
+          public_hostname: 'myapp-testing.default.invalid',
+          port: 123,
           path: '/hydra-dev/hydra-staging',
           uid: 20_002,
           gid: 30_002,
@@ -31,7 +35,14 @@ describe 'nebula::profile::named_instances' do
       end
 
       context 'with instances' do
-        let(:params) { { instances: [myapp_testing, hydra_staging] } }
+        let(:params) do
+          {
+            instances: {
+              'myapp-testing' => myapp_testing,
+              'hydra-staging' => hydra_staging,
+            },
+          }
+        end
 
         describe 'puma wrapper' do
           let(:klass) { 'nebula::profile::named_instances::puma_wrapper' }
