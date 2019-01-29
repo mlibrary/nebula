@@ -31,7 +31,7 @@ describe 'nebula::role::hathitrust::ingest_indexing' do
       when 'debian-9-x86_64'
         it do
           is_expected.to contain_apt__pin('buster-jhove')
-            .with(codename: 'buster', packages: ['jhove'])
+            .with(codename: 'buster', packages: ['jhove', 'libjaxb-api-java', 'libactivation-java'])
         end
         it { is_expected.to contain_apt__source('testing') }
         it { is_expected.to contain_apt__pin('testing').with(priority: '-10', packages: '*') }
