@@ -13,6 +13,8 @@ class nebula::profile::hathitrust::dependencies::ingest_indexing () {
   # install jhove, pin it to buster if we're on stretch
   if $facts['os']['release']['major'] == '9' {
     include nebula::profile::apt::testing
+    include apt::backports
+
     $packages = ['jhove','libjaxb-api-java','libactivation-java']
     $release = 'buster'
 
@@ -44,7 +46,7 @@ class nebula::profile::hathitrust::dependencies::ingest_indexing () {
 
   package {
     [
-      'openjdk-8-jdk-headless',
+      'openjdk-11-jdk-headless',
       'lftp',
       'mariadb-client-10.1'
     ]:
