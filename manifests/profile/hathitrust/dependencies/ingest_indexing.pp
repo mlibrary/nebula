@@ -11,26 +11,27 @@
 class nebula::profile::hathitrust::dependencies::ingest_indexing () {
 
   # install jhove, pin it to buster if we're on stretch
-  $package = 'jhove'
   if $facts['os']['release']['major'] == '9' {
     include nebula::profile::apt::testing
+    $packages = ['jhove','libjaxb-api-java','libactivation-java']
     $release = 'buster'
-    apt::pin { "${release}-${package}":
-      explanation => "Prioritze ${package} from ${release}",
+
+    apt::pin { "${release}-jhove":
+      explanation => "Prioritize ${packages} from ${release}",
       codename    => $release,
       priority    => 700,
-      packages    => [$package],
+      packages    => $packages,
       require     => Class['nebula::profile::apt::testing']
     }
 
     package {
-      $package:
-      require => Apt::Pin["${release}-${package}"]
+      $packages:
+      require => Apt::Pin["${release}-jhove"]
     }
   }
   else {
     package {
-      $package:
+      'jhove':
     }
   }
 
