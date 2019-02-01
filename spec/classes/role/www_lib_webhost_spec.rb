@@ -16,11 +16,6 @@ describe 'nebula::role::webhost::www_lib' do
         expect(exported_resources).to contain_nebula__haproxy__binding('thisnode www-lib')
           .with(service: 'www-lib', datacenter: 'somedc')
       end
-
-      it 'exports a haproxy::binding resource for deepblue' do
-        expect(exported_resources).to contain_nebula__haproxy__binding('thisnode deepblue')
-          .with(service: 'deepblue', datacenter: 'somedc')
-      end
     end
   end
 end

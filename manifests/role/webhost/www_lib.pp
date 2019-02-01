@@ -10,16 +10,12 @@ class nebula::role::webhost::www_lib {
   include nebula::role::umich
   include nebula::profile::elastic::filebeat::prospectors::clickstream
 
-  @@nebula::haproxy::binding {
-    default:
+  @@nebula::haproxy::binding { "${::hostname} www-lib":
+      service       => 'www-lib',
       https_offload => true,
       datacenter    => $::datacenter,
       hostname      => $::hostname,
-      ipaddress     => $::ipaddress;
-    "${::hostname} www-lib":
-      service       => 'www-lib';
-    "${::hostname} deepblue":
-    service       => 'deepblue';
+      ipaddress     => $::ipaddress
   }
 
 }
