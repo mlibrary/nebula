@@ -161,17 +161,23 @@ describe 'nebula::profile::haproxy' do
       describe 'base keepalived config file' do
         let(:file) { keepalived_conf }
 
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[keepalived]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[keepalived]') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
+        it do
+          is_expected.to contain_concat(file).with(
+            ensure: 'present',
+            require: 'Package[keepalived]',
+            notify: 'Service[keepalived]',
+            mode: '0644',
+          )
+        end
+
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_target(keepalived_conf) }
 
         it 'has a vrrp_scripts check_haproxy section' do
-          is_expected.to contain_file(file).with_content(%r{^vrrp_script check_haproxy})
+          is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{^vrrp_script check_haproxy})
         end
 
         it 'has the haproxy floating ip addresses' do
-          is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*12\.23\.32\.23\n\s*}}m)
+          is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*12\.23\.32\.23\n\s*}}m)
         end
 
         context 'with a floating ip address parameter' do
@@ -182,32 +188,39 @@ describe 'nebula::profile::haproxy' do
             }
           end
 
-          it { is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*#{params[:services]["svc1"]["floating_ip"]}\n\s*#{params[:services]["svc2"]["floating_ip"]}\n\s*}}m) }
+          it do
+            is_expected.to contain_concat_fragment('keepalived preamble')
+              .with_content(%r{virtual_ipaddress {\n\s*#{params[:services]["svc1"]["floating_ip"]}\n\s*#{params[:services]["svc2"]["floating_ip"]}\n\s*}}m)
+          end
         end
 
-        it { is_expected.to contain_file(file).with_content(%r{unicast_src_ip #{my_ip}}) }
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{unicast_src_ip #{my_ip}}) }
 
-        it 'has a unicast_peer block with the IP addresses of all nodes with the same profile at the same datancenter except for me' do
-          is_expected.to contain_file(file).with_content(%r{unicast_peer {\n\s*#{haproxy2['ip']}\n\s*}\n\s*})
+        it 'exports its IP address for collection by other haproxy nodes' do
+          expect(exported_resources).to contain_concat_fragment('keepalived node ip thisnode').with(
+            target: keepalived_conf,
+            content: "    #{my_ip}\n",
+            tag: 'keepalived-haproxy-ip-somedc',
+          )
         end
 
-        it { is_expected.to contain_file(file).with_content(%r{interface #{facts[:networking][:primary]}}) }
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{interface #{facts[:networking][:primary]}}) }
 
-        it { is_expected.to contain_file(file).with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m) }
-        it { is_expected.to contain_file(file).with_content(%r{notification_email_from root@default.invalid}) }
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m) }
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{notification_email_from root@default.invalid}) }
 
         context 'on a master node' do
           let(:params) { base_params.merge(master: true) }
 
-          it { is_expected.to contain_file(file).with_content(%r{priority 101}) }
-          it { is_expected.to contain_file(file).with_content(%r{state MASTER}) }
+          it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 101}) }
+          it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state MASTER}) }
         end
 
         context 'on a backup node' do
           let(:params) { base_params.merge(master: false) }
 
-          it { is_expected.to contain_file(file).with_content(%r{priority 100}) }
-          it { is_expected.to contain_file(file).with_content(%r{state BACKUP}) }
+          it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 100}) }
+          it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state BACKUP}) }
         end
       end
 
