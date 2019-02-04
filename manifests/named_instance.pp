@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -6,14 +6,24 @@
 #
 # @example
 define nebula::named_instance(
-  String            $path,
-  Integer           $uid,
-  Integer           $gid,
-  String            $pubkey,
-  String            $puma_config,
-  String            $puma_wrapper,
-  Array[String]     $users = [],
-  Array[String]     $subservices = [],
+  String        $path,
+  Integer       $uid,
+  Integer       $gid,
+  String        $public_hostname,
+  Integer       $port,                      # app port
+  String        $pubkey,
+  String        $puma_config,
+  String        $puma_wrapper,
+  String        $url_root = '/',
+  String        $protocol = 'http',         # proxy protocol, not user to front-end
+  String        $hostname = "app-${title}", # app host
+  String        $static_path = "${path}/current/public",
+  Optional[String]        $sendfile_path = undef,
+  Boolean       $ssl = true,
+  String        $ssl_crt = "${public_hostname}.crt",
+  String        $ssl_key = "${public_hostname}.key",
+  Array[String] $users = [],
+  Array[String] $subservices = [],
 ) {
 
   include nebula::systemd::daemon_reload
@@ -155,6 +165,19 @@ define nebula::named_instance(
       Class['nebula::systemd::daemon_reload'],
       File["/etc/sudoers.d/${title}"]
     ]
+  }
+
+  @@nebula::proxied_app { $title:
+    public_hostname => $public_hostname,
+    url_root        => $url_root,
+    protocol        => $protocol,
+    hostname        => $hostname,
+    port            => $port,
+    ssl             => $ssl,
+    ssl_crt         => $ssl_crt,
+    ssl_key         => $ssl_key,
+    static_path     => $static_path,
+    sendfile_path   => $sendfile_path,
   }
 
   # Remove old-style sudoers file

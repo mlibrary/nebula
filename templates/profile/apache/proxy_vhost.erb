@@ -1,0 +1,113 @@
+# Managed by puppet (nebula/profile/apache/proxy_vhost.erb)
+
+### Access Macro.
+# Given a whitelist, will deny from all others
+# Given no whitelist, will use default allow non-bad robots
+<Macro access>
+  <Location />
+<% if @apache_whitelisted_ips %>
+    Order Deny,Allow
+    Deny from all
+  <% @apache_whitelisted_ips.each do |ip| %>
+    Allow from <%= ip %>
+  <% end %>
+<% else %>
+    Use access_nobaddies
+<% end %>
+  </Location>
+</Macro>
+
+<VirtualHost *:80>
+  ServerName <%= @apache_domain %>
+  <% @apache_aliases.each do |apache_alias| %>
+  ServerAlias <%= apache_alias %>
+  <% end %>
+
+  Use logging <%= @apache_app_name %>
+  LogLevel info
+
+  Use access
+
+  # Redirect all access to https
+  RewriteEngine on
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [L,R,NE]
+</VirtualHost>
+
+<VirtualHost *:443>
+  ServerName <%= @apache_domain %>
+  <% @apache_aliases.each do |apache_alias| %>
+  ServerAlias <%= apache_alias %>
+  <% end %>
+
+  Use logging <%= @apache_app_name %>
+  LogLevel info
+
+<% if @apache_terminate_ssl %>
+  Use ssl <%= @apache_ssl_key %> <%= @apache_ssl_crt %>
+<% end %>
+
+  Use access
+
+<% if @apache_use_cosign %>
+  # Cosign is enabled by default.
+  # Entire site is public access save for one path
+  # This means the application will have to manage auth'd sessions.
+  Use cosign <%= @apache_domain %> <%= @apache_ssl_key %> <%= @apache_ssl_crt %>
+  CosignAllowPublicAccess On
+
+  # Protect single path with cosign.  App should redirect here for auth needs.
+  <Location <%= [@apache_url_root,"login"].join("/").gsub("//","/") %> >
+    <% if @apache_cosign_deny_friend %>
+    CosignRequireFactor <%= @apache_cosign_factor %>
+    <% end %>
+    CosignAllowPublicAccess Off
+  </Location>
+
+  # Set remote user header to allow app to use http header auth.
+  RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
+<% end %>
+
+  RequestHeader set X-Forwarded-Proto 'https'
+  RequestHeader unset X-Forwarded-For
+  Header set "Strict-Transport-Security" "max-age=3600"
+
+  # Specify DocumentRoot to avoid using a default value.
+  DocumentRoot "<%= @apache_static_path %>"
+
+  # Directory for serving static files
+  <Directory "<%= @apache_static_path %>">
+    Options FollowSymlinks
+    AllowOverride None
+  </Directory>
+
+  RewriteEngine on
+
+  # Serve static assets through apache
+<% if @apache_static_directories %>
+  RewriteCond <%= @apache_static_path %>/$1 -d [OR]
+<% end %>
+  RewriteCond <%= @apache_static_path %>/$1 -f
+<% if @apache_url_root == '/' %>
+  RewriteRule ^<%= @apache_url_root %>(.*)$  <%= @apache_static_path %>/$1 [L]
+<% else %>
+  RewriteRule ^<%= @apache_url_root %>(.*)$  <%= @apache_static_path %>$1 [L]
+<% end %>
+
+<% if @apache_url_root == '/' and @apache_use_cosign %>
+  # Don't reverse-proxy cosign/valid if deployed at domain root
+  RewriteCond %{REQUEST_URI} !^/cosign/valid
+<% end %>
+  # Reverse proxy application to app hostname and port
+  RewriteRule ^(<%= @apache_url_root %>.*)$ <%= @protocol %>://<%= @apache_app_hostname %>:<%= @apache_port %>$1 [P]
+  ProxyPassReverse <%= @apache_url_root %> <%= @protocol %>://<%= @apache_app_hostname %>:<%= @apache_port %>/
+
+<% if @sendfile_path %>
+XSendFile On
+RequestHeader Set X-Sendfile-Type X-Sendfile
+XSendFilePath <%= @sendfile_path %>
+<% end %>
+
+</VirtualHost>
+
+# Use UndefMacro directive so subsequent macros using the same name don't cause conflicts.
+UndefMacro access

@@ -14,7 +14,7 @@ class nebula::profile::named_instances (
   String      $fauxpaas_pubkey,
   String      $fauxpaas_puma_config,
   String      $puma_wrapper,
-  Array[Hash] $instances = [],
+  Hash[String,Hash] $instances = {}
 ) {
 
   class { 'nebula::profile::named_instances::puma_wrapper':
@@ -23,16 +23,11 @@ class nebula::profile::named_instances (
     rbenv_root  => lookup('nebula::profile::ruby::install_dir'),
   }
 
-  $instances.each |$instance| {
-    nebula::named_instance { $instance['name']:
-      path         => $instance['path'],
-      uid          => $instance['uid'],
-      gid          => $instance['gid'],
-      users        => $instance['users'],
-      subservices  => $instance['subservices'],
-      puma_wrapper => $puma_wrapper,
-      pubkey       => $fauxpaas_pubkey,
-      puma_config  => $fauxpaas_puma_config,
-    }
+  $defaults = {
+    puma_wrapper    => $puma_wrapper,
+    pubkey          => $fauxpaas_pubkey,
+    puma_config     => $fauxpaas_puma_config,
   }
+
+  create_resources(nebula::named_instance, $instances, $defaults)
 }

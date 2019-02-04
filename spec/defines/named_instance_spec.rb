@@ -10,19 +10,25 @@ describe 'nebula::named_instance' do
   let(:subservices) { subservice_list }
   let(:path) { '/hydra-dev/some/where/myapp-mystage' }
   let(:title) { 'myapp-mystage' }
+  let(:public_hostname) { 'app.default.invalid' }
+  let(:port) { 30_000 }
   let(:uid) { 30_001 }
   let(:gid) { 20_001 }
   let(:pubkey) { 'somepublickey' }
+  let(:sendfile_path) { '/app/storage' }
   let(:puma_wrapper) { '/l/local/bin/puma_wrapper' }
   let(:puma_config) { 'config/fauxpaas_puma.rb' }
   let(:users) { %w[alice solr] }
   let(:params) do
     {
       path: path,
+      public_hostname: public_hostname,
+      port: port,
       uid: uid,
       gid: gid,
       subservices: subservices,
       pubkey: pubkey,
+      sendfile_path: sendfile_path,
       puma_wrapper: puma_wrapper,
       puma_config: puma_config,
       users: users,
