@@ -17,5 +17,5 @@ class nebula::role::sysadmin_box {
   }
 
   # Generate app instance configs; not yet for distribution
-  Nebula::Profile::Proxied_app <<| |>>
+  Nebula::Proxied_app <<| |>>
 }
