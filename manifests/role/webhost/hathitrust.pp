@@ -7,6 +7,13 @@
 # @example
 #   include nebula::role::webhost::hathitrust
 class nebula::role::webhost::hathitrust {
-  nebula::balanced_frontend { 'hathitrust': }
   include nebula::role::hathitrust
+
+  @@nebula::haproxy::binding { "${::hostname} hathitrust":
+    service       => 'hathitrust',
+    https_offload => true,
+    datacenter    => $::datacenter,
+    hostname      => $::hostname,
+    ipaddress     => $::ipaddress
+  }
 }

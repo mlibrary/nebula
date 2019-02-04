@@ -4,20 +4,15 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
-require_relative '../support/contexts/with_mocked_nodes'
 
-describe 'nebula::haproxy_service' do
+describe 'nebula::haproxy::service' do
   let(:title) { 'svc1' }
   let(:params) { {} }
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
-      let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
-      let(:third_server) { { 'ip' => '222.222.222.235', 'hostname' => 'third_server' } }
       let(:base_params) do
-        { floating_ip: '1.2.3.4',
-          node_names: %w[scotch soda] }
+        { floating_ip: '1.2.3.4' }
       end
       let(:params) { base_params }
 
@@ -30,7 +25,25 @@ describe 'nebula::haproxy_service' do
         )
       end
 
-      include_context 'with mocked puppetdb functions', 'dc1', %w[scotch soda third_server], {}
+      let :pre_condition do
+        <<~EOT
+          nebula::haproxy::binding { 'scotch svc1':
+            service    => 'svc1',
+            datacenter => 'dc1',
+            hostname   => 'scotch',
+            ipaddress  => '111.111.111.123'
+          }
+
+          nebula::haproxy::binding { 'soda svc1':
+            service    => 'svc1',
+            datacenter => 'dc1',
+            hostname   => 'soda',
+            ipaddress  => '222.222.222.234'
+          }
+
+          Concat_fragment <| |>
+        EOT
+      end
 
       describe 'https service config' do
         let(:service) { title }
@@ -40,30 +53,30 @@ describe 'nebula::haproxy_service' do
           is_expected.to contain_concat(service_config).with(
             ensure: 'present',
             notify: 'Service[haproxy]',
-            mode: '0644'
+            mode: '0644',
           )
         end
 
         it do
-          is_expected.to contain_concat_fragment("svc1-dc1-https backend").with(
+          is_expected.to contain_concat_fragment('svc1-dc1-https backend').with(
             target: service_config,
-            content: "backend svc1-dc1-https-back\n"
+            content: "backend svc1-dc1-https-back\n",
           )
         end
 
-        it { is_expected.to contain_concat_fragment("svc1-dc1-https check").with_target(service_config) }
+        it { is_expected.to contain_concat_fragment('svc1-dc1-https check').with_target(service_config) }
 
         it do
-          is_expected.to contain_concat_fragment("svc1-dc1-https frontend").with(
+          is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with(
             target: service_config,
             content: <<~EOT
               frontend svc1-dc1-https-front
-                bind 1.2.3.4:443 ssl crt /etc/ssl/private/svc1
-                stats uri /haproxy?stats
-                http-response set-header "Strict-Transport-Security" "max-age=31536000"
-                http-request set-header X-Client-IP %ci
-                http-request set-header X-Forwarded-Proto https
-                default_backend svc1-dc1-https-back
+              bind 1.2.3.4:443 ssl crt /etc/ssl/private/svc1
+              stats uri /haproxy?stats
+              http-response set-header "Strict-Transport-Security" "max-age=31536000"
+              http-request set-header X-Client-IP %ci
+              http-request set-header X-Forwarded-Proto https
+              default_backend svc1-dc1-https-back
             EOT
           )
         end
@@ -73,25 +86,21 @@ describe 'nebula::haproxy_service' do
             base_params.merge(max_requests_per_sec: 2,
                               max_requests_burst: 400,
                               floating_ip: '1.2.3.4',
-                              node_names: %w[scotch soda],
                               cert_source: '')
           end
           let(:params) { throttling_params }
 
-
           it do
-            is_expected.to contain_concat_fragment("svc1-dc1-https throttling").with(
+            is_expected.to contain_concat_fragment('svc1-dc1-https throttling').with(
               target: service_config,
-              # spaces escaped because we want a non-ugly heredoc but also to
-              # have indentation in the output
               content: <<~EOT
-                \ \ stick-table type ip size 200k expire 200s store http_req_rate(200s),bytes_out_rate(200s)
-                \ \ tcp-request content track-sc2 src
-                \ \ http-request set-var(req.http_rate) src_http_req_rate(svc1-dc1-http-back)
-                \ \ http-request set-var(req.https_rate) src_http_req_rate(svc1-dc1-https-back)
-                \ \ acl http_req_rate_abuse var(req.http_rate),add(req.https_rate) gt 400
-                \ \ errorfile 403 /etc/haproxy/errors/svc1509.http
-                \ \ http-request deny deny_status 403 if http_req_rate_abuse
+                stick-table type ip size 200k expire 200s store http_req_rate(200s),bytes_out_rate(200s)
+                tcp-request content track-sc2 src
+                http-request set-var(req.http_rate) src_http_req_rate(svc1-dc1-http-back)
+                http-request set-var(req.https_rate) src_http_req_rate(svc1-dc1-https-back)
+                acl http_req_rate_abuse var(req.http_rate),add(req.https_rate) gt 400
+                errorfile 403 /etc/haproxy/errors/svc1509.http
+                http-request deny deny_status 403 if http_req_rate_abuse
               EOT
             )
           end
@@ -107,10 +116,10 @@ describe 'nebula::haproxy_service' do
             it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt') }
 
             it 'does not reference any whitelists' do
-              is_expected.to contain_concat_fragment("svc1-dc1-https frontend").with_content(%r{(?!whitelist)})
+              is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{(?!whitelist)})
             end
             it 'does not reference the exemption backend' do
-              is_expected.to contain_concat_fragment("svc1-dc1-https frontend").with_content(%r{(?!svc1-dc1-https?-back-exempt)})
+              is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{(?!svc1-dc1-https?-back-exempt)})
             end
           end
 
@@ -120,25 +129,25 @@ describe 'nebula::haproxy_service' do
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_src.txt').with_content("10.0.0.1\n10.2.32.0/24\n") }
 
             it do
-              is_expected.to contain_concat_fragment("svc1-dc1-https frontend").with_content(%r{#{<<~EOT}}m)
-                \ \ acl whitelist_src src -n -f /etc/haproxy/svc1_whitelist_src.txt
-                \ \ use_backend svc1-dc1-https-back-exempt if whitelist_src
-                \ \ default_backend svc1-dc1-https-back
+              is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{#{<<~EOT}}m)
+                acl whitelist_src src -n -f /etc/haproxy/svc1_whitelist_src.txt
+                use_backend svc1-dc1-https-back-exempt if whitelist_src
+                default_backend svc1-dc1-https-back
               EOT
             end
 
             it do
-              is_expected.to contain_concat_fragment("svc1-dc1-https back-exempt")
+              is_expected.to contain_concat_fragment('svc1-dc1-https back-exempt')
                 .with_content("backend svc1-dc1-https-back-exempt\n")
             end
 
-            [
-              "  server scotch 111.111.111.123:443 track svc1-dc1-https-back/scotch cookie s123\n" \
-              "  server soda 222.222.222.234:443 track svc1-dc1-https-back/soda cookie s234\n",
-            ].each do |fragment|
-              xit do
-                is_expected.to contain_file(service_config).with_content(%r{#{fragment}}m)
-              end
+            it do
+              is_expected.to contain_concat_fragment('svc1-dc1-https scotch binding')
+                .with_content("server scotch 111.111.111.123:443 check cookie s123\n")
+            end
+            it do
+              is_expected.to contain_concat_fragment('svc1-dc1-https soda binding')
+                .with_content("server soda 222.222.222.234:443 check cookie s234\n")
             end
           end
 
@@ -148,12 +157,12 @@ describe 'nebula::haproxy_service' do
                                                     'path_end' => ['.abc', '.def'] })
             end
 
-            ["acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt",
-             "acl whitelist_path_end path_end -n -f /etc/haproxy/svc1_whitelist_path_end.txt",
-             "use_backend svc1-dc1-https-back-exempt if whitelist_path_beg OR whitelist_path_end"]
+            ['acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt',
+             'acl whitelist_path_end path_end -n -f /etc/haproxy/svc1_whitelist_path_end.txt',
+             'use_backend svc1-dc1-https-back-exempt if whitelist_path_beg OR whitelist_path_end']
               .each do |fragment|
               it do
-                is_expected.to contain_concat_fragment("svc1-dc1-https frontend")
+                is_expected.to contain_concat_fragment('svc1-dc1-https frontend')
                   .with_content(%r{#{fragment}})
               end
             end
@@ -178,10 +187,10 @@ describe 'nebula::haproxy_service' do
               throttling_params.merge(throttle_condition: 'path_beg /whatever')
             end
 
-            ["acl throttle_condition path_beg /whatever",
-             "use_backend svc1-dc1-https-back-exempt if !throttle_condition"].each do |fragment|
+            ['acl throttle_condition path_beg /whatever',
+             'use_backend svc1-dc1-https-back-exempt if !throttle_condition'].each do |fragment|
               it do
-                is_expected.to contain_concat_fragment("svc1-dc1-https frontend")
+                is_expected.to contain_concat_fragment('svc1-dc1-https frontend')
                   .with_content(%r{#{fragment}})
               end
             end
@@ -198,33 +207,33 @@ describe 'nebula::haproxy_service' do
         it { is_expected.to contain_concat(service_config).with(mode: '0644') }
 
         it do
-          is_expected.to contain_concat_fragment("svc1-dc1-http frontend").with(
+          is_expected.to contain_concat_fragment('svc1-dc1-http frontend').with(
             target: service_config,
             content: <<~EOT
               frontend svc1-dc1-http-front
-                bind 1.2.3.4:80
-                stats uri /haproxy?stats
-                http-request set-header X-Client-IP %ci
-                http-request set-header X-Forwarded-Proto http
-                default_backend svc1-dc1-http-back
+              bind 1.2.3.4:80
+              stats uri /haproxy?stats
+              http-request set-header X-Client-IP %ci
+              http-request set-header X-Forwarded-Proto http
+              default_backend svc1-dc1-http-back
             EOT
           )
         end
 
         it do
-          is_expected.to contain_concat_fragment("svc1-dc1-http backend").with(
+          is_expected.to contain_concat_fragment('svc1-dc1-http backend').with(
             target: service_config,
-            content: "backend svc1-dc1-http-back\n"
+            content: "backend svc1-dc1-http-back\n",
           )
         end
 
-        [
-          "  server scotch 111.111.111.123:80 track svc1-dc1-https-back/scotch cookie s123\n" \
-          "  server soda 222.222.222.234:80 track svc1-dc1-https-back/soda cookie s234\n",
-        ].each do |fragment|
-          xit do
-            is_expected.to contain_file(service_config).with_content(%r{#{fragment}}m)
-          end
+        it do
+          is_expected.to contain_concat_fragment('svc1-dc1-http scotch binding')
+            .with_content("server scotch 111.111.111.123:80 track svc1-dc1-https-back/scotch cookie s123\n")
+        end
+        it do
+          is_expected.to contain_concat_fragment('svc1-dc1-http soda binding')
+            .with_content("server soda 222.222.222.234:80 track svc1-dc1-https-back/soda cookie s234\n")
         end
       end
 

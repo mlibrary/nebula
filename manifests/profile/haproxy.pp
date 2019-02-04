@@ -15,8 +15,6 @@ class nebula::profile::haproxy(
   include nebula::profile::haproxy::prereqs
   include nebula::profile::networking::sysctl
 
-  $balanced_frontends = balanced_frontends()
-
   file { '/etc/haproxy/haproxy.cfg':
     ensure  => 'present',
     mode    => '0644',
@@ -40,15 +38,14 @@ class nebula::profile::haproxy(
     group  => 'root'
   }
 
-  $balanced_frontends.filter |$service, $node_names| {
-    $services.has_key($service)
-  }.each |$service, $node_names| {
-    nebula::haproxy_service { $service :
+  $services.each |$service, $params| {
+    @nebula::haproxy::service { $service :
       cert_source => $cert_source,
-      node_names  => $node_names,
-      *           => $services[$service]
+      *           => $params
     }
   }
+
+  Nebula::Haproxy::Binding <<| datacenter == $::datacenter |>>
 
   nebula::authzd_user { $monitoring_user['name']:
     gid  => 'haproxy',

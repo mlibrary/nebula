@@ -4,7 +4,6 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
-require_relative '../../support/contexts/with_mocked_nodes'
 
 describe 'nebula::profile::haproxy' do
   on_supported_os.each do |os, os_facts|
@@ -18,6 +17,7 @@ describe 'nebula::profile::haproxy' do
             ip: my_ip,
             primary: 'eth0',
           },
+          ipaddress: my_ip,
           hostname: 'thisnode',
         )
       end
@@ -29,9 +29,6 @@ describe 'nebula::profile::haproxy' do
 
       let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
       let(:haproxy2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
-      let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
-      let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
-      let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
       let(:base_params) do
         { cert_source: '/some/where',
           services: { 'svc1' =>
@@ -42,15 +39,13 @@ describe 'nebula::profile::haproxy' do
       end
       let(:params) { base_params }
 
-      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode haproxy2 scotch soda third_server], 'nebula::profile::haproxy' => %w[thisnode haproxy2]
-
-      before(:each) do
-        stub('balanced_frontends') do |d|
-          allow_call(d).and_return('svc1' => %w[scotch soda], 'svc2' => %w[scotch third_server])
-        end
-      end
-
       describe 'services' do
+        # haproxy services are virtual resources which get realized by the
+        # balanced_frontend type; realize them here so we can test params
+        let :pre_condition do
+          'Nebula::Haproxy::Service<| |>'
+        end
+
         it do
           is_expected.to contain_service('haproxy').with(
             ensure: 'running',
@@ -60,9 +55,8 @@ describe 'nebula::profile::haproxy' do
         end
 
         it do
-          is_expected.to contain_nebula__haproxy_service('svc1').with(
+          is_expected.to contain_nebula__haproxy__service('svc1').with(
             floating_ip: '12.23.32.22',
-            node_names: %w[scotch soda],
             cert_source: '/some/where',
             max_requests_per_sec: 10,
             max_requests_burst: 200,
@@ -70,9 +64,8 @@ describe 'nebula::profile::haproxy' do
         end
 
         it do
-          is_expected.to contain_nebula__haproxy_service('svc2').with(
+          is_expected.to contain_nebula__haproxy__service('svc2').with(
             floating_ip: '12.23.32.23',
-            node_names: %w[scotch third_server],
             cert_source: '/some/where',
           )
         end
