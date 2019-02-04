@@ -62,6 +62,6 @@ define nebula::proxied_app(
   # Not yet for actual management/distribution; verification pending
   file { "/sysadmin/archive/app-proxies/${title}.conf":
     ensure  => 'present',
-    content => template('nebula/apache/proxy_vhost.erb'),
+    content => template('nebula/proxied_app/proxy_vhost.erb'),
   }
 }
