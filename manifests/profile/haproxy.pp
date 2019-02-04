@@ -86,4 +86,13 @@ class nebula::profile::haproxy(
     content => template('nebula/profile/haproxy/keepalived/sysctl.conf.erb'),
   }
 
+  @@firewall { "200 HTTP: HAProxy ${::hostname}":
+    proto  => 'tcp',
+    dport  => [80, 443],
+    source => $::ipaddress,
+    state  => 'NEW',
+    action => 'accept',
+    tag    => 'haproxy'
+  }
+
 }

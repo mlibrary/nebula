@@ -227,6 +227,13 @@ describe 'nebula::profile::haproxy' do
           is_expected.to contain_file(file).with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
         end
       end
+
+      it 'exports a firewall resource tagged haproxy' do
+        expect(exported_resources).to contain_firewall('200 HTTP: HAProxy thisnode').with(
+          source: my_ip,
+          tag: 'haproxy',
+        )
+      end
     end
   end
 end
