@@ -32,7 +32,7 @@ define nebula::proxied_app(
   String  $ssl_crt,
   String  $ssl_key,
   String  $static_path,
-  Optional[String]  $sendfile_path,     # If set, XSendFile will be enabled here
+  Optional[String]  $sendfile_path = undef,     # If set, XSendFile will be enabled here
 ){
   # These are straightforward translations to maintain parity with the
   # ansible template. All of these names and semantics should be revisited
