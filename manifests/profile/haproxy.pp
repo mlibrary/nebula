@@ -48,9 +48,10 @@ class nebula::profile::haproxy(
   Nebula::Haproxy::Binding <<| datacenter == $::datacenter |>>
 
   nebula::authzd_user { $monitoring_user['name']:
-    gid  => 'haproxy',
-    home => $monitoring_user['home'],
-    key  => $monitoring_user['key']
+    gid     => 'haproxy',
+    home    => $monitoring_user['home'],
+    key     => $monitoring_user['key'],
+    require => [Package['haproxy'], Package['haproxyctl']]
   }
 
   package { 'keepalived': }
@@ -97,7 +98,7 @@ class nebula::profile::haproxy(
   file { '/etc/sysctl.d/keepalived.conf':
     ensure  => 'present',
     require => Package['keepalived'],
-    notify  => [Service['keepalived'], Service['procps']],
+    notify  => [Service['keepalived'], Service['procps'], Service['haproxy']],
     mode    => '0644',
     content => template('nebula/profile/haproxy/keepalived/sysctl.conf.erb'),
   }

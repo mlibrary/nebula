@@ -79,7 +79,19 @@ describe 'nebula::profile::haproxy' do
       end
 
       describe 'users' do
-        it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl', gid: 'haproxy', managehome: true, home: '/var/haproxyctl') }
+        it do
+          is_expected.to contain_user('haproxyctl').with(
+            name: 'haproxyctl',
+            gid: 'haproxy',
+            managehome: true,
+            home: '/var/haproxyctl',
+          )
+        end
+
+        it do
+          is_expected.to contain_nebula__authzd_user('haproxyctl')
+            .that_requires(['Package[haproxy]', 'Package[haproxyctl]'])
+        end
 
         it 'grants ssh access to the monitoring user' do
           is_expected.to contain_file('/var/haproxyctl/.ssh/authorized_keys')

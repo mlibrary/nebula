@@ -111,7 +111,9 @@ define nebula::haproxy::service(
       purge   => true,
       links   => 'follow',
       notify  => Service['haproxy'],
-      source  => "puppet://${cert_source}/${service}"
+      source  => "puppet://${cert_source}/${service}",
+      # Package['haproxy'] provides the haproxy user
+      require => Package['haproxy']
     }
   }
 

@@ -246,20 +246,27 @@ describe 'nebula::haproxy::service' do
 
         context 'with a source' do
           let(:params) do
-            { floating_ip: '1.2.3.4',
-              cert_source: '/some/where' }
+            {
+              floating_ip: '1.2.3.4',
+              cert_source: '/some/where',
+            }
           end
 
-          it { is_expected.to contain_file(dest).with(ensure: 'directory') }
-          it { is_expected.to contain_file(dest).with(notify: 'Service[haproxy]') }
-          it { is_expected.to contain_file(dest).with(mode: '0700') }
-          it { is_expected.to contain_file(dest).with(owner: 'haproxy') }
-          it { is_expected.to contain_file(dest).with(group: 'haproxy') }
-          it { is_expected.to contain_file(dest).with(recurse: true) }
-          it { is_expected.to contain_file(dest).with(source: "puppet://#{params[:cert_source]}/svc1") }
-          it { is_expected.to contain_file(dest).with(path: dest) }
-          it { is_expected.to contain_file(dest).with(links: 'follow') }
-          it { is_expected.to contain_file(dest).with(purge: true) }
+          it do
+            is_expected.to contain_file(dest).with(
+              ensure: 'directory',
+              notify: 'Service[haproxy]',
+              require: 'Package[haproxy]',
+              mode: '0700',
+              owner: 'haproxy',
+              group: 'haproxy',
+              recurse: true,
+              source: "puppet://#{params[:cert_source]}/svc1",
+              path: dest,
+              links: 'follow',
+              purge: true,
+            )
+          end
         end
       end
     end
