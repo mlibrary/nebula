@@ -40,8 +40,6 @@ describe 'nebula::haproxy::service' do
             hostname   => 'soda',
             ipaddress  => '222.222.222.234'
           }
-
-          Concat_fragment <| |>
         EOT
       end
 
@@ -180,6 +178,7 @@ describe 'nebula::haproxy::service' do
                 .def
               EOT
             end
+
           end
 
           context 'with throttling condition' do
@@ -193,6 +192,15 @@ describe 'nebula::haproxy::service' do
                 is_expected.to contain_concat_fragment('svc1-dc1-https frontend')
                   .with_content(%r{#{fragment}})
               end
+            end
+
+            it do
+              is_expected.to contain_concat_fragment('svc1-dc1-https scotch exempt binding')
+                .with_content("server scotch 111.111.111.123:443 track svc1-dc1-https-back/scotch cookie s123\n")
+            end
+            it do
+              is_expected.to contain_concat_fragment('svc1-dc1-https soda exempt binding')
+                .with_content("server soda 222.222.222.234:443 track svc1-dc1-https-back/soda cookie s234\n")
             end
           end
         end

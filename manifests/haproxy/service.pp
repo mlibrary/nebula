@@ -89,7 +89,7 @@ define nebula::haproxy::service(
         order   => '05'
       }
 
-      Concat_fragment <| tag == "${service_prefix}-exempt_binding" |>
+      Concat_fragment <| tag == "${service_prefix}_exempt_binding" |>
     }
 
 
