@@ -1,0 +1,4 @@
+backend <%= @service_prefix %>-back
+<% if check?(protocol) -%>
+http-check expect status 200
+<% end -%>

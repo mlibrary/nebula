@@ -1,0 +1,7 @@
+stick-table type ip size 200k expire <%= @duration %>s store http_req_rate(<%= @duration %>s),bytes_out_rate(<%= @duration %>s)
+tcp-request content track-sc2 src
+http-request set-var(req.http_rate) src_http_req_rate(<%= @service_loc %>-http-back)
+http-request set-var(req.https_rate) src_http_req_rate(<%= @service_loc %>-https-back)
+acl http_req_rate_abuse var(req.http_rate),add(req.https_rate) gt <%= @max_requests_burst %>
+errorfile 403 /etc/haproxy/errors/<%= @service %>509.http
+http-request deny deny_status 403 if http_req_rate_abuse

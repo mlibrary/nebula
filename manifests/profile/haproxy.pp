@@ -15,8 +15,6 @@ class nebula::profile::haproxy(
   include nebula::profile::haproxy::prereqs
   include nebula::profile::networking::sysctl
 
-  $balanced_frontends = balanced_frontends()
-
   file { '/etc/haproxy/haproxy.cfg':
     ensure  => 'present',
     mode    => '0644',
@@ -40,20 +38,20 @@ class nebula::profile::haproxy(
     group  => 'root'
   }
 
-  $balanced_frontends.filter |$service, $node_names| {
-    $services.has_key($service)
-  }.each |$service, $node_names| {
-    nebula::haproxy_service { $service :
+  $services.each |$service, $params| {
+    @nebula::haproxy::service { $service :
       cert_source => $cert_source,
-      node_names  => $node_names,
-      *           => $services[$service]
+      *           => $params
     }
   }
 
+  Nebula::Haproxy::Binding <<| datacenter == $::datacenter |>>
+
   nebula::authzd_user { $monitoring_user['name']:
-    gid  => 'haproxy',
-    home => $monitoring_user['home'],
-    key  => $monitoring_user['key']
+    gid     => 'haproxy',
+    home    => $monitoring_user['home'],
+    key     => $monitoring_user['key'],
+    require => [Package['haproxy'], Package['haproxyctl']]
   }
 
   package { 'keepalived': }
@@ -66,24 +64,52 @@ class nebula::profile::haproxy(
     require    => Package['keepalived'],
   }
 
-  $nodes_for_class = nodes_for_class($title)
-  $nodes_for_datacenter = nodes_for_datacenter($::datacenter)
   $email = lookup('nebula::root_email')
 
-  file { '/etc/keepalived/keepalived.conf':
-    ensure  => 'present',
+  concat { '/etc/keepalived/keepalived.conf':
+    ensure  =>  'present',
     require => Package['keepalived'],
     notify  => Service['keepalived'],
     mode    => '0644',
-    content => template('nebula/profile/haproxy/keepalived/keepalived.conf.erb'),
+  }
+
+  concat_fragment { 'keepalived preamble':
+    target  => '/etc/keepalived/keepalived.conf',
+    content => template('nebula/profile/haproxy/keepalived/keepalived_pre.erb'),
+    order   => '01'
+  }
+
+  @@concat_fragment { "keepalived node ip ${::hostname}":
+    target  => '/etc/keepalived/keepalived.conf',
+    content => "    ${::ipaddress}\n",
+    tag     => "keepalived-haproxy-ip-${::datacenter}",
+    order   => '02'
+  }
+
+  # don't collect our own IP address, just the other haproxy nodes here
+  Concat_fragment <<| tag == "keepalived-haproxy-ip-${::datacenter}" and title != "keepalived node ip ${::hostname}" |>>
+
+  concat_fragment { 'keepalived postamble':
+    target  => '/etc/keepalived/keepalived.conf',
+    content => template('nebula/profile/haproxy/keepalived/keepalived_post.erb'),
+    order   => '03'
   }
 
   file { '/etc/sysctl.d/keepalived.conf':
     ensure  => 'present',
     require => Package['keepalived'],
-    notify  => [Service['keepalived'], Service['procps']],
+    notify  => [Service['keepalived'], Service['procps'], Service['haproxy']],
     mode    => '0644',
     content => template('nebula/profile/haproxy/keepalived/sysctl.conf.erb'),
+  }
+
+  @@firewall { "200 HTTP: HAProxy ${::hostname}":
+    proto  => 'tcp',
+    dport  => [80, 443],
+    source => $::ipaddress,
+    state  => 'NEW',
+    action => 'accept',
+    tag    => 'haproxy'
   }
 
 }

@@ -20,7 +20,7 @@ RSpec.shared_context 'with mocked query for nodes in other datacenters' do |data
   end
 end
 
-RSpec.shared_context 'with mocked puppetdb functions' do |datacenter, nodes, class_nodes|
+RSpec.shared_context 'with mocked puppetdb functions' do |_datacenter, nodes, class_nodes|
   before(:each) do
     stub_loader!
   end
@@ -30,10 +30,6 @@ RSpec.shared_context 'with mocked puppetdb functions' do |datacenter, nodes, cla
       class_nodes.each do |node_class, nodes_in_class|
         allow_call(d).with(node_class).and_return(%w[rolenode] + nodes_in_class)
       end
-    end
-
-    stub('nodes_for_datacenter') do |d|
-      allow_call(d).with(datacenter).and_return(%w[dcnode] + nodes)
     end
 
     # stub_function('fact_for', fact_for)

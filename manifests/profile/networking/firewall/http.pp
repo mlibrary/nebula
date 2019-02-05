@@ -9,16 +9,5 @@
 # @example
 #   include nebula::profile::networking::firewall::http
 class nebula::profile::networking::firewall::http () {
-  nodes_for_class('nebula::profile::haproxy').each |String $nodename| {
-    $node_net = fact_for($nodename, 'networking')
-
-    firewall { "200 HTTP: HAProxy ${nodename}":
-      proto  => 'tcp',
-      dport  => [80, 443],
-      source => $node_net['ip'],
-      state  => 'NEW',
-      action => 'accept',
-    }
-  }
-
+  Firewall <<| tag == 'haproxy' |>>
 }

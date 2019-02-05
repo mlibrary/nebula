@@ -7,6 +7,13 @@
 # @example
 #   include nebula::role::webhost::quod
 class nebula::role::webhost::quod {
-  nebula::balanced_frontend { 'quod': }
   include nebula::role::umich
+
+  @@nebula::haproxy::binding { "${::hostname} quod":
+    service       => 'quod',
+    https_offload => true,
+    datacenter    => $::datacenter,
+    hostname      => $::hostname,
+    ipaddress     => $::ipaddress;
+  }
 }

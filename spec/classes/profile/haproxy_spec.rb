@@ -4,7 +4,6 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
-require_relative '../../support/contexts/with_mocked_nodes'
 
 describe 'nebula::profile::haproxy' do
   on_supported_os.each do |os, os_facts|
@@ -18,6 +17,7 @@ describe 'nebula::profile::haproxy' do
             ip: my_ip,
             primary: 'eth0',
           },
+          ipaddress: my_ip,
           hostname: 'thisnode',
         )
       end
@@ -29,9 +29,6 @@ describe 'nebula::profile::haproxy' do
 
       let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
       let(:haproxy2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
-      let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
-      let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
-      let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
       let(:base_params) do
         { cert_source: '/some/where',
           services: { 'svc1' =>
@@ -42,15 +39,13 @@ describe 'nebula::profile::haproxy' do
       end
       let(:params) { base_params }
 
-      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode haproxy2 scotch soda third_server], 'nebula::profile::haproxy' => %w[thisnode haproxy2]
-
-      before(:each) do
-        stub('balanced_frontends') do |d|
-          allow_call(d).and_return('svc1' => %w[scotch soda], 'svc2' => %w[scotch third_server])
-        end
-      end
-
       describe 'services' do
+        # haproxy services are virtual resources which get realized by the
+        # balanced_frontend type; realize them here so we can test params
+        let :pre_condition do
+          'Nebula::Haproxy::Service<| |>'
+        end
+
         it do
           is_expected.to contain_service('haproxy').with(
             ensure: 'running',
@@ -60,9 +55,8 @@ describe 'nebula::profile::haproxy' do
         end
 
         it do
-          is_expected.to contain_nebula__haproxy_service('svc1').with(
+          is_expected.to contain_nebula__haproxy__service('svc1').with(
             floating_ip: '12.23.32.22',
-            node_names: %w[scotch soda],
             cert_source: '/some/where',
             max_requests_per_sec: 10,
             max_requests_burst: 200,
@@ -70,9 +64,8 @@ describe 'nebula::profile::haproxy' do
         end
 
         it do
-          is_expected.to contain_nebula__haproxy_service('svc2').with(
+          is_expected.to contain_nebula__haproxy__service('svc2').with(
             floating_ip: '12.23.32.23',
-            node_names: %w[scotch third_server],
             cert_source: '/some/where',
           )
         end
@@ -86,7 +79,19 @@ describe 'nebula::profile::haproxy' do
       end
 
       describe 'users' do
-        it { is_expected.to contain_user('haproxyctl').with(name: 'haproxyctl', gid: 'haproxy', managehome: true, home: '/var/haproxyctl') }
+        it do
+          is_expected.to contain_user('haproxyctl').with(
+            name: 'haproxyctl',
+            gid: 'haproxy',
+            managehome: true,
+            home: '/var/haproxyctl',
+          )
+        end
+
+        it do
+          is_expected.to contain_nebula__authzd_user('haproxyctl')
+            .that_requires(['Package[haproxy]', 'Package[haproxyctl]'])
+        end
 
         it 'grants ssh access to the monitoring user' do
           is_expected.to contain_file('/var/haproxyctl/.ssh/authorized_keys')
@@ -161,17 +166,23 @@ describe 'nebula::profile::haproxy' do
       describe 'base keepalived config file' do
         let(:file) { keepalived_conf }
 
-        it { is_expected.to contain_file(file).with(ensure: 'present') }
-        it { is_expected.to contain_file(file).with(require: 'Package[keepalived]') }
-        it { is_expected.to contain_file(file).with(notify: 'Service[keepalived]') }
-        it { is_expected.to contain_file(file).with(mode: '0644') }
+        it do
+          is_expected.to contain_concat(file).with(
+            ensure: 'present',
+            require: 'Package[keepalived]',
+            notify: 'Service[keepalived]',
+            mode: '0644',
+          )
+        end
+
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_target(keepalived_conf) }
 
         it 'has a vrrp_scripts check_haproxy section' do
-          is_expected.to contain_file(file).with_content(%r{^vrrp_script check_haproxy})
+          is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{^vrrp_script check_haproxy})
         end
 
         it 'has the haproxy floating ip addresses' do
-          is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*12\.23\.32\.23\n\s*}}m)
+          is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*12\.23\.32\.23\n\s*}}m)
         end
 
         context 'with a floating ip address parameter' do
@@ -182,32 +193,39 @@ describe 'nebula::profile::haproxy' do
             }
           end
 
-          it { is_expected.to contain_file(file).with_content(%r{virtual_ipaddress {\n\s*#{params[:services]["svc1"]["floating_ip"]}\n\s*#{params[:services]["svc2"]["floating_ip"]}\n\s*}}m) }
+          it do
+            is_expected.to contain_concat_fragment('keepalived preamble')
+              .with_content(%r{virtual_ipaddress {\n\s*#{params[:services]["svc1"]["floating_ip"]}\n\s*#{params[:services]["svc2"]["floating_ip"]}\n\s*}}m)
+          end
         end
 
-        it { is_expected.to contain_file(file).with_content(%r{unicast_src_ip #{my_ip}}) }
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{unicast_src_ip #{my_ip}}) }
 
-        it 'has a unicast_peer block with the IP addresses of all nodes with the same profile at the same datancenter except for me' do
-          is_expected.to contain_file(file).with_content(%r{unicast_peer {\n\s*#{haproxy2['ip']}\n\s*}\n\s*})
+        it 'exports its IP address for collection by other haproxy nodes' do
+          expect(exported_resources).to contain_concat_fragment('keepalived node ip thisnode').with(
+            target: keepalived_conf,
+            content: "    #{my_ip}\n",
+            tag: 'keepalived-haproxy-ip-somedc',
+          )
         end
 
-        it { is_expected.to contain_file(file).with_content(%r{interface #{facts[:networking][:primary]}}) }
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{interface #{facts[:networking][:primary]}}) }
 
-        it { is_expected.to contain_file(file).with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m) }
-        it { is_expected.to contain_file(file).with_content(%r{notification_email_from root@default.invalid}) }
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m) }
+        it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{notification_email_from root@default.invalid}) }
 
         context 'on a master node' do
           let(:params) { base_params.merge(master: true) }
 
-          it { is_expected.to contain_file(file).with_content(%r{priority 101}) }
-          it { is_expected.to contain_file(file).with_content(%r{state MASTER}) }
+          it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 101}) }
+          it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state MASTER}) }
         end
 
         context 'on a backup node' do
           let(:params) { base_params.merge(master: false) }
 
-          it { is_expected.to contain_file(file).with_content(%r{priority 100}) }
-          it { is_expected.to contain_file(file).with_content(%r{state BACKUP}) }
+          it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 100}) }
+          it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state BACKUP}) }
         end
       end
 
@@ -226,6 +244,13 @@ describe 'nebula::profile::haproxy' do
         it 'enables ip_nonlocal_bind' do
           is_expected.to contain_file(file).with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
         end
+      end
+
+      it 'exports a firewall resource tagged haproxy' do
+        expect(exported_resources).to contain_firewall('200 HTTP: HAProxy thisnode').with(
+          source: my_ip,
+          tag: 'haproxy',
+        )
       end
     end
   end
