@@ -30,12 +30,24 @@ describe 'nebula::profile::haproxy' do
       let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
       let(:haproxy2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
       let(:base_params) do
-        { cert_source: '/some/where',
-          services: { 'svc1' =>
-           { 'floating_ip' => '12.23.32.22',
-             'max_requests_per_sec' => 10,
-             'max_requests_burst' => 200 },
-                      'svc2' => { 'floating_ip' => '12.23.32.23' } } }
+        {
+          cert_source: '/some/where',
+          services: {
+            'svc1' => {
+              'floating_ip' => '12.23.32.22',
+              'max_requests_per_sec' => 10,
+              'max_requests_burst' => 200
+            },
+            'svc2' => {
+              'floating_ip' => '12.23.32.23'
+            },
+            'svc3' => {
+              # no floating IP, shouldn't be defined here
+              'max_requests_per_sec' => 10,
+              'max_requests_burst' => 200
+            }
+          }
+        }
       end
       let(:params) { base_params }
 
@@ -69,6 +81,8 @@ describe 'nebula::profile::haproxy' do
             cert_source: '/some/where',
           )
         end
+
+        it { is_expected.not_to contain_nebula__haproxy__service('svc3') }
       end
 
       describe 'packages' do

@@ -38,7 +38,9 @@ class nebula::profile::haproxy(
     group  => 'root'
   }
 
-  $services.each |$service, $params| {
+  $services.filter |$service, $params| {
+    $params.has_key('floating_ip')
+  }.each |$service, $params| {
     @nebula::haproxy::service { $service :
       cert_source => $cert_source,
       *           => $params
