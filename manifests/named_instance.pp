@@ -14,6 +14,7 @@ define nebula::named_instance(
   String        $pubkey,
   String        $puma_config,
   String        $puma_wrapper,
+  String        $mysql_exec_path = '',
   Optional[String] $mysql_user = undef,
   Optional[String] $mysql_password = undef,
   Optional[String] $mysql_host = undef,
@@ -204,7 +205,7 @@ define nebula::named_instance(
   }
 
   mysql::db { $title:
-    mysql_exec_path => 'nowhere',
+    mysql_exec_path => $mysql_exec_path,
     user            => $mysql_user,
     password        => $mysql_password,
     host            => $mysql_host,

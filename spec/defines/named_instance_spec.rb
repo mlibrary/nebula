@@ -230,6 +230,15 @@ describe 'nebula::named_instance' do
             grant: ['ALL'],
           )
         end
+
+        # We don't understand why, but this is required on, at the very
+        # least, mattlach's macbook. It isn't required on aelkiss's
+        # Linux machine, but it also doesn't appear to harm anything, so
+        # we're leaving it here to keep the tests passing.
+        #
+        # It doesn't have to be an empty string in particular, but it
+        # does need to be set to something.
+        it { is_expected.to contain_mysql__db(title).with_mysql_exec_path('') }
       end
     end
   end
