@@ -36,17 +36,17 @@ describe 'nebula::profile::haproxy' do
             'svc1' => {
               'floating_ip' => '12.23.32.22',
               'max_requests_per_sec' => 10,
-              'max_requests_burst' => 200
+              'max_requests_burst' => 200,
             },
             'svc2' => {
-              'floating_ip' => '12.23.32.23'
+              'floating_ip' => '12.23.32.23',
             },
             'svc3' => {
               # no floating IP, shouldn't be defined here
               'max_requests_per_sec' => 10,
-              'max_requests_burst' => 200
-            }
-          }
+              'max_requests_burst' => 200,
+            },
+          },
         }
       end
       let(:params) { base_params }

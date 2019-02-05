@@ -178,7 +178,6 @@ describe 'nebula::haproxy::service' do
                 .def
               EOT
             end
-
           end
 
           context 'with throttling condition' do
