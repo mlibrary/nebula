@@ -24,6 +24,9 @@ fixtures:
     lvm:
       repo: "puppetlabs/lvm"
       ref: "1.0.1"
+    mysql:
+      repo: "puppetlabs/mysql"
+      ref: "8.0.0"
     postgresql:
       repo: "puppetlabs/postgresql"
       ref: "5.2.1"

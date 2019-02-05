@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018-2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -19,6 +19,9 @@ describe 'nebula::named_instance' do
   let(:puma_wrapper) { '/l/local/bin/puma_wrapper' }
   let(:puma_config) { 'config/fauxpaas_puma.rb' }
   let(:users) { %w[alice solr] }
+  let(:mysql_user) { 'abcde' }
+  let(:mysql_password) { '12345' }
+  let(:mysql_host) { 'a_real_sql_host' }
   let(:params) do
     {
       path: path,
@@ -32,6 +35,9 @@ describe 'nebula::named_instance' do
       puma_wrapper: puma_wrapper,
       puma_config: puma_config,
       users: users,
+      mysql_user: mysql_user,
+      mysql_password: mysql_password,
+      mysql_host: mysql_host,
     }
   end
 
@@ -211,6 +217,17 @@ describe 'nebula::named_instance' do
         it do
           is_expected.to contain_file(new_sudoers).with_content(
             %r{^\%#{title} ALL=\(root\) NOPASSWD: /bin/journalctl$},
+          )
+        end
+      end
+
+      describe 'database' do
+        it do
+          is_expected.to contain_mysql__db(title).with(
+            user: mysql_user,
+            password: mysql_password,
+            host: mysql_host,
+            grant: ['ALL'],
           )
         end
       end
