@@ -18,10 +18,13 @@ define nebula::named_instance(
   String        $protocol = 'http',         # proxy protocol, not user to front-end
   String        $hostname = "app-${title}", # app host
   String        $static_path = "${path}/current/public",
-  Optional[String]        $sendfile_path = undef,
+  Boolean       $static_directories = false,
   Boolean       $ssl = true,
   String        $ssl_crt = "${public_hostname}.crt",
   String        $ssl_key = "${public_hostname}.key",
+  String        $single_sign_on = 'cosign',
+  Optional[String] $sendfile_path = undef,
+  Optional[String] $cosign_factor = undef,
   Array[String] $users = [],
   Array[String] $subservices = [],
 ) {
@@ -168,16 +171,19 @@ define nebula::named_instance(
   }
 
   @@nebula::proxied_app { $title:
-    public_hostname => $public_hostname,
-    url_root        => $url_root,
-    protocol        => $protocol,
-    hostname        => $hostname,
-    port            => $port,
-    ssl             => $ssl,
-    ssl_crt         => $ssl_crt,
-    ssl_key         => $ssl_key,
-    static_path     => $static_path,
-    sendfile_path   => $sendfile_path,
+    public_hostname    => $public_hostname,
+    url_root           => $url_root,
+    protocol           => $protocol,
+    hostname           => $hostname,
+    port               => $port,
+    ssl                => $ssl,
+    ssl_crt            => $ssl_crt,
+    ssl_key            => $ssl_key,
+    static_path        => $static_path,
+    static_directories => $static_directories,
+    single_sign_on     => $single_sign_on,
+    cosign_factor      => $cosign_factor,
+    sendfile_path      => $sendfile_path,
   }
 
   # Remove old-style sudoers file
