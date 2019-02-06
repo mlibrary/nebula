@@ -15,7 +15,7 @@ class nebula::profile::unison (
   include nebula::profile::logrotate
 
   logrotate::rule { 'unison':
-    path          => '/var/log/unison.log',
+    path          => '/var/log/unison*.log',
     rotate        => 7,
     rotate_every  => 'day',
     missingok     => true,

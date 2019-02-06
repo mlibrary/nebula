@@ -14,7 +14,7 @@ describe 'nebula::profile::unison' do
       shared_examples_for 'logrotated unison' do
         it do
           is_expected.to contain_logrotate__rule('unison').with(
-            path: '/var/log/unison.log',
+            path: '/var/log/unison*.log',
             rotate: 7,
             rotate_every: 'day',
             missingok: true,
