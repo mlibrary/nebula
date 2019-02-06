@@ -109,9 +109,10 @@ class nebula::profile::hathitrust::apache (
   }
 
   file { '/etc/apache2/conf-enabled':
-    ensure => 'directory',
-    force  => true,
-    purge  => true
+    ensure  => 'directory',
+    recurse => true,
+    force   => true,
+    purge   => true
   }
 
   file { '/etc/apache2/conf-available':
