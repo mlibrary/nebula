@@ -18,6 +18,7 @@
     {"name": "puppetlabs/puppetdb", "version_requirement": ">= 6.0.2 < 7.0.0"},
     {"name": "puppetlabs/reboot", "version_requirement": ">= 2.0.0 < 3.0.0"},
     {"name": "puppet/php", "version_requirement": ">= 6.0.2 < 7.0.0"},
+    {"name": "puppet/logrotate", "version_requirement": ">= 3.4.0 < 4.0.0"},
     {"name": "stm/debconf", "version_requirement": ">= 2.1.0 < 3.0.0"},
     {"name": "camptocamp/kmod", "version_requirement": ">= 2.1.0 < 3.0.0"},
     {"name": "jdowning/rbenv", "version_requirement": ">= 2.2.0 < 3.0.0"},
