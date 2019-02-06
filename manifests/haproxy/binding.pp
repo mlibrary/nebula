@@ -18,6 +18,12 @@ define nebula::haproxy::binding(
   $cookie = "cookie s${last_octet}"
   $track = "track ${service}-${datacenter}-https-back/${hostname}"
 
+  if($https_offload) {
+    $ssl_opts = ''
+  } else {
+    $ssl_opts = ' ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt'
+  }
+
   # TODO - handle case where https_offload = false - ie proxy https to server
 
   @concat_fragment { "${service}-${datacenter}-http ${hostname} binding":
@@ -30,7 +36,7 @@ define nebula::haproxy::binding(
   @concat_fragment { "${service}-${datacenter}-https ${hostname} binding":
     target  => "/etc/haproxy/services.d/${service}-https.cfg",
     order   => '04',
-    content => "server ${hostname} ${ipaddress}:443 check ${cookie}\n",
+    content => "server ${hostname} ${ipaddress}:443${ssl_opts} check ${cookie}\n",
     tag     => "${service}-${datacenter}-https_binding"
   }
 
@@ -44,7 +50,7 @@ define nebula::haproxy::binding(
   @concat_fragment { "${service}-${datacenter}-https ${hostname} exempt binding":
     target  => "/etc/haproxy/services.d/${service}-https.cfg",
     order   => '06',
-    content => "server ${hostname} ${ipaddress}:443 ${track} ${cookie}\n",
+    content => "server ${hostname} ${ipaddress}:443${ssl_opts} ${track} ${cookie}\n",
     tag     => "${service}-${datacenter}-https_exempt_binding"
   }
 

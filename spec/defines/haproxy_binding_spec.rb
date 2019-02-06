@@ -67,6 +67,20 @@ describe 'nebula::haproxy::binding' do
       end
 
       it { is_expected.to contain_nebula__haproxy__service('myservice') }
+
+      context 'no https offload' do
+        let(:params) { super().merge(https_offload: false) }
+
+        it do
+          is_expected.to contain_concat_fragment('myservice-dc-https thishost binding')
+            .with_content("server thishost 10.1.2.123:443 ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt check cookie s123\n")
+        end
+
+        it do
+          is_expected.to contain_concat_fragment('myservice-dc-https thishost exempt binding')
+            .with_content("server thishost 10.1.2.123:443 ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt track myservice-dc-https-back/thishost cookie s123\n")
+        end
+      end
     end
   end
 end
