@@ -23,6 +23,8 @@ describe 'nebula::profile::unison' do
             compress: true,
           )
         end
+
+        it { is_expected.to contain_class('nebula::profile::logrotate') }
       end
 
       context 'server' do

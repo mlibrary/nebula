@@ -12,6 +12,8 @@ class nebula::profile::unison (
   Array $servers = [],
   Array $clients = []
 ) {
+  include nebula::profile::logrotate
+
   logrotate::rule { 'unison':
     path          => '/var/log/unison.log',
     rotate        => 7,
