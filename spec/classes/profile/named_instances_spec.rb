@@ -17,6 +17,8 @@ describe 'nebula::profile::named_instances' do
           path: '/my/app/path/myapp-testing',
           uid: 20_001,
           gid: 30_001,
+          mysql_user: 'myapp-testing',
+          mysql_password: '12345',
           users: %w[alice bob],
           subservices: ['resque-pool', 'mailman'],
         }
@@ -29,6 +31,8 @@ describe 'nebula::profile::named_instances' do
           path: '/hydra-dev/hydra-staging',
           uid: 20_002,
           gid: 30_002,
+          mysql_user: 'myapp-testing',
+          mysql_password: '12345',
           users: %w[solr bill],
           subservices: [],
         }
@@ -74,6 +78,17 @@ describe 'nebula::profile::named_instances' do
             users: hydra_staging[:users],
             subservices: hydra_staging[:subservices],
           )
+        end
+
+        describe 'databases' do
+          context 'when create_databases is false' do
+            let(:params) { super().merge(create_databases: false) }
+
+            it { is_expected.to have_mysql__db_count(0) }
+          end
+
+          it { is_expected.to contain_mysql__db('myapp-testing') }
+          it { is_expected.to contain_mysql__db('hydra-staging') }
         end
       end
 

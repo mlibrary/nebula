@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018-2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -19,6 +19,8 @@ describe 'nebula::named_instance' do
   let(:puma_wrapper) { '/l/local/bin/puma_wrapper' }
   let(:puma_config) { 'config/fauxpaas_puma.rb' }
   let(:users) { %w[alice solr] }
+  let(:mysql_user) { 'abcde' }
+  let(:mysql_password) { '12345' }
   let(:params) do
     {
       path: path,
@@ -32,6 +34,8 @@ describe 'nebula::named_instance' do
       puma_wrapper: puma_wrapper,
       puma_config: puma_config,
       users: users,
+      mysql_user: mysql_user,
+      mysql_password: mysql_password,
     }
   end
 
@@ -212,6 +216,44 @@ describe 'nebula::named_instance' do
           is_expected.to contain_file(new_sudoers).with_content(
             %r{^\%#{title} ALL=\(root\) NOPASSWD: /bin/journalctl$},
           )
+        end
+      end
+
+      describe 'database' do
+        it do
+          is_expected.to contain_mysql__db(title).with(
+            user: mysql_user,
+            password: mysql_password,
+            host: '%',
+            grant: ['ALL'],
+          )
+        end
+
+        # Without the mysql_exec_path parameter, this fails with the error:
+        # Unknown variable: 'mysql::params::exec_path' We don't entirely
+        # understand why, but adding that doesn't appear to harm anything,so
+        # we're leaving it here to keep the tests passing.
+        #
+        # It doesn't have to be an empty string in particular, but it does need
+        # to be set to something.
+        it { is_expected.to contain_mysql__db(title).with_mysql_exec_path('') }
+
+        context 'when create_database is false' do
+          let(:params) { super().merge(create_database: false) }
+
+          it { is_expected.not_to contain_mysql__db(title) }
+        end
+
+        context 'without mysql_user' do
+          let(:params) { super().reject { |k, _| k == :mysql_user } }
+
+          it { is_expected.not_to contain_mysql__db(title) }
+        end
+
+        context 'without mysql_password' do
+          let(:params) { super().reject { |k, _| k == :mysql_password } }
+
+          it { is_expected.not_to contain_mysql__db(title) }
         end
       end
     end
