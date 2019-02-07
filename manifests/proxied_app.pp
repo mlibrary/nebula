@@ -7,7 +7,7 @@
 # profile.
 
 # There are many keys in hiera for each instance, including some new ones
-# for this profile:
+# for this resource type:
 #   public_hostname: hostname users access
 #   url_root: root url segment/suffix on the public hostname; defaults to /
 #   protocol: which protocol the app serves; defaults to http
@@ -19,8 +19,12 @@
 #   ssl_key: the name (not full path) of the SSL key file;
 #            defaults to <public_hostname>.key
 #   sendfile_path: if set, make this path available for X-Sendfile
+#   single_sign_on: if set to 'cosign', configure Cosign; to be extended for Shibboleth
+#   cosign_factor: if set, requires this factor on /login
+#   whitelisted_ips: if set, only allow access from this array of IPs; otherwise nobaddies
+#   public_aliases: add a ServerAlias for each hostname listed here (for multihomed vhost dispatch)
 #
-# The defaults are applied at the named_instance class, not here.
+# Meaningful defaults are applied at the named_instance class, not here.
 
 define nebula::proxied_app(
   String  $public_hostname,
@@ -32,32 +36,31 @@ define nebula::proxied_app(
   String  $ssl_crt,
   String  $ssl_key,
   String  $static_path,
-  Optional[String]  $sendfile_path = undef,     # If set, XSendFile will be enabled here
+  Boolean $static_directories,
+  String  $single_sign_on,
+  Optional[String] $cosign_factor = undef,
+  Optional[String] $sendfile_path = undef,     # If set, XSendFile will be enabled here
+  Array[String]    $public_aliases = [],
+  Array[String]    $whitelisted_ips = [],
 ){
   # These are straightforward translations to maintain parity with the
   # ansible template. All of these names and semantics should be revisited
   # and likely decomposed into resources/fragments that can be assembled
   # by the web host after being exported or virtualized wherever needed.
-  $apache_app_hostname  = $hostname
-  $apache_app_name      = $title
-  $apache_cosign_factor = 'UMICH.EDU'
-  $apache_domain        = $public_hostname
-  $apache_port          = $port
-  $apache_terminate_ssl = $ssl
-  $apache_ssl_crt       = $ssl_crt
-  $apache_ssl_key       = $ssl_key
-  $apache_static_path   = $static_path
-  $apache_url_root      = $url_root
-
-  # TODO: Get these flags from instance config
-  $apache_cosign_deny_friend = false
-  $apache_static_directories = true
-  $apache_use_cosign         = true
-
-  # TODO: Determine the current needs for aliases/whitelisting and
-  # decide the best way to manage them. These are stubbed for now.
-  $apache_aliases = []
-  $apache_whitelisted_ips = []
+  $apache_app_hostname       = $hostname
+  $apache_app_name           = $title
+  $apache_cosign_factor      = $cosign_factor
+  $apache_domain             = $public_hostname
+  $apache_port               = $port
+  $apache_terminate_ssl      = $ssl
+  $apache_ssl_crt            = $ssl_crt
+  $apache_ssl_key            = $ssl_key
+  $apache_static_path        = $static_path
+  $apache_static_directories = $static_directories
+  $apache_url_root           = $url_root
+  $apache_use_cosign         = $single_sign_on ? { 'cosign' => true, default => false }
+  $apache_aliases            = $public_aliases
+  $apache_whitelisted_ips    = $whitelisted_ips
 
   # Not yet for actual management/distribution; verification pending
   file { "/sysadmin/archive/app-proxies/${title}.conf":

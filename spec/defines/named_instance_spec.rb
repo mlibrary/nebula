@@ -57,6 +57,14 @@ describe 'nebula::named_instance' do
         it { is_expected.to contain_exec("invalid_noauth_admin #{title} membership") }
       end
 
+      describe 'exported resources' do
+        subject { exported_resources }
+
+        it 'exports a proxied_app' do
+          is_expected.to contain_nebula__proxied_app(title)
+        end
+      end
+
       describe 'application user' do
         let(:home) { "/var/local/#{title}" }
 
