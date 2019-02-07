@@ -17,7 +17,6 @@ define nebula::named_instance(
   String        $mysql_exec_path = '',
   Optional[String] $mysql_user = undef,
   Optional[String] $mysql_password = undef,
-  String        $mysql_host = localhost,
   Boolean       $create_database = true,
   String        $url_root = '/',
   String        $protocol = 'http',         # proxy protocol, not user to front-end
@@ -210,7 +209,7 @@ define nebula::named_instance(
       mysql_exec_path => $mysql_exec_path,
       user            => $mysql_user,
       password        => $mysql_password,
-      host            => $mysql_host,
+      host            => '%',
     }
   }
 }

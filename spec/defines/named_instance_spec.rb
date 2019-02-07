@@ -224,15 +224,9 @@ describe 'nebula::named_instance' do
           is_expected.to contain_mysql__db(title).with(
             user: mysql_user,
             password: mysql_password,
-            host: 'localhost',
+            host: '%',
             grant: ['ALL'],
           )
-        end
-
-        context 'with mysql host' do
-          let(:params) { super().merge(mysql_host: 'some_mysql_host') }
-
-          it { is_expected.to contain_mysql__db(title).with_host('some_mysql_host') }
         end
 
         # Without the mysql_exec_path parameter, this fails with the error:
