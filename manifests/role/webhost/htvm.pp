@@ -11,8 +11,13 @@ class nebula::role::webhost::htvm (
 ) {
   include nebula::role::hathitrust
 
-  # not ready for this yet
-  # nebula::balanced_frontend { 'htvm': }
+  @@nebula::haproxy::binding { "${::hostname} hathitrust":
+    service       => 'hathitrust',
+    https_offload => false,
+    datacenter    => $::datacenter,
+    hostname      => $::hostname,
+    ipaddress     => $::ipaddress
+  }
 
   class { 'nebula::profile::networking::private':
     address_template => $private_address_template
