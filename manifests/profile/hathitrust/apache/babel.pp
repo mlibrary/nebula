@@ -19,6 +19,33 @@ class nebula::profile::hathitrust::apache::babel (
   String $gwt_code
 ) {
 
+  ### MONITORING
+
+  $monitor_location = '/monitor'
+  $cgi_dir = '/usr/local/lib/cgi-bin'
+  $monitor_dir = "${cgi_dir}/monitor"
+
+  file { $cgi_dir:
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755'
+  }
+
+  $monitor_requires = {
+    enforce  => 'any',
+    requires => [ 'local' ] + $haproxy_ips.map |String $ip| { "ip ${ip}" }
+  }
+
+  class { 'nebula::profile::monitor_pl':
+    directory  => $monitor_dir,
+    shibboleth => true,
+    solr_cores => lookup('nebula::hathitrust::monitor::solr_cores'),
+    mysql      => lookup('nebula::hathitrust::monitor::mysql')
+  }
+
+  ### CRON JOBS
+
   cron { 'log anon cron':
     command => "/htapps/babel/stats/bin/cron_apache_log.sh 2>&1 > /tmp/anon.out || /usr/bin/mail -s '${::hostname} log anon cron failed' lit-ae-automation@umich.edu 2>&1 > /dev/null",
     user    => 'root',
@@ -32,6 +59,8 @@ class nebula::profile::hathitrust::apache::babel (
     minute  => '23',
     hour    => '1',
   }
+
+  ## VHOST DEFINITION
 
   $servername = "${prefix}babel.${domain}"
 
@@ -51,6 +80,10 @@ class nebula::profile::hathitrust::apache::babel (
     # from babel-common
 
     aliases           => [
+      {
+        scriptalias => $monitor_location,
+        path        => $monitor_dir
+      },
       {
         aliasmatch => '^/robots.txt$',
         path       => "${sdrroot}/common/web/robots.txt"
@@ -249,6 +282,11 @@ class nebula::profile::hathitrust::apache::babel (
     <Files \"imgsrv\">
       SetHandler proxy:fcgi://${imgsrv_address}
     </Files>",
+      },
+      {
+        provider => 'location',
+        path     => '/monitor',
+        require  => $monitor_requires
       },
 
     ],
