@@ -17,7 +17,8 @@ define nebula::named_instance(
   String        $mysql_exec_path = '',
   Optional[String] $mysql_user = undef,
   Optional[String] $mysql_password = undef,
-  Optional[String] $mysql_host = undef,
+  String        $mysql_host = localhost,
+  Boolean       $create_database = true,
   String        $url_root = '/',
   String        $protocol = 'http',         # proxy protocol, not user to front-end
   String        $hostname = "app-${title}", # app host
@@ -204,10 +205,12 @@ define nebula::named_instance(
     content => template('nebula/named_instance/sudoers.erb'),
   }
 
-  mysql::db { $title:
-    mysql_exec_path => $mysql_exec_path,
-    user            => $mysql_user,
-    password        => $mysql_password,
-    host            => $mysql_host,
+  if  $create_database and $mysql_user and $mysql_password  {
+    mysql::db { $title:
+      mysql_exec_path => $mysql_exec_path,
+      user            => $mysql_user,
+      password        => $mysql_password,
+      host            => $mysql_host,
+    }
   }
 }

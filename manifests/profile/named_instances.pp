@@ -14,6 +14,7 @@ class nebula::profile::named_instances (
   String      $fauxpaas_pubkey,
   String      $fauxpaas_puma_config,
   String      $puma_wrapper,
+  Boolean     $create_databases = true,
   Hash[String,Hash] $instances = {}
 ) {
 
@@ -27,6 +28,7 @@ class nebula::profile::named_instances (
     puma_wrapper    => $puma_wrapper,
     pubkey          => $fauxpaas_pubkey,
     puma_config     => $fauxpaas_puma_config,
+    create_database => $create_databases
   }
 
   create_resources(nebula::named_instance, $instances, $defaults)
