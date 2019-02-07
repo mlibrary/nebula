@@ -51,8 +51,6 @@ describe 'nebula::unison::client' do
           .that_requires('Package[unison]')
       end
 
-      xit 'log rotation'
-
       it 'exports firewall resource' do
         expect(exported_resources).to contain_firewall("200 Unison: myinstance #{facts[:hostname]}").with(
           proto: 'tcp',

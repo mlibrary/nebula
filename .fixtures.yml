@@ -33,6 +33,9 @@ fixtures:
     reboot:
       repo: "puppetlabs/reboot"
       ref: "2.0.0"
+    logrotate:
+      repo: "puppet/logrotate"
+      ref: "3.4.0"
     php:
       repo: "puppet/php"
       ref: "6.0.2"
