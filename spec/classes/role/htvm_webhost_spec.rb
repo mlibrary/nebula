@@ -4,32 +4,15 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
-require 'faker'
 
-require_relative '../../support/contexts/with_mocked_nodes'
+require_relative '../../support/contexts/with_htvm_setup'
 
 describe 'nebula::role::webhost::htvm' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts) do
-        os_facts.merge(
-          hostname: 'thisnode',
-          datacenter: 'somedc',
-          networking: { ip: Faker::Internet.ip_v4_address, interfaces: {} },
-        )
-      end
-      let(:hiera_config) { 'spec/fixtures/hiera/hathitrust_config.yaml' }
-      let(:haproxy) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy' } }
-      let(:rolenode) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'rolenode' } }
-
-      include_context 'with mocked puppetdb functions', 'somedc', %w[haproxy rolenode], 'nebula::profile::haproxy' => %w[haproxy]
+      include_context 'with setup for htvm node', os_facts
 
       it { is_expected.to compile }
-
-      it 'exports a haproxy::binding resource for hathitrust' do
-        expect(exported_resources).to contain_nebula__haproxy__binding('thisnode hathitrust')
-          .with(service: 'hathitrust', datacenter: 'somedc', https_offload: false)
-      end
 
       it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,nfsvers=3,ro') }
 

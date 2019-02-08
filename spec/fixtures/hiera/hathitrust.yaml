@@ -104,3 +104,4 @@ nebula::profile::hathitrust::apache::babel::cache_paths:
   - /somewhere/whatever:1:2
   - /elsewhere/whatever:3:4
 
+umich::networks::staff: []

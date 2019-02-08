@@ -7,15 +7,25 @@
 # @example
 #   include nebula::role::webhost::htvm::test
 class nebula::role::webhost::htvm::test {
-  @@nebula::haproxy::binding { "${::hostname} test-hathitrust":
-    service       => 'test-hathitrust',
-    https_offload => true,
-    datacenter    => $::datacenter,
-    hostname      => $::hostname,
-    ipaddress     => $::ipaddress
-  }
+  # @@nebula::haproxy::binding { "${::hostname} test-hathitrust":
+  #   service       => 'test-hathitrust',
+  #   https_offload => true,
+  #   datacenter    => $::datacenter,
+  #   hostname      => $::hostname,
+  #   ipaddress     => $::ipaddress
+  # }
+
   include nebula::role::webhost::htvm
   include nebula::role::hathitrust::dev::app_host
   include nebula::profile::hathitrust::apache::test
 
+  lookup('umich::networks::staff').flatten.each |$network| {
+    firewall { "100 HTTP ${network['name']}":
+      proto  => 'tcp',
+      dport  => [80,443],
+      source => $network['block'],
+      state  => 'NEW',
+      action => 'accept',
+    }
+  }
 }
