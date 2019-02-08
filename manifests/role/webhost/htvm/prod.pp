@@ -9,4 +9,12 @@
 class nebula::role::webhost::htvm::prod {
   include nebula::role::webhost::htvm
   include nebula::profile::hathitrust::apache::logs
+
+  @@nebula::haproxy::binding { "${::hostname} hathitrust":
+    service       => 'hathitrust',
+    https_offload => false,
+    datacenter    => $::datacenter,
+    hostname      => $::hostname,
+    ipaddress     => $::ipaddress
+  }
 }

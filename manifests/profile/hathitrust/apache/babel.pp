@@ -16,7 +16,8 @@ class nebula::profile::hathitrust::apache::babel (
   Hash $ssl_params,
   String $prefix,
   String $domain,
-  String $gwt_code
+  String $gwt_code,
+  Array[String] $cache_paths = [ '/ram/choke:50:7' ],
 ) {
 
   ### MONITORING
@@ -44,17 +45,9 @@ class nebula::profile::hathitrust::apache::babel (
     mysql      => lookup('nebula::hathitrust::monitor::mysql')
   }
 
-  ### CRON JOBS
-
-  cron { 'log anon cron':
-    command => "/htapps/babel/stats/bin/cron_apache_log.sh 2>&1 > /tmp/anon.out || /usr/bin/mail -s '${::hostname} log anon cron failed' lit-ae-automation@umich.edu 2>&1 > /dev/null",
-    user    => 'root',
-    minute  => '0',
-    hour    => '2',
-  }
-
+  $joined_paths = $cache_paths.join(' ')
   cron { 'purge caches':
-    command => '/htapps/babel/mdp-misc/scripts/managecache.sh /htapps/babel/cache/download:99:1 /htapps/babel/cache:99:7 /ram/choke:50:7',
+    command => "/htapps/babel/mdp-misc/scripts/managecache.sh ${joined_paths}",
     user    => 'nobody',
     minute  => '23',
     hour    => '1',
