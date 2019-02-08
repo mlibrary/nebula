@@ -285,7 +285,7 @@ class nebula::profile::hathitrust::apache::babel (
     ],
 
     custom_fragment   =>  "
-    <Proxy \"fcgi://${imgsrv_address}\" enablereuse=on max=10>
+    <Proxy \"fcgi://${imgsrv_address}\" enablereuse=off max=10>
     </Proxy>",
 
   }
