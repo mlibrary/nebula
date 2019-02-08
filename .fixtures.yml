@@ -54,3 +54,6 @@ fixtures:
     resolv_conf:
       repo: "saz/resolv_conf"
       ref: "3.1.0"
+    ec2tagfacts:
+      repo: "bryana/ec2tagfacts"
+      ref: "0.3.0"

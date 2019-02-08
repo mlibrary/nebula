@@ -9,6 +9,7 @@
 class nebula::role::aws {
 
   include nebula::role::minimum
+  package { 'iptables-persistent': }
   include nebula::profile::aws::filesystem
 
   if $facts['os']['release']['major'] == '9' {

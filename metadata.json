@@ -23,7 +23,8 @@
     {"name": "stm/debconf", "version_requirement": ">= 2.1.0 < 3.0.0"},
     {"name": "camptocamp/kmod", "version_requirement": ">= 2.1.0 < 3.0.0"},
     {"name": "jdowning/rbenv", "version_requirement": ">= 2.2.0 < 3.0.0"},
-    {"name": "saz/resolv_conf", "version_requirement": ">= 3.1.0 < 4.0.0"}
+    {"name": "saz/resolv_conf", "version_requirement": ">= 3.1.0 < 4.0.0"},
+    {"name": "bryana/ec2tagfacts", "version_requirement": ">= 0.3.0 < 0.4.0"}
   ],
   "operatingsystem_support": [
     {
