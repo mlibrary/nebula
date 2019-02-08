@@ -34,7 +34,7 @@ class nebula::profile::hathitrust::apache::redirection (
       port              => '80',
       redirect_source   => '/',
       redirect_status   => 'permanent',
-      redirect_dest     => "https://${servername}",
+      redirect_dest     => "https://${servername}/",
       access_log_file   => "${vhost}/access.log",
       access_log_format => 'combined',
       error_log_file    => "${vhost}/error.log"

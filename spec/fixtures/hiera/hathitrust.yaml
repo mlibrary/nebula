@@ -99,3 +99,9 @@ nebula::profile::hathitrust::ingest_jobs::dcu_recipients:
 
 nebula::profile::hathitrust::ingest_jobs::crms_renewals_source: somebody@somewhere:/wherever/file
 nebula::profile::hathitrust::ingest_jobs::crms_renewals_dest: /somewhere/files/
+
+nebula::profile::hathitrust::apache::babel::cache_paths:
+  - /somewhere/whatever:1:2
+  - /elsewhere/whatever:3:4
+
+umich::networks::staff: []

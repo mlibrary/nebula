@@ -16,22 +16,44 @@ class nebula::profile::hathitrust::apache::babel (
   Hash $ssl_params,
   String $prefix,
   String $domain,
-  String $gwt_code
+  String $gwt_code,
+  Array[String] $cache_paths = [ '/ram/choke:50:7' ],
 ) {
 
-  cron { 'log anon cron':
-    command => "/htapps/babel/stats/bin/cron_apache_log.sh 2>&1 > /tmp/anon.out || /usr/bin/mail -s '${::hostname} log anon cron failed' lit-ae-automation@umich.edu 2>&1 > /dev/null",
-    user    => 'root',
-    minute  => '0',
-    hour    => '2',
+  ### MONITORING
+
+  $monitor_location = '/monitor'
+  $cgi_dir = '/usr/local/lib/cgi-bin'
+  $monitor_dir = "${cgi_dir}/monitor"
+
+  file { $cgi_dir:
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755'
   }
 
+  $monitor_requires = {
+    enforce  => 'any',
+    requires => [ 'local' ] + $haproxy_ips.map |String $ip| { "ip ${ip}" }
+  }
+
+  class { 'nebula::profile::monitor_pl':
+    directory  => $monitor_dir,
+    shibboleth => true,
+    solr_cores => lookup('nebula::hathitrust::monitor::solr_cores'),
+    mysql      => lookup('nebula::hathitrust::monitor::mysql')
+  }
+
+  $joined_paths = $cache_paths.join(' ')
   cron { 'purge caches':
-    command => '/htapps/babel/mdp-misc/scripts/managecache.sh /htapps/babel/cache/download:99:1 /htapps/babel/cache:99:7 /ram/choke:50:7',
+    command => "/htapps/babel/mdp-misc/scripts/managecache.sh ${joined_paths}",
     user    => 'nobody',
     minute  => '23',
     hour    => '1',
   }
+
+  ## VHOST DEFINITION
 
   $servername = "${prefix}babel.${domain}"
 
@@ -51,6 +73,10 @@ class nebula::profile::hathitrust::apache::babel (
     # from babel-common
 
     aliases           => [
+      {
+        scriptalias => $monitor_location,
+        path        => $monitor_dir
+      },
       {
         aliasmatch => '^/robots.txt$',
         path       => "${sdrroot}/common/web/robots.txt"
@@ -249,6 +275,11 @@ class nebula::profile::hathitrust::apache::babel (
     <Files \"imgsrv\">
       SetHandler proxy:fcgi://${imgsrv_address}
     </Files>",
+      },
+      {
+        provider => 'location',
+        path     => '/monitor',
+        require  => $monitor_requires
       },
 
     ],

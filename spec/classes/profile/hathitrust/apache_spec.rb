@@ -92,7 +92,7 @@ describe 'nebula::profile::hathitrust::apache' do
 
         it {
           is_expected.to contain_apache__vhost('foo.babel.example.org non-ssl').with(
-            redirect_dest: 'https://foo.babel.example.org',
+            redirect_dest: 'https://foo.babel.example.org/',
             servername: 'foo.babel.example.org',
           )
         }
@@ -137,6 +137,12 @@ describe 'nebula::profile::hathitrust::apache' do
       it do
         is_expected.to contain_concat_fragment('monitor mysql').with(tag: 'monitor_config',
                                                                      content: { 'mysql' => { 'param1' => 'value1', 'param2' => 'value2' } }.to_yaml)
+      end
+
+      it do
+        # set via hiera
+        is_expected.to contain_cron('purge caches')
+          .with_command('/htapps/babel/mdp-misc/scripts/managecache.sh /somewhere/whatever:1:2 /elsewhere/whatever:3:4')
       end
     end
   end

@@ -145,7 +145,7 @@ class nebula::profile::hathitrust::apache (
   }
 
 
-  ['default','redirection','babel','www','catalog'].each |$vhost| {
+  ['redirection','babel','www','catalog'].each |$vhost| {
     class { "${title}::${vhost}":
       * =>  $default_vhost_params
     }
