@@ -10,7 +10,6 @@ dmi: {}
 installed_backports: []
 datacenter: "mydatacenter"
 mountpoints: {}
-architecture: "amd64"
 
 # required by camptocamp/kmod 2.1.0
 augeasversion: '1.4.0'

@@ -16,6 +16,12 @@ default_facts = {
   facterversion: Facter.version,
 }
 
+# The os.architecture fact was not being populated, though the rest of the os hash is.
+# This will promote the os.architecture value to the top level if it is set, otherwise
+# push the top level down, if it is set, otherwise set both to amd64.
+# We do not anticipate a case where these should remain different values in a test context.
+add_custom_fact :architecture, ->(_os, facts) { facts[:os][:architecture] ||= (facts[:architecture] || 'amd64') }
+
 default_facts_path = File.expand_path(File.join(File.dirname(__FILE__), 'default_facts.yml'))
 default_module_facts_path = File.expand_path(File.join(File.dirname(__FILE__), 'default_module_facts.yml'))
 
