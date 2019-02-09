@@ -256,6 +256,23 @@ describe 'nebula::named_instance' do
           it { is_expected.not_to contain_mysql__db(title) }
         end
       end
+
+      describe 'solr' do
+        it { is_expected.not_to contain_exec('init-solr-core') }
+        it { is_expected.not_to contain_file("#{path}/current") }
+
+        context 'with solr params' do
+          let(:params) do
+            super().merge(
+              use_solr: true,
+              solr_home: '/nonexistent/solr/cores',
+            )
+
+            it { is_expected.to contain_exec('init-solr-core') }
+            it { is_expected.to contain_file("#{path}/current") }
+          end
+        end
+      end
     end
   end
 end
