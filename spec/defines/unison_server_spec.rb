@@ -20,15 +20,29 @@ describe 'nebula::unison::server' do
       end
 
       it { is_expected.to contain_package('unison') }
-      it { is_expected.to contain_file('/etc/systemd/system/unison@.service') }
 
       it do
-        is_expected.to contain_file('/etc/systemd/system/unison@myinstance.service.d/drop-in.conf')
-          .with_content(%r{.*Requires=fs1.mount.*ExecStart.*-socket 12345.*}m)
+        is_expected.to contain_file('/etc/systemd/system/unison-myinstance.service')
+          .with_content(<<~EOT)
+            [Unit]
+            Description=myinstance Unison
+            After=network.target
+            Requires=fs1.mount
+
+            [Service]
+            Type=simple
+            RemainAfterExit=no
+            Restart=always
+            Environment=HOME=/root
+            ExecStart=/usr/bin/unison -socket 12345
+
+            [Install]
+            WantedBy=multi-user.target
+        EOT
       end
 
       it do
-        is_expected.to contain_service('unison@myinstance')
+        is_expected.to contain_service('unison-myinstance')
           .with(enable: true, ensure: 'running')
           .that_requires('Package[unison]')
       end

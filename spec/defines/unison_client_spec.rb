@@ -21,8 +21,25 @@ describe 'nebula::unison::client' do
       end
 
       it do
-        is_expected.to contain_file('/etc/systemd/system/unison-client@myinstance.service.d/drop-in.conf')
-          .with_content(%r{.*Requires=fs1.mount.*ExecStart.*/usr/local/bin/unisonsync myinstance.*}m)
+        is_expected.to contain_file('/etc/systemd/system/unison-client-myinstance.service')
+          .with_content(<<~EOT)
+            [Unit]
+            Description=myinstance somehost.default.invalid sync (unison)
+            After=network.target
+            Requires=fs1.mount
+
+            [Service]
+            Type=simple
+            RemainAfterExit=no
+            Restart=always
+            Environment=HOME=/root
+            WatchdogSec=7200
+            NotifyAccess=all
+            ExecStart=/usr/local/bin/unisonsync myinstance
+
+            [Install]
+            WantedBy=multi-user.target
+        EOT
       end
 
       it do
@@ -46,7 +63,7 @@ describe 'nebula::unison::client' do
       end
 
       it do
-        is_expected.to contain_service('unison-client@myinstance')
+        is_expected.to contain_service('unison-client-myinstance')
           .with(enable: true, ensure: 'running')
           .that_requires('Package[unison]')
       end
