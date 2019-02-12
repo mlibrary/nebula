@@ -49,7 +49,7 @@ define nebula::named_instance(
   # Add sudoers and passed users to the group
   (lookup('nebula::usergroup::membership')['sudo'] + $users).each |$user| {
     exec { "${user} ${title} membership":
-      unless  => "/bin/grep -q ${title}\\S*${user} /etc/group",
+      unless  => "/bin/grep -q '${title}\\S*${user}' /etc/group",
       onlyif  => "/usr/bin/id ${user}",
       command => "/usr/sbin/usermod -aG ${title} ${user}",
     }
