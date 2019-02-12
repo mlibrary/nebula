@@ -258,19 +258,44 @@ describe 'nebula::named_instance' do
       end
 
       describe 'solr' do
-        it { is_expected.not_to contain_exec('init-solr-core') }
+        it { is_expected.to have_nebula__named_instance__solr_core_resource_count(0) }
         it { is_expected.not_to contain_file("#{path}/current") }
 
         context 'with solr params' do
           let(:params) do
             super().merge(
-              use_solr: true,
-              solr_home: '/nonexistent/solr/cores',
+              solr_cores: {
+                'somecore' => {
+                  'solr_home' => '/nonexistent/solr',
+                },
+              },
             )
-
-            it { is_expected.to contain_exec('init-solr-core') }
-            it { is_expected.to contain_file("#{path}/current") }
           end
+
+          it do
+            is_expected.to contain_nebula__named_instance__solr_core('somecore').with(
+              instance_title: title,
+              instance_path: path,
+            )
+          end
+        end
+
+        context 'with two solr cores' do
+          let(:params) do
+            super().merge(
+              solr_cores: {
+                'core1' => {
+                  'solr_home' => '/nonexistent/solr',
+                },
+                'core2' => {
+                  'solr_home' => '/nonexistent/solr',
+                },
+              },
+            )
+          end
+
+          it { is_expected.to contain_nebula__named_instance__solr_core('core1') }
+          it { is_expected.to contain_nebula__named_instance__solr_core('core2') }
         end
       end
     end

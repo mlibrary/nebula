@@ -21,11 +21,7 @@ define nebula::named_instance(
   String        $url_root = '/',
   String        $protocol = 'http',         # proxy protocol, not user to front-end
   String        $hostname = "app-${title}", # app host
-  String        $solr_host = 'localhost',
-  Integer       $solr_port = 8081,
-  Optional[String] $solr_home = undef, # directory containing all solr cores
-  String        $solr_core = $title,
-  Boolean       $use_solr = false,
+  Hash          $solr_cores = {},
   String        $static_path = "${path}/current/public",
   Boolean       $static_directories = false,
   Boolean       $ssl = true,
@@ -218,39 +214,13 @@ define nebula::named_instance(
     }
   }
 
-  if $use_solr and $solr_home {
-    $solr_path = "${solr_home}/${solr_core}"
+  create_resources(nebula::named_instance::solr_core,
+    $solr_cores,
+    {
+      instance_title => $title,
+      instance_path    => $path
+    }
+  )
 
-    # make a stub version 0
-    file {
-      ["${path}/releases","${path}/releases/0","${path}/releases/0/solr",$solr_path]:
-        ensure => 'directory',
-        mode   => '2775',
-        owner  => 'solr',
-        group  => 'solr',
-    }
-    file { "${path}/releases/0/solr/conf":
-      ensure => 'link',
-      target => '/l/local/solr-current/server/solr/configsets/basic_configs/conf'
-    }
-    file { "${solr_path}/conf":
-      ensure => 'link',
-      target => "${path}/current/solr/conf",
-    }
-
-    # link to version 0 if there isn't a real version linked yet
-    file { "${path}/current":
-      ensure  => 'link',
-      target  => "${path}/releases/0",
-      replace => false,
-    }
-
-    exec { 'init-solr-core':
-      # need to transform title-like-this to snake_case
-      # missing core_title
-      unless  => "/usr/bin/wget --quiet http://${solr_host}:${solr_port}/solr/${solr_core}/admin/ping",
-      command => "/usr/bin/wget --quiet \"http://${solr_host}:${solr_port}/solr/admin/cores?action=CREATE&name=${solr_core}&instanceDir=${solr_path}&config=solrconfig.xml&dataDir=data\"",
-    }
-  }
 
 }
