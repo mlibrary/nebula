@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -11,11 +11,11 @@
 #   include nebula::profile::tools_lib::apache
 
 class nebula::profile::tools_lib::apache (
-  String $servername = 'tools.lib.umich.edu',
+  String $servername,
+  String $keyname,
 ) {
 
   $docroot = '/srv/www'
-  $keyname = 'tools.lib.umich.edu'
 
   file {
     default:
@@ -47,11 +47,8 @@ class nebula::profile::tools_lib::apache (
       source => "https://${http_files}/tools.lib/rest/index.html"
   }
 
-  $chain_crt = lookup('nebula::profile::ssl_keypair::chain_crt')
-
   class { 'nebula::profile::ssl_keypair':
     common_name => $keyname,
-    chain_crt   => $chain_crt
   }
 
   class { 'apache':
@@ -70,6 +67,8 @@ class nebula::profile::tools_lib::apache (
     indexes => ['index.html']
   }
 
+  $chain_crt = lookup('nebula::profile::ssl_keypair::chain_crt')
+
   apache::vhost { "${servername} ssl":
     servername          => $servername,
     port                => '443',
@@ -77,7 +76,6 @@ class nebula::profile::tools_lib::apache (
     access_log_format   => 'combined',
     ssl                 => true,
     ssl_protocol        => '+TLSv1.2',
-    #ssl_cipher         => 'ECDHE-RSA-AES256-GCM-SHA384',
     ssl_cert            => "/etc/ssl/certs/${keyname}.crt",
     ssl_key             => "/etc/ssl/private/${keyname}.key",
     ssl_chain           => "/etc/ssl/certs/${chain_crt}",
@@ -116,7 +114,7 @@ class nebula::profile::tools_lib::apache (
     port            => '80',
     redirect_source => '/',
     redirect_status => 'permanent',
-    redirect_dest   => "https://${servername}",
+    redirect_dest   => "https://${servername}/",
   }
 
   firewall { '200 HTTP':

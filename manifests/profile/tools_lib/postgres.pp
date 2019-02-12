@@ -10,16 +10,21 @@
 #   include nebula::profile::tools_lib::postgres
 
 class nebula::profile::tools_lib::postgres {
+  class { 'postgresql::globals':
+    encoding => 'UTF-8',
+    locale   => 'C.UTF-8',
+  }
+
   class { 'postgresql::server':
   }
 
   postgresql::server::db {
     'jira':
       user     => 'jira',
-      password => postgresql_password('jira', lookup('nebula::profile::tools_lib::mysql::jira::password')),
+      password => postgresql_password('jira', lookup('nebula::profile::tools_lib::db::jira::password')),
     ;
     'confluence':
       user     => 'confluence',
-      password => postgresql_password('confluence', lookup('nebula::profile::tools_lib::mysql::confluence::password')),
+      password => postgresql_password('confluence', lookup('nebula::profile::tools_lib::db::confluence::password')),
   }
 }

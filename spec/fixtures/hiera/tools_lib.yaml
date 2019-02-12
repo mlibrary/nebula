@@ -1,3 +1,11 @@
+nebula::role::tools_lib::domain: atlassian.example.com
 nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt
-nebula::profile::tools_lib::mysql::jira::password: jirapw
-nebula::profile::tools_lib::mysql::confluence::password: confpw
+nebula::profile::tools_lib::db::jira::password: jirapw
+nebula::profile::tools_lib::db::confluence::password: confpw
+nebula::profile::tools_lib::jdk::cert_name: example.com.crt
+nebula::profile::tools_lib::jdk::version_major: 8u999
+nebula::profile::tools_lib::jdk::version_minor: z99
+nebula::profile::tools_lib::apache::keyname: atlassian.example.com
+nebula::profile::tools_lib::apache::servername: atlassian.example.com
+confluence::version: '6.14.1'
+jira::version: '7.13.1'

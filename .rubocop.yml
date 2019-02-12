@@ -9,6 +9,7 @@ AllCops:
   - bin/*
   - ".vendor/**/*"
   - Gemfile
+  - Puppetfile
   - Rakefile
   - pkg/**/*
   - spec/fixtures/**/*
