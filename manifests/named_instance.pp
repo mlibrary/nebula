@@ -222,5 +222,4 @@ define nebula::named_instance(
     }
   )
 
-
 }
