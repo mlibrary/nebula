@@ -67,6 +67,14 @@ describe 'nebula::named_instance' do
         it 'exports a proxied_app' do
           is_expected.to contain_nebula__proxied_app(title)
         end
+
+        it 'exports a moku init exec' do
+          is_expected.to contain_exec("#{title} #{os_facts[:hostname]} moku init").with(
+            command: "moku init < '/tmp/.moku_init_#{title}'",
+            require: "File[/tmp/.moku_init_#{title}]",
+            onlyif: "moku stat #{title}",
+          )
+        end
       end
 
       describe 'application user' do
