@@ -20,26 +20,17 @@ describe 'nebula::unison::client' do
         }
       end
 
-      it do
-        is_expected.to contain_file('/etc/systemd/system/unison-client-myinstance.service')
-          .with_content(<<~EOT)
-            [Unit]
-            Description=myinstance somehost.default.invalid sync (unison)
-            After=network.target
-            Requires=fs1.mount
-
-            [Service]
-            Type=simple
-            RemainAfterExit=no
-            Restart=always
-            Environment=HOME=/root
-            WatchdogSec=7200
-            NotifyAccess=all
-            ExecStart=/usr/local/bin/unisonsync myinstance
-
-            [Install]
-            WantedBy=multi-user.target
-        EOT
+      [
+        'Description=myinstance somehost.default.invalid sync \(unison\)',
+        'Requires=fs1.mount',
+        'WatchdogSec=7200',
+        'Environment=HOME=/root',
+        'ExecStart=/usr/local/bin/unisonsync myinstance',
+      ].each do |line|
+        it do
+          is_expected.to contain_file('/etc/systemd/system/unison-client-myinstance.service')
+            .with_content(%r{^#{line}$}m)
+        end
       end
 
       it do

@@ -21,24 +21,16 @@ describe 'nebula::unison::server' do
 
       it { is_expected.to contain_package('unison') }
 
-      it do
-        is_expected.to contain_file('/etc/systemd/system/unison-myinstance.service')
-          .with_content(<<~EOT)
-            [Unit]
-            Description=myinstance Unison
-            After=network.target
-            Requires=fs1.mount
-
-            [Service]
-            Type=simple
-            RemainAfterExit=no
-            Restart=always
-            Environment=HOME=/root
-            ExecStart=/usr/bin/unison -socket 12345
-
-            [Install]
-            WantedBy=multi-user.target
-        EOT
+      [
+        'Description=myinstance Unison',
+        'Requires=fs1.mount',
+        'Environment=HOME=/root',
+        'ExecStart=/usr/bin/unison -socket 12345',
+      ].each do |line|
+        it do
+          is_expected.to contain_file('/etc/systemd/system/unison-myinstance.service')
+            .with_content(%r{^#{line}$}m)
+        end
       end
 
       it do
