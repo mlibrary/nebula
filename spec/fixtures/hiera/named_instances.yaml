@@ -1,0 +1,38 @@
+# Copyright (c) 2019 The Regents of the University of Michigan.
+# All Rights Reserved. Licensed according to the terms of the Revised
+# BSD License. See LICENSE.txt for details.
+nebula::named_instances:
+  first-instance:
+    name: first-instance-name
+    public_hostname: first-instance.default.invalid
+    url_root: /first-instance-root
+    path: /www-invalid/first-instance/app
+    ssl_crt: first-instance.invalid.crt
+    ssl_key: first-instance.invalid.key
+    protocol: https
+    hostname: first-instance-hostname
+    port: 10001
+    uid: 1001
+    gid: 101
+    users:
+    - one_user
+    - another_user
+    subservices:
+    - one_subservice
+    - another_subservice
+    sendfile_path: /invalid/default/path
+  minimal-instance:
+    #name: minimal-instance
+    public_hostname: minimal.default.invalid
+    #url_root: ''
+    path: /www-invalid/minimal/app
+    #ssl_crt: ''
+    #ssl_key: ''
+    #protocol: https
+    #hostname: minimal-instance
+    port: 10002
+    uid: 1002
+    gid: 102
+    #users: []
+    #subservices: []
+    #sendfile_path: ''

@@ -70,8 +70,8 @@ describe 'nebula::named_instance' do
 
         it 'exports a moku init exec' do
           is_expected.to contain_exec("#{title} #{os_facts[:hostname]} moku init").with(
-            command: "moku init < '/tmp/.moku_init_#{title}'",
-            require: "File[/tmp/.moku_init_#{title}]",
+            command: "moku init < '/tmp/.moku_init_#{title}.json'",
+            require: "File[/tmp/.moku_init_#{title}.json]",
             onlyif: "moku stat #{title}",
           )
         end

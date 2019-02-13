@@ -214,8 +214,8 @@ define nebula::named_instance(
   }
 
   @@exec { "${title} ${::hostname} moku init":
-    command => "moku init < '/tmp/.moku_init_${title}'",
-    require => File["/tmp/.moku_init_${title}"],
+    command => "moku init < '/tmp/.moku_init_${title}.json'",
+    require => File["/tmp/.moku_init_${title}.json"],
     onlyif  => "moku stat ${title}",
   }
 }
