@@ -1,0 +1,8 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - named_instances
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'

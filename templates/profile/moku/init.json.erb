@@ -32,11 +32,15 @@
   },
 
   "deploy": {
-    "deploy_dir": "/my/deploy/dir",
+    "deploy_dir": "<%= @path %>",
     "env": {
       "rack_env": "production"
     },
+<% if @subservices.size == 0 -%>
     "systemd_services": [],
+<% else -%>
+    "systemd_services": ["<%= @subservices.join('", "') %>"],
+<% end -%>
     "sites": {
       "user": "test-norails",
       "local_site": [ "localhost", "another_localhost" ],

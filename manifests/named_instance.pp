@@ -221,5 +221,4 @@ define nebula::named_instance(
       instance_path    => $path
     }
   )
-
 }
