@@ -11,7 +11,7 @@ class nebula::role::tools_lib {
 
   include nebula::profile::tools_lib::apache
   include nebula::profile::tools_lib::postgres
-  include nebula::profile::tools_lib::adoptopenjdk
+  include nebula::profile::tools_lib::jdk
   #include nebula::profile::tools_lib::
   # need to include systemd unit files, is there an example for this?
   #include nebula::profile::

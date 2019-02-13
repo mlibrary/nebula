@@ -12,7 +12,7 @@ fixtures:
     apt:
       repo: "puppetlabs/apt"
       ref: "4.5.1"
-    apt:
+    archive:
       repo: "puppet/archive"
       ref: "3.2.1"
     concat:
@@ -66,6 +66,9 @@ fixtures:
     java:
       repo: "puppetlabs/java"
       ref: "3.3.0"
+    java_ks:
+      repo: "puppetlabs/java_ks"
+      ref: "2.3.0"
     confluence:
       repo: "puppet/confluence"
       ref: "3.2.0"

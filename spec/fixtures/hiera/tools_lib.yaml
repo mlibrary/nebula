@@ -1,1 +1,3 @@
 nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt
+nebula::profile::tools_lib::mysql::jira::password: jirapw
+nebula::profile::tools_lib::mysql::confluence::password: confpw

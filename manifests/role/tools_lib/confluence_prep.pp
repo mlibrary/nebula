@@ -25,12 +25,8 @@ class nebula::role::tools_lib::confluence_prep {
   }
   include nebula::profile::tools_lib::mysql
 
-  java::oracle { 'jdk8' :
-    ensure        => 'present',
-    version_major => '8u192', # the most recent
-    version_minor => 'b12', # generally dictated by major version, see oracle website
-    url_hash      => '750e1c8617c5452694857ad95c3ee230', # scrape from oracle website
-    java_se       => 'jdk',
+  class { 'nebula::profile::tools_lib::jdk':
+    oracle => true,
   }
 
 #  class { 'confluence::service':
@@ -40,7 +36,8 @@ class nebula::role::tools_lib::confluence_prep {
 #  }
 
   class { 'confluence':
-    javahome   => '/usr/lib/jvm/jdk1.8.0_192', # must match java version above
+    require    => Class['nebula::profile::tools_lib::jdk'],
+    javahome   => Class['nebula::profile::tools_lib::jdk']['java_home'],
     version    => '6.3.3', # ancient version we're moving away from
     installdir => '/opt/conflunce',
     homedir    => '/var/opt/confluence',

@@ -12,6 +12,10 @@ describe 'nebula::role::tools_lib' do
       let(:hiera_config) { 'spec/fixtures/hiera/tools_lib_config.yaml' }
 
       it { is_expected.to compile }
+
+      it do
+        is_expected.to contain_class('nebula::profile::tools_lib::jdk').with(oracle: false)
+      end
     end
   end
 end
