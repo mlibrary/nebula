@@ -20,9 +20,17 @@ describe 'nebula::unison::client' do
         }
       end
 
-      it do
-        is_expected.to contain_file('/etc/systemd/system/unison-client@myinstance.service.d/drop-in.conf')
-          .with_content(%r{.*Requires=fs1.mount.*ExecStart.*/usr/local/bin/unisonsync myinstance.*}m)
+      [
+        'Description=myinstance somehost.default.invalid sync \(unison\)',
+        'Requires=fs1.mount',
+        'WatchdogSec=7200',
+        'Environment=HOME=/root',
+        'ExecStart=/usr/local/bin/unisonsync myinstance',
+      ].each do |line|
+        it do
+          is_expected.to contain_file('/etc/systemd/system/unison-client-myinstance.service')
+            .with_content(%r{^#{line}$}m)
+        end
       end
 
       it do
@@ -46,7 +54,7 @@ describe 'nebula::unison::client' do
       end
 
       it do
-        is_expected.to contain_service('unison-client@myinstance')
+        is_expected.to contain_service('unison-client-myinstance')
           .with(enable: true, ensure: 'running')
           .that_requires('Package[unison]')
       end

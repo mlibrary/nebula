@@ -6,20 +6,17 @@ define nebula::unison::server (
   String  $root,
   Array[String] $paths,
   Array[String] $filesystems,
+  String $home = '/root',
   Integer $port = 2647
 ) {
-  include nebula::profile::unison::server
+  ensure_packages(['unison'])
 
-  file { "/etc/systemd/system/unison@${title}.service.d":
-    ensure => 'directory'
+  file { "/etc/systemd/system/unison-${title}.service":
+    content => template('nebula/unison/server/service.erb'),
+    notify  => "Service[unison-${title}]"
   }
 
-  file { "/etc/systemd/system/unison@${title}.service.d/drop-in.conf":
-    content => template('nebula/unison/server/drop-in.conf.erb'),
-    notify  => "Service[unison@${title}]"
-  }
-
-  service { "unison@${title}":
+  service { "unison-${title}":
     ensure     => 'running',
     enable     => true,
     hasrestart => true,
