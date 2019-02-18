@@ -77,7 +77,7 @@ describe 'nebula::named_instance' do
           end
 
           it 'exports a concat_fragment with hostname => datacenter' do
-            is_expected.to contain_concat_fragment("#{title} #{hostname} deploy init").with(
+            is_expected.to contain_concat_fragment("#{title} deploy init deploy.sites.nodes.#{hostname}").with(
               target: "#{title} deploy init",
               content: "{\"deploy\": {\"sites\": {\"nodes\": {\"#{hostname}\": \"#{datacenter}\"}}}}",
             )
