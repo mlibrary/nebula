@@ -1,7 +1,6 @@
-1. Export `onlyif` execs for `moku init`
-========================================
+# 1. Don't export `moku init` execs
 
-Date: 2019-02-08
+Date: 2019-02-15
 
 Status
 ------
@@ -50,40 +49,51 @@ they are very hard to test, and they are very ugly and hard to read.
 
 In addition to all this, the `moku init` command requires that a json
 file exist on the deploy host for each application (based on its
-hieradata).
+hieradata). Among other things, this json file contains a hash, keyed on
+datacenter, of lists of application hosts.
+
+It is unacceptable for the deploy host to run `moku init` with an
+incomplete list of application hosts.
 
 Decision
 --------
 
-We will add a `moku stat` command which will return 0 if and only if
-moku is ready to receive a `moku init`.
+We will run `moku init` by hand but have puppet manage the configuration
+json. Also, the init command will accept application hosts to be keyed
+on hostname instead of datacenter, so instead of:
 
-This way, we can use exported exec resources that use the `onlyif`
-parameter, like this:
-
+```yaml
+deploy:
+  sites:
+    hatcher:
+    - node_1
+    - node_2
+    macc:
+    - node_3
+    - node_4
 ```
-@@exec { "${title} ${::hostname} moku init":
-  command => 'moku init',
-  onlyif  => 'moku stat',
-}
+
+We'll have:
+
+```yaml
+deploy:
+  sites:
+    nodes:
+      node_1: hatcher
+      node_2: hatcher
+      node_3: macc
+      node_4: macc
 ```
 
-If `moku stat` exits with something other than 0, puppet will consider
-this exec to be a success without actually running it. If `moku stat`
-does exit with 0, then puppet will consider this to succeed if and only
-if `moku init` succeeds.
-
-As for the json files, we don't mind them existing even when they aren't
-needed, so the deploy host can create them for every application
-regardless of whether it exists yet.
+That way, we don't need to supply separate order numbers for each
+datacenter or try and come up with a way to do anything clever with the
+way concat fragments handle json. Each named instance can simply export
+a line with its hostname and datacenter and be done.
 
 Consequences
 ------------
 
-Moku will need to be able to run moku stat in a way that prevents race
-conditions, which can be delicate. Also, the more exported resources we
-add, the more our need to figure out a way to test the catalogue
-increases.
-
-Moku will need to be able to handle many `moku stat` requests in a row
-every half hour, forever.
+We'll have to run moku init by hand, but subsequent configuration has to
+be done by hand anyway, and it's still helpful for puppet to set up the
+json with truthful information about which hosts are ready to serve an
+application.
