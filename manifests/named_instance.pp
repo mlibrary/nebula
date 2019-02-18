@@ -213,7 +213,7 @@ define nebula::named_instance(
     }
   }
 
-  @@concat_fragment { "${title} ${::hostname} deploy init":
+  @@concat_fragment { "${title} deploy init deploy.sites.nodes.${::hostname}":
     target  => "${title} deploy init",
     content => "{\"deploy\": {\"sites\": {\"nodes\": {\"${::hostname}\": \"${::datacenter}\"}}}}",
   }
