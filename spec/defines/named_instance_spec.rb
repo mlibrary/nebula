@@ -68,12 +68,20 @@ describe 'nebula::named_instance' do
           is_expected.to contain_nebula__proxied_app(title)
         end
 
-        it 'exports a moku init exec' do
-          is_expected.to contain_exec("#{title} #{os_facts[:hostname]} moku init").with(
-            command: "moku init < '/tmp/.moku_init_#{title}.json'",
-            require: "File[/tmp/.moku_init_#{title}.json]",
-            onlyif: "moku stat #{title}",
-          )
+        context 'with a random hostname and datacenter' do
+          let(:hostname) { Faker::Internet.domain_word }
+          let(:datacenter) { Faker::Internet.domain_word }
+          let(:facts) do
+            super().merge(hostname: hostname,
+                          datacenter: datacenter)
+          end
+
+          it 'exports a concat_fragment with hostname => datacenter' do
+            is_expected.to contain_concat_fragment("#{title} #{hostname} deploy init").with(
+              target: "#{title} deploy init",
+              content: "{\"deploy\": {\"sites\": {\"nodes\": {\"#{hostname}\": \"#{datacenter}\"}}}}",
+            )
+          end
         end
       end
 

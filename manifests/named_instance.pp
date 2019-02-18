@@ -213,9 +213,8 @@ define nebula::named_instance(
     }
   }
 
-  @@exec { "${title} ${::hostname} moku init":
-    command => "moku init < '/tmp/.moku_init_${title}.json'",
-    require => File["/tmp/.moku_init_${title}.json"],
-    onlyif  => "moku stat ${title}",
+  @@concat_fragment { "${title} ${::hostname} deploy init":
+    target  => "${title} deploy init",
+    content => "{\"deploy\": {\"sites\": {\"nodes\": {\"${::hostname}\": \"${::datacenter}\"}}}}",
   }
 }
