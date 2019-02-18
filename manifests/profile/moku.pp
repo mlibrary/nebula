@@ -77,6 +77,54 @@ class nebula::profile::moku (
         content => "{\"permissions\": {\"edit\": ${users}}}",
         ;
 
+      "${name} deploy init infrastructure.db.url":
+        content => "{\"infrastructure\": {\"db\": {\"url\": \"TODO\"}}}",
+        ;
+
+      "${name} deploy init infrastructure.db.adapter":
+        content => "{\"infrastructure\": {\"db\": {\"adapter\": \"TODO\"}}}",
+        ;
+
+      "${name} deploy init infrastructure.db.username":
+        content => "{\"infrastructure\": {\"db\": {\"username\": \"TODO\"}}}",
+        ;
+
+      "${name} deploy init infrastructure.db.password":
+        content => "{\"infrastructure\": {\"db\": {\"password\": \"TODO\"}}}",
+        ;
+
+      "${name} deploy init infrastructure.db.host":
+        content => "{\"infrastructure\": {\"db\": {\"host\": \"TODO\"}}}",
+        ;
+
+      "${name} deploy init infrastructure.db.port":
+        content => "{\"infrastructure\": {\"db\": {\"port\": \"TODO\"}}}",
+        ;
+
+      "${name} deploy init infrastructure.db.database":
+        content => "{\"infrastructure\": {\"db\": {\"database\": \"TODO\"}}}",
+        ;
+
+      "${name} deploy init infrastructure.base_dir":
+        content => "{\"infrastructure\": {\"base_dir\": \"TODO\"}}",
+        ;
+
+      "${name} deploy init infrastructure.bind":
+        content => "{\"infrastructure\": {\"bind\": \"TODO\"}}",
+        ;
+
+      "${name} deploy init infrastructure.relative_url_root":
+        content => "{\"infrastructure\": {\"relative_url_root\": \"TODO\"}}",
+        ;
+
+      "${name} deploy init infrastructure.redis.1":
+        content => "{\"infrastructure\": {\"redis\": {\"1\": \"TODO\"}}}",
+        ;
+
+      "${name} deploy init infrastructure.solr.1":
+        content => "{\"infrastructure\": {\"solr\": {\"1\": \"TODO\"}}}",
+        ;
+
       "${name} deploy init deploy.deploy_dir":
         content => "{\"deploy\": {\"deploy_dir\": \"${path}\"}}",
         ;
