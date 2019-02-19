@@ -66,7 +66,7 @@ class nebula::profile::hathitrust::apache::www (
       },
       {
         provider => 'directory',
-        path     => "/htapps/apps/usdocs_registry/public",
+        path     => '/htapps/apps/usdocs_registry/public',
         require  => $default_access
       }
     ],
