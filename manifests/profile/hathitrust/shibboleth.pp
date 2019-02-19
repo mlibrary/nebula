@@ -58,7 +58,6 @@ class nebula::profile::hathitrust::shibboleth () {
     recurse => true,
     purge   => true,
     links   => 'follow',
-    notify  => Service['shibd'],
     source  => 'puppet:///shibboleth'
   }
 
