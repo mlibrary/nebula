@@ -3,7 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 nebula::named_instances:
   first-instance:
-    url: git@github.com:mlibrary/first_invalid_default
+    source_url: git@github.com:mlibrary/first_invalid_default
     public_hostname: first-instance.default.invalid
     url_root: /first-instance-root
     path: /www-invalid/first-instance/app
@@ -22,7 +22,7 @@ nebula::named_instances:
     - another_subservice
     sendfile_path: /invalid/default/path
   minimal-instance:
-    url: git@github.com:mlibrary/nebula
+    source_url: git@github.com:mlibrary/nebula
     public_hostname: minimal.default.invalid
     #url_root: ''
     path: /www-invalid/minimal/app
