@@ -10,9 +10,6 @@ class nebula::profile::moku (
   String $init_directory = '/etc/moku/init',
 ) {
   lookup('nebula::named_instances').each |$name, $instance| {
-    $url = $instance['url']
-    $path = $instance['path']
-
     if has_key($instance, 'users') {
       $users = to_json($instance['users'])
     } else {
@@ -38,7 +35,7 @@ class nebula::profile::moku (
         ;
 
       "${name} deploy init instance.source.url":
-        content => "{\"instance\": {\"source\": {\"url\": \"${url}\"}}}",
+        content => "{\"instance\": {\"source\": {\"url\": \"${instance['source_url']}\"}}}",
         ;
 
       "${name} deploy init instance.source.commitish":
@@ -78,59 +75,47 @@ class nebula::profile::moku (
         ;
 
       "${name} deploy init infrastructure.db.url":
-        content => "{\"infrastructure\": {\"db\": {\"url\": \"TODO\"}}}",
+        content => "{\"infrastructure\": {\"db\": {\"url\": \"mysql2://${instance['mysql_user']}:${instance['mysql_password']}@localhost:3306/${name}?encoding=utf8&pool=5&reconnect=true&timeout=5000\"}}}",
         ;
 
       "${name} deploy init infrastructure.db.adapter":
-        content => "{\"infrastructure\": {\"db\": {\"adapter\": \"TODO\"}}}",
+        content => "{\"infrastructure\": {\"db\": {\"adapter\": \"mysql2\"}}}",
         ;
 
       "${name} deploy init infrastructure.db.username":
-        content => "{\"infrastructure\": {\"db\": {\"username\": \"TODO\"}}}",
+        content => "{\"infrastructure\": {\"db\": {\"username\": \"${instance['mysql_user']}\"}}}",
         ;
 
       "${name} deploy init infrastructure.db.password":
-        content => "{\"infrastructure\": {\"db\": {\"password\": \"TODO\"}}}",
+        content => "{\"infrastructure\": {\"db\": {\"password\": \"${instance['mysql_password']}\"}}}",
         ;
 
       "${name} deploy init infrastructure.db.host":
-        content => "{\"infrastructure\": {\"db\": {\"host\": \"TODO\"}}}",
+        content => "{\"infrastructure\": {\"db\": {\"host\": \"localhost\"}}}",
         ;
 
       "${name} deploy init infrastructure.db.port":
-        content => "{\"infrastructure\": {\"db\": {\"port\": \"TODO\"}}}",
+        content => "{\"infrastructure\": {\"db\": {\"port\": \"3306\"}}}",
         ;
 
       "${name} deploy init infrastructure.db.database":
-        content => "{\"infrastructure\": {\"db\": {\"database\": \"TODO\"}}}",
+        content => "{\"infrastructure\": {\"db\": {\"database\": \"${name}\"}}}",
         ;
 
       "${name} deploy init infrastructure.base_dir":
-        content => "{\"infrastructure\": {\"base_dir\": \"TODO\"}}",
-        ;
-
-      "${name} deploy init infrastructure.bind":
-        content => "{\"infrastructure\": {\"bind\": \"TODO\"}}",
+        content => "{\"infrastructure\": {\"base_dir\": \"${instance['path']}\"}}",
         ;
 
       "${name} deploy init infrastructure.relative_url_root":
-        content => "{\"infrastructure\": {\"relative_url_root\": \"TODO\"}}",
-        ;
-
-      "${name} deploy init infrastructure.redis.1":
-        content => "{\"infrastructure\": {\"redis\": {\"1\": \"TODO\"}}}",
-        ;
-
-      "${name} deploy init infrastructure.solr.1":
-        content => "{\"infrastructure\": {\"solr\": {\"1\": \"TODO\"}}}",
+        content => "{\"infrastructure\": {\"relative_url_root\": \"${instance['url_root']}\"}}",
         ;
 
       "${name} deploy init deploy.deploy_dir":
-        content => "{\"deploy\": {\"deploy_dir\": \"${path}\"}}",
+        content => "{\"deploy\": {\"deploy_dir\": \"${instance['path']}\"}}",
         ;
 
-      "${name} deploy init deploy.env.rack_env":
-        content => '{"deploy": {"env": {"rack_env": "production"}}}',
+      "${name} deploy init deploy.env":
+        content => '{"deploy": {"env": {"rack_env": "production", "rails_env": "production"}}}',
         ;
 
       "${name} deploy init deploy.systemd_services":
