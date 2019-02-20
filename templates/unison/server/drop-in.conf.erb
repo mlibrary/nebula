@@ -1,8 +1,0 @@
-[Unit]
-<% @filesystems.each do |filesystem| %>
-  Requires=<%= filesystem %>.mount
-<% end %>
-
-[Service]
-
-ExecStart=/usr/bin/unison -socket <%= @port %>

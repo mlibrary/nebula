@@ -27,6 +27,9 @@ fixtures:
     mysql:
       repo: "puppetlabs/mysql"
       ref: "8.0.0"
+    ntp:
+      repo: "puppetlabs/ntp"
+      ref: "7.4.0"
     postgresql:
       repo: "puppetlabs/postgresql"
       ref: "5.2.1"

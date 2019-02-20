@@ -1,6 +1,9 @@
 [Unit]
-Description=%i <%= @target %> sync (unison)
+Description=<%= @title %> <%= @server %> sync (unison)
 After=network.target
+<%- @filesystems.each do |filesystem| -%>
+Requires=<%= filesystem %>.mount
+<%- end -%>
 
 [Service]
 Type=simple
@@ -9,8 +12,7 @@ Restart=always
 Environment=HOME=<%= @home %>
 WatchdogSec=<%= @watchdog_sec %>
 NotifyAccess=all
-Restart=always
+ExecStart=/usr/local/bin/unisonsync <%= @title %>
 
 [Install]
 WantedBy=multi-user.target
-

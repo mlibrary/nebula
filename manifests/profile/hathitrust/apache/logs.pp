@@ -26,7 +26,7 @@ class nebula::profile::hathitrust::apache::logs {
   }
 
   cron { 'log anon cron':
-    command => "/htapps/babel/stats/bin/cron_apache_log.sh 2>&1 > /tmp/anon.out || /usr/bin/mail -s '${::hostname} log anon cron failed' lit-ae-automation@umich.edu 2>&1 > /dev/null",
+    command => '/htapps/babel/stats/bin/cron_apache_log.sh',
     user    => 'root',
     minute  => '0',
     hour    => '2',

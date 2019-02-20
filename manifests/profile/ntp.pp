@@ -13,33 +13,21 @@
 class nebula::profile::ntp (
   Array[String] $servers,
 ) {
-  service { 'ntp':
-    ensure     => 'running',
-    enable     => true,
-    hasrestart => true,
-    require    => Package['ntp', 'ntpstat'],
+
+  class { 'ntp':
+    servers       => $servers,
+    # debian default
+    restrict      => [
+      '-4 default kod notrap nomodify nopeer noquery limited',
+      '-6 default kod notrap nomodify nopeer noquery limited',
+      '127.0.0.1',
+      '::1',
+      'source notrap nomodify noquery'
+    ],
+    # enabled by default on debian, but we do not use it
+    iburst_enable => false
   }
 
-  package { 'ntp': }
+  # not installed by ntp class
   package { 'ntpstat': }
-
-  file_line { 'no debian ntp servers':
-    ensure            => 'absent',
-    path              => '/etc/ntp.conf',
-    match             => '(server|pool).*debian.pool',
-    match_for_absence => true,
-    multiple          => true,
-    notify            => Service['ntp'],
-    require           => Package['ntp', 'ntpstat'],
-  }
-
-  $servers.each |$server| {
-    file_line { "ntp server ${server}":
-      path    => '/etc/ntp.conf',
-      line    => "server ${server}",
-      after   => '^#?server',
-      notify  => Service['ntp'],
-      require => Package['ntp', 'ntpstat'],
-    }
-  }
 }

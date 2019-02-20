@@ -1,0 +1,16 @@
+[Unit]
+Description=<%= @title %> Unison
+After=network.target
+<%- @filesystems.each do |filesystem| -%>
+Requires=<%= filesystem %>.mount
+<%- end -%>
+
+[Service]
+Type=simple
+RemainAfterExit=no
+Restart=always
+Environment=HOME=<%= @home %>
+ExecStart=/usr/bin/unison -socket <%= @port %>
+
+[Install]
+WantedBy=multi-user.target

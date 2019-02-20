@@ -17,7 +17,7 @@ class nebula::profile::hathitrust::apache::babel (
   String $prefix,
   String $domain,
   String $gwt_code,
-  Array[String] $cache_paths = [ '/ram/choke:50:7' ],
+  Array[String] $cache_paths = [ ],
 ) {
 
   ### MONITORING

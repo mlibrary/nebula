@@ -64,6 +64,11 @@ class nebula::profile::hathitrust::apache::www (
         path     =>  "${sdrroot}/common/web",
         require  => $default_access,
       },
+      {
+        provider => 'directory',
+        path     => '/htapps/apps/usdocs_registry/public',
+        require  => $default_access
+      }
     ],
 
     aliases           => [

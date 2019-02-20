@@ -21,6 +21,7 @@ define nebula::named_instance(
   String        $url_root = '/',
   String        $protocol = 'http',         # proxy protocol, not user to front-end
   String        $hostname = "app-${title}", # app host
+  Hash          $solr_cores = {},
   String        $static_path = "${path}/current/public",
   Boolean       $static_directories = false,
   Boolean       $ssl = true,
@@ -44,7 +45,7 @@ define nebula::named_instance(
   # Add sudoers and passed users to the group
   (lookup('nebula::usergroup::membership')['sudo'] + $users).each |$user| {
     exec { "${user} ${title} membership":
-      unless  => "/bin/grep -q ${title}\\S*${user} /etc/group",
+      unless  => "/bin/grep -q '${title}\\S*${user}' /etc/group",
       onlyif  => "/usr/bin/id ${user}",
       command => "/usr/sbin/usermod -aG ${title} ${user}",
     }
@@ -217,4 +218,13 @@ define nebula::named_instance(
     target  => "${title} deploy init",
     content => "{\"deploy\": {\"sites\": {\"nodes\": {\"${::hostname}\": \"${::datacenter}\"}}}}",
   }
+
+  create_resources(nebula::named_instance::solr_core,
+    $solr_cores,
+    {
+      instance_title => $title,
+      instance_path    => $path
+    }
+  )
+
 }
