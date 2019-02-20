@@ -120,7 +120,7 @@ describe 'nebula::profile::hathitrust::apache' do
           is_expected.to contain_apache__vhost('hathitrust canonical name redirection').with(
             servername: 'example.org',
             serveraliases: ['domain.one', 'domain.two', 'www.domain.one', 'www.domain.two'],
-            redirect_dest: 'https://www.example.org',
+            redirect_dest: 'https://www.example.org/',
           )
         }
       end
