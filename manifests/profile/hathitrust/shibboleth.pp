@@ -65,7 +65,6 @@ class nebula::profile::hathitrust::shibboleth () {
     mode   => '0440',
     owner  => '_shibd',
     group  => 'nogroup',
-    notify => Service['shibd'],
     source => 'puppet:///shibboleth/shibboleth2.xml'
   }
 
@@ -86,7 +85,6 @@ class nebula::profile::hathitrust::shibboleth () {
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    notify  => Service['shibd']
   }
 
   file { '/etc/systemd/system/shibd.service.d/increase-timeout.conf':
@@ -97,7 +95,6 @@ class nebula::profile::hathitrust::shibboleth () {
     group   => 'root',
     notify  => [
       Class['nebula::systemd::daemon_reload'],
-      Service['shibd']
     ]
   }
 
