@@ -26,6 +26,8 @@ class nebula::profile::hathitrust::cron::mdp_misc (
       "SDRDATAROOT=${sdr_data_root}",
       "HOME=${home}"];
 
+    # Mail /htapps/babel/logs/assert/hathitrust=email-digest-current at 15 minute intervals
+
     'assert failure mail digest':
       minute  => [15,30,45,59],
       command => "eval ${sdr_root}/mdp-misc/scripts/email-monitor.pl";

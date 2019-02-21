@@ -20,9 +20,19 @@ class nebula::profile::hathitrust::cron::catalog (
       user        => $user,
       environment => ["MAILTO=${mail_recipient}"];
 
+    # Clean out the session information stored in the database. Sessions are
+    # renewed every time there's any activity on them, and change after the timeout is reached.
+    #
+    # Note that this only needs to be run in one datacenter, since the mysql setup is master-master.
+    #
+    # We target only those sessions that have expired.
+
     'clean sessions':
       minute  => [0,15,30,45],
       command => "/usr/bin/perl ${catalog_home}/derived_data/clean_sessions.pl";
+
+    # Build up translation maps. Collection codes are pulled from the HT
+    # database, and lists of languages and formats are pulled right out of the the solr data.
 
     'translation maps':
       minute  => '58',
