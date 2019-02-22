@@ -1,224 +1,139 @@
+
 # Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# A named instance
+# The deployment configuration for a named instance
 #
 # @example
 define nebula::named_instance(
+  String        $init_directory,
+  Hash          $proxy,
+  Hash          $app,
   String        $path,
-  Integer       $uid,
-  Integer       $gid,
-  String        $public_hostname,
   Integer       $port,                      # app port
-  String        $pubkey,
-  String        $puma_config,
-  String        $puma_wrapper,
-  String        $mysql_exec_path = '',
+  String        $source_url,
+  String        $mysql_host = 'localhost',
   Optional[String] $mysql_user = undef,
   Optional[String] $mysql_password = undef,
-  Boolean       $create_database = true,
   String        $url_root = '/',
-  String        $protocol = 'http',         # proxy protocol, not user to front-end
-  String        $hostname = "app-${title}", # app host
   Hash          $solr_cores = {},
-  String        $static_path = "${path}/current/public",
-  Boolean       $static_directories = false,
-  Boolean       $ssl = true,
-  String        $ssl_crt = "${public_hostname}.crt",
-  String        $ssl_key = "${public_hostname}.key",
-  String        $single_sign_on = 'cosign',
-  Optional[String] $sendfile_path = undef,
-  Optional[String] $cosign_factor = undef,
   Array[String] $users = [],
   Array[String] $subservices = [],
 ) {
 
-  include nebula::systemd::daemon_reload
+  $defaults =   { target  => "${title} deploy init" }
 
-  # Create the application user's group
-  group { $title:
-    ensure => 'present',
-    gid    => $gid,
+  @@nebula::named_instance::app { $title:
+    *              => $app,
+    path           => $path,
+    mysql_host     => $mysql_host,
+    mysql_user     => $mysql_user,
+    mysql_password => $mysql_password,
+    users          => $users,
+    subservices    => $subservices
   }
 
-  # Add sudoers and passed users to the group
-  (lookup('nebula::usergroup::membership')['sudo'] + $users).each |$user| {
-    exec { "${user} ${title} membership":
-      unless  => "/bin/grep -q '${title}\\S*${user}' /etc/group",
-      onlyif  => "/usr/bin/id ${user}",
-      command => "/usr/sbin/usermod -aG ${title} ${user}",
+  @@nebula::named_instance::proxy { $title:
+    *        => $proxy,
+    url_root => $url_root,
+    port     => $port,
+    path     => $path
+  }
+
+  $solr_cores.keys.each |$index, $core_title| {
+    nebula::named_instance::solr_params { $core_title:
+      solr_params => $solr_cores[$core_title],
+      instance    => $title,
+      path        => $path,
+      index       => $index + 1
     }
   }
 
-  # Create the application user
-  user { $title:
-    ensure  => 'present',
-    comment => 'Application User',
-    uid     => $uid,
-    gid     => $gid,
-    home    => "/var/local/${title}",
-    shell   => '/bin/bash',
-    system  => true,
+  concat_file { "${title} deploy init":
+    path   => "${init_directory}/${title}.json",
+    format => 'json-pretty',
   }
 
-  # Create the application user's home directory
-  file { "/var/local/${title}":
-    ensure => 'directory',
-    mode   => '0700',
-    owner  => $uid,
-    group  => $gid,
-  }
+  if( $mysql_user and $mysql_password) {
+    concat_fragment {
+      default:
+        * => $defaults;
 
-  # Install the authorized ssh pubkey for deployer
-  ssh_authorized_key { "${title} pubkey":
-    ensure => 'present',
-    user   => $title,
-    type   => 'ssh-rsa',
-    key    => $pubkey,
-  }
+      "${title} deploy init infrastructure.db.url":
+        content => {infrastructure => {db => {url => "mysql2://${mysql_user}:${mysql_password}@${mysql_host}:3306/${title}?encoding=utf8&pool=5&reconnect=true&timeout=5000"}}}.to_json;
 
-  # Create the application directory
-  file { $path:
-    ensure => 'directory',
-    mode   => '2775',
-    owner  => $uid,
-    group  => $gid,
-  }
+      "${title} deploy init infrastructure.db.adapter":
+        content => {infrastructure => {db => {adapter => 'mysql2'}}}.to_json;
 
-  # Stop and disable the old services
-  # This is setup to run after the files have been deleted but before daemon-reload,
-  # else systemd will not be able to find the service to stop it.
-  service { "app-puma@${title}.service":
-    ensure   => 'stopped',
-    enable   => false,
-    provider => 'systemd',
-    before   => Class['nebula::systemd::daemon_reload']
-  }
+      "${title} deploy init infrastructure.db.username":
+        content => {infrastructure => {db => {username => $mysql_user}}}.to_json;
 
-  # Remove the old style systemd puma file
-  file { "/etc/systemd/system/app-puma@${title}.service.d":
-    ensure  => 'absent',
-    recurse => true,
-    force   => true,
-    notify  => [
-      Class['nebula::systemd::daemon_reload'],
-      Service["app-puma@${title}.service"],
-    ],
-  }
+      "${title} deploy init infrastructure.db.password":
+        content => {infrastructure => {db => {password => $mysql_password}}}.to_json;
 
-  # Remove the old style systemd resque-pool file
-  file { "/etc/systemd/system/resque-pool@${title}.service.d":
-    ensure  => 'absent',
-    recurse => true,
-    force   => true,
-    notify  => [
-      Class['nebula::systemd::daemon_reload'],
-      Service["app-puma@${title}.service"],
-    ],
-  }
+      "${title} deploy init infrastructure.db.host":
+        content => {infrastructure => {db => {host => $mysql_host}}}.to_json;
 
-  # Lookup rbenv root for use in templates
-  $rbenv_root = lookup('nebula::profile::ruby::install_dir')
+      "${title} deploy init infrastructure.db.port":
+        content => {infrastructure => {db => {port => 3306}}}.to_json;
 
-  # Add current-style systemd primary target file
-  file { "/etc/systemd/system/${title}.target":
-    ensure  => 'present',
-    mode    => '0644',
-    owner   => 'root',
-    group   => 'root',
-    content => template('nebula/named_instance/main.target.erb'),
-    notify  => [
-      Class['nebula::systemd::daemon_reload'],
-      Service["${title}.target"],
-    ],
-  }
-
-  # Add current-style systemd puma file
-  file { "/etc/systemd/system/puma@${title}.service":
-    ensure  => 'present',
-    mode    => '0644',
-    owner   => 'root',
-    group   => 'root',
-    content => template('nebula/named_instance/puma.service.erb'),
-    notify  => [
-      Class['nebula::systemd::daemon_reload'],
-      Service["${title}.target"],
-    ],
-  }
-
-  # Add a systemd service file for each subservice
-  $subservices.each |String $subservice| {
-    file { "/etc/systemd/system/${subservice}@${title}.service":
-      ensure  => 'present',
-      mode    => '0644',
-      owner   => 'root',
-      group   => 'root',
-      content => template('nebula/named_instance/subservice.service.erb'),
-      notify  => [
-        Class['nebula::systemd::daemon_reload'],
-        Service["${title}.target"],
-      ],
+      "${title} deploy init infrastructure.db.database":
+        content => {infrastructure => {db => {database => $title}}}.to_json;
     }
   }
 
-  # Enable and start the new service
-  # This is setup to run exactly once after we've made any changes,
-  # run daemon-reload, and installed the sudoers file.
-  service { "${title}.target":
-    ensure   => 'running',
-    enable   => true,
-    provider => 'systemd',
-    require  => [
-      Class['nebula::systemd::daemon_reload'],
-      File["/etc/sudoers.d/${title}"]
-    ]
+  concat_fragment {
+    default:
+      * => $defaults;
+
+    "${title} deploy init instance.source.url":
+      content => {instance => {source => {url => $source_url}}}.to_json;
+
+    "${title} deploy init instance.source.commitish":
+      content => {instance => {source => {commitish => 'master'}}}.to_json;
+
+    "${title} deploy init instance.deploy.url":
+      content => {instance => {deploy => {url => 'git@github.com:mlibrary/moku-deploy'}}}.to_json;
+
+    "${title} deploy init instance.deploy.commitish":
+      content => {instance => {deploy => {commitish => $title}}}.to_json;
+
+    "${title} deploy init instance.infrastructure.url":
+      content => {instance => {infrastructure => {url => 'git@github.com:mlibrary/moku-infrastructure'}}}.to_json;
+
+    "${title} deploy init instance.infrastructure.commitish":
+      content => {instance => {infrastructure => {commitish => $title}}}.to_json;
+
+    "${title} deploy init instance.dev.url":
+      content => {instance => {dev => {url => 'git@github.com:mlibrary/moku-dev'}}}.to_json;
+
+    "${title} deploy init instance.dev.commitish":
+      content => {instance => {dev => {commitish => $title}}}.to_json;
+
+    "${title} deploy init permissions.deploy":
+      content => {permissions => { deploy => $users}}.to_json;
+
+    "${title} deploy init permissions.edit":
+      content => {permissions => { edit => $users}}.to_json;
+
+    "${title} deploy init infrastructure.base_dir":
+      content => {infrastructure => {base_dir => $path}}.to_json;
+
+    "${title} deploy init infrastructure.relative_url_root":
+      content => {infrastructure => {relative_url_root => $url_root}}.to_json;
+
+    "${title} deploy init deploy.deploy_dir":
+      content => {deploy => {deploy_dir => $path}}.to_json;
+
+    "${title} deploy init deploy.env":
+      content => {'deploy' => {'env' => {'rack_env' => 'production', 'rails_env' => 'production'}}}.to_json;
+
+    "${title} deploy init deploy.systemd_services":
+      content => {deploy => {systemd_services => $subservices}}.to_json;
+
+    "${title} deploy init deploy.sites.user":
+      content => {deploy => {sites => {user => $title}}}.to_json;
   }
 
-  @@nebula::proxied_app { $title:
-    public_hostname    => $public_hostname,
-    url_root           => $url_root,
-    protocol           => $protocol,
-    hostname           => $hostname,
-    port               => $port,
-    ssl                => $ssl,
-    ssl_crt            => $ssl_crt,
-    ssl_key            => $ssl_key,
-    static_path        => $static_path,
-    static_directories => $static_directories,
-    single_sign_on     => $single_sign_on,
-    cosign_factor      => $cosign_factor,
-    sendfile_path      => $sendfile_path,
-  }
-
-  # Remove old-style sudoers file
-  file { "/etc/sudoers.d/app-puma-${title}":
-    ensure => 'absent',
-  }
-
-  # Add current-style sudoers file
-  file { "/etc/sudoers.d/${title}":
-    ensure  => 'present',
-    mode    => '0640',
-    owner   => 'root',
-    group   => 'root',
-    content => template('nebula/named_instance/sudoers.erb'),
-  }
-
-  if  $create_database and $mysql_user and $mysql_password  {
-    mysql::db { $title:
-      mysql_exec_path => $mysql_exec_path,
-      user            => $mysql_user,
-      password        => $mysql_password,
-      host            => '%',
-    }
-  }
-
-  create_resources(nebula::named_instance::solr_core,
-    $solr_cores,
-    {
-      instance_title => $title,
-      instance_path    => $path
-    }
-  )
 }

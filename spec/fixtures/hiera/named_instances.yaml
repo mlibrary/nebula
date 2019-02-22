@@ -3,36 +3,38 @@
 # BSD License. See LICENSE.txt for details.
 nebula::named_instances:
   first-instance:
+    proxy:
+      public_hostname: first-instance.default.invalid
+      ssl_crt: first-instance.invalid.crt
+      ssl_key: first-instance.invalid.key
+      protocol: https
+      hostname: first-instance-hostname
+      sendfile_path: '/invalid/default/path'
+    app:
+      uid: 1001
+      gid: 101
     source_url: git@github.com:mlibrary/first_invalid_default
-    public_hostname: first-instance.default.invalid
     url_root: /first-instance-root
     path: /www-invalid/first-instance/app
-    ssl_crt: first-instance.invalid.crt
-    ssl_key: first-instance.invalid.key
-    protocol: https
-    hostname: first-instance-hostname
     port: 10001
-    uid: 1001
-    gid: 101
     users:
     - one_user
     - another_user
     subservices:
     - one_subservice
     - another_subservice
-    sendfile_path: /invalid/default/path
+    solr_cores:
+      core1:
+        solr_home: /nonexistent/solr
+      core2:
+        solr_home: /nonexistent/solr
+
   minimal-instance:
     source_url: git@github.com:mlibrary/nebula
-    public_hostname: minimal.default.invalid
-    #url_root: ''
     path: /www-invalid/minimal/app
-    #ssl_crt: ''
-    #ssl_key: ''
-    #protocol: https
-    #hostname: minimal-instance
     port: 10002
-    uid: 1002
-    gid: 102
-    #users: []
-    #subservices: []
-    #sendfile_path: ''
+    proxy:
+      public_hostname: minimal.default.invalid
+    app:
+      uid: 1002
+      gid: 102
