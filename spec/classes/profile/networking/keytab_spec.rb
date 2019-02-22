@@ -32,7 +32,11 @@ describe 'nebula::profile::networking::keytab' do
       context 'when given a keytab source and no keytab' do
         let(:params) { { keytab_source: 'alternate source' } }
 
-        it { is_expected.not_to contain_file('/etc/krb5.keytab') }
+        it do
+          is_expected.to contain_file('/etc/krb5.keytab').with(
+            mode: '0600',
+            source: 'alternate source')
+        end
       end
 
       context 'when given a keytab source and a nonexistent keytab' do
