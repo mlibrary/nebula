@@ -21,6 +21,12 @@ nebula::named_instances:
     - one_subservice
     - another_subservice
     sendfile_path: /invalid/default/path
+		solr_cores:
+			- core1
+				- solr_home: /nonexistent/solr
+			- core2
+			  - solr_home: /nonexistent/solr
+
   minimal-instance:
     source_url: git@github.com:mlibrary/nebula
     public_hostname: minimal.default.invalid

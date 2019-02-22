@@ -5,20 +5,33 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::moku' do
+describe 'nebula::named_instance::moku_params' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:hiera_config) { 'spec/fixtures/hiera/named_instances_config.yaml' }
       let(:facts) { os_facts }
-
-      it { is_expected.to compile }
+      let(:pre_condition) { 'include nebula::profile::moku' }
 
       describe 'concat_fragments' do
-        let(:title) { "#{name} deploy init #{fragment_title}" }
         let(:target) { "#{name} deploy init" }
+        let(:title) { "#{name} thishost" }
 
         context 'for first-instance' do
           let(:name) { 'first-instance' }
+          let(:params) do
+            {
+              instance: name,
+              url_root: '/first-instance-root',
+              users: %w(one_user another_user),
+              subservices: %w(one_subservice another_subservice),
+              source_url: 'git@github.com:mlibrary/first_invalid_default',
+              mysql_user: nil,
+              mysql_password: nil,
+              mysql_host: nil,
+              path: '/www-invalid/first-instance/app',
+              hostname: 'thishost',
+              datacenter: 'somedc'
+            }
+          end
 
           it do
             # Because of ADR-1, I'm setting this to pretty json instead
@@ -33,8 +46,14 @@ describe 'nebula::profile::moku' do
           end
 
           context 'with an init directory set' do
-            let(:params) { { init_directory: init_directory } }
             let(:init_directory) { "/#{Faker::Internet.domain_word}" }
+            let(:pre_condition) do
+              <<~EOT
+                class { 'nebula::profile::moku':
+                  init_directory => '#{init_directory}'
+                }
+              EOT
+            end
 
             it do
               is_expected.to contain_concat_file(target).with(
@@ -52,20 +71,18 @@ describe 'nebula::profile::moku' do
             'instance.infrastructure.commitish' => '{"instance": {"infrastructure": {"commitish": "first-instance"}}}',
             'instance.dev.url'                  => '{"instance": {"dev": {"url": "git@github.com:mlibrary/moku-dev"}}}',
             'instance.dev.commitish'            => '{"instance": {"dev": {"commitish": "first-instance"}}}',
-            'permissions.deploy'                => '{"permissions": {"deploy": ["one_user","another_user"]}}',
-            'permissions.edit'                  => '{"permissions": {"edit": ["one_user","another_user"]}}',
+            'permissions.deploy'                => '{"permissions":{"deploy":["one_user","another_user"]}}',
+            'permissions.edit'                  => '{"permissions":{"edit":["one_user","another_user"]}}',
             'infrastructure.base_dir'           => '{"infrastructure": {"base_dir": "/www-invalid/first-instance/app"}}',
             'infrastructure.relative_url_root'  => '{"infrastructure": {"relative_url_root": "/first-instance-root"}}',
             'deploy.deploy_dir'                 => '{"deploy": {"deploy_dir": "/www-invalid/first-instance/app"}}',
             'deploy.env'                        => '{"deploy": {"env": {"rack_env": "production", "rails_env": "production"}}}',
-            'deploy.systemd_services'           => '{"deploy": {"systemd_services": ["one_subservice","another_subservice"]}}',
+            'deploy.systemd_services'           => '{"deploy":{"systemd_services":["one_subservice","another_subservice"]}}',
             'deploy.sites.user'                 => '{"deploy": {"sites": {"user": "first-instance"}}}',
           }.each do |fragment_title, content|
             describe fragment_title do
-              let(:fragment_title) { fragment_title }
-
               it "sets #{content}" do
-                is_expected.to contain_concat_fragment(title).with(
+                is_expected.to contain_concat_fragment("#{name} deploy init #{fragment_title}").with(
                   target: target,
                   content: content,
                 )
@@ -76,6 +93,21 @@ describe 'nebula::profile::moku' do
 
         context 'for minimal-instance' do
           let(:name) { 'minimal-instance' }
+          let(:params) do
+            {
+              instance: name,
+              url_root: '/',
+              users: [],
+              subservices: [],
+              source_url: 'git@github.com:mlibrary/nebula',
+              mysql_user: nil,
+              mysql_password: nil,
+              mysql_host: nil,
+              path: '/www-invalid/minimal/app',
+              hostname: 'thishost',
+              datacenter: 'somedc'
+            }
+          end
 
           it do
             is_expected.to contain_concat_file(target).with(
@@ -92,18 +124,16 @@ describe 'nebula::profile::moku' do
             'instance.infrastructure.commitish' => '{"instance": {"infrastructure": {"commitish": "minimal-instance"}}}',
             'instance.dev.url'                  => '{"instance": {"dev": {"url": "git@github.com:mlibrary/moku-dev"}}}',
             'instance.dev.commitish'            => '{"instance": {"dev": {"commitish": "minimal-instance"}}}',
-            'permissions.deploy'                => '{"permissions": {"deploy": []}}',
-            'permissions.edit'                  => '{"permissions": {"edit": []}}',
+            'permissions.deploy'                => '{"permissions":{"deploy":[]}}',
+            'permissions.edit'                  => '{"permissions":{"edit":[]}}',
             'deploy.deploy_dir'                 => '{"deploy": {"deploy_dir": "/www-invalid/minimal/app"}}',
             'deploy.env'                        => '{"deploy": {"env": {"rack_env": "production", "rails_env": "production"}}}',
-            'deploy.systemd_services'           => '{"deploy": {"systemd_services": []}}',
+            'deploy.systemd_services'           => '{"deploy":{"systemd_services":[]}}',
             'deploy.sites.user'                 => '{"deploy": {"sites": {"user": "minimal-instance"}}}',
           }.each do |fragment_title, content|
             describe fragment_title do
-              let(:fragment_title) { fragment_title }
-
               it "sets #{content}" do
-                is_expected.to contain_concat_fragment(title).with(
+                is_expected.to contain_concat_fragment("#{name} deploy init #{fragment_title}").with(
                   target: target,
                   content: content,
                 )

@@ -14,6 +14,7 @@ define nebula::named_instance(
   String        $pubkey,
   String        $puma_config,
   String        $puma_wrapper,
+  String        $source_url,
   String        $mysql_exec_path = '',
   Optional[String] $mysql_user = undef,
   Optional[String] $mysql_password = undef,
@@ -21,6 +22,7 @@ define nebula::named_instance(
   String        $url_root = '/',
   String        $protocol = 'http',         # proxy protocol, not user to front-end
   String        $hostname = "app-${title}", # app host
+  String        $mysql_host = 'localhost',
   Hash          $solr_cores = {},
   String        $static_path = "${path}/current/public",
   Boolean       $static_directories = false,
@@ -205,13 +207,27 @@ define nebula::named_instance(
     content => template('nebula/named_instance/sudoers.erb'),
   }
 
-  if  $create_database and $mysql_user and $mysql_password  {
+  if $create_database and $mysql_user and $mysql_password  {
     mysql::db { $title:
       mysql_exec_path => $mysql_exec_path,
       user            => $mysql_user,
       password        => $mysql_password,
       host            => '%',
     }
+  }
+
+  @@nebula::named_instance::moku_params { "${title} ${::hostname}":
+    users          => $users,
+    subservices    => $subservices,
+    source_url     => $source_url,
+    instance       => $title,
+    mysql_user     => $mysql_user,
+    mysql_password => $mysql_password,
+    mysql_host     => $mysql_host,
+    path           => $path,
+    url_root       => $url_root,
+    hostname       => $::hostname,
+    datacenter     => $::datacenter
   }
 
   create_resources(nebula::named_instance::solr_core,
