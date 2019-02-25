@@ -8,7 +8,7 @@ require 'spec_helper'
 describe 'nebula::named_instance::solr_core' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts) { os_facts }
+      let(:facts) { os_facts.merge(hostname: 'thishost') }
 
       context 'with required/default params' do
         let(:title) { 'mycore' }
@@ -16,6 +16,7 @@ describe 'nebula::named_instance::solr_core' do
           {
             instance_path: '/nonexistent/myapp-testing',
             instance_title: 'myapp-testing',
+            index: 1,
           }
         end
 
@@ -53,6 +54,14 @@ describe 'nebula::named_instance::solr_core' do
                      'instanceDir=/nonexistent/solr_home/mycore&config=solrconfig.xml&dataDir=data" > /dev/null',
           )
         end
+
+        it 'exports solr core params for moku' do
+          expect(exported_resources).to contain_nebula__named_instance__moku_solr_params('myapp-testing mycore thishost').with(
+            instance: 'myapp-testing',
+            url: 'http://localhost:8081/solr/mycore',
+            index: 1,
+          )
+        end
       end
 
       context 'overriding all params' do
@@ -68,6 +77,7 @@ describe 'nebula::named_instance::solr_core' do
             default_config: '/somewhere/default-config',
             solr_user: 'solruser',
             solr_group: 'solrgroup',
+            index: 99,
           }
         end
 
@@ -93,6 +103,14 @@ describe 'nebula::named_instance::solr_core' do
             unless: '/usr/bin/wget -O - --quiet http://solrhost:12345/solr/anothercore/admin/ping > /dev/null',
             command: '/usr/bin/wget -O - --quiet "http://solrhost:12345/solr/admin/cores?action=CREATE&name=anothercore&' \
                      'instanceDir=/somewhere/solr_cores/anothercore&config=solrconfig.xml&dataDir=data" > /dev/null',
+          )
+        end
+
+        it 'exports solr core params for moku' do
+          expect(exported_resources).to contain_nebula__named_instance__moku_solr_params('something-testing anothercore thishost').with(
+            instance: 'something-testing',
+            url: 'http://solrhost:12345/solr/anothercore',
+            index: 99,
           )
         end
       end

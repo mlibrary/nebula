@@ -3,12 +3,13 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# A named instance
+# A solr core for a named instance
 #
 # @example
 define nebula::named_instance::solr_core (
   String $instance_path,
   String $instance_title,
+  Integer $index,
   String $solr_home = lookup('nebula::named_instance::solr_core::solr_home'),
   String $config_dir = 'conf',
   String $host = 'localhost',
@@ -67,6 +68,12 @@ define nebula::named_instance::solr_core (
   exec { "initialize solr core ${title}":
     unless  => "/usr/bin/wget -O - --quiet http://${host}:${port}/solr/${title}/admin/ping > /dev/null",
     command => "/usr/bin/wget -O - --quiet \"http://${host}:${port}/solr/admin/cores?action=CREATE&name=${title}&instanceDir=${core_path}&config=solrconfig.xml&dataDir=data\" > /dev/null",
+  }
+
+  @@nebula::named_instance::moku_solr_params { "${instance_title} ${title} ${::hostname}":
+    instance => $instance_title,
+    url      => "http://${host}:${port}/solr/${title}",
+    index    => $index
   }
 
 }

@@ -230,11 +230,13 @@ define nebula::named_instance(
     datacenter     => $::datacenter
   }
 
-  create_resources(nebula::named_instance::solr_core,
-    $solr_cores,
-    {
+  $solr_cores.keys.each |$index, $core_title| {
+    nebula::named_instance::solr_core { $core_title:
+      *              => $solr_cores[$core_title],
       instance_title => $title,
-      instance_path    => $path
+      instance_path  => $path,
+      index          => $index + 1
     }
-  )
+  }
+
 }

@@ -21,15 +21,15 @@ describe 'nebula::named_instance::moku_params' do
             {
               instance: name,
               url_root: '/first-instance-root',
-              users: %w(one_user another_user),
-              subservices: %w(one_subservice another_subservice),
+              users: %w[one_user another_user],
+              subservices: %w[one_subservice another_subservice],
               source_url: 'git@github.com:mlibrary/first_invalid_default',
               mysql_user: nil,
               mysql_password: nil,
               mysql_host: nil,
               path: '/www-invalid/first-instance/app',
               hostname: 'thishost',
-              datacenter: 'somedc'
+              datacenter: 'somedc',
             }
           end
 
@@ -105,7 +105,7 @@ describe 'nebula::named_instance::moku_params' do
               mysql_host: nil,
               path: '/www-invalid/minimal/app',
               hostname: 'thishost',
-              datacenter: 'somedc'
+              datacenter: 'somedc',
             }
           end
 
