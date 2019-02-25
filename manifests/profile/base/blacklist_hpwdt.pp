@@ -9,7 +9,7 @@
 # @example
 #   include nebula::profile::base::blacklist_hpwdt
 class nebula::profile::base::blacklist_hpwdt {
-  if $facts['dmi'] and $facts['dmi']['manufacturer'] == 'HP' {
+  if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
     kmod::blacklist { 'hpwdt':
       file => '/etc/modprobe.d/kpwdt-blacklist.conf',
     }

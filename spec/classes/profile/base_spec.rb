@@ -108,6 +108,18 @@ describe 'nebula::profile::base' do
         end
       end
 
+      context 'on an HPE machine' do
+        let(:facts) do
+          super().merge('dmi' => { 'manufacturer' => 'HPE' })
+        end
+
+        it do
+          is_expected.to contain_kmod__blacklist('hpwdt').with(
+            file: '/etc/modprobe.d/kpwdt-blacklist.conf',
+          )
+        end
+      end
+
       context 'on an Dell machine' do
         let(:facts) do
           super().merge('dmi' => { 'manufacturer' => 'Dell Inc.' })
