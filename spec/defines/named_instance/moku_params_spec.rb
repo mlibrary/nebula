@@ -63,22 +63,22 @@ describe 'nebula::named_instance::moku_params' do
           end
 
           {
-            'instance.source.url'               => '{"instance": {"source": {"url": "git@github.com:mlibrary/first_invalid_default"}}}',
-            'instance.source.commitish'         => '{"instance": {"source": {"commitish": "master"}}}',
-            'instance.deploy.url'               => '{"instance": {"deploy": {"url": "git@github.com:mlibrary/moku-deploy"}}}',
-            'instance.deploy.commitish'         => '{"instance": {"deploy": {"commitish": "first-instance"}}}',
-            'instance.infrastructure.url'       => '{"instance": {"infrastructure": {"url": "git@github.com:mlibrary/moku-infrastructure"}}}',
-            'instance.infrastructure.commitish' => '{"instance": {"infrastructure": {"commitish": "first-instance"}}}',
-            'instance.dev.url'                  => '{"instance": {"dev": {"url": "git@github.com:mlibrary/moku-dev"}}}',
-            'instance.dev.commitish'            => '{"instance": {"dev": {"commitish": "first-instance"}}}',
+            'instance.source.url'               => '{"instance":{"source":{"url":"git@github.com:mlibrary/first_invalid_default"}}}',
+            'instance.source.commitish'         => '{"instance":{"source":{"commitish":"master"}}}',
+            'instance.deploy.url'               => '{"instance":{"deploy":{"url":"git@github.com:mlibrary/moku-deploy"}}}',
+            'instance.deploy.commitish'         => '{"instance":{"deploy":{"commitish":"first-instance"}}}',
+            'instance.infrastructure.url'       => '{"instance":{"infrastructure":{"url":"git@github.com:mlibrary/moku-infrastructure"}}}',
+            'instance.infrastructure.commitish' => '{"instance":{"infrastructure":{"commitish":"first-instance"}}}',
+            'instance.dev.url'                  => '{"instance":{"dev":{"url":"git@github.com:mlibrary/moku-dev"}}}',
+            'instance.dev.commitish'            => '{"instance":{"dev":{"commitish":"first-instance"}}}',
             'permissions.deploy'                => '{"permissions":{"deploy":["one_user","another_user"]}}',
             'permissions.edit'                  => '{"permissions":{"edit":["one_user","another_user"]}}',
-            'infrastructure.base_dir'           => '{"infrastructure": {"base_dir": "/www-invalid/first-instance/app"}}',
-            'infrastructure.relative_url_root'  => '{"infrastructure": {"relative_url_root": "/first-instance-root"}}',
-            'deploy.deploy_dir'                 => '{"deploy": {"deploy_dir": "/www-invalid/first-instance/app"}}',
-            'deploy.env'                        => '{"deploy": {"env": {"rack_env": "production", "rails_env": "production"}}}',
+            'infrastructure.base_dir'           => '{"infrastructure":{"base_dir":"/www-invalid/first-instance/app"}}',
+            'infrastructure.relative_url_root'  => '{"infrastructure":{"relative_url_root":"/first-instance-root"}}',
+            'deploy.deploy_dir'                 => '{"deploy":{"deploy_dir":"/www-invalid/first-instance/app"}}',
+            'deploy.env'                        => '{"deploy":{"env":{"rack_env":"production","rails_env":"production"}}}',
             'deploy.systemd_services'           => '{"deploy":{"systemd_services":["one_subservice","another_subservice"]}}',
-            'deploy.sites.user'                 => '{"deploy": {"sites": {"user": "first-instance"}}}',
+            'deploy.sites.user'                 => '{"deploy":{"sites":{"user":"first-instance"}}}',
           }.each do |fragment_title, content|
             describe fragment_title do
               it "sets #{content}" do
@@ -116,20 +116,20 @@ describe 'nebula::named_instance::moku_params' do
           end
 
           {
-            'instance.source.url'               => '{"instance": {"source": {"url": "git@github.com:mlibrary/nebula"}}}',
-            'instance.source.commitish'         => '{"instance": {"source": {"commitish": "master"}}}',
-            'instance.deploy.url'               => '{"instance": {"deploy": {"url": "git@github.com:mlibrary/moku-deploy"}}}',
-            'instance.deploy.commitish'         => '{"instance": {"deploy": {"commitish": "minimal-instance"}}}',
-            'instance.infrastructure.url'       => '{"instance": {"infrastructure": {"url": "git@github.com:mlibrary/moku-infrastructure"}}}',
-            'instance.infrastructure.commitish' => '{"instance": {"infrastructure": {"commitish": "minimal-instance"}}}',
-            'instance.dev.url'                  => '{"instance": {"dev": {"url": "git@github.com:mlibrary/moku-dev"}}}',
-            'instance.dev.commitish'            => '{"instance": {"dev": {"commitish": "minimal-instance"}}}',
+            'instance.source.url'               => '{"instance":{"source":{"url":"git@github.com:mlibrary/nebula"}}}',
+            'instance.source.commitish'         => '{"instance":{"source":{"commitish":"master"}}}',
+            'instance.deploy.url'               => '{"instance":{"deploy":{"url":"git@github.com:mlibrary/moku-deploy"}}}',
+            'instance.deploy.commitish'         => '{"instance":{"deploy":{"commitish":"minimal-instance"}}}',
+            'instance.infrastructure.url'       => '{"instance":{"infrastructure":{"url":"git@github.com:mlibrary/moku-infrastructure"}}}',
+            'instance.infrastructure.commitish' => '{"instance":{"infrastructure":{"commitish":"minimal-instance"}}}',
+            'instance.dev.url'                  => '{"instance":{"dev":{"url":"git@github.com:mlibrary/moku-dev"}}}',
+            'instance.dev.commitish'            => '{"instance":{"dev":{"commitish":"minimal-instance"}}}',
             'permissions.deploy'                => '{"permissions":{"deploy":[]}}',
             'permissions.edit'                  => '{"permissions":{"edit":[]}}',
-            'deploy.deploy_dir'                 => '{"deploy": {"deploy_dir": "/www-invalid/minimal/app"}}',
-            'deploy.env'                        => '{"deploy": {"env": {"rack_env": "production", "rails_env": "production"}}}',
+            'deploy.deploy_dir'                 => '{"deploy":{"deploy_dir":"/www-invalid/minimal/app"}}',
+            'deploy.env'                        => '{"deploy":{"env":{"rack_env":"production","rails_env":"production"}}}',
             'deploy.systemd_services'           => '{"deploy":{"systemd_services":[]}}',
-            'deploy.sites.user'                 => '{"deploy": {"sites": {"user": "minimal-instance"}}}',
+            'deploy.sites.user'                 => '{"deploy":{"sites":{"user":"minimal-instance"}}}',
           }.each do |fragment_title, content|
             describe fragment_title do
               it "sets #{content}" do
