@@ -12,6 +12,7 @@ describe 'nebula::profile::named_instances' do
       let(:myapp_testing) do
         {
           name: 'myapp-testing',
+          source_url: 'https://github.default.invalid/something/myapp',
           public_hostname: 'myapp-testing.default.invalid',
           port: 456,
           path: '/my/app/path/myapp-testing',
@@ -26,7 +27,8 @@ describe 'nebula::profile::named_instances' do
       let(:hydra_staging) do
         {
           name: 'hydra-staging',
-          public_hostname: 'myapp-testing.default.invalid',
+          source_url: 'https://github.default.invalid/something/hydra',
+          public_hostname: 'hydra-staging.default.invalid',
           port: 123,
           path: '/hydra-dev/hydra-staging',
           uid: 20_002,

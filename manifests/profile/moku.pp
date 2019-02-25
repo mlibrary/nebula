@@ -11,5 +11,5 @@ class nebula::profile::moku (
 ) {
 
   Nebula::Named_instance::Moku_params <<| |>>
-  #  Nebula::Named_instance::Solr::Moku_params <<| |>>
+  Nebula::Named_instance::Moku_solr_params <<| |>>
 }

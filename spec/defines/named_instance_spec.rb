@@ -21,6 +21,7 @@ describe 'nebula::named_instance' do
   let(:users) { %w[alice solr] }
   let(:mysql_user) { 'abcde' }
   let(:mysql_password) { '12345' }
+  let(:source_url) { 'https://github.invalid/something/myapp' }
   let(:params) do
     {
       path: path,
@@ -36,6 +37,7 @@ describe 'nebula::named_instance' do
       users: users,
       mysql_user: mysql_user,
       mysql_password: mysql_password,
+      source_url: source_url,
     }
   end
 
@@ -76,10 +78,19 @@ describe 'nebula::named_instance' do
                           datacenter: datacenter)
           end
 
-          it 'exports a concat_fragment with hostname => datacenter' do
-            is_expected.to contain_concat_fragment("#{title} deploy init deploy.sites.nodes.#{hostname}").with(
-              target: "#{title} deploy init",
-              content: "{\"deploy\": {\"sites\": {\"nodes\": {\"#{hostname}\": \"#{datacenter}\"}}}}",
+          it 'exports moku_params' do
+            is_expected.to contain_nebula__named_instance__moku_params("#{title} #{hostname}").with(
+              users: users,
+              subservices: subservices,
+              source_url: source_url,
+              instance: title,
+              mysql_user: mysql_user,
+              mysql_password: mysql_password,
+              mysql_host: 'localhost',
+              path: path,
+              url_root: '/',
+              hostname: hostname,
+              datacenter: datacenter,
             )
           end
         end
@@ -310,8 +321,8 @@ describe 'nebula::named_instance' do
             )
           end
 
-          it { is_expected.to contain_nebula__named_instance__solr_core('core1') }
-          it { is_expected.to contain_nebula__named_instance__solr_core('core2') }
+          it { is_expected.to contain_nebula__named_instance__solr_core('core1').with_index(1) }
+          it { is_expected.to contain_nebula__named_instance__solr_core('core2').with_index(2) }
         end
       end
     end
