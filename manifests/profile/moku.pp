@@ -10,6 +10,12 @@ class nebula::profile::moku (
   String $init_directory = '/etc/moku/init'
 ) {
 
-  Nebula::Named_instance::Moku_params <<| |>>
+  create_resources(nebula::named_instance,
+    lookup('nebula::named_instances'),
+    { init_directory =>  $init_directory }
+  )
+
+  Concat_fragment <<| target == "${name} deploy init" |>>
+
   Nebula::Named_instance::Moku_solr_params <<| |>>
 }

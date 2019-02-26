@@ -7,7 +7,7 @@ require 'spec_helper'
 
 # TODO: Normalize url_root vs. static_path, which have odd trailing slash handling
 
-describe 'nebula::proxied_app' do
+describe 'nebula::named_instance::proxy' do
   let(:title)              { 'myapp-mystage' }
   let(:public_hostname)    { 'app.default.invalid' }
   let(:url_root)           { '/' }
@@ -17,12 +17,14 @@ describe 'nebula::proxied_app' do
   let(:ssl)                { true }
   let(:ssl_crt)            { 'some.crt' }
   let(:ssl_key)            { 'some.key' }
+  let(:path)               { '/nonexistent' }
   let(:static_path)        { '/app' }
   let(:static_directories) { false }
   let(:single_sign_on)     { 'cosign' }
   let(:sendfile_path)      { '/app/storage' }
   let(:public_aliases)     { [] }
   let(:whitelisted_ips)    { [] }
+
   let(:default_params) do
     {
       public_hostname: public_hostname,
@@ -33,6 +35,7 @@ describe 'nebula::proxied_app' do
       ssl: ssl,
       ssl_crt: ssl_crt,
       ssl_key: ssl_key,
+      path: path,
       static_path: static_path,
       static_directories: static_directories,
       single_sign_on: single_sign_on,

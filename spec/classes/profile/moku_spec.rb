@@ -12,9 +12,8 @@ describe 'nebula::profile::moku' do
       let(:facts) { os_facts }
       let(:hiera_config) { 'spec/fixtures/hiera/named_instances_config.yaml' }
 
-      it { is_expected.to contain_nebula__deployment_instance('minimal-instance') }
-      it { is_expected.to contain_nebula__deployment_instance('first-instance') }
+      it { is_expected.to contain_nebula__named_instance('minimal-instance') }
+      it { is_expected.to contain_nebula__named_instance('first-instance') }
     end
-
   end
 end

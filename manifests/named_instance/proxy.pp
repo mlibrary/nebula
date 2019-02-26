@@ -3,7 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 
 # Declaration of a service to be made available via reverse proxy. This
-# should be exported by an app and then collected by the web server role or
+# should be exported by a named instance and then collected by the web server role or
 # profile.
 
 # There are many keys in hiera for each instance, including some new ones
@@ -26,18 +26,19 @@
 #
 # Meaningful defaults are applied at the named_instance class, not here.
 
-define nebula::proxied_app(
+define nebula::named_instance::proxy(
   String  $public_hostname,
   String  $url_root,
-  String  $protocol,          # protocol to the app, not of the vhost
-  String  $hostname,
   Integer $port,
-  Boolean $ssl,
-  String  $ssl_crt,
-  String  $ssl_key,
-  String  $static_path,
-  Boolean $static_directories,
-  String  $single_sign_on,
+  String  $path,
+  String  $protocol = 'http',          # protocol to the app, not of the vhost
+  String  $hostname = "app-${title}",
+  Boolean $ssl = true,
+  String  $ssl_crt = "${public_hostname}.crt",
+  String  $ssl_key = "${public_hostname}.key",
+  String  $static_path = "${path}/current/public",
+  Boolean $static_directories = false,
+  String  $single_sign_on = 'cosign',
   Optional[String] $cosign_factor = undef,
   Optional[String] $sendfile_path = undef,     # If set, XSendFile will be enabled here
   Array[String]    $public_aliases = [],
