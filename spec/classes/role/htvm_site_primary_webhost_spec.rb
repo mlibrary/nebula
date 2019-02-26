@@ -16,6 +16,8 @@ describe 'nebula::role::webhost::htvm::site_primary' do
       # includes cron jobs that run at each site
       it { is_expected.to contain_class('nebula::profile::hathitrust::cron::mdp_misc') }
       # sets cache parameters
+      #
+      it { is_expected.to contain_package('rdist') }
     end
   end
 end
