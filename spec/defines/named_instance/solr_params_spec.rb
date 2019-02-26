@@ -5,45 +5,45 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::named_instance::moku_solr_params' do
+describe 'nebula::named_instance::solr_params' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 
+      xdescribe 'exported resources'
+
       describe 'concat_fragments' do
-        let(:target) { "#{name} deploy init" }
-        let(:title) { "#{name} thishost" }
+        let(:target) { "#{instance} deploy init" }
 
         context 'for first-instance' do
-          let(:name) { 'first-instance' }
+          let(:instance) { 'first-instance' }
+          let(:title) { "somecore" }
           let(:params) do
             {
-              instance: name,
+              instance: instance,
+              path: '/nonexistent',
               index: 1,
-              url: 'http://localhost:8082/foo/bar',
+              solr_params: {
+                'host' => 'localhost',
+                'port' => 8082
+              }
             }
           end
 
-          {
-            'infrastructure.solr.1' => '{"infrastructure":{"solr":{"1":"http://localhost:8082/foo/bar"}}}',
-          }
-            .each do |fragment_title, content|
-            describe fragment_title do
-              it "sets #{content}" do
-                is_expected.to contain_concat_fragment("#{name} deploy init #{fragment_title}").with(
-                  target: target,
-                  content: content,
-                )
-              end
-            end
+          it do
+            is_expected.to contain_concat_fragment("first-instance deploy init infrastructure.solr.1").with(
+              target: target,
+              content: '{"infrastructure":{"solr":{"1":"http://localhost:8082/foo/bar"}}}'
+            )
           end
         end
 
-        context 'for second-instance' do
-          let(:name) { 'second-instance' }
+        xcontext 'for second-instance' do
+          let(:instance) { 'second-instance' }
+          let(:title) { 'anothercore' }
           let(:params) do
             {
-              instance: name,
+              instance: instance,
               index: 99,
               url: 'http://somehost.default.invalid:12345/solr/whatever',
             }
@@ -55,7 +55,7 @@ describe 'nebula::named_instance::moku_solr_params' do
             .each do |fragment_title, content|
             describe fragment_title do
               it "sets #{content}" do
-                is_expected.to contain_concat_fragment("#{name} deploy init #{fragment_title}").with(
+                is_expected.to contain_concat_fragment("#{instance} deploy init #{fragment_title}").with(
                   target: target,
                   content: content,
                 )

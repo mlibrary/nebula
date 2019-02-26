@@ -14,6 +14,8 @@ describe 'nebula::named_instance::solr_core' do
         let(:title) { 'mycore' }
         let(:params) do
           {
+            host: 'localhost',
+            port: 8081,
             instance_path: '/nonexistent/myapp-testing',
             instance_title: 'myapp-testing',
             index: 1,
@@ -52,14 +54,6 @@ describe 'nebula::named_instance::solr_core' do
             unless: '/usr/bin/wget -O - --quiet http://localhost:8081/solr/mycore/admin/ping > /dev/null',
             command: '/usr/bin/wget -O - --quiet "http://localhost:8081/solr/admin/cores?action=CREATE&name=mycore&' \
                      'instanceDir=/nonexistent/solr_home/mycore&config=solrconfig.xml&dataDir=data" > /dev/null',
-          )
-        end
-
-        it 'exports solr core params for moku' do
-          expect(exported_resources).to contain_nebula__named_instance__moku_solr_params('myapp-testing mycore thishost').with(
-            instance: 'myapp-testing',
-            url: 'http://localhost:8081/solr/mycore',
-            index: 1,
           )
         end
       end
@@ -103,14 +97,6 @@ describe 'nebula::named_instance::solr_core' do
             unless: '/usr/bin/wget -O - --quiet http://solrhost:12345/solr/anothercore/admin/ping > /dev/null',
             command: '/usr/bin/wget -O - --quiet "http://solrhost:12345/solr/admin/cores?action=CREATE&name=anothercore&' \
                      'instanceDir=/somewhere/solr_cores/anothercore&config=solrconfig.xml&dataDir=data" > /dev/null',
-          )
-        end
-
-        it 'exports solr core params for moku' do
-          expect(exported_resources).to contain_nebula__named_instance__moku_solr_params('something-testing anothercore thishost').with(
-            instance: 'something-testing',
-            url: 'http://solrhost:12345/solr/anothercore',
-            index: 99,
           )
         end
       end

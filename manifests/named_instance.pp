@@ -44,6 +44,15 @@ define nebula::named_instance(
     path     => $path
   }
 
+  $solr_cores.keys.each |$index, $core_title| {
+    nebula::named_instance::solr_params { $core_title:
+      solr_params    => $solr_cores[$core_title],
+      instance       => $title,
+      instance_path  => $path,
+      index          => $index + 1
+    }
+  }
+
   concat_file { "${title} deploy init":
     path   => "${init_directory}/${title}.json",
     format => 'json-pretty',

@@ -92,8 +92,17 @@ describe 'nebula::named_instance' do
           describe 'exported resources' do
             subject { exported_resources }
 
-            it 'exports a proxied_app' do
-              is_expected.to contain_nebula__named_instance__proxy(title)
+            it { is_expected.to contain_nebula__named_instance__proxy(title) }
+
+            it "exports a proxy with the correct parameters"
+            it "exports an app with the correct parameters"
+
+            xit 'exports solr core params for moku' do
+              is_expected.to contain_nebula__named_instance__solr_params('myapp-testing mycore thishost').with(
+                instance: 'myapp-testing',
+                url: 'http://localhost:8081/solr/mycore',
+                index: 1,
+              )
             end
           end
         end
@@ -146,6 +155,23 @@ describe 'nebula::named_instance' do
                   content: content,
                 )
               end
+            end
+          end
+
+          xdescribe 'exported resources' do
+            subject { exported_resources }
+
+            it { is_expected.to contain_nebula__named_instance__proxy(title) }
+
+            it "exports a proxy with the correct parameters"
+            it "exports an app with the correct parameters"
+
+            xit 'exports solr core params for moku' do
+              is_expected.to contain_nebula__named_instance__solr_params('myapp-testing mycore thishost').with(
+                instance: 'myapp-testing',
+                url: 'http://localhost:8081/solr/mycore',
+                index: 1,
+              )
             end
           end
         end
