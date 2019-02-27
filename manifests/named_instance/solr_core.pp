@@ -3,16 +3,17 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# A named instance
+# A solr core for a named instance
 #
 # @example
 define nebula::named_instance::solr_core (
   String $instance_path,
-  String $instance_title,
+  String $instance,
+  Integer $index,
+  String $host,
+  Integer $port,
   String $solr_home = lookup('nebula::named_instance::solr_core::solr_home'),
   String $config_dir = 'conf',
-  String $host = 'localhost',
-  Integer $port = 8081,
   String $default_config = lookup('nebula::named_instance::solr_core::default_config'),
   String $solr_user = 'solr',
   String $solr_group = 'solr',
@@ -29,8 +30,8 @@ define nebula::named_instance::solr_core (
     {
       ensure => 'directory',
       mode   => '2775',
-      owner  => $instance_title,
-      group  => $instance_title
+      owner  => $instance,
+      group  => $instance
     }
   )
 

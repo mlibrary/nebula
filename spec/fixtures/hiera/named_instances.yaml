@@ -1,0 +1,42 @@
+# Copyright (c) 2019 The Regents of the University of Michigan.
+# All Rights Reserved. Licensed according to the terms of the Revised
+# BSD License. See LICENSE.txt for details.
+nebula::named_instances:
+  first-instance:
+    proxy:
+      public_hostname: first-instance.default.invalid
+      ssl_crt: first-instance.invalid.crt
+      ssl_key: first-instance.invalid.key
+      protocol: https
+      hostname: first-instance-hostname
+      sendfile_path: '/invalid/default/path'
+    app:
+      uid: 1001
+      gid: 101
+    source_url: git@github.com:mlibrary/first_invalid_default
+    url_root: /first-instance-root
+    path: /www-invalid/first-instance/app
+    port: 10001
+    users:
+    - one_user
+    - another_user
+    subservices:
+    - one_subservice
+    - another_subservice
+    solr_cores:
+      core1:
+        solr_home: /nonexistent/solr
+        index: 1
+      core2:
+        solr_home: /nonexistent/solr
+        index: 2
+
+  minimal-instance:
+    source_url: git@github.com:mlibrary/nebula
+    path: /www-invalid/minimal/app
+    port: 10002
+    proxy:
+      public_hostname: minimal.default.invalid
+    app:
+      uid: 1002
+      gid: 102

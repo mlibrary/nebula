@@ -11,8 +11,8 @@
 # @example
 #   include nebula::profile::named_instances
 class nebula::profile::named_instances (
-  String      $fauxpaas_pubkey,
-  String      $fauxpaas_puma_config,
+  String      $pubkey,
+  String      $puma_config,
   String      $puma_wrapper,
   Boolean     $create_databases = true,
   Hash[String,Hash] $instances = {}
@@ -20,16 +20,12 @@ class nebula::profile::named_instances (
 
   class { 'nebula::profile::named_instances::puma_wrapper':
     path        => $puma_wrapper,
-    puma_config => $fauxpaas_puma_config,
+    puma_config => $puma_config,
     rbenv_root  => lookup('nebula::profile::ruby::install_dir'),
   }
 
-  $defaults = {
-    puma_wrapper    => $puma_wrapper,
-    pubkey          => $fauxpaas_pubkey,
-    puma_config     => $fauxpaas_puma_config,
-    create_database => $create_databases
+  $instances.each |$instance| {
+    Nebula::Named_instance::App <<| title == $instance |>>
+    Nebula::Named_instance::Solr_core <<| instance_title == $instance |>>
   }
-
-  create_resources(nebula::named_instance, $instances, $defaults)
 }

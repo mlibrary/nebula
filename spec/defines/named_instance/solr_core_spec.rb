@@ -8,14 +8,17 @@ require 'spec_helper'
 describe 'nebula::named_instance::solr_core' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts) { os_facts }
+      let(:facts) { os_facts.merge(hostname: 'thishost') }
 
       context 'with required/default params' do
         let(:title) { 'mycore' }
         let(:params) do
           {
+            host: 'localhost',
+            port: 8081,
             instance_path: '/nonexistent/myapp-testing',
-            instance_title: 'myapp-testing',
+            instance: 'myapp-testing',
+            index: 1,
           }
         end
 
@@ -60,7 +63,7 @@ describe 'nebula::named_instance::solr_core' do
         let(:params) do
           {
             instance_path: '/somewhere/something-testing',
-            instance_title: 'something-testing',
+            instance: 'something-testing',
             solr_home: '/somewhere/solr_cores',
             config_dir: 'anothercore-conf',
             host: 'solrhost',
@@ -68,6 +71,7 @@ describe 'nebula::named_instance::solr_core' do
             default_config: '/somewhere/default-config',
             solr_user: 'solruser',
             solr_group: 'solrgroup',
+            index: 99,
           }
         end
 
