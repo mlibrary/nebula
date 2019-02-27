@@ -9,7 +9,7 @@
 # @example
 #   include nebula::profile::vim
 class nebula::profile::vim {
-  package { 'vim': }
+  package { ['vim', 'vim-gtk', 'vim-nox': }
 
   file { '/etc/vim/vimrc':
     content => template('nebula/profile/vim/vimrc.vim.erb'),
