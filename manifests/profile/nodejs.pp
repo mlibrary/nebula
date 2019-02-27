@@ -11,7 +11,7 @@
 class nebula::profile::nodejs () {
   include nebula::profile::apt
 
-    apt::source { 'nodesource.come':
+    apt::source { 'nodesource.com':
       comment       => 'Nodesource apt source for recent nodejs',
       location      => 'https://deb.nodesource.com/node_10.x',
       release       => $facts['os']['distro']['codename'],
