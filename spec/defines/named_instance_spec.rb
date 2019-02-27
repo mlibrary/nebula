@@ -122,6 +122,7 @@ describe 'nebula::named_instance' do
                   solr_cores: {
                     'somecore' => {
                       'solr_home' => '/nonexistent/solr',
+                      'index' => 1,
                     },
                   },
                 )
@@ -138,8 +139,7 @@ describe 'nebula::named_instance' do
                 is_expected.to contain_nebula__named_instance__solr_params('somecore').with(
                   instance: title,
                   path: path,
-                  solr_params: { 'solr_home' => '/nonexistent/solr' },
-                  index: 1,
+                  solr_params: { 'solr_home' => '/nonexistent/solr', 'index' => 1 },
                 )
               end
             end
@@ -152,16 +152,18 @@ describe 'nebula::named_instance' do
                   solr_cores: {
                     'core1' => {
                       'solr_home' => '/nonexistent/solr',
+                      'index' => 1,
                     },
                     'core2' => {
                       'solr_home' => '/nonexistent/solr',
+                      'index' => 99,
                     },
                   },
                 )
               end
 
               it { is_expected.to contain_nebula__named_instance__solr_core('core1').with_index(1) }
-              it { is_expected.to contain_nebula__named_instance__solr_core('core2').with_index(2) }
+              it { is_expected.to contain_nebula__named_instance__solr_core('core2').with_index(99) }
             end
           end
         end

@@ -26,8 +26,10 @@ nebula::named_instances:
     solr_cores:
       core1:
         solr_home: /nonexistent/solr
+        index: 1
       core2:
         solr_home: /nonexistent/solr
+        index: 2
 
   minimal-instance:
     source_url: git@github.com:mlibrary/nebula

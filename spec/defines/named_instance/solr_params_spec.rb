@@ -22,10 +22,10 @@ describe 'nebula::named_instance::solr_params' do
             {
               instance: instance,
               path: '/nonexistent',
-              index: 1,
               solr_params: {
                 'host' => 'localhost',
                 'port' => 8082,
+                'index' => 1,
               },
             }
           end
@@ -45,10 +45,10 @@ describe 'nebula::named_instance::solr_params' do
             {
               instance: instance,
               path: '/nonexistent',
-              index: 99,
               solr_params: {
                 'host' => 'somehost.default.invalid',
                 'port' => 12_345,
+                'index' => 99,
               },
             }
           end

@@ -24,6 +24,8 @@ define nebula::named_instance(
 
   $defaults =   { target  => "${title} deploy init" }
 
+  # some are only relevant to apache config -- extract
+
   @@nebula::named_instance::app { $title:
     *              => $app,
     path           => $path,
@@ -41,12 +43,11 @@ define nebula::named_instance(
     path     => $path
   }
 
-  $solr_cores.keys.each |$index, $core_title| {
+  $solr_cores.each |$core_title, $solr_params| {
     nebula::named_instance::solr_params { $core_title:
-      solr_params => $solr_cores[$core_title],
+      solr_params => $solr_params,
       instance    => $title,
       path        => $path,
-      index       => $index + 1
     }
   }
 
