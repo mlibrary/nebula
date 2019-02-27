@@ -113,7 +113,7 @@ describe 'nebula::named_instance' do
           end
 
           describe 'solr' do
-            it { is_expected.to have_nebula__named_instance__solr_core_resource_count(0) }
+            it { is_expected.to have_nebula__named_instance__solr_params_resource_count(0) }
             it { is_expected.not_to contain_file("#{path}/current") }
 
             context 'with solr params' do
@@ -129,13 +129,6 @@ describe 'nebula::named_instance' do
               end
 
               it do
-                expect(exported_resources).to contain_nebula__named_instance__solr_core('somecore').with(
-                  instance: title,
-                  instance_path: path,
-                )
-              end
-
-              it do
                 is_expected.to contain_nebula__named_instance__solr_params('somecore').with(
                   instance: title,
                   path: path,
@@ -145,25 +138,21 @@ describe 'nebula::named_instance' do
             end
 
             context 'with two solr cores' do
-              subject { exported_resources }
-
               let(:params) do
                 super().merge(
                   solr_cores: {
                     'core1' => {
-                      'solr_home' => '/nonexistent/solr',
                       'index' => 1,
                     },
                     'core2' => {
-                      'solr_home' => '/nonexistent/solr',
                       'index' => 99,
                     },
                   },
                 )
               end
 
-              it { is_expected.to contain_nebula__named_instance__solr_core('core1').with_index(1) }
-              it { is_expected.to contain_nebula__named_instance__solr_core('core2').with_index(99) }
+              it { is_expected.to contain_nebula__named_instance__solr_params('core1').with_solr_params('index' => 1) }
+              it { is_expected.to contain_nebula__named_instance__solr_params('core2').with_solr_params('index' => 99) }
             end
           end
         end

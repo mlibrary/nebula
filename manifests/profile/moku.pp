@@ -10,6 +10,10 @@ class nebula::profile::moku (
   String $init_directory = '/etc/moku/init'
 ) {
 
+  file { $init_directory:
+    ensure => 'directory',
+  }
+
   create_resources(nebula::named_instance,
     lookup('nebula::named_instances'),
     { init_directory =>  $init_directory }

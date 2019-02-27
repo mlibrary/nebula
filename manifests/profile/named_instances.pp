@@ -26,6 +26,6 @@ class nebula::profile::named_instances (
 
   $instances.each |$instance| {
     Nebula::Named_instance::App <<| title == $instance |>>
-    Nebula::Named_instance::Solr_core <<| instance_title == $instance |>>
+    Nebula::Named_instance::Solr_core <<| instance == $instance |>>
   }
 }
