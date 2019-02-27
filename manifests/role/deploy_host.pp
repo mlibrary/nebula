@@ -11,5 +11,6 @@
 class nebula::role::deploy_host {
   include nebula::role::umich
   include nebula::profile::ruby
+  include nebula::profile::nodejs
   include nebula::profile::moku
 }
