@@ -20,6 +20,22 @@ class nebula::profile::ruby (
   Array  $plugins,
   Array  $gems,
 ) {
+
+  package {[
+    'autoconf',
+    'build-essential',
+    'bison',
+    'libssl-dev',
+    'libyaml-dev',
+    'libreadline6-dev',
+    'zlib1g-dev',
+    'libsqlite3-dev',
+    'libncurses5-dev',
+    'libffi-dev',
+    'libgdbm5',
+    'libgdbm-dev'
+  ]:}
+
   class { 'rbenv':
     install_dir => $install_dir,
   }
