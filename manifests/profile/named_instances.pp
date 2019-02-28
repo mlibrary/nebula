@@ -15,7 +15,7 @@ class nebula::profile::named_instances (
   String      $puma_config,
   String      $puma_wrapper,
   Boolean     $create_databases = true,
-  Hash[String,Hash] $instances = {}
+  Array[String] $instances = []
 ) {
 
   class { 'nebula::profile::named_instances::puma_wrapper':
