@@ -32,7 +32,6 @@ class nebula::profile::ruby (
     'libsqlite3-dev',
     'libncurses5-dev',
     'libffi-dev',
-    'libgdbm5',
     'libgdbm-dev'
   ]:}
 
