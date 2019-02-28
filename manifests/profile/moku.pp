@@ -18,6 +18,4 @@ class nebula::profile::moku (
     lookup('nebula::named_instances'),
     { init_directory =>  $init_directory }
   )
-
-  Concat_fragment <<| target == "${name} deploy init" |>>
 }

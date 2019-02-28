@@ -137,4 +137,6 @@ define nebula::named_instance(
       content => {deploy => {sites => {user => $title}}}.to_json;
   }
 
+  Concat_fragment <<| target == "${title} deploy init" |>>
+
 }
