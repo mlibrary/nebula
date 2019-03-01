@@ -107,8 +107,8 @@ class nebula::profile::hathitrust::apache::babel (
     ],
 
     setenvifnocase    => [
-      "Host crms-training.${servername} CRMS_INSTANCE=crms-training",
-      "Host ${servername} CRMS_INSTANCE=production"
+      "Host ^crms-training.${servername} CRMS_INSTANCE=crms-training",
+      "Host ^${servername} CRMS_INSTANCE=production"
     ],
 
     rewrites          => [
