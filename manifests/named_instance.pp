@@ -13,6 +13,7 @@ define nebula::named_instance(
   String        $path,
   Integer       $port,                      # app port
   String        $source_url,
+  String        $bind_address = 'localhost',
   String        $mysql_host = 'localhost',
   Optional[String] $mysql_user = undef,
   Optional[String] $mysql_password = undef,
@@ -23,6 +24,8 @@ define nebula::named_instance(
 ) {
 
   $defaults =   { target  => "${title} deploy init" }
+
+  $bind = "tcp://${bind_address}:${port}";
 
   # some are only relevant to apache config -- extract
 
@@ -118,6 +121,9 @@ define nebula::named_instance(
     "${title} deploy init permissions.edit":
       content => {permissions => { edit => $users}}.to_json;
 
+    "${title} deploy init infrastructure.bind":
+      content => {infrastructure => {bind => $bind}}.to_json;
+
     "${title} deploy init infrastructure.base_dir":
       content => {infrastructure => {base_dir => $path}}.to_json;
 
@@ -136,5 +142,7 @@ define nebula::named_instance(
     "${title} deploy init deploy.sites.user":
       content => {deploy => {sites => {user => $title}}}.to_json;
   }
+
+  Concat_fragment <<| target == "${title} deploy init" |>>
 
 }

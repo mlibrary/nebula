@@ -36,6 +36,7 @@ describe 'nebula::named_instance' do
           let(:name) { 'first-instance' }
           let(:params) do
             {
+              bind_address: '10.1.2.3',
               port: 3000,
               url_root: '/first-instance-root',
               users: users,
@@ -73,6 +74,7 @@ describe 'nebula::named_instance' do
             'permissions.edit'                  => '{"permissions":{"edit":["one_user","another_user"]}}',
             'infrastructure.base_dir'           => '{"infrastructure":{"base_dir":"/www-invalid/first-instance/app"}}',
             'infrastructure.relative_url_root'  => '{"infrastructure":{"relative_url_root":"/first-instance-root"}}',
+            'infrastructure.bind'               => '{"infrastructure":{"bind":"tcp://10.1.2.3:3000"}}',
             'deploy.deploy_dir'                 => '{"deploy":{"deploy_dir":"/www-invalid/first-instance/app"}}',
             'deploy.env'                        => '{"deploy":{"env":{"rack_env":"production","rails_env":"production"}}}',
             'deploy.systemd_services'           => '{"deploy":{"systemd_services":["one_subservice","another_subservice"]}}',
@@ -192,6 +194,7 @@ describe 'nebula::named_instance' do
             'deploy.env'                        => '{"deploy":{"env":{"rack_env":"production","rails_env":"production"}}}',
             'deploy.systemd_services'           => '{"deploy":{"systemd_services":[]}}',
             'deploy.sites.user'                 => '{"deploy":{"sites":{"user":"minimal-instance"}}}',
+            'infrastructure.bind'               => '{"infrastructure":{"bind":"tcp://localhost:3001"}}',
           }.each do |fragment_title, content|
             describe fragment_title do
               it "sets #{content}" do
