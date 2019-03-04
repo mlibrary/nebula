@@ -37,7 +37,7 @@ class nebula::profile::hathitrust::apache::catalog (
   apache::vhost { "${servername} ssl":
     servername        => $servername,
     port              => 443,
-    serveraliases     => ["m.${prefix}${domain}"],
+    serveraliases     => ["${prefix}m.${domain}"],
     manage_docroot    => false,
     docroot           => $docroot,
     error_log_file    => 'catalog/error.log',
