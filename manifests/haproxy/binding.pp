@@ -2,10 +2,33 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Load-balanced frontend
+# Binds a server to a haproxy backend. Web server roles should export a
+# nebula::haproxy::binding resource; nebula::profile::haproxy collects these
+# resources and realizes the necessary concat fragments. The fragments are
+# virtual so that the web server doesn't need to know whether or not exemptions
+# from throttling are present. If they are, then two backends will be defined --
+# one for throttled requests and one for non-throttled requests, and the web
+# server needs to bind to both. If there is no throttling or no exemptions from
+# throttling, then web servers only need to bind to a single (default) back
+# end.
+#
+# @param service The prefix for the haproxy frontend & backend to use - for
+# example www-lib or hathitrust - this corresponds to Route 53 record sets that
+# resolve to haproxy.
+#
+# @param https_offload true if apache at ipaddress:443 speaks plain HTTP; false if it speaks HTTPS
+# @param datacenter The datacenter of the node to bind to
+# @param hostname The hostname of the node to bind to
+# @param ipaddress The ip address HAproxy should use to reach the node
 #
 # @example
-#   nebula::haproxy::binding { 'namevar': }
+#   @@nebula::haproxy::binding { '${::hostname} myservice':
+#     service       => 'myservice',
+#     https_offload => 'false',
+#     datacenter    => $::datacenter,
+#     hostname      => $::hostname,
+#     ipaddress     => $::ipaddress
+#  }
 define nebula::haproxy::binding(
   String $service,
   String $hostname,
@@ -23,8 +46,6 @@ define nebula::haproxy::binding(
   } else {
     $ssl_opts = ' ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt'
   }
-
-  # TODO - handle case where https_offload = false - ie proxy https to server
 
   @concat_fragment { "${service}-${datacenter}-http ${hostname} binding":
     target  => "/etc/haproxy/services.d/${service}-http.cfg",
