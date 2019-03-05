@@ -2,6 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
+# Monitoring web server dependencies via monitor.pl from ae-utils
 #
 # @param directory The directory to deploy the monitor script & config to
 # @param nfs_mounts NFS mounts to check (via ls)
