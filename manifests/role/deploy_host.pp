@@ -4,7 +4,8 @@
 
 # nebula::role::deploy_host
 #
-# Fauxpaas server
+# The host from which developers deploy applications. This is the
+# moku server.
 #
 # @example
 #   include nebula::role::deploy_host
