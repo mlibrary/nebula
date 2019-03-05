@@ -15,8 +15,6 @@
 #     sign_script => puppet:///somewhere/signit.sh
 #   }
 
-#   include nebula::profile::deb_signing
-
 class nebula::profile::deb_signing (
   String $sign_key,
   String $sign_script
