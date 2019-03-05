@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Minimal HathiTrust server
+# The minimum configuration for a host that logically belongs to Hathitrust.
 #
 # @example
 #   include nebula::role::hathitrust
