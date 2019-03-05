@@ -7,8 +7,15 @@
 #
 # Install and configure geoip geolocation service
 #
+# @param license_key the GeoIP license key
+# @param user_id The GeoIP user id
+# @param product_id The MaxMind GeoIP product id, by default 106 for GeoIP Country
+#
 # @example
-#   include nebula::profile::geoip
+#   class { 'nebula::profile::geoip':
+#     license_key    => 'mykey',
+#     user_id        => '12345
+#   }
 class nebula::profile::geoip (
   String $license_key,
   String $user_id,
