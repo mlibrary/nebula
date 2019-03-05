@@ -12,10 +12,7 @@
 # throttling, then web servers only need to bind to a single (default) back
 # end.
 #
-# @param service The prefix for the haproxy frontend & backend to use - for
-# example www-lib or hathitrust - this corresponds to Route 53 record sets that
-# resolve to haproxy.
-#
+# @param service The nebula::haproxy::service instance to bind to.
 # @param https_offload true if apache at ipaddress:443 speaks plain HTTP; false if it speaks HTTPS
 # @param datacenter The datacenter of the node to bind to
 # @param hostname The hostname of the node to bind to

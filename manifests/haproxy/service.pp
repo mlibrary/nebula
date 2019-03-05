@@ -2,10 +2,50 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Load-balanced frontend
+# A set of front-ends and back-ends for haproxy corresponding to a route 53
+# record set that resolves to HAproxy. Typically this is a set of web sites
+# running on a particular set of servers -- for example www-lib or hathitrust.
+#
+# These services are defined in hiera under nebula::profile::haproxy::services
+# and declared as virtual resources in nebula::profile::haproxy. They are
+# realized in the node to haproxy bindings, so that configuration is only
+# materialized for any services where at least one web server node is bound to
+# it on a particular haproxy node.
+#
+# @param floating_ip The ip address to listen on; this will be shared via
+#   keepalived with any other haproxy instances at the same datacenter.
+#
+# @param cert_source The source  (relative to puppet://) where the SSL certs
+#   for this service can be found
+#
+# @param throttle_condition Only throttle requests if they meet this haproxy
+#   condition
+#
+# @param max_requests_per_sec Allow this many requests per second on average
+#
+# @param max_requests_burst Allow exceeding max_requests_per_sec on average
+#   until hitting this many requests
+#
+# @param whitelists A set of whitelists to use for exempting requests from
+#   throttling. The keys are any haproxy sample fetch derivative that can be used
+#   in a whitelist, and the values are arrays of patterns to match using the
+#   haproxy "acl -f" functionality; see
+#   https://cbonte.github.io/haproxy-dconv/1.7/configuration.html#7
 #
 # @example
-#   nebula::haproxy::service { 'namevar': }
+#   nebula::haproxy::service { 'www-whatever':
+#     floating_ip          => '1.2.3.4'
+#     cert_source          => '/ssl-certs/haproxy',
+#     throttle_condition   => 'path_beg /should_be_throttled',
+#     max_requests_per_sec => '4',
+#     max_requests_burst   => '200',
+#     whitelists           => {
+#       path_beg           => ['/dont_throttle_this','/or_this'],
+#       path_sub           => ['in_the_middle'],
+#       path_end           => ['.css','.js'],
+#       src                => ['5.6.7.0/24','8.9.10.11']]
+#     }
+#  }
 define nebula::haproxy::service(
   String           $floating_ip,
   Optional[String] $cert_source = undef,
