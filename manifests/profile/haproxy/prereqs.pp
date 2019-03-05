@@ -3,7 +3,8 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::haproxy::prereqs
+# Packages required for any haproxy services. These are here so the
+# requirements in the haproxy service defined type are guaranteed to exist.
 #
 # @example
 #   include nebula::profile::haproxy::prereqs
