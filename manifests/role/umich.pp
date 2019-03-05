@@ -2,7 +2,9 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Minimal umich server
+# The minimum configuration for a host that logically belongs to the
+# University of Michigan. Most--but not all--other roles rely on this
+# one.
 #
 # @example
 #   include nebula::role::umich

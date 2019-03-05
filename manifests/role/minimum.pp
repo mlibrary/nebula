@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Minimal server
+# The base profile of one of our hosts. Every role should build on this.
 #
 # @example
 #   include nebula::role::minimum
