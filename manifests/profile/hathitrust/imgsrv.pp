@@ -31,7 +31,7 @@ class nebula::profile::hathitrust::imgsrv (
 
   file_line { 'tiger ignore imgsrv':
     ensure => 'present',
-    line   => "The process `(/htapps/babel.*|perl-fcgi)' is listening on socket .* \\(UDP on every interface\\) is run by nobody.",
+    line   => "The process `(/htapps/babel/.*|perl-fcgi|/l/local/bin/.*)' is listening on socket .* \\(UDP on every interface\\) is run by nobody.",
     path   => '/etc/tiger/tiger.ignore'
   }
 
