@@ -1,11 +1,42 @@
-
 # Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
 # The deployment configuration for a named instance
 #
-# @example
+# A named instance is a specific deployment of a project or application.
+# For example, fulcrum-testing is its own named instance, distinct from
+# fulcrum-production. Named instances tend to be deployed to different
+# environments with different configurations. They are distinct entities,
+# and tend to have completely separate data and databases.
+#
+# This resource exports the resources that handle the web, app, database,
+# and any other needs required by the named instance.
+#
+# This type also exports a number of json lines that are used to construct
+# an initial configuration for the named instance in moku. That information
+# is used by the deploy_host role.
+#
+# @param init_directory Common. Location to store json files to be used by
+#   moku init.
+# @param proxy The parameters required by named_instance::proxy
+# @param app The parameters required by named_instance::app
+# @param path The path where the application will be deployed. By convention, this
+#   does not differ from one host to another.
+# @param port The application server's bind port
+# @param source_url Url to the application's source code, as git-over-ssh.
+#   E.g. git@github.com:mlibrary/nebula.git
+# @param bind_address Application server's bind address
+# @param mysql_host The mysql host
+# @param mysql_user The mysql user the instance uses to connect to the database
+# @param mysql_password The password for the mysql user
+# @param url_root The relative url to this application in its domain
+# @param solr_cores A hash of core_title:hash, where the hash is the parameters
+#   required by named_instance::solr_params
+# @param users A list of users that should be added to the application's group
+# @param subservices A list of systemd services that should be restarted with this
+#   instance. This list should only include the top level of the service tree; i.e.,
+#   given a service my_app_x that depends on my_app_y, you should only include my_app_y.
 define nebula::named_instance(
   String        $init_directory,
   Hash          $proxy,

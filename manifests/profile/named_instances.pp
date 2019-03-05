@@ -4,9 +4,17 @@
 
 # nebula::profile::named_instances
 #
-# Manage named instances
+# This profile provisions and manages zero or more named instances. It
+# uses a list of instance names passed as a parameter to discover and
+# actualize resources exported by the named_instance defined type.
 #
-# @param instances List of named instances
+# @param pubkey Common. The public key that the moku user will use to connect
+#   to this host.
+# @param puma_wrapper Common. The absolute path of the puma wrapper.
+# @param puma_config Common. The relative path of the puma configuration file in
+#   the deployed application.
+# @param create_databases Whether or not to provision a database
+# @param instances List of named instances (their name as strings)
 #
 # @example
 #   include nebula::profile::named_instances
@@ -24,8 +32,11 @@ class nebula::profile::named_instances (
     rbenv_root  => lookup('nebula::profile::ruby::install_dir'),
   }
 
+  # Use the passed instance names to find the exported instance configuration
+  # resources from each of the named_instance resources.
   $instances.each |$instance| {
     Nebula::Named_instance::App <<| title == $instance |>>
     Nebula::Named_instance::Solr_core <<| instance == $instance |>>
   }
 }
+

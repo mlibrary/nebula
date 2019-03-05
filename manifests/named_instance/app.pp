@@ -2,9 +2,23 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# The ruby application components of a named instance
+# The ruby application components of a named instance, including users, groups,
+# directories, systemd, and configuring puma.
 #
-# @example
+# This defined type should not be invoked directly. See named_instance.pp
+#
+# @param path The path where the application will be deployed. By convention, this
+#   does not differ from one host to another.
+# @param uid The uid of the application user
+# @param gid The gid of the application user
+# @param mysql_host The instance's mysql host
+# @param users A list of users that should be added to the application's group
+# @param subservices A list of systemd services that should be restarted with this
+#   instance. This list should only include the top level of the service tree; i.e.,
+#   given a service my_app_x that depends on my_app_y, you should only include my_app_y.
+# @param mysql_exec_path
+# @param mysql_user The mysql user the instance uses to connect to the database
+# @param mysql_password The password for the mysql user
 define nebula::named_instance::app (
   String        $path,
   Integer       $uid,

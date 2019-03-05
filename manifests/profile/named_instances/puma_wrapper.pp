@@ -4,7 +4,7 @@
 
 # Wrapper for puma
 # It uses bundled puma if present, system puma otherwise
-# It prefers the fauxpaas puma config over the default location
+# It prefers the moku puma config over the default location
 #
 # @example
 class nebula::profile::named_instances::puma_wrapper(
