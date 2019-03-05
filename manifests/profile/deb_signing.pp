@@ -6,7 +6,15 @@
 #
 # Dependencies and scripts for signing a Debian repository
 #
+# @param sign_key The key to use when signing the repository
+# @param sign_script The script to install as /var/local/update_debs
+#
 # @example
+#   class { 'nebula::profile::deb_signing':
+#     sign_key    => puppet:///somewhere/my_key.key
+#     sign_script => puppet:///somewhere/signit.sh
+#   }
+
 #   include nebula::profile::deb_signing
 
 class nebula::profile::deb_signing (
