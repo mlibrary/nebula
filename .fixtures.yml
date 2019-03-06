@@ -12,6 +12,9 @@ fixtures:
     apt:
       repo: "puppetlabs/apt"
       ref: "4.5.1"
+    archive:
+      repo: "puppet/archive"
+      ref: "3.2.1"
     concat:
       repo: "puppetlabs/concat"
       ref: "4.2.0"
@@ -60,3 +63,15 @@ fixtures:
     ec2tagfacts:
       repo: "bryana/ec2tagfacts"
       ref: "0.3.0"
+    java:
+      repo: "puppetlabs/java"
+      ref: "3.3.0"
+    java_ks:
+      repo: "puppetlabs/java_ks"
+      ref: "2.3.0"
+    confluence:
+      repo: "puppet/confluence"
+      ref: "3.2.0"
+    jira:
+      repo: "puppet/jira"
+      ref: "3.5.2"
