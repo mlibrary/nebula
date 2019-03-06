@@ -31,4 +31,46 @@ class nebula::profile::hathitrust::dependencies () {
     target => '/usr/bin'
   }
 
+  # install jhove, pin it to buster if we're on stretch
+  if $facts['os']['release']['major'] == '9' {
+    include nebula::profile::apt::testing
+    include apt::backports
+
+    $packages = ['jhove','libjaxb-api-java','libactivation-java']
+    $release = 'buster'
+
+    apt::pin { "${release}-jhove":
+      explanation => "Prioritize ${packages} from ${release}",
+      codename    => $release,
+      priority    => 700,
+      packages    => $packages,
+      require     => Class['nebula::profile::apt::testing']
+    }
+
+    package {
+      $packages:
+      require => Apt::Pin["${release}-jhove"]
+    }
+  }
+  else {
+    package {
+      'jhove':
+    }
+  }
+
+  $http_files = lookup('nebula::http_files')
+  file { '/usr/local/bin/kdu_munge':
+    ensure => 'present',
+    mode   => '0755',
+    source => "https://${http_files}/ae-utils/bins/kdu_munge"
+  }
+
+  package {
+    [
+      'openjdk-11-jdk-headless',
+      'lftp',
+      'mariadb-client-10.1'
+    ]:
+  }
+
 }
