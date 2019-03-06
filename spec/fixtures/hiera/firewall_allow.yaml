@@ -1,0 +1,12 @@
+nebula::known_addresses::lowest:
+- 10.0.0.0/32
+nebula::known_addresses::highest:
+- 10.255.255.255/32
+nebula::known_addresses::low_three:
+- 10.0.1.0/24
+- 10.0.2.0/24
+- 10.0.3.0/24
+nebula::known_addresses::all:
+- "%{alias('nebula::known_addresses::lowest')}"
+- "%{alias('nebula::known_addresses::highest')}"
+- "%{alias('nebula::known_addresses::low_three')}"
