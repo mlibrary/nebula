@@ -81,6 +81,13 @@ describe 'nebula::firewall_allow' do
         it { is_expected.to contain_firewall("300 #{title} 3").with_source('10.0.2.0/24') }
         it { is_expected.to contain_firewall("300 #{title} 4").with_source('10.0.3.0/24') }
       end
+
+      context 'when given ["lowest", "highest"]' do
+        let(:params) { { source: %w[lowest highest], port: 321 } }
+
+        it { is_expected.to contain_firewall("300 #{title} 0").with_source('10.0.0.0/32') }
+        it { is_expected.to contain_firewall("300 #{title} 1").with_source('10.255.255.255/32') }
+      end
     end
   end
 end
