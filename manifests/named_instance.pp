@@ -168,7 +168,7 @@ define nebula::named_instance(
       content => {'deploy' => {'env' => {'rack_env' => 'production', 'rails_env' => 'production'}}}.to_json;
 
     "${title} deploy init deploy.systemd_services":
-      content => {deploy => {systemd_services => $subservices}}.to_json;
+      content => {deploy => {systemd_services => ["${title}.target"]}}.to_json;
 
     "${title} deploy init deploy.sites.user":
       content => {deploy => {sites => {user => $title}}}.to_json;
