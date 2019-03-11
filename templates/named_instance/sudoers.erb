@@ -3,4 +3,5 @@
 %<%= @title -%> ALL=(root) NOPASSWD: /bin/systemctl start <%= @title -%>.target
 %<%= @title -%> ALL=(root) NOPASSWD: /bin/systemctl restart <%= @title -%>.target
 %<%= @title -%> ALL=(root) NOPASSWD: /bin/systemctl status <%= @title -%>.target
+%<%= @title -%> ALL=(root) NOPASSWD: /bin/systemctl enable <%= @title -%>.target
 %<%= @title -%> ALL=(root) NOPASSWD: /bin/journalctl
