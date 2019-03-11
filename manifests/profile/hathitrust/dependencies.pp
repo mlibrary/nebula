@@ -18,7 +18,8 @@ class nebula::profile::hathitrust::dependencies () {
       'unzip',
       'zip',
       'netpbm-sf',
-      'kakadu'
+      'kakadu',
+      'rsync'
     ]:
   }
 
