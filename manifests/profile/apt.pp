@@ -34,80 +34,82 @@ class nebula::profile::apt (
     minute  => '0',
   }
 
-  class { 'apt':
-    purge  => {
-      'sources.list'   => true,
-      'sources.list.d' => true,
-      'preferences'    => true,
-      'preferences.d'  => true,
-    },
-    update => {
-      frequency => 'daily',
-    },
-  }
-
-  apt::source { 'main':
-    location => $mirror,
-    repos    => 'main contrib non-free',
-  }
-
-  apt::source { 'updates':
-    location => $mirror,
-    release  => "${::lsbdistcodename}-updates",
-    repos    => 'main contrib non-free',
-  }
-
-  apt::source { 'security':
-    release => "${::lsbdistcodename}/updates",
-    repos   => 'main contrib non-free',
-  }
-
-  if $local_repo {
-    apt::source { 'local':
-      *       => $local_repo,
-      release => $::lsbdistcodename,
-      repos   => 'main',
-    }
-  }
-
-  case $::lsbdistcodename {
-    'jessie': {
-      Apt::Source['security'] {
-        location => 'http://security.debian.org/',
-      }
+  if($::operatingsystem == 'Debian') {
+    class { 'apt':
+      purge  => {
+        'sources.list'   => true,
+        'sources.list.d' => true,
+        'preferences'    => true,
+        'preferences.d'  => true,
+      },
+      update => {
+        frequency => 'daily',
+      },
     }
 
-    default: {
-      Apt::Source['security'] {
-        location => 'http://security.debian.org/debian-security',
-      }
-    }
-  }
-
-  apt::source { 'puppet':
-    location => 'http://apt.puppetlabs.com',
-    repos    => $puppet_repo,
-  }
-
-  unless empty($::installed_backports) {
-    class { 'apt::backports':
+    apt::source { 'main':
       location => $mirror,
+      repos    => 'main contrib non-free',
     }
-  }
 
-  if $facts['dmi'] and $facts['dmi']['manufacturer'] == 'HP' {
-    apt::source { 'hp':
-      location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
-      release  => "${::lsbdistcodename}/current",
-      repos    => 'non-free',
+    apt::source { 'updates':
+      location => $mirror,
+      release  => "${::lsbdistcodename}-updates",
+      repos    => 'main contrib non-free',
     }
-  }
 
-  file { '/etc/apt/apt.conf.d/99no-recommends':
-    content => template('nebula/profile/apt/apt_no_recommends.erb'),
-  }
+    apt::source { 'security':
+      release => "${::lsbdistcodename}/updates",
+      repos   => 'main contrib non-free',
+    }
 
-  file { '/etc/apt/apt.conf.d/99force-ipv4':
-    content => template('nebula/profile/apt/apt_no_ipv6.erb'),
+    if $local_repo {
+      apt::source { 'local':
+        *       => $local_repo,
+        release => $::lsbdistcodename,
+        repos   => 'main',
+      }
+    }
+
+    case $::lsbdistcodename {
+      'jessie': {
+        Apt::Source['security'] {
+          location => 'http://security.debian.org/',
+        }
+      }
+
+      default: {
+        Apt::Source['security'] {
+          location => 'http://security.debian.org/debian-security',
+        }
+      }
+    }
+
+    apt::source { 'puppet':
+      location => 'http://apt.puppetlabs.com',
+      repos    => $puppet_repo,
+    }
+
+    unless empty($::installed_backports) {
+      class { 'apt::backports':
+        location => $mirror,
+      }
+    }
+
+    if $facts['dmi'] and $facts['dmi']['manufacturer'] == 'HP' {
+      apt::source { 'hp':
+        location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
+        release  => "${::lsbdistcodename}/current",
+        repos    => 'non-free',
+      }
+    }
+
+    file { '/etc/apt/apt.conf.d/99no-recommends':
+      content => template('nebula/profile/apt/apt_no_recommends.erb'),
+    }
+
+    file { '/etc/apt/apt.conf.d/99force-ipv4':
+      content => template('nebula/profile/apt/apt_no_ipv6.erb'),
+    }
   }
 }
