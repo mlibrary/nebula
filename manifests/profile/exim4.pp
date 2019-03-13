@@ -44,6 +44,7 @@ class nebula::profile::exim4 (
   }
 
   package { 'exim4': }
+  package { 'bsd-mailx': }
 
   exec { 'load new email aliases':
     command     => '/usr/bin/newaliases',
