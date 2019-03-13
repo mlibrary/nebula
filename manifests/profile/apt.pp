@@ -14,27 +14,27 @@ class nebula::profile::apt (
   Optional[Hash] $local_repo = undef,
 ) {
 
-  # Ensure that apt knows to never ever install recommended packages
-  # before it installs any packages.
-  File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
-
-  # Ensure that apt repos are set up and updated before attempting to install a
-  # new package. Tag some packages as 'preinstalled' to avoid dependency cycles.
-  package { ['apt-transport-https','dirmngr']:
-    tag => 'package-preinstalled'
-  }
-  Apt::Source <| |> -> Package <| tag != 'package-preinstalled' |>
-  Class['apt::update'] -> Package <| |>
-
-  # delete this after 2018-04-19
-  cron { 'apt-get update':
-    ensure  => 'absent',
-    command => '/usr/bin/apt-get update -qq',
-    hour    => '1',
-    minute  => '0',
-  }
-
   if($::operatingsystem == 'Debian') {
+    # Ensure that apt knows to never ever install recommended packages
+    # before it installs any packages.
+    File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
+
+    # Ensure that apt repos are set up and updated before attempting to install a
+    # new package. Tag some packages as 'preinstalled' to avoid dependency cycles.
+    package { ['apt-transport-https','dirmngr']:
+      tag => 'package-preinstalled'
+    }
+    Apt::Source <| |> -> Package <| tag != 'package-preinstalled' |>
+    Class['apt::update'] -> Package <| |>
+
+    # delete this after 2018-04-19
+    cron { 'apt-get update':
+      ensure  => 'absent',
+      command => '/usr/bin/apt-get update -qq',
+      hour    => '1',
+      minute  => '0',
+    }
+
     class { 'apt':
       purge  => {
         'sources.list'   => true,
