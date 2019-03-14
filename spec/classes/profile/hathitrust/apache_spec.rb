@@ -108,15 +108,6 @@ describe 'nebula::profile::hathitrust::apache' do
         it { is_expected.to contain_apache__vhost('babel.example.org ssl').with_servername('babel.example.org') }
 
         it {
-          is_expected.to contain_class('apache::mod::status').with(
-            requires: {
-              'enforce' => 'any',
-              'requires' => ['local', 'ip 10.0.1.0/24', 'ip 10.0.2.0/24', 'ip 10.0.3.0/24'],
-            },
-          )
-        }
-
-        it {
           is_expected.to contain_apache__vhost('hathitrust canonical name redirection').with(
             servername: 'example.org',
             serveraliases: ['domain.one', 'domain.two', 'www.domain.one', 'www.domain.two'],

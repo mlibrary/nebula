@@ -89,13 +89,6 @@ class nebula::profile::hathitrust::apache (
     proxy_ips => $haproxy_ips
   }
 
-  class { 'apache::mod::status':
-    requires => {
-      enforce  => 'any',
-      requires => [ 'local' ] + $staff_networks
-    }
-  }
-
   class { 'nebula::profile::ssl_keypair':
     common_name => 'www.hathitrust.org'
   }
