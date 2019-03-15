@@ -15,6 +15,7 @@
 #   include nebula::profile::ruby
 class nebula::profile::ruby (
   String $global_version,
+  String $bundler_version,
   Array  $supported_versions,
   String $install_dir,
   Array  $plugins,
@@ -44,13 +45,14 @@ class nebula::profile::ruby (
   }
 
   rbenv::build { $global_version:
-    bundler_version => '~>1.14',
+    bundler_version => $bundler_version,
     global          => true,
   }
 
   $gems.each |$gem| {
-    rbenv::gem { "${gem} ${global_version}":
-      gem          => $gem,
+    rbenv::gem { "${gem[gem]} ${global_version}":
+      gem          => $gem['gem'],
+      version      => $gem['version'],
       ruby_version => $global_version,
       require      => Rbenv::Build[$global_version],
     }
@@ -61,12 +63,13 @@ class nebula::profile::ruby (
     unless $::os['release']['major'] == '9' and $version =~ /^2\.3\./ {
       unless $version == $global_version {
         rbenv::build { $version:
-          bundler_version => '~>1.14',
+          bundler_version => $bundler_version,
         }
 
         $gems.each |$gem| {
-          rbenv::gem { "${gem} ${version}":
-            gem          => $gem,
+          rbenv::gem { "${gem[gem]} ${version}":
+            gem          => $gem['gem'],
+            version      => $gem['version'],
             ruby_version => $version,
             require      => Rbenv::Build[$version],
           }

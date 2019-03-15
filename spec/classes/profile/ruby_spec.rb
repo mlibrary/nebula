@@ -27,9 +27,7 @@ describe 'nebula::profile::ruby' do
 
       ['2.4.3', '2.5.0'].each do |version|
         it do
-          is_expected.to contain_rbenv__build(version).with(
-            bundler_version: '~>1.14',
-          )
+          is_expected.to contain_rbenv__build(version)
         end
 
         %w[puma rspec].each do |gem|
@@ -74,7 +72,7 @@ describe 'nebula::profile::ruby' do
       end
 
       context 'when given global_version of 2.4.1' do
-        let(:params) { { global_version: '2.4.1' } }
+        let(:params) { { global_version: '2.4.1', bundler_version: '~>1.14' } }
 
         it do
           is_expected.to contain_rbenv__build('2.4.1').with(
@@ -85,7 +83,14 @@ describe 'nebula::profile::ruby' do
       end
 
       context 'when given gems ["pry", "json"]' do
-        let(:params) { { gems: %w[pry json] } }
+        let(:params) do
+          {
+            gems: [
+              { gem: 'pry', version: '>= 0' },
+              { gem: 'json', version: '>= 0' },
+            ],
+          }
+        end
 
         it { is_expected.to contain_rbenv__gem('pry 2.4.3') }
         it { is_expected.to contain_rbenv__gem('pry 2.5.0') }

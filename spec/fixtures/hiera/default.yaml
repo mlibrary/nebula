@@ -37,13 +37,14 @@ nebula::profile::ruby::plugins:
 - rbenv/rbenv-default-gems
 - tpope/rbenv-aliases
 nebula::profile::ruby::global_version: '2.4.3'
+nebula::profile::ruby::bundler_version: '~>1.17'
 nebula::profile::ruby::supported_versions:
 - '2.3.4'
 - '2.4.5'
 - '2.5.0'
 nebula::profile::ruby::gems:
-- rspec
-- puma
+- { gem: rspec, version: '>= 0' }
+- { gem: puma, version: '>= 0' }
 nebula::profile::vmhost::host::vms: {}
 nebula::profile::vmhost::host::defaults: {}
 
