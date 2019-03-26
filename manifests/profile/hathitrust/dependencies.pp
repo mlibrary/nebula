@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018-2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -9,10 +9,11 @@
 # @example
 #   include nebula::profile::hathitrust::dependencies
 class nebula::profile::hathitrust::dependencies () {
+  include nebula::profile::imagemagick
+
   package {
     [
       'git',
-      'imagemagick',
       'libjs-jquery',
       'libxerces-c-samples',
       'unzip',
