@@ -40,14 +40,6 @@ describe 'nebula::profile::apt' do
       it { is_expected.to contain_apt__source('local') }
 
       it do
-        is_expected.to contain_apt__source('updates').with(
-          location: 'http://ftp.us.debian.org/debian/',
-          release: "#{facts[:lsbdistcodename]}-updates",
-          repos: 'main contrib non-free',
-        )
-      end
-
-      it do
         is_expected.to contain_apt__source('security').with(
           release: "#{facts[:lsbdistcodename]}/updates",
           repos: 'main contrib non-free',
@@ -65,6 +57,15 @@ describe 'nebula::profile::apt' do
           is_expected.to contain_apt__source('security')
             .with_location('http://security.debian.org/debian-security')
         end
+
+        it do
+          is_expected.to contain_apt__source('updates').with(
+            location: 'http://ftp.us.debian.org/debian/',
+            release: "#{facts[:lsbdistcodename]}-updates",
+            repos: 'main contrib non-free',
+          )
+        end
+
         context 'when given a local repo' do
           let(:params) do
             { local_repo:
@@ -79,16 +80,26 @@ describe 'nebula::profile::apt' do
                                                              repos: 'main')
           end
         end
+
+        it { is_expected.not_to contain_class('apt::backports') }
+
+        context 'when abc is installed from backports' do
+          let(:facts) { os_facts.merge(installed_backports: ['abc']) }
+
+          it do
+            is_expected.to contain_class('apt::backports')
+              .with_location('http://ftp.us.debian.org/debian/')
+          end
+        end
+
       end
 
       context 'when given a mirror of http://debian.uchicago.edu/' do
         let(:params) { { mirror: 'http://debian.uchicago.edu/' } }
 
-        %w[main updates].each do |title|
-          it do
-            is_expected.to contain_apt__source(title)
-              .with_location('http://debian.uchicago.edu/')
-          end
+        it do
+          is_expected.to contain_apt__source('main')
+            .with_location('http://debian.uchicago.edu/')
         end
       end
 
@@ -103,17 +114,6 @@ describe 'nebula::profile::apt' do
         let(:params) { { puppet_repo: 'PC1' } }
 
         it { is_expected.to contain_apt__source('puppet').with_repos('PC1') }
-      end
-
-      it { is_expected.not_to contain_class('apt::backports') }
-
-      context 'when abc is installed from backports' do
-        let(:facts) { os_facts.merge(installed_backports: ['abc']) }
-
-        it do
-          is_expected.to contain_class('apt::backports')
-            .with_location('http://ftp.us.debian.org/debian/')
-        end
       end
 
       it { is_expected.not_to contain_apt__source('hp') }

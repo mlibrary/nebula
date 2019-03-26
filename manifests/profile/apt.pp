@@ -52,16 +52,11 @@ class nebula::profile::apt (
       repos    => 'main contrib non-free',
     }
 
-    apt::source { 'updates':
-      location => $mirror,
-      release  => "${::lsbdistcodename}-updates",
-      repos    => 'main contrib non-free',
-    }
-
     apt::source { 'security':
       release => "${::lsbdistcodename}/updates",
       repos   => 'main contrib non-free',
     }
+
 
     if $local_repo {
       apt::source { 'local':
@@ -82,18 +77,25 @@ class nebula::profile::apt (
         Apt::Source['security'] {
           location => 'http://security.debian.org/debian-security',
         }
+
+        unless empty($::installed_backports) {
+          class { 'apt::backports':
+            location => $mirror,
+          }
+        }
+
+        apt::source { 'updates':
+          location => $mirror,
+          release  => "${::lsbdistcodename}-updates",
+          repos    => 'main contrib non-free',
+        }
+
       }
     }
 
     apt::source { 'puppet':
       location => 'http://apt.puppetlabs.com',
       repos    => $puppet_repo,
-    }
-
-    unless empty($::installed_backports) {
-      class { 'apt::backports':
-        location => $mirror,
-      }
     }
 
     if $facts['dmi'] and $facts['dmi']['manufacturer'] == 'HP' {
