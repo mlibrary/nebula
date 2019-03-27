@@ -39,6 +39,7 @@ class nebula::profile::hathitrust::perl () {
     'libdata-page-perl',
     'libdate-calc-perl',
     'libdate-manip-perl',
+    'libdbd-mock-perl',
     'libdbd-mysql-perl',
     'libdevel-globaldestruction-perl',
     'libdigest-sha-perl',
