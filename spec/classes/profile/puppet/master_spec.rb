@@ -148,7 +148,7 @@ describe 'nebula::profile::puppet::master' do
         is_expected.to contain_tidy(
           '/opt/puppetlabs/server/data/puppetserver/reports',
         ).with(
-          age: '1w',
+          age: '1h',
           recurse: true,
         )
       end
