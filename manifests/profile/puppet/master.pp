@@ -101,7 +101,7 @@ class nebula::profile::puppet::master (
   }
 
   tidy { $reports_dir:
-    age     => '1w',
+    age     => '1h',
     recurse => true,
   }
 }
