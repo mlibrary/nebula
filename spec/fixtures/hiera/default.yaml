@@ -131,4 +131,5 @@ nebula::virtual::users::default_group: staff
 nebula::virtual::users::all_users: {}
 
 nebula::named_instance::solr_core::default_config: '/nonexistent/solr/conf'
-nebula::named_instance::solr_core::solr_home: '/nonexistent/solr_home'
+nebula::named_instance::solr_core::core_home: '/nonexistent/solr_home'
+nebula::named_instance::solr_core::solr_home: '/var/lib/solr/home'
