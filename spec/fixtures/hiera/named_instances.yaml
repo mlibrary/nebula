@@ -25,10 +25,12 @@ nebula::named_instances:
     - another_subservice
     solr_cores:
       core1:
-        solr_home: /nonexistent/solr
+        core_home: /nonexistent/solr
+        solr_home: /var/lib/solr/home
         index: 1
       core2:
-        solr_home: /nonexistent/solr
+        core_home: /nonexistent/solr
+        solr_home: /var/lib/solr/home
         index: 2
 
   minimal-instance:

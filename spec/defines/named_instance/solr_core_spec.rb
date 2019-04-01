@@ -17,6 +17,7 @@ describe 'nebula::named_instance::solr_core' do
             host: 'localhost',
             port: 8081,
             instance_path: '/nonexistent/myapp-testing',
+            solr_home: '/var/lib/solr-whatever/home',
             instance: 'myapp-testing',
             index: 1,
           }
@@ -50,10 +51,15 @@ describe 'nebula::named_instance::solr_core' do
         end
 
         it do
+          is_expected.to contain_file('/var/lib/solr-whatever/home/mycore')
+            .with(ensure: 'link', target: '/nonexistent/solr_home/mycore')
+        end
+
+        it do
           is_expected.to contain_exec('initialize solr core mycore').with(
             unless: '/usr/bin/wget -O - --quiet http://localhost:8081/solr/mycore/admin/ping > /dev/null',
             command: '/usr/bin/wget -O - --quiet "http://localhost:8081/solr/admin/cores?action=CREATE&name=mycore&' \
-                     'instanceDir=/nonexistent/solr_home/mycore&config=solrconfig.xml&dataDir=data" > /dev/null',
+                     'instanceDir=/var/lib/solr-whatever/home/mycore&config=solrconfig.xml&dataDir=data" > /dev/null',
           )
         end
       end
@@ -64,7 +70,8 @@ describe 'nebula::named_instance::solr_core' do
           {
             instance_path: '/somewhere/something-testing',
             instance: 'something-testing',
-            solr_home: '/somewhere/solr_cores',
+            solr_home: '/var/lib/solr-another/home',
+            core_home: '/somewhere/solr_cores',
             config_dir: 'anothercore-conf',
             host: 'solrhost',
             port: 12_345,
@@ -84,7 +91,7 @@ describe 'nebula::named_instance::solr_core' do
 
         it do
           is_expected.to contain_file('/somewhere/solr_cores/anothercore')
-            .with(ensure: 'directory', owner: 'solr')
+            .with(ensure: 'directory', owner: 'solruser')
         end
 
         it do
@@ -96,7 +103,7 @@ describe 'nebula::named_instance::solr_core' do
           is_expected.to contain_exec('initialize solr core anothercore').with(
             unless: '/usr/bin/wget -O - --quiet http://solrhost:12345/solr/anothercore/admin/ping > /dev/null',
             command: '/usr/bin/wget -O - --quiet "http://solrhost:12345/solr/admin/cores?action=CREATE&name=anothercore&' \
-                     'instanceDir=/somewhere/solr_cores/anothercore&config=solrconfig.xml&dataDir=data" > /dev/null',
+                     'instanceDir=/var/lib/solr-another/home/anothercore&config=solrconfig.xml&dataDir=data" > /dev/null',
           )
         end
       end
