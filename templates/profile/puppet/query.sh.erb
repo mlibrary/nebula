@@ -2,6 +2,7 @@
 # Managed by puppet (nebula/profile/puppet/query.sh.erb)
 exec curl -X POST --tlsv1 \
   https://<%= @puppetdb_server %>:8081/pdb/query/v4/resources \
+  --silent \
   --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem \
   --cert /etc/puppetlabs/puppet/ssl/certs/<%= @trusted['certname'] %>.pem \
   --key /etc/puppetlabs/puppet/ssl/private_keys/<%= @trusted['certname'] %>.pem \
