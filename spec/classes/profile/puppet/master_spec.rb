@@ -156,7 +156,7 @@ describe 'nebula::profile::puppet::master' do
       context 'when told reports live in /var/lib' do
         let(:params) { { reports_dir: '/var/lib' } }
 
-        it { is_expected.to contain_tidy('/var/lib').with_age('1w') }
+        it { is_expected.to contain_tidy('/var/lib').with_age('1h') }
         it { is_expected.to contain_tidy('/var/lib').with_recurse(true) }
       end
     end
