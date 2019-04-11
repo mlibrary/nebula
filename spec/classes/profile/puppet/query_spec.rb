@@ -28,7 +28,7 @@ describe 'nebula::profile::puppet::query' do
       [
         %r{^#!/bin/sh$},
         %r{^exec curl -X POST --tlsv1},
-        %r{puppetdb\.default\.invalid:8081/pdb/query/v4/resources},
+        %r{puppetdb\.default\.invalid:8081/pdb/query/v4},
         %r{--cacert /etc/puppetlabs/puppet/ssl/certs/ca\.pem},
         %r{--cert /etc/puppetlabs/puppet/ssl/certs/[^/]+\.pem},
         %r{--key /etc/puppetlabs/puppet/ssl/private_keys/[^/]+\.pem},
