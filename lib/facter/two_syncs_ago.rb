@@ -17,6 +17,9 @@ require 'yaml'
 Facter.add(:two_syncs_ago_summary) do
   setcode do
     summary_file_path = '/opt/puppetlabs/puppet/cache/state/last_run_summary.yaml'
+    if Facter.value(:osfamily) == 'windows'
+      summary_file_path = 'C:\ProgramData\PuppetLabs\puppet\cache\state\last_run_summary.yaml'
+    end
 
     if File.exist? summary_file_path
       YAML.load_file(summary_file_path)
