@@ -54,7 +54,32 @@ describe 'nebula::named_instance::proxy' do
       let(:content)      { catalogue.resource('file', proxy_config).send(:parameters)[:content] }
 
       it { is_expected.to compile.with_all_deps }
-      it { is_expected.to contain_file(proxy_config) }
+
+      it do
+        is_expected.to contain_file(proxy_config).with(
+          require: 'File[/sysadmin/archive/app-proxies]',
+        )
+      end
+
+      it do
+        is_expected.to contain_file('/sysadmin/archive/app-proxies').with(
+          ensure: 'directory',
+          require: 'File[/sysadmin/archive]',
+        )
+      end
+
+      it do
+        is_expected.to contain_file('/sysadmin/archive').with(
+          ensure: 'directory',
+          require: 'File[/sysadmin]',
+        )
+      end
+
+      it do
+        is_expected.to contain_file('/sysadmin').with(
+          ensure: 'directory',
+        )
+      end
 
       describe 'access macro' do
         context 'with no whitelisted ips' do
