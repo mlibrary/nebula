@@ -37,7 +37,7 @@ describe 'nebula::profile::apt' do
         )
       end
 
-      it { is_expected.to contain_apt__source('local') }
+      it { is_expected.to contain_apt__source('local').with_architecture('amd64') }
 
       it do
         is_expected.to contain_apt__source('security').with(
@@ -75,6 +75,7 @@ describe 'nebula::profile::apt' do
 
           it do
             is_expected.to contain_apt__source('local').with(location: 'http://somehost.example.invalid/debs',
+                                                             architecture: 'amd64',
                                                              release: 'stretch',
                                                              key: params[:local_repo]['key'],
                                                              repos: 'main')
