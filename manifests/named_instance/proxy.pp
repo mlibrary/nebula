@@ -67,5 +67,14 @@ define nebula::named_instance::proxy(
   file { "/sysadmin/archive/app-proxies/${title}.conf":
     ensure  => 'present',
     content => template('nebula/named_instance/proxy_vhost.erb'),
+    require => File['/sysadmin/archive/app-proxies'],
   }
+
+  ensure_resource('file', '/sysadmin/archive/app-proxies',
+    {'ensure' => 'directory', 'require' => File['/sysadmin/archive']})
+
+  ensure_resource('file', '/sysadmin/archive',
+    {'ensure' => 'directory', 'require' => File['/sysadmin']})
+
+  ensure_resource('file', '/sysadmin', {'ensure' => 'directory'})
 }
