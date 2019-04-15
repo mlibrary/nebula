@@ -60,9 +60,10 @@ class nebula::profile::apt (
 
     if $local_repo {
       apt::source { 'local':
-        *       => $local_repo,
-        release => $::lsbdistcodename,
-        repos   => 'main',
+        *            => $local_repo,
+        release      => $::lsbdistcodename,
+        repos        => 'main',
+        architecture => $::os['architecture'],
       }
     }
 
