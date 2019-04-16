@@ -9,6 +9,9 @@
 #
 # @param path The path where the application will be deployed. By convention, this
 #   does not differ from one host to another.
+# @param data_path The path to store application data
+# @param log_path The path to store application logs
+# @param tmp_path The path to store temporary artifacts created by the application
 # @param uid The uid of the application user
 # @param gid The gid of the application user
 # @param mysql_host The instance's mysql host
@@ -21,6 +24,9 @@
 # @param mysql_password The password for the mysql user
 define nebula::named_instance::app (
   String        $path,
+  String        $data_path,
+  String        $log_path,
+  String        $tmp_path,
   Integer       $uid,
   Integer       $gid,
   String        $mysql_host,
@@ -82,6 +88,30 @@ define nebula::named_instance::app (
 
   # Create the application directory
   file { $path:
+    ensure => 'directory',
+    mode   => '2775',
+    owner  => $uid,
+    group  => $gid,
+  }
+
+  # Create the application data directory
+  file { $data_path:
+    ensure => 'directory',
+    mode   => '2775',
+    owner  => $uid,
+    group  => $gid,
+  }
+
+  # Create the application log directory
+  file { $log_path:
+    ensure => 'directory',
+    mode   => '2775',
+    owner  => $uid,
+    group  => $gid,
+  }
+
+  # Create the application tmp directory
+  file { $tmp_path:
     ensure => 'directory',
     mode   => '2775',
     owner  => $uid,
