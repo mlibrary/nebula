@@ -9,6 +9,9 @@ describe 'nebula::named_instance::app' do
   subservice_list = ['resque-pool', 'mailman']
   let(:subservices) { subservice_list }
   let(:path) { '/hydra-dev/some/where/myapp-mystage' }
+  let(:data_path) { File.join(path, 'data') }
+  let(:log_path) { File.join(path, 'log') }
+  let(:tmp_path) { File.join(path, 'tmp') }
   let(:title) { 'myapp-mystage' }
   let(:uid) { 30_001 }
   let(:gid) { 20_001 }
@@ -35,6 +38,9 @@ describe 'nebula::named_instance::app' do
   let(:params) do
     {
       path: path,
+      data_path: data_path,
+      log_path: log_path,
+      tmp_path: tmp_path,
       uid: uid,
       gid: gid,
       subservices: subservices,
@@ -118,6 +124,27 @@ describe 'nebula::named_instance::app' do
         it { is_expected.to contain_file(path).with(mode: '2775') }
         it { is_expected.to contain_file(path).with(owner: uid) }
         it { is_expected.to contain_file(path).with(group: gid) }
+      end
+
+      describe 'data_path' do
+        it { is_expected.to contain_file(data_path).with(ensure: 'directory') }
+        it { is_expected.to contain_file(data_path).with(mode: '2775') }
+        it { is_expected.to contain_file(data_path).with(owner: uid) }
+        it { is_expected.to contain_file(data_path).with(group: gid) }
+      end
+
+      describe 'log_path' do
+        it { is_expected.to contain_file(log_path).with(ensure: 'directory') }
+        it { is_expected.to contain_file(log_path).with(mode: '2775') }
+        it { is_expected.to contain_file(log_path).with(owner: uid) }
+        it { is_expected.to contain_file(log_path).with(group: gid) }
+      end
+
+      describe 'tmp_path' do
+        it { is_expected.to contain_file(tmp_path).with(ensure: 'directory') }
+        it { is_expected.to contain_file(tmp_path).with(mode: '2775') }
+        it { is_expected.to contain_file(tmp_path).with(owner: uid) }
+        it { is_expected.to contain_file(tmp_path).with(group: gid) }
       end
 
       describe 'old puma systemd' do

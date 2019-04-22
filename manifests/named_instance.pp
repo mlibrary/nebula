@@ -23,6 +23,9 @@
 # @param app The parameters required by named_instance::app
 # @param path The path where the application will be deployed. By convention, this
 #   does not differ from one host to another.
+# @param data_path The path to store application data
+# @param log_path The path to store application logs
+# @param tmp_path The path to store temporary artifacts created by the application
 # @param port The application server's bind port
 # @param source_url Url to the application's source code, as git-over-ssh.
 #   E.g. git@github.com:mlibrary/nebula.git
@@ -44,6 +47,9 @@ define nebula::named_instance(
   String        $path,
   Integer       $port,                      # app port
   String        $source_url,
+  String        $data_path = "${path}/data",
+  String        $log_path = "${path}/log",
+  String        $tmp_path = "${path}/tmp",
   String        $bind_address = 'localhost',
   String        $mysql_host = 'localhost',
   Optional[String] $mysql_user = undef,
@@ -63,6 +69,9 @@ define nebula::named_instance(
   @@nebula::named_instance::app { $title:
     *              => $app,
     path           => $path,
+    data_path      => $data_path,
+    log_path       => $log_path,
+    tmp_path       => $tmp_path,
     mysql_host     => $mysql_host,
     mysql_user     => $mysql_user,
     mysql_password => $mysql_password,
@@ -160,6 +169,15 @@ define nebula::named_instance(
 
     "${title} deploy init infrastructure.relative_url_root":
       content => {infrastructure => {relative_url_root => $url_root}}.to_json;
+
+    "${title} deploy init infrastructure.path.data":
+      content => {infrastructure => {path => {data => $data_path}}}.to_json;
+
+    "${title} deploy init infrastructure.path.log":
+      content => {infrastructure => {path => {log => $log_path}}}.to_json;
+
+    "${title} deploy init infrastructure.path.tmp":
+      content => {infrastructure => {path => {tmp => $tmp_path}}}.to_json;
 
     "${title} deploy init deploy.deploy_dir":
       content => {deploy => {deploy_dir => $path}}.to_json;

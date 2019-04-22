@@ -34,6 +34,7 @@ describe 'nebula::named_instance' do
 
         context 'for first-instance' do
           let(:name) { 'first-instance' }
+          # We intentionally leave out tmp_path to test the default behavior
           let(:params) do
             {
               bind_address: '10.1.2.3',
@@ -43,6 +44,8 @@ describe 'nebula::named_instance' do
               subservices: %w[one_subservice another_subservice],
               source_url: 'git@github.com:mlibrary/first_invalid_default',
               path: path,
+              data_path: '/nfs/my/data',
+              log_path: '/var/log/first-instance',
               init_directory: '/myinit',
               proxy: proxy_params,
               app: app_params,
@@ -75,6 +78,9 @@ describe 'nebula::named_instance' do
             'infrastructure.base_dir'           => '{"infrastructure":{"base_dir":"/www-invalid/first-instance/app"}}',
             'infrastructure.relative_url_root'  => '{"infrastructure":{"relative_url_root":"/first-instance-root"}}',
             'infrastructure.bind'               => '{"infrastructure":{"bind":"tcp://10.1.2.3:3000"}}',
+            'infrastructure.path.data'          => '{"infrastructure":{"path":{"data":"/nfs/my/data"}}}',
+            'infrastructure.path.log'           => '{"infrastructure":{"path":{"log":"/var/log/first-instance"}}}',
+            'infrastructure.path.tmp'           => '{"infrastructure":{"path":{"tmp":"/www-invalid/first-instance/app/tmp"}}}',
             'deploy.deploy_dir'                 => '{"deploy":{"deploy_dir":"/www-invalid/first-instance/app"}}',
             'deploy.env'                        => '{"deploy":{"env":{"rack_env":"production","rails_env":"production"}}}',
             'deploy.systemd_services'           => '{"deploy":{"systemd_services":["first-instance.target"]}}',
