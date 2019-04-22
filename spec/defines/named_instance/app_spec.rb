@@ -107,7 +107,7 @@ describe 'nebula::named_instance::app' do
         let(:home) { "/var/local/#{title}" }
 
         it { is_expected.to contain_file(home).with(ensure: 'directory') }
-        it { is_expected.to contain_file(home).with(mode: '0700') }
+        it { is_expected.to contain_file(home).with(mode: '2775') }
         it { is_expected.to contain_file(home).with(owner: uid) }
         it { is_expected.to contain_file(home).with(group: gid) }
       end
@@ -120,10 +120,26 @@ describe 'nebula::named_instance::app' do
       end
 
       describe 'path' do
-        it { is_expected.to contain_file(path).with(ensure: 'directory') }
-        it { is_expected.to contain_file(path).with(mode: '2775') }
-        it { is_expected.to contain_file(path).with(owner: uid) }
-        it { is_expected.to contain_file(path).with(group: gid) }
+        # We test both variations expressly to make sure that there isn't a
+        # duplicate resource error in the default case where the app is
+        # deployed to the user's home directory.
+        context 'when the app directory is not the user home' do
+          let(:path) { '/some/app/path' }
+
+          it { is_expected.to contain_file(path).with(ensure: 'directory') }
+          it { is_expected.to contain_file(path).with(mode: '2775') }
+          it { is_expected.to contain_file(path).with(owner: uid) }
+          it { is_expected.to contain_file(path).with(group: gid) }
+        end
+
+        context 'when the app directory is the user home' do
+          let(:path) { "/var/local/#{title}" }
+
+          it { is_expected.to contain_file(path).with(ensure: 'directory') }
+          it { is_expected.to contain_file(path).with(mode: '2775') }
+          it { is_expected.to contain_file(path).with(owner: uid) }
+          it { is_expected.to contain_file(path).with(group: gid) }
+        end
       end
 
       describe 'data_path' do
