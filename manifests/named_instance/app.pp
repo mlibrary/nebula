@@ -73,7 +73,7 @@ define nebula::named_instance::app (
   # Create the application user's home directory
   file { "/var/local/${title}":
     ensure => 'directory',
-    mode   => '0700',
+    mode   => '2775',
     owner  => $uid,
     group  => $gid,
   }
@@ -86,12 +86,14 @@ define nebula::named_instance::app (
     key    => $pubkey,
   }
 
-  # Create the application directory
-  file { $path:
-    ensure => 'directory',
-    mode   => '2775',
-    owner  => $uid,
-    group  => $gid,
+  # Create the application directory if it is separate
+  if $path != "/var/local/${title}" {
+    file { $path:
+      ensure => 'directory',
+      mode   => '2775',
+      owner  => $uid,
+      group  => $gid,
+    }
   }
 
   # Create the application data directory
