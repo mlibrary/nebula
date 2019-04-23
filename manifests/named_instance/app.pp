@@ -73,7 +73,7 @@ define nebula::named_instance::app (
   # Create the application user's home directory
   file { "/var/local/${title}":
     ensure => 'directory',
-    mode   => '2775',
+    mode   => '0755',
     owner  => $uid,
     group  => $gid,
   }
@@ -90,7 +90,7 @@ define nebula::named_instance::app (
   if $path != "/var/local/${title}" {
     file { $path:
       ensure => 'directory',
-      mode   => '2775',
+      mode   => '0755',
       owner  => $uid,
       group  => $gid,
     }
@@ -99,7 +99,7 @@ define nebula::named_instance::app (
   # Create the application data directory
   file { $data_path:
     ensure => 'directory',
-    mode   => '2775',
+    mode   => '0750',
     owner  => $uid,
     group  => $gid,
   }
@@ -107,7 +107,7 @@ define nebula::named_instance::app (
   # Create the application log directory
   file { $log_path:
     ensure => 'directory',
-    mode   => '2775',
+    mode   => '0750',
     owner  => $uid,
     group  => $gid,
   }
@@ -115,7 +115,7 @@ define nebula::named_instance::app (
   # Create the application tmp directory
   file { $tmp_path:
     ensure => 'directory',
-    mode   => '2775',
+    mode   => '0750',
     owner  => $uid,
     group  => $gid,
   }
