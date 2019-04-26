@@ -64,10 +64,12 @@ nebula::profile::geoip::user_id: "12345"
 nebula::usergroup::membership:
   htprod: ['htingest', 'htweb']
   htingest: ['htingest']
+  solr: ['solr']
 
 nebula::profile::groups::all_groups:
   htprod: 12345
   htingest: 12346
+  solr: 12347
 
 nebula::virtual::users::all_users:
   htingest:
@@ -78,6 +80,10 @@ nebula::virtual::users::all_users:
     comment: HT Ingest User
     uid: 123457
     home: /home/htingest
+  solr:
+    comment: Solr user
+    uid: 123458
+    home: /var/lib/solr
 
 nebula::hathitrust::monitor::solr_cores:
   - solrcore1
@@ -110,3 +116,5 @@ nebula::profile::hathitrust::cron::catalog::mail_recipient: nobody@default.inval
 
 
 umich::networks::staff: []
+
+nebula::profile::hathitrust::solr_lss::timezone: Somewhere/City

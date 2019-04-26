@@ -1,0 +1,39 @@
+SOLR_JAVA_HOME="<%= @java_home %>"
+SOLR_HEAP="<%= @solr_heap %>"
+
+GC_LOG_OPTS="-verbose:gc -XX:+PrintHeapAtGC -XX:+PrintGCDetails \
+-XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime"
+
+GC_TUNE="-XX:NewRatio=3 \
+-XX:SurvivorRatio=4 \
+-XX:TargetSurvivorRatio=90 \
+-XX:MaxTenuringThreshold=8 \
+-XX:+UseConcMarkSweepGC \
+-XX:+UseParNewGC \
+-XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 \
+-XX:+CMSScavengeBeforeRemark \
+-XX:PretenureSizeThreshold=64m \
+-XX:+UseCMSInitiatingOccupancyOnly \
+-XX:CMSInitiatingOccupancyFraction=50 \
+-XX:CMSMaxAbortablePrecleanTime=6000 \
+-XX:+CMSParallelRemarkEnabled \
+-XX:+ParallelRefProcEnabled"
+
+SOLR_TIMEZONE="<%= @timezone %>"
+ENABLE_REMOTE_JMX_OPTS="true"
+SOLR_OPTS="$SOLR_OPTS -Xss256k"
+SOLR_PID_DIR="<%= @solr_home %>"
+SOLR_HOME="<%= @solr_home %>"
+LOG4J_PROPS="<%= @log4j_props %>"
+SOLR_LOGS_DIR="<%= @solr_logs %>"
+SOLR_PORT=<%= @solr_port %>
+
+# To address http://lucene.472066.n3.nabble.com/Re-Several-critical-vulnerabilities-discovered-in-Apache-Solr-XXE-amp-RCE-td4358308.html
+# See AEIM-549
+#
+# 2017-10-17 skorner
+SOLR_OPTS="$SOLR_OPTS -Ddisable.configEdit=true"
+
+# tburtonw May 25 2018: prevent rotating logs every time solr is restarted
+SOLR_LOG_PRESTART_ROTATION=false
+
