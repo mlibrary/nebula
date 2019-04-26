@@ -4,14 +4,27 @@
 
 # nebula::profile::tools_lib::jira
 #
-# Configure Confluence for tools.lib
+# Configure JIRA for tools.lib
+#
+# @param domain The public domain name that jira will listen on
+# @param homedir The home directory to use for jira
+# @param s3_backup_dest The S3 bucket where the jira XML dump will be
+# copied on a daily basis
 #
 # @example
-#   include nebula::profile::tools_lib::jira
+#   class { 'nebula::profile::tools_lib::jira':
+#     domain         => 'atlassian.somewhere.edu'
+#     s3_backup_dest => 's3://something/whatever'
+#   }
 
 class nebula::profile::tools_lib::jira (
   String $domain,
+  String $homedir = '/var/opt/jira',
+  Optional[String] $s3_backup_dest = null
 ) {
+
+  include nebula::profile::tools_lib::postgres
+  include nebula::profile::tools_lib::jdk
 
   class { 'jira':
     require                   => [ Class['nebula::profile::tools_lib::jdk'], Class['nebula::profile::tools_lib::postgres'] ],
@@ -36,6 +49,24 @@ class nebula::profile::tools_lib::jira (
     jira_config_properties    => {
       'ops.bar.group.size.opsbar-transitions' => '4', # tidy up transitions list over tickets
       'jira.websudo.timeout'                  => '30', # increase timeout for admin tasks
+    }
+  }
+
+  if($s3_backup_dest) {
+    ensure_packages(['awscli'])
+
+    cron { 'backup jira xml dump to s3':
+      command => "/usr/bin/aws s3 cp --quiet ${homedir}/export/`date +\\%Y\\%m\\%d`.zip ${s3_backup_dest}/jira.zip",
+      user    => 'root',
+      hour    => 3,
+      minute  => 20
+    }
+
+    cron { 'remove old jira backup':
+      command => "/bin/rm ${homedir}/export/`date +\\%Y\\%m\\%d`.zip",
+      user    => 'root',
+      hour    => 23,
+      minute  => 50
     }
   }
 

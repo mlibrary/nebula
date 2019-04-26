@@ -6,18 +6,31 @@
 #
 # Configure Confluence for tools.lib
 #
+# @param domain The public domain name that confluence will listen on
+# @param homedir The home directory to use for Confluence
+# @param s3_backup_dest The S3 bucket where the confluence XML dump will be
+# copied on a daily basis
+#
 # @example
-#   include nebula::profile::tools_lib::confluence
+#   class { 'nebula::profile::tools_lib::confluence':
+#     domain         => 'atlassian.somewhere.edu'
+#     s3_backup_dest => 's3://something/whatever'
+#   }
 
 class nebula::profile::tools_lib::confluence (
   String $domain,
+  String $homedir = '/var/opt/confluence',
+  Optional[String] $s3_backup_dest = null
 ) {
+
+  include nebula::profile::tools_lib::postgres
+  include nebula::profile::tools_lib::jdk
 
   class { 'confluence':
     require      => [ Class['nebula::profile::tools_lib::jdk'], Class['nebula::profile::tools_lib::postgres'] ],
     javahome     => Class['nebula::profile::tools_lib::jdk']['java_home'],
     installdir   => '/opt/conflunce',
-    homedir      => '/var/opt/confluence',
+    homedir      => $homedir,
     jvm_xms      => '1G',
     jvm_xmx      => '4G', # min for stable operation
     tomcat_proxy => {
@@ -26,6 +39,17 @@ class nebula::profile::tools_lib::confluence (
       proxyPort => '443',
     },
     context_path => '/confluence',
+  }
+
+  if($s3_backup_dest) {
+    ensure_packages(['awscli'])
+
+    cron { 'backup confluence xml dump to s3':
+      command => "/usr/bin/aws s3 cp --quiet ${homedir}/backups/backup.zip ${s3_backup_dest}/confluence.zip",
+      user    => 'root',
+      hour    => 3,
+      minute  => 10
+    }
   }
 
 }
