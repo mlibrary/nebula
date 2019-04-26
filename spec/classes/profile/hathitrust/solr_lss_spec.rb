@@ -50,6 +50,14 @@ describe 'nebula::profile::hathitrust::solr_lss' do
         it { is_expected.to contain_file('/var/lib/solr/solr.in.sh').with_content(snippet) }
       end
 
+      [
+        %r{Environment="SOLR_INCLUDE=/var/lib/solr/solr.in.sh"},
+        %r{ExecStart=/opt/solr/bin/solr start},
+        %r{ExecStop=/opt/solr/bin/solr stop}
+      ].each do |snippet|
+        it { is_expected.to contain_file('/etc/systemd/system/solr.service').with_content(snippet) }
+      end
+
       it do
         is_expected.to contain_file('/var/lib/solr/home/mycore')
           .with(ensure: 'link', target: '/path/to/some/core')

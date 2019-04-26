@@ -32,12 +32,14 @@ class nebula::profile::hathitrust::solr_lss (
   String $timezone
 ) {
 
-  ensure_packages(['openjdk-8-jre-headless'])
+  ensure_packages(['openjdk-8-jre-headless','solr'])
   $java_home = '/usr/lib/jvm/java-8-openjdk-amd64/jre'
 
   nebula::usergroup { 'solr': }
 
   $log4j_props = "${base}/log4j.properties"
+  $solr_in_sh = "${base}/solr.in.sh"
+  $solr_bin = "/opt/solr/bin/solr"
 
   file {
     default:
@@ -48,10 +50,16 @@ class nebula::profile::hathitrust::solr_lss (
       mode => '0750';
     $log4j_props:
       content => template('nebula/profile/hathitrust/solr_lss/log4j.properties.erb');
-    "${base}/solr.in.sh":
+    $solr_in_sh:
       content => template('nebula/profile/hathitrust/solr_lss/solr.in.sh.erb');
     "${home}/solr.xml":
       content =>  template('nebula/profile/hathitrust/solr_lss/solr.xml.erb')
+  }
+
+  file { "/etc/systemd/system/solr.service":
+    owner   => 'root',
+    group   => 'root',
+    content => template('nebula/profile/hathitrust/solr_lss/solr.service.erb')
   }
 
   $cores.each |$core,$path| {

@@ -1,0 +1,16 @@
+[Unit]
+Description=Solr Current for LSS
+After=network.target
+
+[Service]
+User=solr
+Type=forking
+Environment="SOLR_INCLUDE=<%= @solr_in_sh %>"
+Environment="UMASK=002"
+ExecStart=<%= @solr_bin %> start
+ExecStop=<%= @solr_bin %> stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
