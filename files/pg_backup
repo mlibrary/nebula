@@ -1,0 +1,27 @@
+#! /bin/sh
+
+# backup postgres database using the 'custom' archive format
+# which has default compression and allows for the most flexible recovery
+# using pg_restore
+
+DUMP=/usr/bin/pg_dump
+PGDB=$1
+TODAYSBKP=${PGDB}_`date +'%Y%m%d'`.dump
+
+echo "dumping $PGDB database..."
+$DUMP -Fc --create $PGDB > $TODAYSBKP
+
+# only rotate if today's backup exists
+if [ -f $TODAYSBKP ]; then
+  echo "rotating backup files..."
+
+  mv $PGDB.dump.5 $PGDB.dump.6
+  mv $PGDB.dump.4 $PGDB.dump.5
+  mv $PGDB.dump.3 $PGDB.dump.4
+  mv $PGDB.dump.2 $PGDB.dump.3
+  mv $PGDB.dump.1 $PGDB.dump.2
+  mv $PGDB.dump   $PGDB.dump.1
+  mv $TODAYSBKP     $PGDB.dump
+fi
+
+echo "done"

@@ -18,9 +18,6 @@ class nebula::role::tools_lib (
   class { 'nebula::profile::tools_lib::apache':
     servername => $domain,
   }
-  include nebula::profile::tools_lib::postgres
-
-  include nebula::profile::tools_lib::jdk
 
   # fonts needed for jira and confluence
   package { 'fonts-dejavu-core': }
