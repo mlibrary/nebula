@@ -13,8 +13,12 @@ describe 'nebula::profile::hathitrust::solr_lss' do
 
       let(:params) do
         {
-          solr_port: 12345,
-          solr_heap: '42G'
+          port: 12345,
+          heap: '42G',
+          cores: {
+            'mycore' => '/path/to/some/core',
+            'othercore' => '/somewhere/another/core'
+          }
         }
       end
 
@@ -44,6 +48,16 @@ describe 'nebula::profile::hathitrust::solr_lss' do
         %r{SOLR_PID_DIR="/var/lib/solr/home"}
       ].each do |snippet|
         it { is_expected.to contain_file('/var/lib/solr/solr.in.sh').with_content(snippet) }
+      end
+
+      it do
+        is_expected.to contain_file('/var/lib/solr/home/mycore')
+          .with(ensure: 'link', target: '/path/to/some/core')
+      end
+
+      it do
+        is_expected.to contain_file('/var/lib/solr/home/othercore')
+          .with(ensure: 'link', target: '/somewhere/another/core')
       end
 
     end

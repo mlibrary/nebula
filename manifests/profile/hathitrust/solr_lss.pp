@@ -6,23 +6,29 @@
 #
 # Provisions a single instance of solr for HathiTrust large scale search
 #
-# @param solr_base The directory under which all solr files will be deployed
-# @param solr_home The value to use for SOLR_HOME; solr cores go under here
-# @param solr_logs The directory to use SOLR_LOGS_DIR; where all the logging goes
-# @param solr_port The port solr should listen on
-# @param solr_heap How much memory to allocate for the Solr heap.
-# @param timezone  The timezone to use for logs, etc. Should normally be set via Hiera.
+# @param base   The directory under which all solr files will be deployed
+# @param home   The value to use for HOME; solr cores go under here
+# @param logs   The directory to use LOGS_DIR; where all the logging goes
+# @param port   The port solr should listen on
+# @param heap   How much memory to allocate for the Solr heap.
+# @param timezone    The timezone to use for logs, etc. Should normally be set via Hiera.
+# @param cores  A map of core names to The full paths on disk for the solr cores to load in this instance of solr
 #
 # @example
 #   class { 'nebula::profile::hathitrust::solr_lss':
-#     timezone => 'America/New_York'
+#     timezone   => 'America/New_York'
+#     cores => {
+#                      'core1' => '/path/to/core_1',
+#                      'core2' => '/path/to/core_2'
+#                   }
 #   }
 class nebula::profile::hathitrust::solr_lss (
-  String $solr_base = '/var/lib/solr',
-  String $solr_home = "${solr_base}/home",
-  String $solr_logs = "${solr_base}/logs",
-  String $solr_heap = '32G',
-  Integer $solr_port = 8983,
+  String $base = '/var/lib/solr',
+  String $home = "${base}/home",
+  String $logs = "${base}/logs",
+  String $heap = '32G',
+  Hash[String,String] $cores = {},
+  Integer $port = 8983,
   String $timezone
 ) {
 
@@ -31,21 +37,28 @@ class nebula::profile::hathitrust::solr_lss (
 
   nebula::usergroup { 'solr': }
 
-  $log4j_props = "${solr_base}/log4j.properties"
+  $log4j_props = "${base}/log4j.properties"
 
   file {
     default:
       owner => 'solr',
       group => 'solr';
-    [$solr_base, $solr_home, $solr_logs]:
+    [$base, $home, $logs]:
       ensure => 'directory',
       mode => '0750';
     $log4j_props:
       content => template('nebula/profile/hathitrust/solr_lss/log4j.properties.erb');
-    "${solr_base}/solr.in.sh":
+    "${base}/solr.in.sh":
       content => template('nebula/profile/hathitrust/solr_lss/solr.in.sh.erb');
-    "${solr_home}/solr.xml":
+    "${home}/solr.xml":
       content =>  template('nebula/profile/hathitrust/solr_lss/solr.xml.erb')
+  }
+
+  $cores.each |$core,$path| {
+    file { "${home}/${core}":
+      ensure => 'link',
+      target => $path
+    }
   }
 
 }

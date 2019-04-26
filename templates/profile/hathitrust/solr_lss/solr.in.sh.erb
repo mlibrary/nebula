@@ -1,5 +1,5 @@
 SOLR_JAVA_HOME="<%= @java_home %>"
-SOLR_HEAP="<%= @solr_heap %>"
+SOLR_HEAP="<%= @heap %>"
 
 GC_LOG_OPTS="-verbose:gc -XX:+PrintHeapAtGC -XX:+PrintGCDetails \
 -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime"
@@ -22,11 +22,11 @@ GC_TUNE="-XX:NewRatio=3 \
 SOLR_TIMEZONE="<%= @timezone %>"
 ENABLE_REMOTE_JMX_OPTS="true"
 SOLR_OPTS="$SOLR_OPTS -Xss256k"
-SOLR_PID_DIR="<%= @solr_home %>"
-SOLR_HOME="<%= @solr_home %>"
+SOLR_PID_DIR="<%= @home %>"
+SOLR_HOME="<%= @home %>"
 LOG4J_PROPS="<%= @log4j_props %>"
-SOLR_LOGS_DIR="<%= @solr_logs %>"
-SOLR_PORT=<%= @solr_port %>
+SOLR_LOGS_DIR="<%= @logs %>"
+SOLR_PORT=<%= @port %>
 
 # To address http://lucene.472066.n3.nabble.com/Re-Several-critical-vulnerabilities-discovered-in-Apache-Solr-XXE-amp-RCE-td4358308.html
 # See AEIM-549
