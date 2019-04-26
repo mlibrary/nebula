@@ -18,6 +18,7 @@
 #   include nebula::profile::tools_lib::postgres
 
 class nebula::profile::tools_lib::postgres (
+  String $mail_recipient = lookup('nebula::role::tools_lib::mail_recipient'),
   Optional[String] $s3_backup_dest = null,
   String $pg_backup_dir = '/var/local/pgbackup'
 ) {
@@ -62,18 +63,20 @@ class nebula::profile::tools_lib::postgres (
   if($s3_backup_dest) {
     ensure_packages(['awscli'])
 
-    cron { 'backup postgres confluence dump to s3':
-      command => "/usr/bin/aws s3 cp --quiet ${pg_backup_dir}/confluence.dump ${s3_backup_dest}",
-      user    => 'root',
-      minute  => 10,
-      hour    => 1
-    }
+    cron {
+      default:
+        environment => ["MAILTO=${mail_recipient}"],
+        user        => 'root';
 
-    cron { 'backup postgres jira dump to s3':
-      command => "/usr/bin/aws s3 cp --quiet ${pg_backup_dir}/jira.dump ${s3_backup_dest}",
-      user    => 'root',
-      minute  => 10,
-      hour    => 1
+      'backup postgres confluence dump to s3':
+        command => "/usr/bin/aws s3 cp --quiet ${pg_backup_dir}/confluence.dump ${s3_backup_dest}",
+        minute  => 10,
+        hour    => 1;
+
+      'backup postgres jira dump to s3':
+        command => "/usr/bin/aws s3 cp --quiet ${pg_backup_dir}/jira.dump ${s3_backup_dest}",
+        minute  => 10,
+        hour    => 1
     }
   }
 

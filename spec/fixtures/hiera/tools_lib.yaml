@@ -1,4 +1,5 @@
 nebula::role::tools_lib::domain: atlassian.example.com
+nebula::role::tools_lib::mail_recipient: nobody@default.invalid
 nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt
 nebula::profile::tools_lib::db::jira::password: jirapw
 nebula::profile::tools_lib::db::confluence::password: confpw

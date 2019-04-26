@@ -19,6 +19,7 @@
 
 class nebula::profile::tools_lib::confluence (
   String $domain,
+  String $mail_recipient,
   String $homedir = '/var/opt/confluence',
   Optional[String] $s3_backup_dest = null
 ) {
@@ -45,10 +46,11 @@ class nebula::profile::tools_lib::confluence (
     ensure_packages(['awscli'])
 
     cron { 'backup confluence xml dump to s3':
-      command => "/usr/bin/aws s3 cp --quiet ${homedir}/backups/backup.zip ${s3_backup_dest}/confluence.zip",
-      user    => 'root',
-      hour    => 3,
-      minute  => 10
+      command     => "/usr/bin/aws s3 cp --quiet ${homedir}/backups/backup.zip ${s3_backup_dest}/confluence.zip",
+      user        => 'root',
+      hour        => 3,
+      minute      => 10,
+      environment => ["MAILTO=${mail_recipient}"];
     }
   }
 
