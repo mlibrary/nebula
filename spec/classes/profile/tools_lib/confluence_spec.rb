@@ -10,7 +10,12 @@ describe 'nebula::profile::tools_lib::confluence' do
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:hiera_config) { 'spec/fixtures/hiera/tools_lib_config.yaml' }
-      let(:params) { { domain: 'something.whatever.edu' } }
+      let(:params) do
+        {
+          domain: 'something.whatever.edu',
+          mail_recipient: 'nobody@default.invalid',
+        }
+      end
 
       it { is_expected.to contain_class('confluence') }
 

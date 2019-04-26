@@ -19,6 +19,7 @@
 
 class nebula::profile::tools_lib::jira (
   String $domain,
+  String $mail_recipient,
   String $homedir = '/var/opt/jira',
   Optional[String] $s3_backup_dest = null
 ) {
@@ -55,19 +56,20 @@ class nebula::profile::tools_lib::jira (
   if($s3_backup_dest) {
     ensure_packages(['awscli'])
 
-    cron { 'backup jira xml dump to s3':
-      command => "/usr/bin/aws s3 cp --quiet ${homedir}/export/`date +\\%Y\\%m\\%d`.zip ${s3_backup_dest}/jira.zip",
-      user    => 'root',
-      hour    => 3,
-      minute  => 20
-    }
+    cron {
+      default:
+        environment => ["MAILTO=${mail_recipient}"],
+        user        => 'root';
 
-    cron { 'remove old jira backup':
-      command => "/bin/rm ${homedir}/export/`date +\\%Y\\%m\\%d`.zip",
-      user    => 'root',
-      hour    => 23,
-      minute  => 50
+      'backup jira xml dump to s3':
+        command => "/usr/bin/aws s3 cp --quiet ${homedir}/export/`date +\\%Y\\%m\\%d`.zip ${s3_backup_dest}/jira.zip",
+        hour    => 3,
+        minute  => 20;
+
+      'remove old jira backup':
+        command => "/bin/rm ${homedir}/export/`date +\\%Y\\%m\\%d`.zip",
+        hour    => 23,
+        minute  => 50
     }
   }
-
 }

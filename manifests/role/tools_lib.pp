@@ -11,6 +11,7 @@
 #   include nebula::role::tools_lib
 class nebula::role::tools_lib (
   String $domain,
+  String $mail_recipient
 ) {
 
   include nebula::role::aws
@@ -24,11 +25,13 @@ class nebula::role::tools_lib (
   package { 'fontconfig': }
 
   class { 'nebula::profile::tools_lib::confluence':
-    domain  => $domain,
+    domain         => $domain,
+    mail_recipient =>  $mail_recipient
   }
 
   class { 'nebula::profile::tools_lib::jira':
-    domain  => $domain,
+    domain         => $domain,
+    mail_recipient =>  $mail_recipient
   }
 
 }
