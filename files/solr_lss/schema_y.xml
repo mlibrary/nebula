@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="schema6_BM25_wiDVmondo $Id: schema6_BM25_wiDVmondo.xml,v 1.1 2018/06/06 20:48:30 tburtonw Exp tburtonw $" version="1.6">
+
+  <field name="_version_" type="long" indexed="fales" stored="false"/>
+    
+    <!-- ################################################### -->
+    <!-- ##########   M B o o k s   F i e l d s   ########## -->
+    <!-- ################################################### -->
+
+    <field name="id" type="string" indexed="true" stored="true" multiValued="false" required="true"/>
+    <field name="id_dv" type="string" indexed="true" stored="true" multiValued="false" required="true" docValues="true" />
+    <copyField source="id" dest="id_dv"/>
+
+    <field name="vol_id" type="string" indexed="true" stored="true" multiValued="false" />
+     <!-- Collection builder Coll_ID field-->
+    <field name="coll_id" type="long" indexed="true" stored="true" multiValued="true"/>
+
+    <field name="ht_cover_tag" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="ht_page_feature" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="ht_reading_order" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="ht_scanning_order" type="string" indexed="true" stored="true" multiValued="false"/>
+
+    <field name="ht_heldby" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="ht_heldby_brlm" type="string" indexed="true" stored="true" multiValued="true"/>
+    
+    <!-- fields for internal testing/debugging -->
+    <field name="numPages" type="tint" stored="true" indexed="true"/>
+    <field name="numChars" type="tint" stored="true" indexed="true"/>
+    <field name="charsPerPage" type="tint" stored="true" indexed="true"/>
+
+    <!-- unused seq, pgnum fields for SLIP consistency -->
+    <field name="seq"       type="int"           indexed="true" stored="true" multiValued="false" required="false"/>
+    <field name="pgnum"     type="string"        indexed="true" stored="true" multiValued="false" required="false"/>
+
+    <!-- fields for block-join, not to be populated in production -->
+    <field name="type_s" type="string" indexed="true" stored="true"/>
+    <field name="chunk_seq" type="int" indexed="true" stored="true"/>
+    <!-- this is a magic field populated by Solr during block-join indexing-->
+    <field name="_root_" type="int" indexed="true" stored="true" multiValued="false"/>
+
+
+    <!-- full text field with bigramming for CJK-->
+    <field name="ocr"    type="CJKFullText" indexed="true" stored="false"  required="false"/>
+    
+    <!-- 
+         title = vufind title. volume info from ht_id_display now in
+         separate volume_enumcron field
+         date= Vufind PublishDate
+         author = Vufind author 
+    -->
+
+
+    <field name="title"  type="textProper" indexed="true" stored="true"  multiValued="true" required="false"/>
+    <field name="rights" type="int"              indexed="true" stored="true"  required="false"/>
+
+    <!-- mainauthor field for display of 1xx author  not indexed-->
+    <field name="mainauthor" type="textProper" indexed="false" stored="true"  multiValued="true"                />
+    <field name="mainauthor_dv" type="string" indexed="false" stored="true"  multiValued="true" docValues="true" />
+    <copyField source="mainauthor" dest="mainauthor_dv"/>
+    
+    <field name="author" type="textProper" indexed="true" stored="true"  multiValued="true"                />
+    <field name="author_dv" type="string" indexed="true" stored="true"  multiValued="true" docValues="true"   />
+    <copyField source="author" dest="author_dv"/>
+
+    <field name="author2" type="textProper" indexed="true" stored="true"  multiValued="true"     />     
+    <field name="date"   type="string"            indexed="true" stored="true"   />
+
+   
+   <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>
+   
+   <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
+        will be used if the name matches any of the patterns.
+        RESTRICTION: the glob-like pattern in the name attribute must have
+        a "*" only at the start or the end.
+        EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
+        Longer patterns will be matched first.  if equal size patterns
+        both match, the first appearing in the schema will be used.  -->
+
+   <!-- Mbooks dynamic field-->
+    <dynamicField name="*_ft"  type="FullText" indexed="true"  stored="false"/>
+    <dynamicField name="*_cft"  type="CJKFullText" indexed="true"  stored="false"/>
+    <!-- same as above but stored-->
+    <dynamicField name="*_fts"  type="FullText" indexed="true"  stored="true"/>
+    <dynamicField name="*_cfts"  type="CJKFullText" indexed="true"  stored="true"/>
+
+
+
+
+   <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
+   <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>
+   <dynamicField name="*_l"  type="long"   indexed="true"  stored="true"/>
+   <dynamicField name="*_t"  type="text"    indexed="true"  stored="true"/>
+   <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
+   <dynamicField name="*_f"  type="float"  indexed="true"  stored="true"/>
+   <dynamicField name="*_d"  type="double" indexed="true"  stored="true"/>
+
+   <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
+   
+
+   <!-- some trie-coded dynamic fields for faster range queries -->
+   <dynamicField name="*_ti" type="tint"    indexed="true"  stored="true"/>
+   <dynamicField name="*_tl" type="tlong"   indexed="true"  stored="true"/>
+   <dynamicField name="*_tf" type="tfloat"  indexed="true"  stored="true"/>
+   <dynamicField name="*_td" type="tdouble" indexed="true"  stored="true"/>
+   <dynamicField name="*_tdt" type="tdate"  indexed="true"  stored="true"/>
+
+   <dynamicField name="ignored_*" type="ignored" multiValued="true"/>
+ 
+
+   
+
+   <!--############################################################################-->
+   <!--    VuFind fields.  -->
+   <!--############################################################################-->
+   <!-- Core Fields  -->
+   <!-- VuFind id field mapped to HT record_no in processing -->
+   <field name="record_no"              type="string"     indexed="true" stored="true"/>   
+
+   <!-- allfields created by Schema_LS::getAllFields   from the marc xml -->  
+   <field name="allfields"       type="text"       indexed="true" stored="false"/>
+   <field name="allfieldsProper" type="textProper" indexed="true" stored="false"/>
+   <copyField source="allfields" dest="allfieldsProper"/>
+
+
+
+   <!-- Identifiers -->
+   
+  <field name="lccn"         type="lccnnormalizer" indexed="true" stored="true"  multiValued="true"/> 
+  <field name="lccn_dv"         type="string" indexed="true" stored="true"  multiValued="true"  docValues="true"/>
+  <copyField source="lccn" dest="lccn_dv"/>
+
+  
+  <field name="ctrlnum"      type="exactmatcher"   indexed="true" stored="true"  multiValued="true"/>
+  <field name="rptnum"       type="exactmatcher"   indexed="true" stored="true"  multiValued="true"/>
+  <field name="sdrnum"       type="exactmatcher"   indexed="true" stored="true"  multiValued="true"/>
+
+  <field name="oclc"         type="numeric"        indexed="true" stored="true"  multiValued="true"/>
+  <field name="oclc_dv"         type="string"        indexed="true" stored="true"  multiValued="true"  docValues="true"/>
+  <copyField source="oclc" dest="oclc_dv"/>
+
+  <field name="isbn"         type="stdnum"       indexed="true" stored="true"  multiValued="true"/>
+  <field name="isbn_dv"         type="string"       indexed="true" stored="true"  multiValued="true"  docValues="true"/>
+  <copyField source="isbn" dest="isbn_dv"/>
+
+  <field name="isbn_norm"    type="isbn"       indexed="true" stored="true"  multiValued="true"/>
+  <field name="issn"         type="stdnum"         indexed="true" stored="true"  multiValued="true"/>
+  <field name="ht_id_display" type="string"        indexed="false" stored="true"  multiValued="true"/>
+  <field name="isn_related" type="stdnum" indexed="true" stored="true" multiValued="true"/>
+
+  <field name="callnumber"   type="exactmatcher"   indexed="true" stored="true"  multiValued="true"/>
+  <field name="sudoc"         type="exactmatcher"  indexed="true" stored="true"  multiValued="true"/>
+  <field name="callnosort"   type="lccallnonormalizer" indexed="true" stored="true" multiValued="true"/>
+  <field name="callno_shelfkey"   type="lc_callnumber_shelfkey" indexed="true" stored="true" multiValued="true"/>
+  <!-- XXX Ask bill about this field need to either pick one call number during processing and send it to ls
+       solr separately (wi out copyfield)  or change to multivalued.-->
+  <field name="callnoletters" type="leadingLetters" indexed="true" stored="true" multiValued="true"/> 
+  
+  <copyField source="callnumber" dest="callnosort"/>
+  <copyField source="callnumber" dest="callnoletters"/>
+  <copyField source="callnumber" dest="callno_shelfkey"/>
+  <copyField source="isbn" dest="isbn_norm"/>
+
+   <!-- Misc fields -->
+   
+   <field name="language"     type="string"     indexed="true" stored="true"  multiValued="true"/>
+   <field name="language008_full"     type="string"     indexed="true" stored="true"  multiValued="true"/>
+   <field name="format"       type="string"     indexed="true" stored="false"  multiValued="true"/>
+   <field name="htsource"     type="string"     indexed="true" stored="true" multiValued="true"/>
+<!-- above fields as docValues -->
+   <field name="language_dv"     type="string"     indexed="true" stored="true"  multiValued="true" docValues="true" />
+   <field name="language008_full_dv"     type="string"     indexed="true" stored="true"  multiValued="true" docValues="true"/>
+   <field name="format_dv"       type="string"     indexed="true" stored="false"  multiValued="true" docValues="true"/>
+   <field name="htsource_dv"     type="string"     indexed="true" stored="true" multiValued="true" docValues="true"/>
+   
+   <copyField source="language" dest="language_dv"/>
+   <copyField source="language" dest="language008_full_dv"/>
+   <copyField source="format" dest="format_dv"/>
+   <copyField source="htsource" dest="htsource_dv"/>
+
+   <field name="publisher" type="textProper" indexed="true" stored="true" multiValued="true"/>
+   <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
+
+   <!-- Author fields -->
+  
+
+   <field name="Vauthor"      type="textProper" indexed="true" stored="true"    multiValued="true" />
+   <field name="authorStr"   type="string"     indexed="true" stored="false"   multiValued="true" />
+   <field name="authorStr_dv"   type="string"     indexed="true" stored="false"   multiValued="true" docValues="true" />
+   <field name="author_top" type="textProper" indexed="true" stored="false" multiValued="true"/>
+   <field name="author_rest" type="textProper" indexed="true" stored="false" multiValued="true"/>
+   <field name="authorSort" type="mbooksAlphaOnlySort" indexed="true" stored="false" multiValued="false"/>
+
+   <copyField source="Vauthor" dest="authorStr_dv"/>
+   <copyField source="Vauthor" dest="authorStr"/>
+
+   <!-- Title fields -->
+
+<!--245 for vernacular i.e. 880 linked field -->
+<field name="vtitle" type="textProper" indexed="false" stored="true" multiValued="false"/>
+<field name="vtitle_dv" type="string" indexed="false" stored="true" multiValued="false"  docValues="true" />
+<copyField source="vtitle" dest="vtitle_dv"/>
+
+<!-- 245$c to match catalog display-->
+<field name="title_c" type="string" indexed="false" stored="true" multiValued="true"/>
+<field name="title_c_dv" type="string" indexed="false" stored="true" multiValued="true"  docValues="true"  />
+<copyField source="title_c" dest="title_c_dv"/>
+
+
+
+
+<!-- store this instead of concatenating in title so app is responsible for formatting-->
+   <field name="volume_enumcron"     type="text"         indexed="true" stored="true"  multiValued="true" />
+   <field name="volume_enumcron_dv"     type="string"         indexed="true" stored="true"  multiValued="true" docValues="true" />
+   <copyField source="volume_enumcron" dest="volume_enumcron_dv"/>
+
+   <field name="titleSort"        type="string"       indexed="true" stored="false" multiValued="false"/>
+   <field name="titleSort_dv"        type="string"       indexed="true" stored="false" multiValued="false" docValues="true" />
+   <copyField source="titleSort" dest="titleSort_dv"/>
+
+   
+   <field name="Vtitle"            type="text"         indexed="true" stored="true"  multiValued="true" />
+   <field name="Vtitle_dv"            type="string"         indexed="true" stored="true"  multiValued="true"  docValues="true"  />
+   <copyField source="Vtitle" dest="Vtitle_dv"/>
+
+   <field name="title_ab"         type="exactmatcher" indexed="true" stored="false" multiValued="true"/>
+   <field name="title_a" type="exactmatcher" indexed="true" stored="true" multiValued="true"/>
+   <field name="titleProper"      type="textProper"   indexed="true" stored="false" multiValued="true" />
+   <field name="title_top"        type="text"         indexed="true" stored="false" multiValued="true" />
+   <field name="title_topProper"  type="textProper"   indexed="true" stored="false" multiValued="true" />
+   <field name="title_restProper" type="textProper"   indexed="true" stored="false" multiValued="true" />
+   <field name="title_rest"       type="text"         indexed="true" stored="false" multiValued="true" />
+
+   <field name="series"          type="text"          indexed="true" stored="false" multiValued="true"/>
+   <field name="series2"         type="text"          indexed="true" stored="false" multiValued="true"/>
+
+   <copyField source="title" dest="titleProper"/>
+   <copyField source="title_top" dest="title_topProper"/>
+   <copyField source="title_rest" dest="title_restProper"/>
+   
+
+   <field name="serialTitle_ab"    type="exactmatcher" indexed="true" stored="false" multiValued="true"/>
+   <field name="serialTitle_a"     type="exactmatcher" indexed="true" stored="false" multiValued="true"/>
+   <field name="serialTitle"       type="text"         indexed="true" stored="false"  multiValued="true" />
+   <field name="serialTitleProper" type="textProper"   indexed="true" stored="false" multiValued="true" />
+   <field name="serialTitle_restProper" type="textProper" indexed="true" stored="false" multiValued="true"/>
+   <field name="serialTitle_rest" type="text" indexed="true" stored="true" multiValued="true"/>
+
+   <copyField source="serialTitle" dest="serialTitleProper"/>
+   <copyField source="serialTitle_rest" dest="serialTitle_restProper"/>
+
+   <!-- Categorization -->
+   
+   <field name="topic"       type="text"       indexed="true" stored="false" multiValued="true"  omitNorms="true"/>
+   <field name="topicProper" type="textProper" indexed="true" stored="false" multiValued="true"  omitNorms="true"  />
+   <field name="topicStr"    type="string"     indexed="true" stored="false"  multiValued="true"/>
+   <field name="topicStr_dv"    type="string"     indexed="true" stored="false"  multiValued="true" docValues="true"/>
+   
+   
+   <field name="fullgenre"   type="text"       indexed="true" stored="false"  multiValued="true"  omitNorms="true"/>
+   <field name="genre"       type="text"       indexed="true" stored="false"  multiValued="true"  omitNorms="true"/>
+   <field name="genreStr"    type="string"     indexed="true" stored="false" multiValued="true"                   />
+
+   <field name="hlb3"    type="text"       indexed="true" stored="false" multiValued="true"  omitNorms="true" /> 
+   <field name="hlb3Str" type="string"     indexed="true" stored="false" multiValued="true"                   /> 
+   <field name="hlb3Delimited" type="string" indexed="true" stored="true" multiValued="true" termVectors="false"/>
+   <!-- XXX tbw insert hlb variations here -->
+   <field name="hlb3indexPath" type="descendent_path" indexed="true" stored="true" multiValued="true" termVectors="false"/>
+   <field name="hlb3queryPath" type="ancestor_path" indexed="true" stored="true" multiValued="true" termVectors="false"/>
+   <copyField source="hlb3Delimited" dest="hlb3indexPath"/>
+   <copyField source="hlb3Delimited" dest="hlb3queryPath"/>
+
+   <copyField source="topicStr" dest="topicStr_dv"/>
+   <!-- reversed from vuFind these since only topicStr is stored-->
+   <copyField source="topicStr" dest="topic"/>
+   <copyField source="topicStr" dest="topicProper"/>
+
+   <!-- copyField source="hlb_both" dest="hlb_bothStr"/ -->
+   <copyField source="hlb3Str" dest="hlb3" />
+   <copyField source="genre" dest="genreStr"/>
+
+
+   <!-- Time Date  -->
+
+   <!-- <field name="dateSpan" type="string" indexed="true" stored="true" multiValued="true"/> -->
+
+   <field name="publishDate"      type="string" indexed="true" stored="true"  multiValued="true"/>
+   <field name="publishDateTrie"  type="tint"   indexed="true" stored="false" multiValued="true"/>
+   <field name="publishDateRange" type="string" indexed="true" stored="false" multiValued="true"/>
+   <!-- The DateRange and DateTrie ranges are multivalued, so add the actual date to the ranges -->   
+   <copyField source="publishDate" dest="publishDateRange"/>   
+   <copyField source="publishDate" dest="publishDateTrie"/>   
+
+<!--
+ Date fields based on parsed data from the MARC enumchron (from VuFind ht_id_display)
+     enumPublishDate/enumPublishDateRange will contain date from the enumchron if there is one and will be blank otherwise
+     bothPublishDate/bothPublishDateRange will contain date from the enumchron if there is one and date from the bib record otherwise
+
+-->
+   <field name="enumPublishDate"      type="string" indexed="true" stored="true"  multiValued="true"/>
+   <field name="enumPublishDateTrie"  type="tint"   indexed="true" stored="false" multiValued="true"/>
+   <field name="enumPublishDateRange" type="string" indexed="true" stored="false" multiValued="true"/>
+
+  <copyField source="enumPublishDate" dest="enumPublishDateRange"/>   
+  <copyField source="enumPublishDate" dest="enumPublishDateTrie"/>   
+
+  <field name="bothPublishDate"      type="string" indexed="true" stored="true"  multiValued="true"/>
+  <field name="bothPublishDate_dv"      type="string" indexed="true" stored="true"  multiValued="true" docValues="true"/>
+  <field name="bothPublishDateTrie"  type="tint"   indexed="true" stored="false" multiValued="true"/>
+   <field name="bothPublishDateRange" type="string" indexed="true" stored="false" multiValued="true"/>
+
+   <copyField source="bothPublishDate" dest="bothPublishDate_dv"/>   
+   <copyField source="bothPublishDate" dest="bothPublishDateRange"/>   
+   <copyField source="bothPublishDate" dest="bothPublishDateTrie"/>   
+  
+   <field name="era"              type="string" indexed="true" stored="false"  multiValued="true"/>
+
+<!-- Place -->
+   <field name="geographic"       type="text"   indexed="true" stored="false" multiValued="true"  omitNorms="true"/>
+   <field name="geographicStr"    type="string" indexed="true" stored="false" multiValued="true"/>
+   <!-- <field name="subgeographic" type="text" indexed="true" stored="true"  multiValued="true"/> -->
+    <field name="fullgeographic" type="text" indexed="true" stored="false" multiValued="true" omitNorms="true"/>
+
+   <field name="country_of_pub"   type="text"   indexed="true" stored="false" multiValued="true"  omitNorms="true"/>
+   <field name="countryOfPubStr"  type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="countryOfPubStr_dv"  type="string" indexed="true" stored="true" multiValued="true" docValues="true"/>
+
+   <copyField  source="countryOfPubStr" dest="country_of_pub" />
+      <copyField  source="countryOfPubStr" dest="countryOfPubStr_dv" />
+   <copyField  source="geographicStr"  dest="geographic" />
+   <copyField source="publishDate" dest="publishDateTrie"/>
+
+
+<!-- ############################## Field Types ############################## -->
+
+
+
+
+    <!-- Solr standard Field Types -->
+    
+    <!-- The StrField type is not analyzed, but indexed/stored verbatim. -->
+    <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
+
+    
+    <!-- boolean type: "true" or "false" -->
+    <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" />
+    <!--Binary data type. The data should be sent/retrieved in as Base64 encoded Strings -->
+    <fieldtype name="binary" class="solr.BinaryField"/>
+
+
+
+    
+    <!--  tbw copied from solr 6 schema  note: these have docValues=true
+      Default numeric field types. For faster range queries, consider *PointFields (pint/pfloat/plong/pdouble), or the 
+      tint/tfloat/tlong/tdouble types.
+    -->
+    <fieldType name="int" class="solr.TrieIntField" docValues="true" precisionStep="0" positionIncrementGap="0"/>
+    <fieldType name="float" class="solr.TrieFloatField" docValues="true" precisionStep="0" positionIncrementGap="0"/>
+    <fieldType name="long" class="solr.TrieLongField" docValues="true" precisionStep="0" positionIncrementGap="0"/>
+    <fieldType name="double" class="solr.TrieDoubleField" docValues="true" precisionStep="0" positionIncrementGap="0"/>
+
+    
+    <!--
+     Numeric field types that index each value at various levels of precision
+     to accelerate range queries when the number of values between the range
+     endpoints is large. See the javadoc for NumericRangeQuery for internal
+     implementation details.
+
+     Smaller precisionStep values (specified in bits) will lead to more tokens
+     indexed per value, slightly larger index size, and faster range queries.
+     A precisionStep of 0 disables indexing at different precision levels.
+    -->
+    <fieldType name="tint" class="solr.TrieIntField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="tfloat" class="solr.TrieFloatField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="tlong" class="solr.TrieLongField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+
+    <fieldType name="date" class="solr.TrieDateField" omitNorms="true" precisionStep="0" positionIncrementGap="0"/>
+
+    <!-- A Trie based date field for faster date range queries and date faceting. -->
+    <fieldType name="tdate" class="solr.TrieDateField" omitNorms="true" precisionStep="6" positionIncrementGap="0"/>
+
+    <!-- tbw not solr 6 supported and not used<fieldType name="sint" class="solr.SortableIntField" sortMissingLast="true" omitNorms="true"/>-->
+
+     <fieldtype  name="ignored" stored="false" multiValued="true" class="solr.StrField"/>
+
+    <!-- A text field that only splits on whitespace for exact matching of words -->
+    <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+
+    <!--################################################################################-->
+    <!-- hlb field types for parsing the delimited fields -->
+    <!-- 
+      Example of using PathHierarchyTokenizerFactory at index time, so
+      queries for paths match documents at that path, or in descendent paths
+    -->
+    <fieldType name="descendent_path" class="solr.TextField">
+      <analyzer type="index">
+	<tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="|" />
+      </analyzer>
+      <analyzer type="query">
+	<tokenizer class="solr.KeywordTokenizerFactory" />
+      </analyzer>
+    </fieldType>
+    <!-- 
+      Example of using PathHierarchyTokenizerFactory at query time, so
+      queries for paths match documents at that path, or in ancestor paths
+    -->
+    <fieldType name="ancestor_path" class="solr.TextField">
+      <analyzer type="index">
+	<tokenizer class="solr.KeywordTokenizerFactory" />
+      </analyzer>
+      <analyzer type="query">
+	<tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="|" />
+      </analyzer>
+    </fieldType>
+
+<!--
+    <fieldType name="indexPath" class="solr.TextField">
+   <analyzer type="index">
+     <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter=" | " />
+   </analyzer>
+   <analyzer type="query">
+     <tokenizer class="solr.KeywordTokenizerFactory" />
+   </analyzer>
+ </fieldType>
+
+<fieldType name="queryPath" class="solr.TextField">
+   <analyzer type="index">
+     <tokenizer class="solr.KeywordTokenizerFactory" />
+   </analyzer>
+   <analyzer type="query">
+     <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter=" | " />
+   </analyzer>
+ </fieldType>
+-->
+    
+    
+ 
+    
+    
+ <!-- ########################################################### -->
+    <!-- ##########  M B o o k s   F i e l d   T y p e s  ########## -->
+    <!-- ########################################################### -->
+
+
+
+    <fieldType name="CJKFullText" class="solr.TextField" positionIncrementGap="100"  autoGeneratePhraseQueries="false" postingsFormat="HTPostingsFormatWrapper" >
+      <analyzer type="index">
+        <tokenizer class="solr.ICUTokenizerFactory"/>
+        <filter class="solr.ICUFoldingFilterFactory"/>
+        <filter class="solr.CJKBigramFilterFactory"
+         han="true" hiragana="true  " 
+         katakana="false" hangul="false" 
+         outputUnigrams="true"
+	 />
+
+        <filter class="solr.CommonGramsFilterFactory" words="1000common.txt" />
+      </analyzer>
+  
+      <analyzer type="query">
+        <tokenizer class="solr.ICUTokenizerFactory"/>
+
+        <filter class="solr.ICUFoldingFilterFactory"/>
+        <filter class="solr.CJKBigramFilterFactory"
+           han="true" hiragana="true" 
+           katakana="false" hangul="false" 
+           outputUnigrams="false"
+	   />
+
+        <filter class="solr.CommonGramsQueryFilterFactory" words="1000common.txt" />
+      </analyzer>
+       <similarity class="solr.BM25SimilarityFactory"  >
+	 <!-- set k1 to a good value for OCR  -->
+	 <float name="k1">10</float>
+	 <float name="b">0.75</float>
+	 <!-- R Muir says set this to true so that Common-Grams don't cause double counting of doc length-->
+	 <bool name="discountOverlaps">true</bool>
+       </similarity>
+    </fieldType>  
+
+    <fieldType name="FullText" class="solr.TextField" positionIncrementGap="100"  autoGeneratePhraseQueries="false" postingsFormat="HTPostingsFormatWrapper" >
+      <analyzer type="index">
+        <tokenizer class="solr.ICUTokenizerFactory"/>
+        <filter class="solr.ICUFoldingFilterFactory"/>
+        <filter class="solr.CommonGramsFilterFactory" words="1000common.txt" />
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.ICUTokenizerFactory"/>
+        <filter class="solr.ICUFoldingFilterFactory"/>
+        <filter class="solr.CommonGramsQueryFilterFactory" words="1000common.txt" />
+      </analyzer>
+    </fieldType>  
+
+
+    <!-- Support of SORTING by title and author -->
+    <fieldType name="mbooksAlphaOnlySort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+      <analyzer>
+        <!-- KeywordTokenizer does no actual tokenizing, so the entire
+             input string is preserved as a single token -->
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.ICUFoldingFilterFactory"/>
+        <!-- The TrimFilter removes any leading or trailing whitespace -->
+        <filter class="solr.TrimFilterFactory" />
+
+      </analyzer>
+    </fieldType>
+
+<!--################################## VuFind types #######################################-->
+
+
+
+   <!-- Standard Text Field  with porter English stemming -->
+    <fieldtype name="text" class="solr.TextField" positionIncrementGap="100"  >
+      <analyzer type="index">
+        <tokenizer class="solr.ICUTokenizerFactory"/>
+        <filter class="solr.ICUFoldingFilterFactory"/>
+        <filter class="solr.CJKBigramFilterFactory"
+           han="true" hiragana="true" 
+          katakana="false" hangul="false"  
+          outputUnigrams="true" />
+
+        <filter class="solr.SnowballPorterFilterFactory"  language="English"/>
+      </analyzer>
+      
+      <analyzer type="query">
+        <tokenizer class="solr.ICUTokenizerFactory"/>
+        <filter class="solr.ICUFoldingFilterFactory"/>
+        <filter class="solr.CJKBigramFilterFactory"
+           han="true" hiragana="true" 
+           katakana="false" hangul="false"  
+           outputUnigrams="false"       />
+
+       <filter class="solr.SnowballPorterFilterFactory"  language="English"/>
+      </analyzer>
+          
+    </fieldtype>
+    
+
+
+    <!-- Text Field without Stemming  -->
+    <fieldtype name="textProper" class="solr.TextField" positionIncrementGap="100"  >
+      <analyzer type="index">
+        <tokenizer class="solr.ICUTokenizerFactory"/>
+        <filter class="solr.ICUFoldingFilterFactory"/>                
+        <filter class="solr.CJKBigramFilterFactory"
+           han="true" hiragana="true" 
+           katakana="false" hangul="false" 
+           outputUnigrams="true"  />
+
+      </analyzer>
+      
+      <analyzer type="query">
+        <tokenizer class="solr.ICUTokenizerFactory"/>
+        <filter class="solr.ICUFoldingFilterFactory"/>               
+        <filter class="solr.CJKBigramFilterFactory"
+           han="true" hiragana="true" 
+           katakana="false" hangul="false"  
+           outputUnigrams="false"        />
+
+      </analyzer>
+     
+    </fieldtype>
+    
+   <!-- Simple type to normalize isbn/issn -->
+    <fieldType name="stdnum" class="solr.TextField" sortMissingLast="true" omitNorms="true" >
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.TrimFilterFactory"/>
+        <!--   pattern="^\s*0*([\d\-\.]+[xX]?).*$" replacement="$1"  -->
+        <!--   pattern="^[\s0\-\.]+([\d\-\.]+[xX]?).*$" replacement="$1" -->
+        <filter class="solr.PatternReplaceFilterFactory"
+             pattern="^[\s0\-\.]*([\d\.\-]+x?).*$" replacement="$1"
+        />
+        <filter class="solr.PatternReplaceFilterFactory"
+             pattern="[\-\.]" replacement=""  replace="all"
+        />
+      </analyzer>
+    </fieldType>
+
+   <!-- standard number normalizer - extract sequence of digits, strip leading zeroes -->
+    <fieldType name="numeric" class="solr.TextField" sortMissingLast="true" omitNorms="true" >
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/> 
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.TrimFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory"
+             pattern="[^0-9]*([0-9]+)[^0-9]*" replacement="$1"
+        />
+        <filter class="solr.PatternReplaceFilterFactory"
+             pattern="^0*(.*)" replacement="$1"
+        />
+      </analyzer>
+    </fieldType>
+
+    <!-- Full string, stripped of \W and lowercased, for exact and left-anchored matching -->
+     <fieldType name="exactmatcher" class="solr.TextField" omitNorms="true">
+       <analyzer>
+         <tokenizer class="solr.KeywordTokenizerFactory"/> 
+               <filter class="solr.ICUFoldingFilterFactory"/>
+         <filter class="solr.TrimFilterFactory"/>
+         <filter class="solr.PatternReplaceFilterFactory"
+              pattern="[^\p{L}\p{N}]" replacement=""  replace="all"
+         />
+       </analyzer>
+     </fieldType>
+
+    <!-- LCCN normalization on both index and query -->
+     <fieldType name="lccnnormalizer" class="solr.TextField"  omitNorms="true">
+       <analyzer>
+         <tokenizer class="solr.KeywordTokenizerFactory"/> 
+         <filter class="solr.LowerCaseFilterFactory"/>
+         <filter class="solr.TrimFilterFactory"/>
+	 <filter class="edu.umich.lib.solr_filters.LCCNNormalizerFilterFactory"/> 
+       </analyzer>
+     </fieldType>
+
+    <!-- XXX LC CallNumber normalization on both index and query -->
+    <fieldType name="lccallnonormalizer" class="solr.TextField"  omitNorms="true">
+       <analyzer>
+         <tokenizer class="solr.KeywordTokenizerFactory"/>
+	 
+	 <!--  <filter class="edu.umich.lib.solr.analysis.LCCallNumberNormalizerFilterFactory"/> -->
+	 <!--XXX This filter isn't in the github unless its actually the callnumber shelf key filter-->
+	     <!-- <filter class="edu.umich.lib.solr_filters.LCCallNumberNormalizerFilterFactory"/> -->
+       </analyzer>
+     </fieldType>
+
+     <!-- copied from ht catalog vuFind XXX tbw-->
+     <fieldType name="leadingLetters" class="solr.TextField" omitNorms="true">
+       <analyzer>
+	 <tokenizer class="solr.KeywordTokenizerFactory"/>
+	 <filter class="solr.TrimFilterFactory"/>
+	 <filter class="solr.PatternReplaceFilterFactory" pattern="^([A-Z]+).*$" replacement="$1"/>
+	 <filter class="solr.LengthFilterFactory" min="1" max="3"/>
+	 <filter class="solr.LowerCaseFilterFactory"/>
+       </analyzer>
+     </fieldType>
+     <!-- tbw XXX copied from Bill's github-->
+     <!--XXX TODO: need to set up fields to use these-->
+ <fieldType name="lc_callnumber_shelfkey" class="solr.TextField">
+        <analyzer>
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="edu.umich.lib.solr_filters.LCCallNumberShelfKeyFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+      <fieldType name="isbn" class="solr.TextField">
+        <analyzer>
+            <tokenizer class="solr.PatternTokenizerFactory" pattern="[;,]\s*" />
+            <filter class="edu.umich.lib.solr_filters.ISBNNormalizerFilterFactory"/>
+        </analyzer>
+      </fieldType>
+
+      
+
+
+ <!-- Field to use to determine and enforce document uniqueness. 
+      Unless this field is marked with required="false", it will be a required field
+   -->
+ <uniqueKey>id</uniqueKey>
+
+<!--See note in 3.6 example schema re: defaultSearchField and
+defaultOperator deprecated fields and use of "df" and "q.op" instead.
+See SOLR 2724 for details. -->
+
+ <!-- field for the QueryParser to use when an explicit fieldname is absent -->
+ <!--XXX tbw 2017
+ deprecated Solr6
+defaultSearchField has been deprecated and is incompatible with configs with luceneMatchVersion >= 6.6.0.  Use 'df' on requ
+ests instead.
+<defaultSearchField>ocr</defaultSearchField>
+-->
+
+ <!-- SolrQueryParser configuration: defaultOperator="AND|OR" -->
+ <!--tbw XXX 2017 deprecated in 6.6 <solrQueryParser defaultOperator="AND"/>-->
+
+</schema>

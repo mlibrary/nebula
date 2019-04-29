@@ -23,13 +23,13 @@
 #                   }
 #   }
 class nebula::profile::hathitrust::solr_lss (
+  String $timezone,
   String $base = '/var/lib/solr',
   String $home = "${base}/home",
   String $logs = "${base}/logs",
   String $heap = '32G',
   Hash[String,String] $cores = {},
-  Integer $port = 8983,
-  String $timezone
+  Integer $port = 8983
 ) {
 
   ensure_packages(['openjdk-8-jre-headless','solr'])
@@ -39,7 +39,7 @@ class nebula::profile::hathitrust::solr_lss (
 
   $log4j_props = "${base}/log4j.properties"
   $solr_in_sh = "${base}/solr.in.sh"
-  $solr_bin = "/opt/solr/bin/solr"
+  $solr_bin = '/opt/solr/bin/solr'
 
   file {
     default:
@@ -47,7 +47,7 @@ class nebula::profile::hathitrust::solr_lss (
       group => 'solr';
     [$base, $home, $logs]:
       ensure => 'directory',
-      mode => '0750';
+      mode   => '0750';
     $log4j_props:
       content => template('nebula/profile/hathitrust/solr_lss/log4j.properties.erb');
     $solr_in_sh:
@@ -56,7 +56,7 @@ class nebula::profile::hathitrust::solr_lss (
       content =>  template('nebula/profile/hathitrust/solr_lss/solr.xml.erb')
   }
 
-  file { "/etc/systemd/system/solr.service":
+  file { '/etc/systemd/system/solr.service':
     owner   => 'root',
     group   => 'root',
     content => template('nebula/profile/hathitrust/solr_lss/solr.service.erb')
@@ -66,6 +66,36 @@ class nebula::profile::hathitrust::solr_lss (
     file { "${home}/${core}":
       ensure => 'link',
       target => $path
+    }
+
+
+    ['x','y'].each |$suffix| {
+      $subcore_home = "${home}/${core}/${core}${suffix}"
+
+      file {
+        default:
+          owner => 'solr',
+          group => 'solr';
+
+        $subcore_home:
+          ensure => 'directory';
+
+        "${subcore_home}/core.properties":
+          content => template("nebula/profile/hathitrust/solr_lss/core_${suffix}.properties.erb");
+
+        "${subcore_home}/lib":
+          ensure  => 'directory',
+          source  => 'puppet:///modules/nebula/solr_lss/lib',
+          recurse => true;
+
+        "${subcore_home}/conf":
+          ensure  => 'directory',
+          source  => 'puppet:///modules/nebula/solr_lss/conf',
+          recurse => true;
+
+        "${subcore_home}/conf/schema.xml":
+          source => "puppet:///modules/nebula/solr_lss/conf/schema_${suffix}.xml"
+      }
     }
   }
 
