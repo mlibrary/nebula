@@ -75,6 +75,7 @@ describe 'nebula::named_instance' do
             'instance.dev.commitish'            => '{"instance":{"dev":{"commitish":"first-instance"}}}',
             'permissions.deploy'                => '{"permissions":{"deploy":["one_user","another_user"]}}',
             'permissions.edit'                  => '{"permissions":{"edit":["one_user","another_user"]}}',
+            'infrastructure.instance_name' => '{"infrastructure":{"instance_name":"first-instance"}}',
             'infrastructure.base_dir'           => '{"infrastructure":{"base_dir":"/www-invalid/first-instance/app"}}',
             'infrastructure.relative_url_root'  => '{"infrastructure":{"relative_url_root":"/first-instance-root"}}',
             'infrastructure.bind'               => '{"infrastructure":{"bind":"tcp://10.1.2.3:3000"}}',
