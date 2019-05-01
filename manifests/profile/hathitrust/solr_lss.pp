@@ -4,31 +4,35 @@
 
 # nebula::profile::hathitrust::solr_lss
 #
-# Provisions a single instance of solr for HathiTrust large scale search
+# Provisions a single instance of solr for HathiTrust large scale search.
+# For each given "shard" (in HathiTrust solr parlance), this provisions the lib
+# and conf directory for an "x" and "y" core and symlinks the data directory
+# for the shard.
 #
+# @param timezone  The timezone to use for logs, etc. Should normally be set via Hiera.
+# @param coredata  A map of core names to the full paths on disk for the data
+#                  directory for those cores.
 # @param base   The directory under which all solr files will be deployed
 # @param home   The value to use for HOME; solr cores go under here
 # @param logs   The directory to use LOGS_DIR; where all the logging goes
 # @param port   The port solr should listen on
 # @param heap   How much memory to allocate for the Solr heap.
-# @param timezone    The timezone to use for logs, etc. Should normally be set via Hiera.
-# @param cores  A map of core names to The full paths on disk for the solr cores to load in this instance of solr
 #
 # @example
 #   class { 'nebula::profile::hathitrust::solr_lss':
-#     timezone   => 'America/New_York'
-#     cores => {
-#                      'core1' => '/path/to/core_1',
-#                      'core2' => '/path/to/core_2'
+#     timezone                 => 'America/New_York'
+#     coredata                 => {
+#                      'core1' => '/path/to/core_1/data',
+#                      'core2' => '/path/to/core_2/data'
 #                   }
 #   }
 class nebula::profile::hathitrust::solr_lss (
   String $timezone,
+  Hash[String,String] $coredata = {},
   String $base = '/var/lib/solr',
   String $home = "${base}/home",
   String $logs = "${base}/logs",
   String $heap = '32G',
-  Hash[String,String] $cores = {},
   Integer $port = 8983
 ) {
 
@@ -62,8 +66,15 @@ class nebula::profile::hathitrust::solr_lss (
     content => template('nebula/profile/hathitrust/solr_lss/solr.service.erb')
   }
 
-  $cores.each |$core,$path| {
+  $coredata.each |$core,$path| {
     file { "${home}/${core}":
+      ensure => 'directory',
+      owner  => 'solr',
+      group  => 'solr',
+      mode   => '0750'
+    }
+
+    file { "${home}/${core}/data":
       ensure => 'link',
       target => $path
     }

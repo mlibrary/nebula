@@ -15,9 +15,9 @@ describe 'nebula::profile::hathitrust::solr_lss' do
         {
           port: 12_345,
           heap: '42G',
-          cores: {
-            'mycore' => '/path/to/some/core',
-            'othercore' => '/somewhere/another/core',
+          coredata: {
+            'mycore' => '/path/to/some/core/data',
+            'othercore' => '/somewhere/another/core/data',
           },
         }
       end
@@ -59,13 +59,13 @@ describe 'nebula::profile::hathitrust::solr_lss' do
       end
 
       it do
-        is_expected.to contain_file('/var/lib/solr/home/mycore')
-          .with(ensure: 'link', target: '/path/to/some/core')
+        is_expected.to contain_file('/var/lib/solr/home/mycore/data')
+          .with(ensure: 'link', target: '/path/to/some/core/data')
       end
 
       it do
-        is_expected.to contain_file('/var/lib/solr/home/othercore')
-          .with(ensure: 'link', target: '/somewhere/another/core')
+        is_expected.to contain_file('/var/lib/solr/home/othercore/data')
+          .with(ensure: 'link', target: '/somewhere/another/core/data')
       end
 
       it do
