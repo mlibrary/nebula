@@ -161,6 +161,9 @@ define nebula::named_instance(
     "${title} deploy init permissions.edit":
       content => {permissions => { edit => $users}}.to_json;
 
+    "${title} deploy init infrastructure.instance_name":
+      content => {infrastructure => {instance_name => $title}}.to_json;
+
     "${title} deploy init infrastructure.bind":
       content => {infrastructure => {bind => $bind}}.to_json;
 
