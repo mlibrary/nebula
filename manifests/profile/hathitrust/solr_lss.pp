@@ -36,7 +36,7 @@ class nebula::profile::hathitrust::solr_lss (
   Integer $port = 8983
 ) {
 
-  ensure_packages(['openjdk-8-jre-headless','solr'])
+  ensure_packages(['openjdk-8-jre-headless','solr','lsof'])
   $java_home = '/usr/lib/jvm/java-8-openjdk-amd64/jre'
 
   nebula::usergroup { 'solr': }
