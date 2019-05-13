@@ -105,7 +105,7 @@ class nebula::profile::hathitrust::solr_lss (
           recurse => true;
 
         "${subcore_home}/conf/schema.xml":
-          source => "puppet:///modules/nebula/solr_lss/conf/schema_${suffix}.xml"
+          source => "puppet:///modules/nebula/solr_lss/schema_${suffix}.xml"
       }
     }
   }
