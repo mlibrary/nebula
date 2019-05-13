@@ -59,12 +59,22 @@ describe 'nebula::profile::hathitrust::solr_lss' do
       end
 
       it do
-        is_expected.to contain_file('/var/lib/solr/home/mycore/data')
+        is_expected.to contain_file('/var/lib/solr/home/mycore/mycorex/data')
           .with(ensure: 'link', target: '/path/to/some/core/data')
       end
 
       it do
-        is_expected.to contain_file('/var/lib/solr/home/othercore/data')
+        is_expected.to contain_file('/var/lib/solr/home/mycore/mycorey/data')
+          .with(ensure: 'link', target: '/path/to/some/core/data')
+      end
+
+      it do
+        is_expected.to contain_file('/var/lib/solr/home/othercore/othercorex/data')
+          .with(ensure: 'link', target: '/somewhere/another/core/data')
+      end
+
+      it do
+        is_expected.to contain_file('/var/lib/solr/home/othercore/othercorey/data')
           .with(ensure: 'link', target: '/somewhere/another/core/data')
       end
 

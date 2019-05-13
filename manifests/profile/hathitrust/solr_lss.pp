@@ -74,11 +74,6 @@ class nebula::profile::hathitrust::solr_lss (
       mode   => '0750'
     }
 
-    file { "${home}/${core}/data":
-      ensure => 'link',
-      target => $path
-    }
-
 
     ['x','y'].each |$suffix| {
       $subcore_home = "${home}/${core}/${core}${suffix}"
@@ -103,6 +98,10 @@ class nebula::profile::hathitrust::solr_lss (
           ensure  => 'directory',
           source  => 'puppet:///modules/nebula/solr_lss/conf',
           recurse => true;
+
+        "${subcore_home}/data":
+          ensure => 'link',
+          target => $path;
 
         "${subcore_home}/conf/schema.xml":
           source => "puppet:///modules/nebula/solr_lss/schema_${suffix}.xml"
