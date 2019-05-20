@@ -11,10 +11,9 @@ describe 'nebula::haproxy::service' do
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:base_params) do
-        { floating_ip: '1.2.3.4' }
+      let(:params) do
+        super().merge(floating_ip: '1.2.3.4')
       end
-      let(:params) { base_params }
 
       let(:facts) do
         os_facts.merge(
@@ -79,14 +78,28 @@ describe 'nebula::haproxy::service' do
           )
         end
 
-        describe 'with throttling parameters' do
-          let(:throttling_params) do
-            base_params.merge(max_requests_per_sec: 2,
-                              max_requests_burst: 400,
-                              floating_ip: '1.2.3.4',
-                              cert_source: '')
+        it do
+          is_expected.not_to contain_file('/etc/haproxy/errors/svc1503.http')
+        end
+
+        describe 'with custom 503' do
+          let(:params) do
+            super().merge(custom_503: true)
           end
-          let(:params) { throttling_params }
+
+          it do
+            is_expected.to contain_file('/etc/haproxy/errors/svc1503.http')
+              .with_source('https://default.http_files.invalid/errorfiles/svc1503.http')
+          end
+        end
+
+        describe 'with throttling parameters' do
+          let(:params) do
+            super().merge(max_requests_per_sec: 2,
+                          max_requests_burst: 400,
+                          floating_ip: '1.2.3.4',
+                          cert_source: '')
+          end
 
           it do
             is_expected.to contain_concat_fragment('svc1-dc1-https throttling').with(
@@ -122,7 +135,9 @@ describe 'nebula::haproxy::service' do
           end
 
           context 'with IP exemptions' do
-            let(:params) { throttling_params.merge(whitelists: { 'src' => ['10.0.0.1', '10.2.32.0/24'] }) }
+            let(:params) do
+              super().merge(whitelists: { 'src' => ['10.0.0.1', '10.2.32.0/24'] })
+            end
 
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_src.txt').with_content("10.0.0.1\n10.2.32.0/24\n") }
 
@@ -151,8 +166,8 @@ describe 'nebula::haproxy::service' do
 
           context 'with path & suffix exemptions' do
             let(:params) do
-              throttling_params.merge(whitelists: { 'path_beg' => ['/some/where', '/another/path'],
-                                                    'path_end' => ['.abc', '.def'] })
+              super().merge(whitelists: { 'path_beg' => ['/some/where', '/another/path'],
+                                          'path_end' => ['.abc', '.def'] })
             end
 
             ['acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt',
@@ -182,7 +197,7 @@ describe 'nebula::haproxy::service' do
 
           context 'with throttling condition' do
             let(:params) do
-              throttling_params.merge(throttle_condition: 'path_beg /whatever')
+              super().merge(throttle_condition: 'path_beg /whatever')
             end
 
             ['acl throttle_condition path_beg /whatever',
