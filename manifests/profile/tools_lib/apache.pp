@@ -100,9 +100,9 @@ class nebula::profile::tools_lib::apache (
     ],
 
     proxy_pass          => [
-      { path => '/confluence', url => 'http://localhost:8090/confluence' },
-      { path => '/jira',       url => 'http://localhost:8080/jira'       },
-      { path => '/synchrony' , url => 'http://localhost:8091/synchrony', reverse_urls => [] },
+      { path => '/confluence', url => 'http://localhost:8090/confluence', keywords => ['nocanon'] },
+      { path => '/jira',       url => 'http://localhost:8080/jira',       keywords => ['nocanon'] },
+      { path => '/synchrony',  url => 'http://localhost:8091/synchrony',  reverse_urls => []      },
     ],
 
     proxy_preserve_host => true,
