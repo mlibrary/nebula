@@ -66,6 +66,13 @@ class nebula::profile::hathitrust::solr_lss (
     content => template('nebula/profile/hathitrust/solr_lss/solr.service.erb')
   }
 
+  file {
+    "${home}/lib":
+      ensure  => 'directory',
+      source  => 'puppet:///modules/nebula/solr_lss/lib',
+      recurse => true
+  }
+
   $coredata.each |$core,$path| {
     file { "${home}/${core}":
       ensure => 'directory',
@@ -73,7 +80,6 @@ class nebula::profile::hathitrust::solr_lss (
       group  => 'solr',
       mode   => '0750'
     }
-
 
     ['x','y'].each |$suffix| {
       $subcore_home = "${home}/${core}/${core}${suffix}"
