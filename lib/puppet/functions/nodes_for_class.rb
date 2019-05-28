@@ -15,7 +15,7 @@ Puppet::Functions.create_function(:nodes_for_class) do
                   ['from', 'resources',
                    ['extract', ['certname'],
                     ['=', 'title', capitalize_each_namespace(class_title)]]])
-      .map { |resource| resource['certname'] }
+      .map { |resource| resource['certname'] }.sort
   end
 
   private

@@ -35,4 +35,14 @@ describe 'nodes_for_class' do
                         .and_return(%w[node_1 node_2 node_3])
     end
   end
+
+  context 'it returns the nodes sorted by name' do
+    let(:class_title) { 'My_role' }
+    let(:nodes) { %w[node_b node_a node_z] }
+
+    it do
+      is_expected.to run.with_params('my_role')
+                        .and_return(%w[node_a node_b node_z])
+    end
+  end
 end
