@@ -38,5 +38,14 @@ class nebula::profile::named_instances (
     Nebula::Named_instance::App <<| title == $instance |>>
     Nebula::Named_instance::Solr_core <<| instance == $instance |>>
   }
+
+  # we don't create or manage this, but puppet needs to know about it in order
+  # to notify it
+  ensure_resource('service', 'rsyslog', { 'hasrestart' => true })
+
+  file { '/etc/rsyslog.d/drop-rbenv.conf':
+    content => ':programname, isequal, "rbenv" ~',
+    notify  => Service['rsyslog']
+  }
 }
 
