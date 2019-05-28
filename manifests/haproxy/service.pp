@@ -44,7 +44,8 @@
 #       path_sub           => ['in_the_middle'],
 #       path_end           => ['.css','.js'],
 #       src                => ['5.6.7.0/24','8.9.10.11']]
-#     }
+#     },
+#     custom_503           => true,
 #  }
 define nebula::haproxy::service(
   String           $floating_ip,
@@ -52,7 +53,8 @@ define nebula::haproxy::service(
   Optional[String] $throttle_condition = undef,
   Integer          $max_requests_per_sec = 0,
   Integer          $max_requests_burst = 0,
-  Hash             $whitelists = {}
+  Hash             $whitelists = {},
+  Boolean          $custom_503 = false
 ) {
 
   include nebula::profile::haproxy::prereqs
@@ -67,6 +69,15 @@ define nebula::haproxy::service(
       mode   => '0644',
       notify => Service['haproxy'],
       source => "https://${http_files}/errorfiles/${service}509.http"
+    }
+  }
+
+  if $custom_503 {
+    file { "/etc/haproxy/errors/${service}503.http":
+      ensure => 'present',
+      mode   => '0644',
+      notify => Service['haproxy'],
+      source => "https://${http_files}/errorfiles/${service}503.http"
     }
   }
 
