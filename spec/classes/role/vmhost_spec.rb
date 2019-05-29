@@ -17,6 +17,9 @@ describe 'nebula::role::vmhost' do
       unless os == 'debian-8-x86_64'
         it { is_expected.to contain_sysctl.with_bridge(true) }
       end
+
+      it { is_expected.not_to contain_class('nebula::profile::afs') }
+      it { is_expected.not_to contain_class('nebula::profile::users') }
     end
   end
 end

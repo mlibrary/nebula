@@ -58,6 +58,9 @@ describe 'nebula::role::webhost::htvm' do
         end
 
         it { is_expected.to contain_class('nebula::profile::networking::firewall') }
+
+        it { is_expected.to contain_class('nebula::profile::afs') }
+        it { is_expected.to contain_class('nebula::profile::users') }
       end
 
       # not specified explicitly as a usergroup, just brought in as part of 'all groups'
