@@ -34,4 +34,8 @@ class nebula::profile::vmhost::prereqs {
   package { 'qemu':
     ensure => 'installed'
   }
+  
+  package { 'qemu-kvm':
+    ensure => 'installed'
+  }
 }
