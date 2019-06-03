@@ -114,4 +114,7 @@ class nebula::profile::haproxy(
     tag    => 'haproxy'
   }
 
+  # HAProxy should listen for kubernetes connections.
+  Firewall <| tag == 'listen_for_kubectl' |>
+
 }
