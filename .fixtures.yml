@@ -18,6 +18,9 @@ fixtures:
     concat:
       repo: "puppetlabs/concat"
       ref: "4.2.0"
+    docker:
+      repo: "puppetlabs/docker"
+      ref: "3.4.0"
     firewall:
       repo: "puppetlabs/firewall"
       ref: "1.1.3"
