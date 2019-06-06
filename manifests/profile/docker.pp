@@ -23,9 +23,10 @@ class nebula::profile::docker (
   String $version = '',
 ) {
   concat_file { 'cri daemon':
-    path   => '/etc/docker/daemon.json',
-    format => 'json',
-    notify => Exec['docker: systemctl daemon-reload'],
+    path    => '/etc/docker/daemon.json',
+    format  => 'json',
+    require => File['/etc/docker'],
+    notify  => Exec['docker: systemctl daemon-reload'],
   }
 
   concat_fragment {
@@ -48,6 +49,10 @@ class nebula::profile::docker (
     'cri daemon storage-driver':
       content => '{"storage-driver":"overlay2"}',
     ;
+  }
+
+  file { '/etc/docker':
+    ensure => 'directory',
   }
 
   exec { 'docker: systemctl daemon-reload':

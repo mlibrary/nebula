@@ -17,7 +17,10 @@ describe 'nebula::profile::docker' do
           .with_path('/etc/docker/daemon.json')
           .with_format('json')
           .that_notifies('Exec[docker: systemctl daemon-reload]')
+          .that_requires('File[/etc/docker]')
       end
+
+      it { is_expected.to contain_file('/etc/docker').with_ensure('directory') }
 
       it do
         is_expected.to contain_file('/etc/systemd/system/docker.service.d')
