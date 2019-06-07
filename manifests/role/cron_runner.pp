@@ -25,5 +25,6 @@ class nebula::role::cron_runner(
   include nebula::profile::nodejs
 
   nebula::usergroup { 'cron': }
+  realize User['spot']
   create_resources(cron,$crons)
 }
