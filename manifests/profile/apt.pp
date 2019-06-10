@@ -99,11 +99,15 @@ class nebula::profile::apt (
       repos    => $puppet_repo,
     }
 
-    if $facts['dmi'] and $facts['dmi']['manufacturer'] == 'HP' {
+    if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
       apt::source { 'hp':
         location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
         release  => "${::lsbdistcodename}/current",
         repos    => 'non-free',
+        key      => {
+          'id'     => '57446EFDE098E5C934B69C7DC208ADDE26C2B797',
+          'source' => 'https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub',
+        },
       }
     }
 

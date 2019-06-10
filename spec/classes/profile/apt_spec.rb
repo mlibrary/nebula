@@ -119,8 +119,8 @@ describe 'nebula::profile::apt' do
 
       it { is_expected.not_to contain_apt__source('hp') }
 
-      context 'on an HP machine' do
-        let(:facts) { os_facts.merge('dmi' => { 'manufacturer' => 'HP' }) }
+      context 'on an HPE machine' do
+        let(:facts) { os_facts.merge('dmi' => { 'manufacturer' => 'HPE' }) }
 
         it do
           is_expected.to contain_apt__source('hp').with(
