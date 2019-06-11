@@ -118,6 +118,8 @@ describe 'nebula::profile::base' do
             file: '/etc/modprobe.d/kpwdt-blacklist.conf',
           )
         end
+
+        it { is_expected.to contain_package('ssacli') }
       end
 
       context 'on an Dell machine' do

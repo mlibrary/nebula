@@ -57,6 +57,11 @@ class nebula::profile::base (
   }
 
   include nebula::profile::base::stop_mcollective
-  include nebula::profile::base::blacklist_hpwdt
+
+
+  if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
+    include nebula::profile::base::hp
+  }
+
   include nebula::profile::base::i40e
 }
