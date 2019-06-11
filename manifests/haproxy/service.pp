@@ -149,6 +149,14 @@ define nebula::haproxy::service(
         order   => '05'
       }
 
+      if($custom_503) {
+        concat_fragment { "${service_prefix} exempt custom 503":
+          target  => $service_cfg,
+          content => "errorfile 503 /etc/haproxy/errors/${service}503.http\n",
+          order   => '06'
+        }
+      }
+
       Concat_fragment <| tag == "${service_prefix}_exempt_binding" |>
     }
 
