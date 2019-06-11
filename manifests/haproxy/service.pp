@@ -112,10 +112,19 @@ define nebula::haproxy::service(
       order   => '01'
     }
 
+
     if($protocol == 'https') {
       concat_fragment { "${service_prefix} check":
         target  => $service_cfg,
         content => "http-check expect status 200\n",
+        order   => '02'
+      }
+    }
+
+    if($custom_503) {
+      concat_fragment { "${service_prefix} custom 503":
+        target  => $service_cfg,
+        content => "errorfile 503 /etc/haproxy/errors/${service}503.http\n",
         order   => '02'
       }
     }

@@ -91,6 +91,15 @@ describe 'nebula::haproxy::service' do
             is_expected.to contain_file('/etc/haproxy/errors/svc1503.http')
               .with_source('https://default.http_files.invalid/errorfiles/svc1503.http')
           end
+
+          it do
+            is_expected.to contain_concat_fragment('svc1-dc1-https custom 503').with(
+              target: service_config,
+              content: <<~EOT
+                errorfile 503 /etc/haproxy/errors/svc1503.http
+              EOT
+            )
+          end
         end
 
         describe 'with throttling parameters' do
