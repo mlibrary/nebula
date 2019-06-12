@@ -14,4 +14,9 @@ class nebula::role::deploy_host {
   include nebula::profile::ruby
   include nebula::profile::nodejs
   include nebula::profile::moku
+
+  if $facts['os']['release']['major'] == '9' {
+    include nebula::profile::afs
+    include nebula::profile::users
+  }
 }
