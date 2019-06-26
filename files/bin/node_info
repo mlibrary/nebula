@@ -1,0 +1,42 @@
+#!/usr/bin/python3
+import re
+import urllib.request
+import json
+import yaml
+import subprocess
+import argparse
+
+parser = argparse.ArgumentParser(description='Print info about puppet and hardware configuration of this machine')
+parser.add_argument('-y','--yaml', dest='yaml', action='store_true', help='output yaml')
+parser.add_argument('-j','--json', dest='yaml', action='store_false', help='output json (default)')
+
+args = parser.parse_args()
+
+# get general information on this node
+node_info = json.loads(urllib.request.urlopen('http://169.254.169.254/latest/dynamic/instance-identity/document').read().decode('utf-8'))
+
+# get version info from last puppet run
+puppet_summary = open('/var/last_run_summary.yaml','r').read()
+node_info['version'] = yaml.load(puppet_summary)['version']
+
+# get version info from puppet envirionment and current github environment branch
+puppet_conf = open('/etc/puppetlabs/puppet/puppet.conf','r').read()
+environment_match = re.search('environment\s*=\s*(\w+)\n',puppet_conf)
+environment = 'master'
+if environment_match:
+  environment = environment_match.group(1).translate(str.maketrans('_','-'))
+  node_info['version']['environment'] = environment
+giturl = "https://api.github.com/repos/mlibrary/nebula/git/refs/heads/{environment!s}".format(**locals())
+node_info['version']['nebula'] = json.loads(urllib.request.urlopen(giturl).read().decode('utf-8'))['object']['sha']
+
+region = node_info['region']
+instanceId = node_info['instanceId']
+get_ebs_volumes_cmd = 'aws --region={region!s} ec2 describe-volumes --filters "Name=attachment.instance-id,Values={instanceId!s}"'.format(**locals())
+
+process = subprocess.run(get_ebs_volumes_cmd,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,shell=True)
+node_info['ebs'] = json.loads(process.stdout.decode('utf-8'))['Volumes']
+
+if vars(args)['yaml']:
+  print(yaml.dump(node_info,explicit_start=True,explicit_end=True))
+else:
+  print(json.dumps(node_info,sort_keys=True))

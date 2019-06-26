@@ -33,7 +33,8 @@ class nebula::profile::hathitrust::solr_lss (
   String $home = "${base}/home",
   String $logs = "${base}/logs",
   String $heap = '32G',
-  Integer $port = 8983
+  Integer $port = 8983,
+  Array $networks = []
 ) {
 
   ensure_packages(['openjdk-8-jre-headless','solr','lsof'])
@@ -71,6 +72,31 @@ class nebula::profile::hathitrust::solr_lss (
       ensure  => 'directory',
       source  => 'puppet:///modules/nebula/solr_lss/lib',
       recurse => true
+  }
+
+  $networks.flatten.each |$network| {
+    firewall { "300 Solr ${network['name']}":
+      proto  => 'tcp',
+      dport  => [8081],
+      source => $network['block'],
+      state  => 'NEW',
+      action => 'accept',
+    }
+  }
+
+  # allow non-root users to control solr daemon
+  file {
+    default:
+      owner  => 'root',
+      group  => 'root';
+
+    '/etc/sudoers.d/solr':
+      mode   => '0440',
+      source => 'puppet:///modules/nebula/solr_lss/sudoers.d/solr';
+
+    '/usr/local/bin/drop-cache':
+      mode   => '0755',
+      source => 'puppet:///modules/nebula/solr_lss/bin/drop-cache'
   }
 
   $coredata.each |$core,$path| {
