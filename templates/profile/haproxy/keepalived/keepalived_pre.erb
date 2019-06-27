@@ -30,6 +30,9 @@ vrrp_instance haproxy {
     <%- @services.each do |_,service| -%>
       <%= service["floating_ip"] %>
     <%- end -%>
+    <%- @extra_floating_ips.each do |_,floating_ip| -%>
+      <%= floating_ip %>
+    <%- end -%>
   }
 
   unicast_src_ip <%= @networking["ip"] %>

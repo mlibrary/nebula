@@ -11,6 +11,7 @@ class nebula::profile::haproxy(
   Hash $monitoring_user,
   Boolean $master = false,
   Optional[String] $cert_source = undef,
+  Hash $extra_floating_ips = {},
 ) {
   include nebula::profile::haproxy::prereqs
   include nebula::profile::networking::sysctl
