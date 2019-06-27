@@ -213,6 +213,17 @@ describe 'nebula::profile::haproxy' do
           end
         end
 
+        context 'with an extra_floating_ip set to 10.0.1.2' do
+          let(:params) do
+            { extra_floating_ips: { 'extra' => '10.0.1.2' } }
+          end
+
+          it do
+            is_expected.to contain_concat_fragment('keepalived preamble')
+              .with_content(%r{virtual_ipaddress {\n\s*10\.0\.1\.2\n\s*}}m)
+          end
+        end
+
         it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{unicast_src_ip #{my_ip}}) }
 
         it 'exports its IP address for collection by other haproxy nodes' do
