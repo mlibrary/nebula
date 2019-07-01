@@ -71,7 +71,12 @@ class nebula::profile::hathitrust::apache (
   class { 'apache::mod::dir':
     indexes => ['index.html']
   }
-  class { 'apache::mod::expires': }
+  class { 'apache::mod::expires':
+    expires_by_type => [
+      { 'application/javascript' => 'access plus 6 hours' },
+      { 'text/css' => 'access plus 6 hours' }
+    ]
+  }
   class { 'apache::mod::include': }
   class { 'apache::mod::mime_magic': }
   class { 'apache::mod::negotiation': }
