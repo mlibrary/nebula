@@ -17,8 +17,8 @@
 #     user_id        => '12345
 #   }
 class nebula::profile::geoip (
-  String $license_key,
-  String $user_id,
+  String $license_key = 'CHANGEME',
+  String $user_id = 'CHANGEME',
   # MaxMind GeoIP Country
   String $product_id = '106'
 ) {
