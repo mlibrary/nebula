@@ -11,7 +11,7 @@
 class nebula::profile::hathitrust::dependencies () {
   include nebula::profile::imagemagick
 
-  package {
+  ensure_packages (
     [
       'git',
       'libjs-jquery',
@@ -21,8 +21,8 @@ class nebula::profile::hathitrust::dependencies () {
       'netpbm-sf',
       'kakadu',
       'rsync'
-    ]:
-  }
+    ]
+  )
 
   file { '/l/local':
     ensure => 'directory'
