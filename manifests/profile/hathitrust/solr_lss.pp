@@ -34,6 +34,8 @@ class nebula::profile::hathitrust::solr_lss (
   String $logs = "${base}/logs",
   String $heap = '32G',
   Integer $port = 8983,
+  String $sudoers_group = "solr",
+  Optional[String] $authorized_keys = undef,
   Array $networks = []
 ) {
 
@@ -92,11 +94,29 @@ class nebula::profile::hathitrust::solr_lss (
 
     '/etc/sudoers.d/solr':
       mode   => '0440',
-      source => 'puppet:///modules/nebula/solr_lss/sudoers.d/solr';
+      content => template('nebula/profile/hathitrust/solr_lss/sudoers.erb');
 
     '/usr/local/bin/drop-cache':
       mode   => '0755',
       source => 'puppet:///modules/nebula/solr_lss/bin/drop-cache'
+  }
+
+  # allow ssh to solr user
+  $solr_user_home = lookup('nebula::virtual::users::all_users')['solr']['home']
+  if $authorized_keys {
+    file {
+      default:
+        owner  => 'solr',
+        group  => 'solr';
+
+      "${solr_user_home}/.ssh":
+        ensure => 'directory',
+        mode   => '0700';
+
+      "${solr_user_home}/.ssh/authorized_keys":
+        mode    => '0600',
+        content => $authorized_keys
+    }
   }
 
   $coredata.each |$core,$path| {

@@ -19,6 +19,7 @@ describe 'nebula::profile::hathitrust::solr_lss' do
             'mycore' => '/path/to/some/core/data',
             'othercore' => '/somewhere/another/core/data',
           },
+          authorized_keys: 'just a fake key',
         }
       end
 
@@ -126,6 +127,9 @@ describe 'nebula::profile::hathitrust::solr_lss' do
         is_expected.to contain_file('/var/lib/solr/home/mycore/mycorey/conf/schema.xml')
           .with_source(%r{schema_y\.xml})
       end
+
+      it { is_expected.to contain_file('/etc/sudoers.d/solr') }
+      it { is_expected.to contain_file('/var/lib/solr/.ssh/authorized_keys') }
     end
   end
 end
