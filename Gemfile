@@ -13,6 +13,7 @@ end
 gem 'puppet', '~> 5.5'
 gem 'puppet-strings'
 gem 'semantic_puppet'
+gem 'yard', '>= 0.9.20'
 
 # Evaluate Gemfile.local and ~/.gemfile if they exist
 [
