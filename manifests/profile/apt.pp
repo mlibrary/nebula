@@ -11,6 +11,7 @@
 class nebula::profile::apt (
   String $mirror,
   String $puppet_repo,
+  Boolean $purge = true,
   Optional[Hash] $local_repo = undef,
 ) {
 
@@ -37,10 +38,10 @@ class nebula::profile::apt (
 
     class { 'apt':
       purge  => {
-        'sources.list'   => true,
-        'sources.list.d' => true,
-        'preferences'    => true,
-        'preferences.d'  => true,
+        'sources.list'   => $purge,
+        'sources.list.d' => $purge,
+        'preferences'    => $purge,
+        'preferences.d'  => $purge,
       },
       update => {
         frequency => 'daily',
