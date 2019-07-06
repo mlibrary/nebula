@@ -116,6 +116,9 @@ class nebula::profile::haproxy(
   }
 
   # HAProxy should listen for kubernetes connections.
-  Firewall <| tag == 'listen_for_kubectl' |>
+  nebula::exposed_port { '200 kubectl':
+    port  => 6443,
+    block => 'umich::networks::all_trusted_machines',
+  }
 
 }

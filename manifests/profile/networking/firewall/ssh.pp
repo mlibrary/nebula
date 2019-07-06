@@ -20,14 +20,5 @@ class nebula::profile::networking::firewall::ssh (
       state  => 'NEW',
       action => 'accept',
     }
-
-    @firewall { "200 kubectl: ${network['name']}":
-      tag    => 'listen_for_kubectl',
-      proto  => 'tcp',
-      dport  => 6443,
-      source => $network['block'],
-      state  => 'NEW',
-      action => 'accept',
-    }
   }
 }
