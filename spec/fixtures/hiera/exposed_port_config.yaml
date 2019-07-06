@@ -1,0 +1,8 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - exposed_port
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'
