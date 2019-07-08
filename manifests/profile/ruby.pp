@@ -36,6 +36,14 @@ class nebula::profile::ruby (
     'libgdbm-dev'
   ]:}
 
+  if $::os['release']['major'] == '8' {
+    package { 'libmysqlclient-dev': }
+  }
+
+  if $::os['release']['major'] == '9' {
+    package { 'default-libmysqlclient-dev': }
+  }
+
   class { 'rbenv':
     install_dir => $install_dir,
   }
