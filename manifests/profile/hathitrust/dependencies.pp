@@ -34,7 +34,7 @@ class nebula::profile::hathitrust::dependencies () {
   }
 
   # install jhove, pin it to buster if we're on stretch
-  if $facts['os']['release']['major'] == '9' {
+  if $facts['os']['family'] == 'Debian' and $facts['os']['family']['distro']['codename'] != 'jessie' {
     include nebula::profile::apt::testing
     include apt::backports
 
