@@ -12,7 +12,7 @@ class nebula::role::aws {
   package { 'iptables-persistent': }
   include nebula::profile::aws::filesystem
 
-  if $facts['os']['release']['major'] == '9' {
+  if $facts['os']['family'] == 'Debian' and $facts['os']['distro']['codename'] != 'jessie' {
     include nebula::profile::exim4
     include nebula::profile::ntp
     include nebula::profile::tiger

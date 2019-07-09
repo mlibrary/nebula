@@ -24,7 +24,7 @@ class nebula::profile::base (
     enable => true,
   }
 
-  if $facts['os']['release']['major'] == '9' {
+  if $facts['os']['family'] == 'Debian' and $facts['os']['family']['distro']['codename'] != 'jessie' {
     package { 'dselect': }
     package { 'ifenslave': }
     package { 'linux-image-amd64': }
