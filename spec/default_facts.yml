@@ -10,6 +10,7 @@ dmi: {}
 installed_backports: []
 datacenter: "mydatacenter"
 mountpoints: {}
+root_home: "/root"
 
 # required by camptocamp/kmod 2.1.0
 augeasversion: '1.4.0'
