@@ -90,6 +90,11 @@ class nebula::profile::tools_lib::apache (
         require  => 'all granted'
       },
       {
+        provider => 'locationmatch',
+        path     => 'SendBulkMail',
+        require  => 'all denied'
+      },
+      {
         provider => 'location',
         location => '/synchrony',
         rewrites => [{
