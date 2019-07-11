@@ -81,15 +81,16 @@ describe 'nebula::named_instance::proxy' do
         )
       end
 
-      describe 'access macro' do
+      describe 'access' do
         context 'with no whitelisted ips' do
           it 'uses default non-robot policy' do
             access = <<~EOT
-              <Macro access>
-                <Location />
-                  Use access_nobaddies
+              \ \ <Location />
+                  Order allow,deny
+                  Allow from all
+                  Deny from env=badrobot
+                  Deny from env=loadbalancer
                 </Location>
-              </Macro>
             EOT
 
             expect(content).to include(access)
@@ -101,14 +102,12 @@ describe 'nebula::named_instance::proxy' do
 
           it 'enumerates allowed sources' do
             access = <<~EOT
-              <Macro access>
-                <Location />
+              \ \ <Location />
                   Order Deny,Allow
                   Deny from all
                   Allow from 1.2.3.4
                   Allow from 1.2.3.5
                 </Location>
-              </Macro>
             EOT
 
             expect(content).to include(access)
@@ -126,10 +125,6 @@ describe 'nebula::named_instance::proxy' do
         it 'includes the second alias' do
           expect(content).to include('ServerAlias b.default.invalid')
         end
-      end
-
-      it 'undefines the access macro' do
-        expect(content).to include('UndefMacro access')
       end
 
       it 'creates an HTTP vhost with ServerName of public_hostname' do
@@ -151,12 +146,15 @@ describe 'nebula::named_instance::proxy' do
       end
 
       it 'uses a logfile matching the instance title' do
-        expect(content).to include("Use logging #{title}")
+        expect(content).to match(%r{CustomLog\s+"/var/log/apache2/#{title}/access.log"\s+combined})
       end
 
       context 'when Apache should serve SSL for the client' do
-        it 'includes an ssl directive with key and certificate' do
-          expect(content).to include("Use ssl #{ssl_key} #{ssl_crt}")
+        it 'uses the listed ssl certificate' do
+          expect(content).to include("SSLCertificateFile /etc/ssl/certs/#{ssl_crt}")
+        end
+        it 'uses the listed ssl key' do
+          expect(content).to include("SSLCertificateKeyFile /etc/ssl/private/#{ssl_key}")
         end
       end
 
@@ -165,16 +163,16 @@ describe 'nebula::named_instance::proxy' do
           it 'configures cosign and does not require a special factor' do
             # Note that this snippet assumes url_root is / above to form /login
             cosign = <<~EOT
-              Use cosign #{public_hostname} #{ssl_key} #{ssl_crt}
-              CosignAllowPublicAccess On
+              \ \ CosignCrypto /etc/ssl/private/#{ssl_key} /etc/ssl/certs/#{ssl_crt} /etc/ssl/certs
+                CosignAllowPublicAccess On
 
-              # Protect single path with cosign.  App should redirect here for auth needs.
-              <Location /login >
-                CosignAllowPublicAccess Off
-              </Location>
+                # Protect single path with cosign.  App should redirect here for auth needs.
+                <Location /login >
+                  CosignAllowPublicAccess Off
+                </Location>
 
-              # Set remote user header to allow app to use http header auth.
-              RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
+                # Set remote user header to allow app to use http header auth.
+                RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
             EOT
 
             expect(content).to include(cosign)
@@ -187,17 +185,16 @@ describe 'nebula::named_instance::proxy' do
           it 'configures cosign and requires the factor' do
             # Note that this snippet assumes url_root is / above to form /login
             cosign = <<~EOT
-              Use cosign #{public_hostname} #{ssl_key} #{ssl_crt}
-              CosignAllowPublicAccess On
+              \ \ CosignAllowPublicAccess On
 
-              # Protect single path with cosign.  App should redirect here for auth needs.
-              <Location /login >
-                CosignRequireFactor FACTOR
-                CosignAllowPublicAccess Off
-              </Location>
+                # Protect single path with cosign.  App should redirect here for auth needs.
+                <Location /login >
+                  CosignRequireFactor FACTOR
+                  CosignAllowPublicAccess Off
+                </Location>
 
-              # Set remote user header to allow app to use http header auth.
-              RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
+                # Set remote user header to allow app to use http header auth.
+                RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
             EOT
 
             expect(content).to match(cosign)
