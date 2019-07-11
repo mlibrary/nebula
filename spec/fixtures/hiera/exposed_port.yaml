@@ -1,0 +1,13 @@
+devs_and_users:
+- "%{alias('developers')}"
+- "%{alias('users')}"
+
+developers:
+- name: Developers
+  block: 10.0.0.0/16
+
+users:
+- name: VPN users
+  block: 10.10.10.0/24
+- name: On-site users
+  block: 10.10.11.0/24

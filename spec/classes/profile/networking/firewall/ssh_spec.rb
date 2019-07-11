@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018-2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -12,34 +12,11 @@ describe 'nebula::profile::networking::firewall::ssh' do
 
       it { is_expected.to compile }
 
-      it { is_expected.to have_firewall_resource_count(0) }
-
-      context 'with a CIDR range' do
-        let(:params) { { networks: [{ 'name' => 'test range', 'block' => '10.1.2.0/24' }] } }
-
-        it { is_expected.to contain_firewall('100 SSH: test range').with_source('10.1.2.0/24') }
-      end
-
-      context 'with deeply-nested ranges' do
-        let(:params) do
-          {
-            networks: [
-              [
-                { 'name' => 'test range 1-1', 'block' => '10.1.1.0/24' },
-                { 'name' => 'test range 1-2', 'block' => '10.1.2.0/24' },
-              ],
-              [
-                { 'name' => 'test range 2-1', 'block' => '10.2.1.0/24' },
-                { 'name' => 'test range 2-2', 'block' => '10.2.2.0/24' },
-              ],
-            ],
-          }
-        end
-
-        it { is_expected.to contain_firewall('100 SSH: test range 1-1').with_source('10.1.1.0/24') }
-        it { is_expected.to contain_firewall('100 SSH: test range 1-2').with_source('10.1.2.0/24') }
-        it { is_expected.to contain_firewall('100 SSH: test range 2-1').with_source('10.2.1.0/24') }
-        it { is_expected.to contain_firewall('100 SSH: test range 2-2').with_source('10.2.2.0/24') }
+      it do
+        is_expected.to contain_nebula__exposed_port('100 SSH').with(
+          port: 22,
+          block: 'umich::networks::all_trusted_machines',
+        )
       end
     end
   end
