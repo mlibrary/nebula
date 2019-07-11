@@ -1,32 +1,29 @@
 # Managed by puppet (nebula/named_instance/proxy_vhost.erb)
 
-### Access Macro.
-# Given a whitelist, will deny from all others
-# Given no whitelist, will use default allow non-bad robots
-<Macro access>
-  <Location />
-  <%- if @apache_whitelisted_ips.any? -%>
-    Order Deny,Allow
-    Deny from all
-    <%- @apache_whitelisted_ips.each do |ip| -%>
-    Allow from <%= ip %>
-    <%- end -%>
-  <%- else -%>
-    Use access_nobaddies
-  <%- end -%>
-  </Location>
-</Macro>
-
 <VirtualHost *:80>
   ServerName <%= @apache_domain %>
   <%- @apache_aliases.each do |apache_alias| -%>
   ServerAlias <%= apache_alias %>
   <%- end -%>
 
-  Use logging <%= @apache_app_name %>
+  ErrorLog         "/var/log/apache2/<%= @apache_app_name %>/error.log"
+  CustomLog        "/var/log/apache2/<%= @apache_app_name %>/access.log" combined
   LogLevel info
 
-  Use access
+  <Location />
+  <%- if @apache_whitelisted_ips.any? -%>
+    Order Deny,Allow
+    Deny from all
+  <%- @apache_whitelisted_ips.each do |ip| -%>
+    Allow from <%= ip %>
+  <%- end -%>
+  <%- else -%>
+    Order allow,deny
+    Allow from all
+    Deny from env=badrobot
+    Deny from env=loadbalancer
+  <%- end -%>
+  </Location>
 
   # Redirect all access to https
   RewriteEngine on
@@ -39,32 +36,70 @@
   ServerAlias <%= apache_alias %>
   <%- end -%>
 
-  Use logging <%= @apache_app_name %>
+  ErrorLog         "/var/log/apache2/<%= @apache_app_name %>/error.log"
+  CustomLog        "/var/log/apache2/<%= @apache_app_name %>/access.log" combined
   LogLevel info
 
 <%- if @apache_terminate_ssl -%>
-  Use ssl <%= @apache_ssl_key %> <%= @apache_ssl_crt %>
+  SSLEngine on
+  SSLCipherSuite "EECDH EDH+aRSA !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS"
+  SSLProtocol all -SSLv2 -SSLv3
+
+  SSLCertificateFile /etc/ssl/certs/<%= @apache_ssl_crt %>
+  SSLCertificateKeyFile /etc/ssl/private/<%= @apache_ssl_key %>
+  SSLCACertificatePath /etc/ssl/chain
+  BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 <%- end -%>
 
-  Use access
+  <Location />
+  <%- if @apache_whitelisted_ips.any? -%>
+    Order Deny,Allow
+    Deny from all
+  <%- @apache_whitelisted_ips.each do |ip| -%>
+    Allow from <%= ip %>
+  <%- end -%>
+  <%- else -%>
+    Order allow,deny
+    Allow from all
+    Deny from env=badrobot
+    Deny from env=loadbalancer
+  <%- end -%>
+  </Location>
 
 <%- if @apache_use_cosign -%>
-# Cosign is enabled for this host.
-# Entire site is public access save for one path
-# This means the application will have to manage auth'd sessions.
-Use cosign <%= @apache_domain %> <%= @apache_ssl_key %> <%= @apache_ssl_crt %>
-CosignAllowPublicAccess On
+  CosignProtected   On
+  CosignHostname    weblogin.umich.edu
+  CosignValidReference              ^https?:\/\/[^/]+.umich\.edu(\/.*)?
+  CosignValidationErrorRedirect      http://weblogin.umich.edu/cosign/validation_error.html
+  <Location /cosign/valid>
+    SetHandler          cosign
+    CosignProtected     Off
+    Allow from all
+    Satisfy any
+  </Location>
+  <Location /robots.txt>
+    CosignProtected     Off
+    Allow from all
+    Satisfy any
+  </Location>
+  CosignCheckIP never
+  CosignRedirect https://weblogin.umich.edu/
+  CosignNoAppendRedirectPort  On
+  CosignPostErrorRedirect https://weblogin.umich.edu/post_error.html
+  CosignService $cosign_service
+  CosignCrypto /etc/ssl/private/<%= @apache_ssl_key %> /etc/ssl/certs/<%= @apache_ssl_crt %> /etc/ssl/certs
+  CosignAllowPublicAccess On
 
-# Protect single path with cosign.  App should redirect here for auth needs.
-<Location <%= [@apache_url_root,"login"].join("/").gsub("//","/") %> >
-  <%- if @apache_cosign_factor -%>
-  CosignRequireFactor <%= @apache_cosign_factor %>
-  <%- end -%>
-  CosignAllowPublicAccess Off
-</Location>
+  # Protect single path with cosign.  App should redirect here for auth needs.
+  <Location <%= [@apache_url_root,"login"].join("/").gsub("//","/") %> >
+    <%- if @apache_cosign_factor -%>
+    CosignRequireFactor <%= @apache_cosign_factor %>
+    <%- end -%>
+    CosignAllowPublicAccess Off
+  </Location>
 
-# Set remote user header to allow app to use http header auth.
-RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
+  # Set remote user header to allow app to use http header auth.
+  RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
 <%- end -%>
 
   RequestHeader set X-Forwarded-Proto 'https'
@@ -108,6 +143,3 @@ XSendFilePath <%= @sendfile_path %>
 <%- end -%>
 
 </VirtualHost>
-
-# Use UndefMacro directive so subsequent macros using the same name don't cause conflicts.
-UndefMacro access
