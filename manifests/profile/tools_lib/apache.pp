@@ -67,6 +67,8 @@ class nebula::profile::tools_lib::apache (
     indexes => ['index.html']
   }
 
+  class { 'apache::mod::rewrite': }
+
   $chain_crt = lookup('nebula::profile::ssl_keypair::chain_crt')
 
   apache::vhost { "${servername} ssl":
@@ -86,12 +88,17 @@ class nebula::profile::tools_lib::apache (
     directories         => [
       {
         provider => 'proxy',
-        location => '*',
+        path     => '*',
         require  => 'all granted'
       },
       {
+        provider => 'locationmatch',
+        path     => 'SendBulkMail',
+        require  => 'all denied'
+      },
+      {
         provider => 'location',
-        location => '/synchrony',
+        path     => '/synchrony',
         rewrites => [{
           rewrite_cond => ['%{HTTP:UPGRADE} ^WebSocket$ [NC]', '%{HTTP:CONNECTION} Upgrade$ [NC]' ],
           rewrite_rule => ['.* ws://localhost:8091%{REQUEST_URI} [P]']
