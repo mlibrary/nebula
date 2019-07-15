@@ -12,7 +12,7 @@ class nebula::role::minimum ()
     include nebula::profile::base
     include nebula::profile::work_around_puppet_bugs
 
-    if $facts['os']['family'] == 'Debian' and $facts['os']['family']['distro']['codename'] != 'jessie' {
+    if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
       include nebula::profile::networking::firewall
       include nebula::profile::apt
       include nebula::profile::authorized_keys

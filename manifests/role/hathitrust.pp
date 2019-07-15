@@ -10,7 +10,7 @@ class nebula::role::hathitrust {
 
   include nebula::role::minimum
 
-  if $facts['os']['family'] == 'Debian' and $facts['os']['family']['distro']['codename'] != 'jessie' {
+  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
     include nebula::profile::afs
     include nebula::profile::duo
     include nebula::profile::exim4
