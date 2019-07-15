@@ -22,7 +22,6 @@ describe 'nebula::profile::base' do
       when 'debian-9-x86_64'
         it { is_expected.to contain_package('dselect') }
         it { is_expected.to contain_package('ifenslave') }
-        it { is_expected.to contain_package('linux-image-amd64') }
         it { is_expected.to contain_package('vlan') }
         it { is_expected.to contain_package('dbus') }
         it { is_expected.to contain_package('dkms') }
