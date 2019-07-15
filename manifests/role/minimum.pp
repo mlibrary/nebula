@@ -8,11 +8,11 @@
 #   include nebula::role::minimum
 class nebula::role::minimum ()
 {
-  if $facts['os']['name'] == 'Debian' {
+  if $facts['os']['family'] == 'Debian' {
     include nebula::profile::base
     include nebula::profile::work_around_puppet_bugs
 
-    if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
+    if $::lsbdistcodename != 'jessie' {
       include nebula::profile::networking::firewall
       include nebula::profile::apt
       include nebula::profile::authorized_keys
