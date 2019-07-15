@@ -18,4 +18,6 @@ class nebula::role::webhost::www_lib {
       ipaddress     => $::ipaddress
   }
 
+  include nebula::profile::php73
+
 }
