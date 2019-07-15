@@ -14,7 +14,7 @@ class nebula::role::umich (
 
   include nebula::role::minimum
 
-  if $facts['os']['family'] == 'Debian' and $facts['os']['family']['distro']['codename'] != 'jessie' {
+  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
     include nebula::profile::duo
     include nebula::profile::exim4
     include nebula::profile::grub
