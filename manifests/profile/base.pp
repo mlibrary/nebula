@@ -27,7 +27,6 @@ class nebula::profile::base (
   if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
     package { 'dselect': }
     package { 'ifenslave': }
-    package { 'linux-image-amd64': }
     package { 'vlan': }
     package { 'dbus': }
     package { 'dkms': }
