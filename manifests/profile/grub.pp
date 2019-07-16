@@ -9,13 +9,14 @@
 # @example
 #   include nebula::profile::grub
 class nebula::profile::grub {
-  service { 'getty@hvc0':
-    ensure     => 'running',
-    enable     => true,
-    hasrestart => true,
-  }
 
   if $::is_virtual and $::virtual == 'kvm' {
+    service { 'getty@hvc0':
+      ensure     => 'running',
+      enable     => true,
+      hasrestart => true,
+    }
+
     file_line {
       default:
         path   => '/etc/default/grub',
@@ -40,11 +41,17 @@ class nebula::profile::grub {
       ;
     }
   } else {
+    service { 'serial-getty@ttyS1':
+      ensure     => 'running',
+      enable     => true,
+      hasrestart => true,
+    }
+
     file_line {
       default:
         path   => '/etc/default/grub',
         notify => Exec['/usr/sbin/update-grub'],
-        before => Service['getty@hvc0'],
+        before => Service['serial-getty@ttyS1'],
       ;
       '/etc/default/grub: ^GRUB_CMDLINE_LINUX':
         line  => 'GRUB_CMDLINE_LINUX="console=tty0 console=ttyS1,115200n8 ixgbe.allow_unsupported_sfp=1"',

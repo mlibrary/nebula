@@ -10,13 +10,6 @@ describe 'nebula::profile::grub' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it do
-        is_expected.to contain_service('getty@hvc0').with(
-          ensure: 'running',
-          enable: true,
-        )
-      end
-
       context 'on a kvm vm' do
         let(:facts) { super().merge(is_virtual: true, virtual: 'kvm') }
 
@@ -35,6 +28,13 @@ describe 'nebula::profile::grub' do
               before: 'Service[getty@hvc0]',
             )
           end
+        end
+
+        it do
+          is_expected.to contain_service('getty@hvc0').with(
+            ensure: 'running',
+            enable: true,
+          )
         end
       end
 
@@ -57,10 +57,17 @@ describe 'nebula::profile::grub' do
                 line: line,
                 match: "#{match}=",
                 notify: 'Exec[/usr/sbin/update-grub]',
-                before: 'Service[getty@hvc0]',
+                before: 'Service[serial-getty@ttyS1]',
               )
             end
           end
+        end
+
+        it do
+          is_expected.to contain_service('serial-getty@ttyS1').with(
+            ensure: 'running',
+            enable: true,
+          )
         end
       end
 
