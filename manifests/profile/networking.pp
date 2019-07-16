@@ -15,23 +15,13 @@
 
 class nebula::profile::networking (
   Boolean $bridge = false,
-  Boolean $keytab = false,
 ) {
 
   class { 'nebula::profile::networking::sysctl':
     bridge => $bridge,
   }
 
-  if $keytab {
-    include nebula::profile::networking::keytab
-    class { 'nebula::profile::networking::sshd':
-      gssapi_auth => true,
-    }
-  } else {
-    class { 'nebula::profile::networking::sshd':
-      gssapi_auth => false,
-    }
-  }
+  include nebula::profile::networking::sshd
 
   # Fix AEIM-1064. This prevents `systemctl is-active` from returning
   # a false negative when either of these is unmasked.

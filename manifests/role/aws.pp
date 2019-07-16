@@ -18,7 +18,6 @@ class nebula::role::aws {
     include nebula::profile::tiger
     class { 'nebula::profile::networking':
       bridge => false,
-      keytab => false
     }
   }
 

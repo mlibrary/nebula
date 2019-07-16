@@ -32,6 +32,9 @@ class nebula::profile::afs (
   String  $cell,
   String  $realm,
 ) {
+
+  include nebula::profile::networking::keytab
+
   if nebula::date_is_in_the_future($allow_auto_reboot_until) {
     reboot { 'afs':
       apply     => 'finished',
