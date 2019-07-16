@@ -95,9 +95,11 @@ class nebula::profile::apt (
       }
     }
 
-    apt::source { 'puppet':
-      location => 'http://apt.puppetlabs.com',
-      repos    => $puppet_repo,
+    if($::lsbcodename != 'buster') {
+      apt::source { 'puppet':
+        location => 'http://apt.puppetlabs.com',
+        repos    => $puppet_repo,
+      }
     }
 
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {

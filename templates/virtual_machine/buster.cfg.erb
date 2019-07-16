@@ -321,8 +321,10 @@ d-i apt-setup/non-free boolean true
 # apt will complain about the unauthenticated repository and so the
 # sources.list line will be left commented out
 #d-i apt-setup/local0/key string http://local.server/key
-d-i apt-setup/local0/repository string http://apt.puppetlabs.com buster puppet5
-d-i apt-setup/local0/key string http://<%= @filehost %>/puppetlabs-pc1-keyring.gpg
+
+# not yet working as of 2019-07-16
+# d-i apt-setup/local0/repository string http://apt.puppetlabs.com buster puppet5
+# d-i apt-setup/local0/key string http://<%= @filehost %>/puppetlabs-pc1-keyring.gpg
 
 # By default the installer requires that repositories be authenticated
 # using a known gpg key. This setting can be used to disable that
@@ -337,7 +339,8 @@ d-i apt-setup/local0/key string http://<%= @filehost %>/puppetlabs-pc1-keyring.g
 tasksel tasksel/first multiselect standard, ssh-server
 
 # Individual additional packages to install
-d-i pkgsel/include string puppet-agent iptables-persistent apt-transport-https dirmngr
+#d-i pkgsel/include string puppet-agent iptables-persistent apt-transport-https dirmngr
+d-i pkgsel/include string puppet iptables-persistent apt-transport-https dirmngr
 
 # Supress silly questions
 iptables-persistent iptables-persistent/autosave_v4 boolean false
@@ -449,9 +452,16 @@ d-i finish-install/reboot_in_progress note
 
 # delete freespace placeholder (we need this because partman requires
 # partitions to use 100% of disk), install puppet.conf, install firewall
+# d-i preseed/late_command string                       \
+#     echo y | lvremove /dev/internal/blank;            \
+#     wget -O /target/etc/puppetlabs/puppet/puppet.conf \
+#         http://<%= @filehost %>/puppet.conf;          \
+#     wget -O /target/etc/iptables/rules.v4             \
+#         http://<%= @filehost %>/rules.v4;             \
+#     chmod 600 /target/etc/iptables/rules.v4
+# 
 d-i preseed/late_command string                       \
-    echo y | lvremove /dev/internal/blank;            \
-    wget -O /target/etc/puppetlabs/puppet/puppet.conf \
+    wget -O /target/etc/puppet/puppet.conf \
         http://<%= @filehost %>/puppet.conf;          \
     wget -O /target/etc/iptables/rules.v4             \
         http://<%= @filehost %>/rules.v4;             \
