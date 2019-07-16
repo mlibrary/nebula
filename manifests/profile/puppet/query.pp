@@ -22,7 +22,7 @@ class nebula::profile::puppet::query (
     ensure => 'directory',
   }
 
-  if ($ssl_group != '') {
+  if ($ssl_group != '' and $::lsbdistcodename != 'buster') {
     File['/etc/puppetlabs/puppet/ssl/private_keys'] {
       group => $ssl_group,
     }
