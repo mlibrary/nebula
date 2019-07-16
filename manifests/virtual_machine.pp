@@ -91,9 +91,9 @@ define nebula::virtual_machine(
     ensure => 'directory',
   }
 
-  if $build == 'stretch' {
+  if $build == 'stretch' or $build == 'buster' {
     file { "${tmpdir}/preseed.cfg":
-      content => template('nebula/virtual_machine/stretch.cfg.erb'),
+      content => template("nebula/virtual_machine/${build}.cfg.erb"),
     }
 
     $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
