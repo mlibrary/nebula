@@ -58,8 +58,23 @@ describe 'nebula::profile::networking::sshd' do
         end
       end
 
-      context 'when gssapi_auth is true' do
-        let(:params) { { gssapi_auth: true } }
+      context 'with no keytab' do
+        it do
+          is_expected.not_to contain_sshd.with_content(
+            %r{^GSSAPIAuthentication yes$}m,
+          )
+        end
+      end
+
+      context 'with a keytab' do
+        let(:pre_condition) do
+          <<~EOT
+            class { 'nebula::profile::networking::keytab':
+              keytab => 'nebula/keytab.fake',
+              keytab_source => 'alternate source'
+            }
+          EOT
+        end
 
         it do
           is_expected.to contain_sshd.with_content(

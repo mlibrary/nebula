@@ -14,36 +14,16 @@ describe 'nebula::profile::networking' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      context 'when keytab==false, bridge==false' do
-        let(:params) { { keytab: false, bridge: false } }
+      context 'when bridge==false' do
+        let(:params) { { bridge: false } }
 
         it { is_expected.to contain_network_class('sysctl').with_bridge(false) }
-        it { is_expected.not_to contain_network_class('keytab') }
-        it { is_expected.to contain_network_class('sshd').with_gssapi_auth(false) }
       end
 
-      context 'when keytab==true, bridge==false' do
-        let(:params) { { keytab: true, bridge: false } }
-
-        it { is_expected.to contain_network_class('sysctl').with_bridge(false) }
-        it { is_expected.to contain_network_class('keytab') }
-        it { is_expected.to contain_network_class('sshd').with_gssapi_auth(true) }
-      end
-
-      context 'when keytab==false, bridge==true' do
-        let(:params) { { keytab: false, bridge: true } }
+      context 'when bridge==true' do
+        let(:params) { { bridge: true } }
 
         it { is_expected.to contain_network_class('sysctl').with_bridge(true) }
-        it { is_expected.not_to contain_network_class('keytab') }
-        it { is_expected.to contain_network_class('sshd').with_gssapi_auth(false) }
-      end
-
-      context 'when keytab==true, bridge==true' do
-        let(:params) { { keytab: true, bridge: true } }
-
-        it { is_expected.to contain_network_class('sysctl').with_bridge(true) }
-        it { is_expected.to contain_network_class('keytab') }
-        it { is_expected.to contain_network_class('sshd').with_gssapi_auth(true) }
       end
 
       # This is an ugly hack for fixing AEIM-1064. See base.pp for

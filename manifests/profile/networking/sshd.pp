@@ -13,8 +13,11 @@
 #   include nebula::profile::networking::sshd
 class nebula::profile::networking::sshd (
   Array[String] $whitelist,
-  Boolean       $gssapi_auth = false,
 ) {
+
+  # This will do nothing if the keytab doesn't exist
+  include nebula::profile::networking::keytab
+  $gssapi_auth = defined(File['/etc/krb5.keytab'])
 
   service { 'sshd':
     ensure     => 'running',

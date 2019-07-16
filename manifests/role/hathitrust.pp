@@ -20,7 +20,6 @@ class nebula::role::hathitrust {
     include nebula::profile::users
     class { 'nebula::profile::networking':
       bridge => false,
-      keytab => true
     }
   }
 

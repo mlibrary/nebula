@@ -22,7 +22,6 @@ class nebula::role::umich (
     include nebula::profile::tiger
     class { 'nebula::profile::networking':
       bridge => $bridge_network,
-      keytab => true
     }
   }
 
