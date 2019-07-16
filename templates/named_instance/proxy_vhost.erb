@@ -86,7 +86,7 @@
   CosignRedirect https://weblogin.umich.edu/
   CosignNoAppendRedirectPort  On
   CosignPostErrorRedirect https://weblogin.umich.edu/post_error.html
-  CosignService $cosign_service
+  CosignService <%= @apache_domain %>
   CosignCrypto /etc/ssl/private/<%= @apache_ssl_key %> /etc/ssl/certs/<%= @apache_ssl_crt %> /etc/ssl/certs
   CosignAllowPublicAccess On
 
