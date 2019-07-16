@@ -1,0 +1,68 @@
+#! /bin/sh
+
+# rotate backup files
+#
+# strategy
+#
+# to avoid overflowing our tsm quota, it is important that backup files
+# retain the same names and regularly change, rather than unique
+# filenames being created and deleted with high turnover
+#
+# therefore backups are organized into three directories and generally
+# contain the same filenames but are rotated weekly
+#
+# layout
+#
+# the three directories are
+#
+# current: directory for current (most recent) backup; this backup is
+#   preferred for recovery as there are the fewest archive logs to apply
+#
+# lastweek: directory for last week's backup; this backup is usable,
+#   but more archive logs would need to be applied
+#
+# weekbeforelast: directory for backup made the week before last; this
+#   directory should normally be empty except for while the current backup
+#   is running
+#
+# process
+#
+# there are two steps in rotation:
+#
+# before (current backup): move lastweek to weekbeforelast, move current
+#   to lastweek, leaving current empty
+#
+# after (current backup completes successfully): clear weekbeforelast
+#
+# this script handles both before and after tasks
+#
+# timing
+#
+# rotation is integrated with mysql backup scripts so that the before
+# and after tasks do indeed happen right before and right after backups,
+# respectively
+#
+# ideally, rotation should take place *right after* tsm completes so that
+# on the next incremental, files will be rotated and tsm will see new
+# versions of each file
+
+BACKUPDIR=<%= File.join(@datadir, "backup") %>
+
+case $1 in
+
+  before)
+
+    # perform rotation tasks for before backup begins
+    echo "rotating backup files..."
+    rm -f $BACKUPDIR/weekbeforelast/*
+    mv    $BACKUPDIR/lastweek/*       $BACKUPDIR/weekbeforelast
+    mv    $BACKUPDIR/current/*        $BACKUPDIR/lastweek
+  ;;
+  after)
+
+    # perform rotation tasks for after backup ends
+    echo "completing rotation of backup files..."
+    rm -f $BACKUPDIR/weekbeforelast/*
+  ;;
+
+esac

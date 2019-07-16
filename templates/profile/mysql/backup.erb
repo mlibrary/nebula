@@ -1,0 +1,28 @@
+#! /bin/bash
+
+BACKUPDIR=<%= File.join(@datadir, "backup") %>
+BACKUPFILE='mysqldump.sql.gz_'
+GZIP='/usr/bin/pigz -2c'
+
+MYSQLDUMP='/usr/bin/mysqldump --all-databases --opt --flush-logs --hex-blob --single-transaction --user=root'
+SPLIT='/usr/bin/split -b 1536m -'
+
+echo "mysql backup operating parameters:"
+echo "  backup directory: $BACKUPDIR/current"
+echo "  backup files:     $BACKUPFILE"'??'" (split into 1.5 GB chunks)"
+echo "  dumped with:      $MYSQLDUMP"
+
+echo ""
+echo "activity:"
+
+$BACKUPDIR/rotate before
+
+echo "dumping databases..."
+set -o pipefail
+( $MYSQLDUMP | $GZIP | $SPLIT $BACKUPDIR/current/$BACKUPFILE ) 2>&1
+
+if [ $? -gt 0 ]; then
+  echo "database dump FAILED, not completing rotation"
+else
+  $BACKUPDIR/rotate after
+fi
