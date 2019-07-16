@@ -18,5 +18,11 @@ class nebula::role::minimum ()
       include nebula::profile::authorized_keys
       include nebula::profile::vim
     }
+
+    if $::lsbdistcodename == 'buster' {
+      Service {
+        provider => 'systemd'
+      }
+    }
   }
 }
