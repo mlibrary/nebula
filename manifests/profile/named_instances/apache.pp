@@ -18,6 +18,17 @@ class nebula::profile::named_instances::apache (
     common_name => $ssl_cn
   }
 
+  file { '/etc/ssl/chain':
+    ensure  => 'directory',
+    mode    => '0755',
+    owner   => 'root',
+    group   => 'root',
+    recurse => true,
+    purge   => true,
+    links   => 'manage',
+    source  => 'puppet:///ssl-certs/chain'
+  }
+
   class { 'apache':
     default_mods      => false,
     default_vhost     => false,
