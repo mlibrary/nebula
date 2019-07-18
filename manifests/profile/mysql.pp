@@ -7,7 +7,8 @@
 # @param password The root password, as stored by root's .my.cnf.
 class nebula::profile::mysql (
   String $password,
-  String $datadir = "/var/lib/mysql"
+  String $datadir = '/var/lib/mysql'
+  String $backupdir = "${datadir}/backup"
 ) {
 
   #
@@ -39,33 +40,33 @@ class nebula::profile::mysql (
   ])
 
   # Create directory structure and install templates
-  file { "${datadir}/backup":
+  file { "${backupdir}":
     ensure => 'directory',
   }
 
-  file { "${datadir}/backup/weekbeforelast":
+  file { "${backupdir}/weekbeforelast":
     ensure => 'directory',
   }
 
-  file { "${datadir}/backup/lastweek":
+  file { "${backupdir}/lastweek":
     ensure => 'directory',
   }
 
-  file { "${datadir}/backup/current":
+  file { "${backupdir}/current":
     ensure => 'directory',
   }
 
-  file { "${datadir}/backup/backup":
+  file { "${backupdir}/backup":
     ensure  => 'present',
     content => template('nebula/profile/mysql/backup.erb'),
   }
 
-  file { "${datadir}/backup/rotate":
+  file { "${backupdir}/rotate":
     ensure  => 'present',
     content => template('nebula/profile/mysql/rotate.erb'),
   }
 
-  file { "${datadir}/backup/splitsqlbytable.pl":
+  file { "${backupdir}/splitsqlbytable.pl":
     ensure  => 'present',
     content => template('nebula/profile/mysql/splitsqlbytable.pl'),
   }
@@ -74,10 +75,10 @@ class nebula::profile::mysql (
   # This name will conflict with the one created by the puppetlabs mysql package.
   # This is intentional. It differs slightly from our historical name.
   cron { 'mysql-backup':
-    command => "${datadir}/backup/backup | /usr/bin/mail -s 'mysql backup log (${hostname})' lit-cs-backups@umich.edu",
-    user => 'root',
-    minute => 3,
-    hour => 22,
+    command => "${backupdir}/backup | /usr/bin/mail -s 'mysql backup log (${::hostname})' lit-cs-backups@umich.edu",
+    user    => 'root',
+    minute  => 3,
+    hour    => 22,
     weekday => 6
   }
 

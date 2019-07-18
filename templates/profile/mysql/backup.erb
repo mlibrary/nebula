@@ -1,6 +1,6 @@
 #! /bin/bash
 
-BACKUPDIR=<%= File.join(@datadir, "backup") %>
+BACKUPDIR=<%= @backupdir %>
 BACKUPFILE='mysqldump.sql.gz_'
 GZIP='/usr/bin/pigz -2c'
 

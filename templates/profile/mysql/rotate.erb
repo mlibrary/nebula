@@ -46,7 +46,7 @@
 # on the next incremental, files will be rotated and tsm will see new
 # versions of each file
 
-BACKUPDIR=<%= File.join(@datadir, "backup") %>
+BACKUPDIR=<%= @backupdir %>
 
 case $1 in
 
