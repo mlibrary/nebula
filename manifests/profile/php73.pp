@@ -37,6 +37,7 @@ class nebula::profile::php73 (
   'php7.3-gd',
   'php7.3-json',
   'php7.3-ldap',
+  'php7.3-mbstring',
   'php7.3-mysql',
   'php7.3-opcache',
   'php7.3-readline',
