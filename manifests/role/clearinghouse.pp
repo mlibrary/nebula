@@ -11,10 +11,8 @@
 class nebula::role::clearinghouse {
   include nebula::role::aws
 
-  include nebula::profile::named_instances::apache
-
-  include apache::mod::alias
-
   include nebula::profile::mysql
-  include nebula::profile::php73
+  include nebula::profile::clearinghouse::apache
+
+
 }
