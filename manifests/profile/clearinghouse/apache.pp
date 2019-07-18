@@ -45,7 +45,7 @@ class nebula::profile::clearinghouse::apache (
   $ssl_params     = {
     ssl            => true,
     ssl_protocol   => 'all -SSLv2 -SSLv3',
-    ssl_cipher     => 'EECDH EDH+aRSA !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS',
+    ssl_cipher     => 'EECDH:EDH+aRSA:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS',
     ssl_cert       => "/etc/ssl/certs/${ssl_cn}.crt",
     ssl_key        => "/etc/ssl/private/${ssl_cn}.key",
     ssl_certs_dir  => '/etc/ssl/chain'
@@ -58,15 +58,15 @@ class nebula::profile::clearinghouse::apache (
         rewrite_rule => ['^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]']
       }];
 
-    'public non-ssl':
+    'public-http':
       * => $public_common;
 
-    'admin non-ssl':
+    'admin-http':
       * => $admin_common;
   }
 
   apache::vhost {
-    'public ssl':
+    'public-https':
       port     => '443',
       aliases  => [
         {
@@ -88,7 +88,7 @@ class nebula::profile::clearinghouse::apache (
   }
 
   apache::vhost {
-    'admin ssl':
+    'admin-https':
       port     => '443',
       rewrites => [$nocache_pdf],
 
