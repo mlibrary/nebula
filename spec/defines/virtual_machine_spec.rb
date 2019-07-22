@@ -47,7 +47,7 @@ describe 'nebula::virtual_machine' do
           %r{^d-i netcfg/get_hostname string vmname\.default\.invalid$},
           %r{^d-i netcfg/get_domain string default\.invalid$},
           %r{^d-i netcfg/hostname string vmname\.default\.invalid$},
-          %r{^d-i apt-setup/local0/repository string http://apt\.puppetlabs\.com stretch PC1$.*^d-i apt-setup/local0/key string http://files\.default\.invalid/puppetlabs-pc1-keyring\.gpg$}m,
+          %r{^d-i apt-setup/local0/repository string http://apt\.puppetlabs\.com stretch puppet5$.*^d-i apt-setup/local0/key string http://files\.default\.invalid/puppetlabs-pc1-keyring\.gpg$}m,
           %r{\swget -O /target/etc/puppetlabs/puppet/puppet\.conf\s.*http://files\.default\.invalid/puppet\.conf}m,
         ].each do |line|
           it { is_expected.to contain_preseed.with_content(line) }
@@ -293,7 +293,7 @@ describe 'nebula::virtual_machine' do
         let(:params) { { filehost: 'gr8storage.biz' } }
 
         [
-          %r{^d-i apt-setup/local0/repository string http://apt\.puppetlabs\.com stretch PC1$.*^d-i apt-setup/local0/key string http://gr8storage\.biz/puppetlabs-pc1-keyring\.gpg$}m,
+          %r{^d-i apt-setup/local0/repository string http://apt\.puppetlabs\.com stretch puppet5$.*^d-i apt-setup/local0/key string http://gr8storage\.biz/puppetlabs-pc1-keyring\.gpg$}m,
           %r{\swget -O /target/etc/puppetlabs/puppet/puppet\.conf\s.*http://gr8storage\.biz/puppet\.conf}m,
         ].each do |line|
           it { is_expected.to contain_preseed.with_content(line) }
