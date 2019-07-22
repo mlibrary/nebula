@@ -57,6 +57,9 @@ describe 'nebula::profile::networking::firewall' do
       end
 
       it { is_expected.to have_firewall_resource_count(5) }
+
+      it { is_expected.to contain_package('iptables-persistent') }
+      it { is_expected.to contain_package('netfilter-persistent') }
     end
   end
 end

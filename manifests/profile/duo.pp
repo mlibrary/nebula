@@ -24,12 +24,22 @@ class nebula::profile::duo (
   package { 'sudo': }
   package { 'libpam-duo': }
 
+  package { 'duo-unix':
+    ensure => absent
+  }
+
   ['sshd', 'sudo'].each |$pamfile| {
     file_line { "/etc/pam.d/${pamfile}: pam_duo":
       path    => "/etc/pam.d/${pamfile}",
       line    => 'auth required pam_duo.so',
       after   => '^@include common-auth',
       require => Package['sudo', 'libpam-duo'],
+    }
+
+    file_line { "/etc/pam.d/${pamfile}: remove /lib64/security/pam_duo":
+      ensure => absent,
+      path   => "/etc/pam.d/${pamfile}",
+      line   => 'auth required /lib64/security/pam_duo.so'
     }
   }
 
