@@ -61,13 +61,13 @@ describe 'nebula::profile::grub' do
               )
             end
           end
-        end
 
-        it do
-          is_expected.to contain_service('serial-getty@ttyS1').with(
-            ensure: 'running',
-            enable: true,
-          )
+          it do
+            is_expected.to contain_service('serial-getty@ttyS1').with(
+              ensure: 'running',
+              enable: true,
+            )
+          end
         end
       end
 
