@@ -79,7 +79,7 @@ class nebula::profile::hathitrust::solr_lss (
   $networks.flatten.each |$network| {
     firewall { "300 Solr ${network['name']}":
       proto  => 'tcp',
-      dport  => [8081],
+      dport  => [$port],
       source => $network['block'],
       state  => 'NEW',
       action => 'accept',
