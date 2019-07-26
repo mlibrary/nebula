@@ -26,7 +26,7 @@ class nebula::profile::php73 (
   'php-imagick',
   'php-memcached',
   'php-msgpack',
-  'php-pear',
+  #  'php-pear',
   'php-redis',
   'php-xdebug',
   'php-xml',
