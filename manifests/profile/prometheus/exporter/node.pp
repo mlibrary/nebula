@@ -34,7 +34,7 @@ class nebula::profile::prometheus::exporter::node (
   @@concat_fragment { "prometheus node service ${::hostname}":
     tag     => "${monitoring_datacenter}_prometheus_node_service_list",
     target  => '/etc/prometheus/nodes.yml',
-    content => "- targets: [ '${::fqdn}:9100' ]\n  labels: { role: '${role}' }\n",
+    content => "- targets: [ '${::ipaddress}:9100' ]\n  labels: { role: '${role}', hostname: '${::hostname}' }\n",
   }
 
   Firewall <<| tag == "${monitoring_datacenter}_prometheus_node_exporter" |>>
