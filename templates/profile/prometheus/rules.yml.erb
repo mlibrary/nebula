@@ -1,0 +1,10 @@
+# Managed by puppet (nebula/profile/prometheus/rules.yml.erb)
+groups:
+- name: hardware
+  rules:
+  - alert: InstanceDown
+    expr: up == 0
+    for: 1m
+  - alert: DiskPressure
+    expr: '((node_filesystem_size - node_filesystem_avail) / node_filesystem_size) > .95'
+    for: 1m
