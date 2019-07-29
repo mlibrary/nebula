@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018-2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -11,7 +11,10 @@
 #
 # @example
 #   include nebula::profile::networking::firewall
-class nebula::profile::networking::firewall ( Hash $rules = {} ) {
+class nebula::profile::networking::firewall (
+  String $internal_routing = '',
+  Hash $rules = {},
+) {
   # Include standard SSH rules by default
   include nebula::profile::networking::firewall::ssh
 
@@ -21,8 +24,74 @@ class nebula::profile::networking::firewall ( Hash $rules = {} ) {
     ensure => absent
   }
 
-  resources { 'firewall':
-    purge => true,
+  if $internal_routing == '' {
+    resources { 'firewall':
+      purge => true,
+    }
+  } else {
+    case $internal_routing {
+      'docker': {
+        $input_ignore = [
+        ]
+
+        $output_ignore = [
+          '-j DOCKER',
+        ]
+
+        $forward_ignore = [
+          '-j DOCKER-USER',
+          '-j DOCKER-ISOLATION',
+          '-i docker0',
+          '-o docker0',
+        ]
+      }
+
+      'kubernetes_calico': {
+        $input_ignore = [
+          '-j cali-INPUT',
+          '-j KUBE-FIREWALL',
+          '-j KUBE-SERVICES',
+          '-j KUBE-EXTERNAL-SERVICES',
+        ]
+
+        $output_ignore = [
+          '-j cali-OUTPUT',
+          '-j KUBE-FIREWALL',
+          '-j KUBE-SERVICES',
+        ]
+
+        $forward_ignore = [
+          '-j cali-FORWARD',
+          '-j KUBE-FORWARD',
+          '-j KUBE-SERVICES',
+        ]
+      }
+
+      default: {
+        $input_ignore = []
+        $output_ignore = []
+        $forward_ignore = []
+      }
+    }
+
+    firewallchain {
+      default:
+        ensure => 'present',
+        purge  => true,
+      ;
+
+      'INPUT:filter:IPv4':
+        ignore => $input_ignore,
+      ;
+
+      'OUTPUT:filter:IPv4':
+        ignore => $output_ignore,
+      ;
+
+      'FORWARD:filter:IPv4':
+        ignore => $forward_ignore,
+      ;
+    }
   }
 
   $firewall_defaults = {

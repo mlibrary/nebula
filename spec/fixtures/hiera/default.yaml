@@ -134,4 +134,8 @@ nebula::named_instance::solr_core::default_config: '/nonexistent/solr/conf'
 nebula::named_instance::solr_core::core_home: '/nonexistent/solr_home'
 nebula::named_instance::solr_core::solr_home: '/var/lib/solr/home'
 
+nebula::known_addresses::all_library_machines: default.invalid
+nebula::known_addresses::staff: default.invalid
+nebula::known_addresses::datacenter: default.invalid
+
 umich::networks::all_trusted_machines: []

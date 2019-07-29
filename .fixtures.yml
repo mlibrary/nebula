@@ -2,6 +2,16 @@
 # See https://github.com/puppetlabs/puppetlabs_spec_helper#using-fixtures for details
 ---
 fixtures:
+  # I'm leaving this here for next time, since it comes up so rarely
+  # that I always have to look it up. If we fork something and want to
+  # include our fork (the same applies to anything not in the forge), we
+  # add it to our fixtures under `repositories` instead of under
+  # `forge_modules`. Also, we add it to the Puppetfile in the control
+  # repo; not to metadata.json in nebula.
+  #
+  #repositories:
+  #  module_name:
+  #    repo: "git://github.com/mlibrary/repo_name"
   forge_modules:
     stdlib:
       repo: "puppetlabs/stdlib"
