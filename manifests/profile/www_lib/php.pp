@@ -11,7 +11,14 @@
 class nebula::profile::www_lib::php () {
   include nebula::profile::php73
 
-  -> class { '::php':
+  package {
+    [
+      'php-mdb2',
+      'php-mdb2-driver-mysql'
+    ]:
+  }
+
+  class { '::php':
     ensure       => present,     # Don't touch stuff from above; should be equivalent
     manage_repos => false, # Set true to add dotdeb repos
     fpm          => true,
@@ -52,7 +59,7 @@ class nebula::profile::www_lib::php () {
   }
 
   # TODO: migrate this to fpm config
-  -> class { 'php::apache_config':
+  class { 'php::apache_config':
 
     settings     => {
       'PHP/short_open_tag'          => 'On',
