@@ -6,16 +6,6 @@ class nebula::profile::prometheus::exporter::node (
   Array $covered_datacenters = [],
   String $default_datacenter = 'default',
 ) {
-  case lookup('role') {
-    'nebula::role::aws::auto': {
-      $role = pick($::ec2_tag_role, 'nebula::role::aws::auto')
-    }
-
-    default: {
-      $role = lookup('role')
-    }
-  }
-
   file { '/etc/default/prometheus-node-exporter':
     content => template('nebula/profile/prometheus/exporter/node.sh.erb'),
     notify  => Service['prometheus-node-exporter'],
@@ -24,6 +14,8 @@ class nebula::profile::prometheus::exporter::node (
 
   service { 'prometheus-node-exporter': }
   package { 'prometheus-node-exporter': }
+
+  $role = lookup_role()
 
   if $::datacenter in $covered_datacenters {
     $monitoring_datacenter = $::datacenter
