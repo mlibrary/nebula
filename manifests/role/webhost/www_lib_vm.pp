@@ -13,7 +13,7 @@ class nebula::role::webhost::www_lib_vm (
   include nebula::profile::elastic::filebeat::prospectors::clickstream
 
   @@nebula::haproxy::binding { "${::hostname} www-lib-testing":
-      service       => 'www-lib',
+      service       => 'www-lib-testing',
       https_offload => true,
       datacenter    => $::datacenter,
       hostname      => $::hostname,
