@@ -10,7 +10,7 @@ alerting:
   - static_configs:
     - targets:
 <% @alert_managers.each do |alert_manager| -%>
-      - <%= @alert_manager %>
+      - <%= alert_manager %>
 <% end -%>
 <% end -%>
 scrape_configs:
