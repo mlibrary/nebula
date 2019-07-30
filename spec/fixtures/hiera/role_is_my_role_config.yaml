@@ -1,0 +1,8 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - role_is_my_role
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'

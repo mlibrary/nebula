@@ -1,0 +1,22 @@
+# Managed by puppet (nebula/profile/prometheus/config.yml.erb)
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+rule_files:
+- rules.yml
+<% unless @alert_managers.empty? -%>
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+<% @alert_managers.each do |alert_manager| -%>
+      - <%= @alert_manager %>
+<% end -%>
+<% end -%>
+scrape_configs:
+- job_name: prometheus
+  static_configs:
+  - targets: [ localhost:9090 ]
+- job_name: node
+  file_sd_configs:
+  - files: [ nodes.yml ]

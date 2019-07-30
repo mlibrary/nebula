@@ -21,6 +21,7 @@ class nebula::role::minimum (
       include nebula::profile::apt
       include nebula::profile::authorized_keys
       include nebula::profile::vim
+      include nebula::profile::prometheus::exporter::node
     }
   }
 }

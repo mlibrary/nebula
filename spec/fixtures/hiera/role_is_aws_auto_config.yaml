@@ -1,0 +1,8 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - role_is_aws_auto
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'
