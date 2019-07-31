@@ -12,12 +12,14 @@ groups:
   - alert: DiskPressure
     expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .95'
     for: 30m
+    labels:
       severity: ticket
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
   - alert: DiskFull
     expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .99'
     for: 5m
+    labels:
       severity: page
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
