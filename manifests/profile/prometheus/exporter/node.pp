@@ -12,21 +12,28 @@ class nebula::profile::prometheus::exporter::node (
     require => Package['prometheus-node-exporter'],
   }
 
-  service { 'prometheus-node-exporter': }
+  service { 'prometheus-node-exporter':
+    ensure => 'running',
+    enable => true,
+  }
+
   package { 'prometheus-node-exporter': }
 
   $role = lookup_role()
+  $datacenter = $::datacenter
+  $ipaddress = $::ipaddress
+  $hostname = $::hostname
 
-  if $::datacenter in $covered_datacenters {
-    $monitoring_datacenter = $::datacenter
+  if $datacenter in $covered_datacenters {
+    $monitoring_datacenter = $datacenter
   } else {
     $monitoring_datacenter = $default_datacenter
   }
 
-  @@concat_fragment { "prometheus node service ${::hostname}":
+  @@concat_fragment { "prometheus node service ${hostname}":
     tag     => "${monitoring_datacenter}_prometheus_node_service_list",
     target  => '/etc/prometheus/nodes.yml',
-    content => "- targets: [ '${::ipaddress}:9100' ]\n  labels: { role: '${role}', hostname: '${::hostname}' }\n",
+    content => template('nebula/profile/prometheus/exporter/target.yaml.erb'),
   }
 
   Firewall <<| tag == "${monitoring_datacenter}_prometheus_node_exporter" |>>

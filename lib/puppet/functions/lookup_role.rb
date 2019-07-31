@@ -10,12 +10,18 @@ Puppet::Functions.create_function(:lookup_role) do
   end
 
   def run
+    clear_internals
     case hiera_role
     when 'nebula::role::aws::auto'
       ec2_tag_role
     else
       hiera_role
     end
+  end
+
+  def clear_internals
+    @hiera_role = nil
+    @ec2_tag_role = nil
   end
 
   def hiera_role

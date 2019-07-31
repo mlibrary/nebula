@@ -23,7 +23,7 @@ describe 'nebula::profile::prometheus::exporter::node' do
         expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
           .with_tag('default_prometheus_node_service_list')
           .with_target('/etc/prometheus/nodes.yml')
-          .with_content("- targets: [ '#{facts[:ipaddress]}:9100' ]\n  labels: { role: 'invalid_role', hostname: '#{facts[:hostname]}' }\n")
+          .with_content(%r{'#{facts[:ipaddress]}:9100'})
       end
 
       context 'when our datacenter is covered' do

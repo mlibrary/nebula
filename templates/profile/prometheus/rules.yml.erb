@@ -4,7 +4,20 @@ groups:
   rules:
   - alert: InstanceDown
     expr: up == 0
-    for: 1m
+    for: 10m
+    labels:
+      severity: page
+    annotations:
+      summary: 'Node {{$labels.hostname}} isn''t responding to Prometheus.'
   - alert: DiskPressure
-    expr: '((node_filesystem_size - node_filesystem_avail) / node_filesystem_size) > .95'
-    for: 1m
+    expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .95'
+    for: 30m
+      severity: ticket
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
+  - alert: DiskFull
+    expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .99'
+    for: 5m
+      severity: page
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
