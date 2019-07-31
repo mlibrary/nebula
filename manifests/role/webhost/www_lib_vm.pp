@@ -14,7 +14,7 @@ class nebula::role::webhost::www_lib_vm (
 
   @@nebula::haproxy::binding { "${::hostname} www-lib-testing":
       service       => 'www-lib-testing',
-      https_offload => true,
+      https_offload => false,
       datacenter    => $::datacenter,
       hostname      => $::hostname,
       ipaddress     => $::ipaddress
@@ -34,7 +34,7 @@ class nebula::role::webhost::www_lib_vm (
   include nebula::profile::www_lib::perl
   include nebula::profile::www_lib::php
   #  include nebula::profile::www_lib::shibboleth
-  #  include nebula::profile::www_lib::apache
+  include nebula::profile::www_lib::apache
   include nebula::profile::unison
 
   # nebula::usergroup { user groups for www-lib: }
