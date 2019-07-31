@@ -8,25 +8,29 @@
 #
 # @example
 #   include nebula::profile::aws::filesystem
-class nebula::profile::aws::filesystem {
+class nebula::profile::aws::filesystem (
+  String $disk = 'xvdb',
+  String $device = '/dev/xvdb',
+  String $mountpoint = '/l'
+){
 
-  if $facts['disks']['xvdb'] {
-    filesystem { '/dev/xvdb':
+  if $facts['disks'][$disk] {
+    filesystem { $device:
       ensure  => present,
       fs_type => 'ext4',
     }
 
-    file { '/l':
+    file { $mountpoint:
       ensure  => 'directory',
-      path    => '/l',
+      path    => $mountpoint,
       mode    => '0755',
       recurse => false
     }
 
-    mount { '/l':
+    mount { $mountpoint:
       ensure => 'mounted',
-      name   => '/l',
-      device => '/dev/xvdb',
+      name   => $mountpoint,
+      device => $device,
       fstype => 'ext4'
     }
   }
