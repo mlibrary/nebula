@@ -2,6 +2,41 @@
 groups:
 - name: hardware
   rules:
+  - alert: PuppetBehind
+    expr: 'puppet_report{environment="production"} < (time() - (30*60))'
+    for: 30m
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'Node {{$labels.host}} hasn''t recently synced with puppet.'
+  - alert: PuppetEventFailing
+    expr: 'puppet_report_events{environment="production", name="Failure"} > 0'
+    for: 2h
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'Node {{$labels.host}} is failing to sync with puppet.'
+  - alert: PuppetResourcesFailing
+    expr: 'puppet_report_resources{environment="production", name=~"Failed.*"} > 0'
+    for: 2h
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'Node {{$labels.host}} has failing puppet resources.'
+  - alert: PuppetZeroResources
+    expr: 'puppet_report_resources{environment="production", name="Total"} == 0'
+    for: 2h
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'Node {{$labels.host}} has zero puppet resources'
+  - alert: PuppetAlwaysCorrecting
+    expr: 'puppet_report_resources{environment="production", name="Corrective change"} > 0'
+    for: 2h
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'Node {{$labels.host}} keeps needing corrective changes'
   - alert: InstanceDown
     expr: up == 0
     for: 10m
