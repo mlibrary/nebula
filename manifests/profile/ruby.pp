@@ -28,7 +28,7 @@ class nebula::profile::ruby (
     'bison',
     'libssl-dev',
     'libyaml-dev',
-    'libreadline6-dev',
+    'libreadline-dev',
     'zlib1g-dev',
     'libsqlite3-dev',
     'libncurses5-dev',
