@@ -87,8 +87,8 @@ class nebula::profile::prometheus::exporter::node (
   realize User['prometheus']
 
   $role = lookup_role()
+  $ipaddress = public_ip()
   $datacenter = $::datacenter
-  $ipaddress = $::ipaddress
   $hostname = $::hostname
 
   if $datacenter in $covered_datacenters {
