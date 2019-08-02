@@ -25,8 +25,8 @@ class nebula::role::webhost::www_lib_vm (
   }
 
   include nebula::profile::networking::firewall::http
+  include nebula::profile::www_lib::mounts
   # include nebula::profile::www_lib::hosts
-  # include nebula::profile::www_lib::mounts
 
   include nebula::profile::geoip
   include nebula::profile::php73
