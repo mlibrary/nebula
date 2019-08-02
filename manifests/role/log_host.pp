@@ -11,4 +11,10 @@
 class nebula::role::log_host {
   include nebula::role::umich
   include nebula::profile::ruby
+
+  nebula::exposed_port { '200 logstash':
+    port  => 5044,
+    block => 'umich::networks::datacenter',
+  }
+
 }
