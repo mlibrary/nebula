@@ -94,7 +94,7 @@ class nebula::profile::www_lib::apache (
   class { 'apache::mod::negotiation': }
   # use exclusively FPM instead?
   #  class { 'apache::mod::php':
-  #    extensions => ['.php','.phtml']
+  #    extensions                                                    => ['.php','.phtml']
   #  }
   class { 'apache::mod::proxy': }
   class { 'apache::mod::proxy_fcgi': }
@@ -142,6 +142,8 @@ class nebula::profile::www_lib::apache (
     content => template('nebula/profile/apache/logrotate.d/apache2.erb'),
   }
 
+  apache::listen { ['80','443']: }
+
   $chain_crt = lookup('nebula::profile::ssl_keypair::chain_crt')
 
   $default_vhost_params = {
@@ -182,5 +184,110 @@ class nebula::profile::www_lib::apache (
     minute  => '1',
     hour    => '0',
   }
+
+  $vhost_defaults = {
+    docroot     => "/www/www.lib/web",
+    directories => [
+      {
+        provider => 'directory',
+        path     => '/www/www.lib/web',
+        options  => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
+        allow_override => ['AuthConfig','FileInfo','Limit','Options']
+      },
+      {
+        provider       => 'directory',
+        path           => '/',
+        allow_override => ['None'],
+        options        => ['FollowSymLinks']
+      },
+      {
+        provider       => 'directory',
+        path           => '/www/www.lib/cgi',
+        allow_override => ['None'],
+        options        => ['None'],
+        require        => $default_access
+      }
+    ],
+    log_level   =>  'warn'
+  }
+
+  $cosign_protected_off_paths = [
+    ['location','/login'],
+    ['location','/vf/vflogin_dbsess.php'],
+    ['location','/pk'],
+    ['directory','/www/www.lib/cgi/l/login'],
+    ['directory','/www/www.lib/cgi/m/medsearch'] 
+  ]
+
+  apache::vhost { 
+    default:
+      * =>  $vhost_defaults;
+    
+    '000-default':
+      port       => 80,
+      servername => 'www.lib.umich.edu',
+      docroot    => '/www/www.lib/web',
+      rewrites   => [
+        {
+          # redirect all access to https except monitoring
+          rewrite_cond => '%{REQUEST_URI} !^/monitor/monitor.pl',
+          rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
+        }
+      ];
+
+   '000-default-ssl':
+      # TODO ssl config
+      redirect_source => '/',
+      redirect_dest   => 'https://www.lib.umich.edu/',
+      port => 443;
+
+    'www.lib ssl':
+      servername  => 'www.lib.umich.edu',
+      port        => 443,
+      # Use logging ""
+      # Use logging_user ""
+      # Use cosign "www.lib" "www.lib.umich.edu.key" "www.lib.umich.edu.crt"
+      # CosignAllowPublicAccess on
+
+
+      directories => [
+        $cosign_protected_off_paths.map |$provider_path| {
+          {
+            provider        => $provider_path[0],
+            path            => $provider_path[1],
+            custom_fragment => 'CosignAllowPublicAccess off'
+          }
+        }
+      ] + $vhost_defaults['directories'],
+
+      # TODO: hopefully these can all be removed
+      rewrites    => [
+        {
+          # rewrite for wsfh
+          #
+          # remote after 2008-12-31
+          #
+          # jhovater - 2008-12-04 varnum said to keep
+          # 2008-08-28 csnavely per varnum
+          rewrite_rule =>  '^/wsfh		http://www.wsfh.org/	[redirect,last]'
+        },
+        {
+          # rewrites for aol-like, tinyurl-like "go" function
+          #
+          # 2007-05 csnavely
+          # 2013-01-23 keep for drupal7 - aelkiss per bertrama
+          rewrite_rule => '^/go/pubmed  http://searchtools.lib.umich.edu/V?func=native-link&resource=UMI01157 [redirect,last]'
+        },
+        {
+          # Redirect Islamic Manuscripts to the Lib Guides.
+          #
+          # Check with nancymou and ekropf for potential removal after 2016-09-01
+          #
+          # 2016-08-29 skorner per nancymou
+          rewrite_rule => '^/islamic	http://guides.lib.umich.edu/islamicmss/find 	[redirect=permanent,last]'
+        },
+      ];
+  }
+
 
 }
