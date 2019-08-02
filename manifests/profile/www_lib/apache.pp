@@ -155,8 +155,9 @@ class nebula::profile::www_lib::apache (
 
   # TODO: cron jobs common to all servers
   $vhost_defaults = {
-    docroot     => "/www/www.lib/web",
-    directories => [
+    docroot        => "/www/www.lib/web",
+    manage_docroot => false,
+    directories    => [
       {
         provider => 'directory',
         path     => '/www/www.lib/web',
@@ -177,7 +178,7 @@ class nebula::profile::www_lib::apache (
         require        => $default_access
       }
     ],
-    log_level   =>  'warn'
+    log_level      => 'warn',
   }
 
   $cosign_protected_off_paths = [
