@@ -65,7 +65,6 @@ class nebula::profile::www_lib::apache (
   # Modules enabled
   #
   apache::mod { ['access_compat','asis','authz_groupfile','usertrack']: }
-  # TODO class { 'apache::mod::actions' }
   class { 'apache::mod::auth_basic': }
   class { 'apache::mod::authn_file': }
   class { 'apache::mod::authn_core': }
@@ -75,21 +74,17 @@ class nebula::profile::www_lib::apache (
   }
   class { 'apache::mod::authz_user': }
   class { 'apache::mod::autoindex': }
-  # TODO configure mod_autoindex??
   class { 'apache::mod::cgi': }
   apache::mod { 'cosign':
     package => 'libapache2-mod-cosign'
   }
   class { 'apache::mod::deflate': }
-  # TODO configure mod_deflate??
   class { 'apache::mod::dir':
-    # TODO configuration
-    indexes => ['index.html']
+    indexes => ['index.html','index.htm','index.php','index.phtml','index.shtml']
   }
   class { 'apache::mod::env': }
   class { 'apache::mod::headers': }
   class { 'apache::mod::include': }
-  # mod_jk is going away - torquebox retirement
   class { 'apache::mod::mime': }
   class { 'apache::mod::negotiation': }
   # use exclusively FPM instead?
@@ -104,9 +99,7 @@ class nebula::profile::www_lib::apache (
     proxy_ips => $haproxy_ips
   }
   class { 'apache::mod::reqtimeout': }
-  # TODO configure
   class { 'apache::mod::setenvif': }
-  # not in rdist, but used?
   class { 'apache::mod::shib': }
   class { 'apache::mod::xsendfile': }
 
@@ -114,10 +107,6 @@ class nebula::profile::www_lib::apache (
   # TODO we will need more than one of these
   class { 'nebula::profile::ssl_keypair':
     common_name => 'www.lib.umich.edu'
-  }
-
-  apache::custom_config { 'ip-detection':
-    source => 'puppet:///apache/ip-detection.conf'
   }
 
   apache::custom_config { 'badrobots':
@@ -165,26 +154,6 @@ class nebula::profile::www_lib::apache (
   # TODO all the vhosts
 
   # TODO: cron jobs common to all servers
-  cron { 'apache connection count check':
-    command => '/usr/local/bin/ckapacheconn',
-    user    => 'root',
-    minute  => '*/15',
-  }
-
-  $http_files = lookup('nebula::http_files')
-  file { '/usr/local/bin/ckapacheconn':
-    ensure => 'present',
-    mode   => '0755',
-    source => "https://${http_files}/ae-utils/bins/ckapacheconn"
-  }
-
-  cron { 'apache restart':
-    command => '( /bin/systemctl stop apache2; /bin/sleep 10; /bin/systemctl start apache2 ) > /dev/null',
-    user    => 'root',
-    minute  => '1',
-    hour    => '0',
-  }
-
   $vhost_defaults = {
     docroot     => "/www/www.lib/web",
     directories => [
@@ -216,13 +185,14 @@ class nebula::profile::www_lib::apache (
     ['location','/vf/vflogin_dbsess.php'],
     ['location','/pk'],
     ['directory','/www/www.lib/cgi/l/login'],
-    ['directory','/www/www.lib/cgi/m/medsearch'] 
+    ['directory','/www/www.lib/cgi/m/medsearch']
   ]
 
-  apache::vhost { 
+  # http vhosts
+  apache::vhost {
     default:
       * =>  $vhost_defaults;
-    
+
     '000-default':
       port       => 80,
       servername => 'www.lib.umich.edu',
@@ -234,6 +204,12 @@ class nebula::profile::www_lib::apache (
           rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
         }
       ];
+  }
+
+  # https vhosts
+  apache::vhost {
+    default:
+      * =>  $vhost_defaults.merge($default_vhost_params['ssl_config']);
 
    '000-default-ssl':
       # TODO ssl config

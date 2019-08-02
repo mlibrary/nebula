@@ -21,6 +21,10 @@ describe 'nebula::role::webhost::www_lib_vm' do
 #        is_expected.to contain_class('nebula::profile::www_lib::php')
         is_expected.to contain_class('php')
       end
+
+      it do
+        is_expected.to contain_mount('/www')
+      end
     end
   end
 end
