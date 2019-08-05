@@ -1,0 +1,8 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - log_host
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'

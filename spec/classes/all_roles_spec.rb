@@ -60,6 +60,7 @@ end
             %w[nebula::role::deb_server deb_server],
             %w[nebula::role::deploy_host named_instances],
             %w[nebula::role::kubernetes kubernetes],
+            %w[nebula::role::log_host log_host],
             %w[nebula default],
           ].select { |role_base, _| role_name.start_with? role_base }.first[1]
         end
