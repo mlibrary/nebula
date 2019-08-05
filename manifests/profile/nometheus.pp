@@ -3,6 +3,10 @@ class nebula::profile::nometheus {
     ensure => 'purged',
   }
 
+  service { 'prometheus-node-exporter':
+    ensure => 'stopped',
+  }
+
   file { '/etc/default/prometheus-node-exporter':
     ensure => 'absent',
   }
