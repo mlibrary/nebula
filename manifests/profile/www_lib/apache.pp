@@ -39,7 +39,8 @@ class nebula::profile::www_lib::apache (
     keepalive_timeout      => 2,
     log_formats            => {
       vhost_combined => '%v:%p %a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D',
-      combined       => '%a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D'
+      combined       => '%a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D',
+      usertrack      => '{\"user\":\"%u\",\"session\":\"%{skynet}C\",\"request\":\"%r\",\"time\":\"%t\",\"domain\":\"%V\"}'
     },
     # configured below by explicitly declaring params for apache::mod::prefork class
     mpm_module             => false,
@@ -210,27 +211,72 @@ class nebula::profile::www_lib::apache (
       ];
   }
 
+  $skynet_fragment = @(EOT)
+    CookieTracking on
+    CookieDomain .lib.umich.edu
+    CookieName skynet
+  |EOT
+
+  $cosign_fragment = @(EOT)
+    CosignProtected		On
+    CosignHostname		weblogin.umich.edu
+    # new for v.3:
+    CosignValidReference              ^https?:\/\/[^/]+.umich\.edu(\/.*)?
+    CosignValidationErrorRedirect      http://weblogin.umich.edu/cosign/validation_error.html
+    <Location /cosign/valid>
+      SetHandler          cosign
+      CosignProtected     Off
+      Allow from all
+      Satisfy any
+    </Location>
+    <Location /robots.txt>
+      CosignProtected     Off
+      Allow from all
+      Satisfy any
+    </Location>
+    # end new stuff for v.3
+    CosignCheckIP		never
+    CosignRedirect		https://weblogin.umich.edu/
+    CosignNoAppendRedirectPort	On
+    CosignPostErrorRedirect	https://weblogin.umich.edu/post_error.html
+    CosignService		www.lib
+    CosignCrypto            /etc/ssl/private/www.lib.umich.edu.key /etc/ssl/certs/www.lib.umich.edu.crt /etc/ssl/certs
+    <Location "/ctools">
+    CosignProtected     Off
+    </Location>
+
+    CosignAllowPublicAccess on
+  |EOT
+
   # https vhosts
   apache::vhost {
     default:
       * =>  $vhost_defaults.merge($default_vhost_params['ssl_config']);
 
    '000-default-ssl':
-      # TODO ssl config
       redirect_source => '/',
       redirect_dest   => 'https://www.lib.umich.edu/',
       port => 443;
 
     'www.lib ssl':
-      servername  => 'www.lib.umich.edu',
-      port        => 443,
-      # Use logging ""
-      # Use logging_user ""
-      # Use cosign "www.lib" "www.lib.umich.edu.key" "www.lib.umich.edu.crt"
-      # CosignAllowPublicAccess on
+      servername      => 'www.lib.umich.edu',
+      port            => 443,
+
+      access_logs     => [
+        {
+          file => 'error.log',
+          format => 'combined'
+        },
+        {
+          file => 'clickstream.log',
+          format => 'usertrack'
+        },
+      ],
 
 
-      directories => [
+      custom_fragment => join([$cosign_fragment, $skynet_fragment],"\n"),
+
+      directories     => [
         $cosign_protected_off_paths.map |$provider_path| {
           {
             provider        => $provider_path[0],
@@ -241,7 +287,7 @@ class nebula::profile::www_lib::apache (
       ] + $vhost_defaults['directories'],
 
       # TODO: hopefully these can all be removed
-      rewrites    => [
+      rewrites        => [
         {
           # rewrite for wsfh
           #
