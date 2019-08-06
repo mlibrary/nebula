@@ -25,6 +25,14 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it do
         is_expected.to contain_mount('/www')
       end
+
+      it do
+        is_expected.to contain_apache__vhost('000-default-ssl').with_ssl('true')
+      end
+
+      it do
+        is_expected.to contain_apache__vhost('www.lib ssl').with_ssl('true')
+      end
     end
   end
 end

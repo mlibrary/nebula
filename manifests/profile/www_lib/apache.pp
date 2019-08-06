@@ -251,7 +251,7 @@ class nebula::profile::www_lib::apache (
   # https vhosts
   apache::vhost {
     default:
-      * =>  $vhost_defaults.merge($default_vhost_params['ssl_config']);
+      * =>  $vhost_defaults.merge($default_vhost_params['ssl_params']);
 
    '000-default-ssl':
       redirect_source => '/',
