@@ -68,8 +68,11 @@ class nebula::profile::www_lib::apache (
   class { 'apache::mod::auth_basic': }
   class { 'apache::mod::authn_file': }
   class { 'apache::mod::authn_core': }
+  class { 'apache::mod::dbd': }
+
   apache::mod { 'authz_umichlib':
-    package =>  'libapache2-mod-authz-umichlib',
+    package       => 'libapache2-mod-authz-umichlib',
+    loadfile_name => 'zz_authz_umichlib.load'
     # TODO: configure
   }
   class { 'apache::mod::authz_user': }
