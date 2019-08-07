@@ -8,6 +8,7 @@
 #   include nebula::role::webhost::www_lib
 class nebula::role::webhost::www_lib_vm (
   String $private_address_template = '192.168.0.%s',
+  Hash $hosts = {}
 ) {
   include nebula::role::umich
   include nebula::profile::elastic::filebeat::prospectors::clickstream
@@ -26,7 +27,8 @@ class nebula::role::webhost::www_lib_vm (
 
   include nebula::profile::networking::firewall::http
   include nebula::profile::www_lib::mounts
-  # include nebula::profile::www_lib::hosts
+
+  create_resources('host',$hosts)
 
   include nebula::profile::geoip
   include nebula::profile::php73

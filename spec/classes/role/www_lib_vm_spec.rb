@@ -17,22 +17,20 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it { is_expected.to compile }
 
-      it do
-#        is_expected.to contain_class('nebula::profile::www_lib::php')
-        is_expected.to contain_class('php')
-      end
+      it { is_expected.to contain_class('php') }
+
+      it { is_expected.to contain_mount('/www') }
+
+      it { is_expected.to contain_apache__vhost('000-default-ssl').with_ssl('true') }
+
+      it { is_expected.to contain_apache__vhost('www.lib ssl').with_ssl('true') }
 
       it do
-        is_expected.to contain_mount('/www')
+        is_expected.to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
       end
 
-      it do
-        is_expected.to contain_apache__vhost('000-default-ssl').with_ssl('true')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('www.lib ssl').with_ssl('true')
-      end
+      # from hiera
+      it { is_expected.to contain_host('mysql-web').with_ip('10.0.0.123') }
     end
   end
 end
