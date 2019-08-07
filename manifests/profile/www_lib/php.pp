@@ -13,6 +13,24 @@ class nebula::profile::www_lib::php () {
 
   package {
     [
+      'php5.6-cli',
+      'php5.6-common',
+      'php5.6-curl',
+      'php5.6-fpm',
+      'php5.6-gd',
+      'php5.6-json',
+      'php5.6-ldap',
+      'php5.6-mbstring',
+      'php5.6-mysql',
+      'php5.6-opcache',
+      'php5.6-readline',
+      'php5.6-sqlite3',
+      'php5.6-xml',
+    ]:
+  }
+
+  package {
+    [
       'php-mdb2',
       'php-mdb2-driver-mysql'
     ]:
