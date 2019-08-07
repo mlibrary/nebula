@@ -128,9 +128,15 @@ nebula::profile::authorized_keys::default_host: 'default.invalid'
 nebula::profile::authorized_keys::ssh_keys: {}
 
 nebula::usergroup::membership: {sudo: []}
-nebula::profile::groups::all_groups: {}
+nebula::profile::groups::all_groups:
+  prometheus: 108
 nebula::virtual::users::default_group: staff
-nebula::virtual::users::all_users: {}
+nebula::virtual::users::all_users:
+  prometheus:
+    uid: 108
+    gid: prometheus
+    comment: Prometheus
+    home: /var/lib/prometheus
 
 nebula::named_instance::solr_core::default_config: '/nonexistent/solr/conf'
 nebula::named_instance::solr_core::core_home: '/nonexistent/solr_home'

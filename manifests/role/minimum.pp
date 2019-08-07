@@ -12,6 +12,7 @@ class nebula::role::minimum (
   if $facts['os']['family'] == 'Debian' {
     include nebula::profile::base
     include nebula::profile::work_around_puppet_bugs
+    include nebula::profile::prometheus::exporter::node
 
     if $::lsbdistcodename != 'jessie' {
       class { 'nebula::profile::networking::firewall':
@@ -21,7 +22,6 @@ class nebula::role::minimum (
       include nebula::profile::apt
       include nebula::profile::authorized_keys
       include nebula::profile::vim
-      include nebula::profile::nometheus
     }
   }
 }

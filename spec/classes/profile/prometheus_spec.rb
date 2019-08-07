@@ -78,6 +78,40 @@ describe 'nebula::profile::prometheus' do
           .with_state('NEW')
           .with_action('accept')
       end
+
+      context 'with some static nodes set' do
+        let(:fragment) { 'prometheus node service static_host' }
+        let(:params) do
+          {
+            static_nodes: [
+              {
+                'targets'      => ['10.9.9.99:1234'],
+                'labels'       => {
+                  'datacenter' => 'static_datacenter',
+                  'hostname'   => 'static_host',
+                  'role'       => 'static::role',
+                },
+              },
+            ],
+          }
+        end
+
+        it do
+          is_expected.to contain_concat_fragment(fragment)
+            .with_tag('mydatacenter_prometheus_node_service_list')
+            .with_target('/etc/prometheus/nodes.yml')
+        end
+
+        [
+          %r{^- targets: \[ '10\.9\.9\.99:1234' \]$},
+          %r{^  labels:$},
+          %r{^    datacenter: 'static_datacenter'$},
+          %r{^    hostname: 'static_host'$},
+          %r{^    role: 'static::role'$},
+        ].each do |content|
+          it { is_expected.to contain_concat_fragment(fragment).with_content(content) }
+        end
+      end
     end
   end
 end
