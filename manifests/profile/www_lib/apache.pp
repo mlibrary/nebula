@@ -134,10 +134,12 @@ class nebula::profile::www_lib::apache (
   class { 'apache::mod::include': }
   class { 'apache::mod::mime': }
   class { 'apache::mod::negotiation': }
-  # use exclusively FPM instead?
-  #  class { 'apache::mod::php':
-  #    extensions                                                    => ['.php','.phtml']
-  #  }
+  class { 'apache::mod::php':
+    # we'll configure php 7.3 separately
+    package_name => 'libapache2-mod-php5.6',
+    extensions   => ['.php','.phtml'],
+    php_version  => "5.6"
+  }
   class { 'apache::mod::proxy': }
   class { 'apache::mod::proxy_fcgi': }
   class { 'apache::mod::proxy_http': }
