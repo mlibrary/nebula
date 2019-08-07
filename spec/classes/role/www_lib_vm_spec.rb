@@ -31,6 +31,11 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       # from hiera
       it { is_expected.to contain_host('mysql-web').with_ip('10.0.0.123') }
+
+      it do
+        is_expected.to contain_file('authz_umichlib.conf')
+          .with_content(/DLPSAuthExemption/)
+      end
     end
   end
 end

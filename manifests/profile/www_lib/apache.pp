@@ -9,6 +9,7 @@
 # @example
 #   include nebula::profile::www_lib::apache
 class nebula::profile::www_lib::apache (
+  String $auth_dbd_params,
   String $prefix = '',
   String $domain = 'www.lib.umich.edu',
 ) {
@@ -107,6 +108,17 @@ class nebula::profile::www_lib::apache (
     loadfile_name => 'zz_authz_umichlib.load'
     # TODO: configure
   }
+
+  file { 'authz_umichlib.conf':
+    ensure  => file,
+    path    => "${::apache::mod_dir}/authz_umichlib.conf",
+    mode    => $::apache::file_mode,
+    content => template('nebula/profile/www_lib/authz_umichlib.conf.erb'),
+    require => Exec["mkdir ${::apache::mod_dir}"],
+    before  => File[$::apache::mod_dir],
+    notify  => Class['apache::service'],
+  }
+
   class { 'apache::mod::authz_user': }
   class { 'apache::mod::autoindex': }
   class { 'apache::mod::cgi': }
