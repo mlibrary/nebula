@@ -15,6 +15,41 @@ class nebula::profile::www_lib::apache (
 
   ensure_packages(['bsd-mailx'])
 
+  $haproxy_ips = nodes_for_class('nebula::profile::haproxy').map |String $nodename| {
+    fact_for($nodename, 'networking')['ip']
+  }
+
+
+  ### MONITORING
+
+  $monitor_path = '/monitor'
+  $monitor_location = {
+    provider => 'location',
+    path     => $monitor_path,
+    require  => {
+      enforce  => 'any',
+      requires => [ 'local' ] + $haproxy_ips.map |String $ip| { "ip ${ip}" }
+    }
+  }
+
+  $cgi_dir = '/usr/local/lib/cgi-bin'
+  $monitor_dir = "${cgi_dir}/monitor"
+
+  file { $cgi_dir:
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755'
+  }
+
+
+  class { 'nebula::profile::monitor_pl':
+    directory  => $monitor_dir,
+    shibboleth => true,
+    solr_cores => lookup('nebula::www_lib::monitor::solr_cores'),
+    mysql      => lookup('nebula::www_lib::monitor::mysql')
+  }
+
   $default_access = {
     enforce  => 'all',
     requires => [
@@ -22,10 +57,6 @@ class nebula::profile::www_lib::apache (
       'not env loadbalancer',
       'all granted'
     ]
-  }
-
-  $haproxy_ips = nodes_for_class('nebula::profile::haproxy').map |String $nodename| {
-    fact_for($nodename, 'networking')['ip']
   }
 
   $staff_networks = lookup('www_lib::networks::staff', default_value => []).flatten.unique.map |$network| {
@@ -217,34 +248,38 @@ class nebula::profile::www_lib::apache (
     CookieName skynet
   |EOT
 
+  $cosign_locations = [
+    {
+      provider        => 'location',
+      path            => '/cosign/valid',
+      handler         => 'cosign',
+      custom_fragment => 'CosignProtected Off',
+      requires        => [ 'all granted' ]
+    },
+    {
+      provider => 'location',
+      path     =>  '/robots.txt',
+      custom_fragment => 'CosignProtected Off',
+      requires        => [ 'all granted' ]
+    },
+    {
+      provider        => 'location',
+      path            => '/ctools',
+      custom_fragment => 'CosignProtected Off'
+    }
+  ]
+
   $cosign_fragment = @(EOT)
     CosignProtected		On
     CosignHostname		weblogin.umich.edu
-    # new for v.3:
     CosignValidReference              ^https?:\/\/[^/]+.umich\.edu(\/.*)?
     CosignValidationErrorRedirect      http://weblogin.umich.edu/cosign/validation_error.html
-    <Location /cosign/valid>
-      SetHandler          cosign
-      CosignProtected     Off
-      Allow from all
-      Satisfy any
-    </Location>
-    <Location /robots.txt>
-      CosignProtected     Off
-      Allow from all
-      Satisfy any
-    </Location>
-    # end new stuff for v.3
     CosignCheckIP		never
     CosignRedirect		https://weblogin.umich.edu/
     CosignNoAppendRedirectPort	On
     CosignPostErrorRedirect	https://weblogin.umich.edu/post_error.html
     CosignService		www.lib
     CosignCrypto            /etc/ssl/private/www.lib.umich.edu.key /etc/ssl/certs/www.lib.umich.edu.crt /etc/ssl/certs
-    <Location "/ctools">
-    CosignProtected     Off
-    </Location>
-
     CosignAllowPublicAccess on
   |EOT
 
@@ -254,9 +289,20 @@ class nebula::profile::www_lib::apache (
       * =>  $vhost_defaults.merge($default_vhost_params['ssl_params']);
 
    '000-default-ssl':
-      redirect_source => '/',
-      redirect_dest   => 'https://www.lib.umich.edu/',
-      port => 443;
+      port            => 443,
+      directories     => [ $monitor_location ] + $vhost_defaults['directories'],
+      aliases         => [
+        {
+          scriptalias => $monitor_path,
+          path        => $monitor_dir
+        }
+      ],
+      rewrites =>  [
+        {
+          rewrite_cond => '%{REQUEST_URI} !^/monitor/monitor.pl',
+          rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
+        }
+      ];
 
     'www.lib ssl':
       servername      => 'www.lib.umich.edu',
@@ -273,7 +319,6 @@ class nebula::profile::www_lib::apache (
         },
       ],
 
-
       custom_fragment => join([$cosign_fragment, $skynet_fragment],"\n"),
 
       directories     => [
@@ -284,7 +329,7 @@ class nebula::profile::www_lib::apache (
             custom_fragment => 'CosignAllowPublicAccess off'
           }
         }
-      ] + $vhost_defaults['directories'],
+      ] + $cosign_locations + $vhost_defaults['directories'],
 
       # TODO: hopefully these can all be removed
       rewrites        => [
