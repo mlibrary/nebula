@@ -15,7 +15,7 @@ class nebula::role::webhost::www_lib_vm (
 
   @@nebula::haproxy::binding { "${::hostname} www-lib-testing":
       service       => 'www-lib-testing',
-      https_offload => true,
+      https_offload => false,
       datacenter    => $::datacenter,
       hostname      => $::hostname,
       ipaddress     => $::ipaddress
