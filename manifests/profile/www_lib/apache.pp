@@ -125,6 +125,7 @@ class nebula::profile::www_lib::apache (
   apache::mod { 'cosign':
     package => 'libapache2-mod-cosign'
   }
+  # FIXME: need to make /var/cosign/filter
   class { 'apache::mod::deflate': }
   class { 'apache::mod::dir':
     indexes => ['index.html','index.htm','index.php','index.phtml','index.shtml']
@@ -184,19 +185,13 @@ class nebula::profile::www_lib::apache (
 
   $chain_crt = lookup('nebula::profile::ssl_keypair::chain_crt')
 
-  $default_vhost_params = {
-    default_access => $default_access,
-    haproxy_ips    => $haproxy_ips,
-    ssl_params     => {
-      ssl            => true,
-      ssl_protocol   => '+TLSv1.2',
-      ssl_cipher     => 'ECDHE-RSA-AES256-GCM-SHA384',
-      ssl_cert       => '/etc/ssl/certs/www.lib.umich.edu.crt',
-      ssl_key        => '/etc/ssl/private/www.lib.umich.edu.key',
-      ssl_chain      => "/etc/ssl/certs/${chain_crt}"
-    },
-    prefix         => $prefix,
-    domain         => $domain
+  $ssl_params     = {
+    ssl            => true,
+    ssl_protocol   => '+TLSv1.2',
+    ssl_cipher     => 'ECDHE-RSA-AES256-GCM-SHA384',
+    ssl_cert       => '/etc/ssl/certs/www.lib.umich.edu.crt',
+    ssl_key        => '/etc/ssl/private/www.lib.umich.edu.key',
+    ssl_chain      => "/etc/ssl/certs/${chain_crt}"
   }
 
 
@@ -208,16 +203,18 @@ class nebula::profile::www_lib::apache (
     manage_docroot => false,
     directories    => [
       {
-        provider => 'directory',
-        path     => '/www/www.lib/web',
-        options  => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
-        allow_override => ['AuthConfig','FileInfo','Limit','Options']
+        provider       => 'directory',
+        path           => '/www/www.lib/web',
+        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
+        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
+        require        => $default_access
       },
       {
         provider       => 'directory',
         path           => '/',
         allow_override => ['None'],
-        options        => ['FollowSymLinks']
+        options        => ['FollowSymLinks'],
+        require        => ''
       },
       {
         provider       => 'directory',
@@ -228,6 +225,7 @@ class nebula::profile::www_lib::apache (
       }
     ],
     log_level      => 'warn',
+    priority       => false # don't prepend a numeric identifier to the vhost
   }
 
   $cosign_protected_off_paths = [
@@ -268,18 +266,19 @@ class nebula::profile::www_lib::apache (
       path            => '/cosign/valid',
       handler         => 'cosign',
       custom_fragment => 'CosignProtected Off',
-      requires        => [ 'all granted' ]
+      require         => 'all granted'
     },
     {
       provider => 'location',
       path     =>  '/robots.txt',
       custom_fragment => 'CosignProtected Off',
-      requires        => [ 'all granted' ]
+      require         => 'all granted'
     },
     {
       provider        => 'location',
       path            => '/ctools',
-      custom_fragment => 'CosignProtected Off'
+      custom_fragment => 'CosignProtected Off',
+      require         => ''
     }
   ]
 
@@ -297,10 +296,22 @@ class nebula::profile::www_lib::apache (
     CosignAllowPublicAccess on
   |EOT
 
+  $cosign_public_access_off = @(EOT)
+    AuthType cosign
+    Require valid-user
+    CosignAllowPublicAccess off
+  |EOT
+
+  concat::fragment { "www.lib-ssl-cosign":
+    target => "www.lib-ssl.conf",
+    order  => 59,
+    content => $cosign_fragment
+  }
+
   # https vhosts
   apache::vhost {
     default:
-      * =>  $vhost_defaults.merge($default_vhost_params['ssl_params']);
+      * =>  $vhost_defaults.merge($ssl_params);
 
    '000-default-ssl':
       port            => 443,
@@ -318,13 +329,14 @@ class nebula::profile::www_lib::apache (
         }
       ];
 
-    'www.lib ssl':
+    'www.lib-ssl':
       servername      => 'www.lib.umich.edu',
       port            => 443,
+      error_log_file  => 'error.log',
 
       access_logs     => [
         {
-          file => 'error.log',
+          file => 'access.log',
           format => 'combined'
         },
         {
@@ -333,14 +345,15 @@ class nebula::profile::www_lib::apache (
         },
       ],
 
-      custom_fragment => join([$cosign_fragment, $skynet_fragment],"\n"),
+      custom_fragment => $skynet_fragment,
 
       directories     => [
         $cosign_protected_off_paths.map |$provider_path| {
           {
             provider        => $provider_path[0],
             path            => $provider_path[1],
-            custom_fragment => 'CosignAllowPublicAccess off'
+            custom_fragment => $cosign_public_access_off,
+            require         => []
           }
         }
       ] + $cosign_locations + $vhost_defaults['directories'],
