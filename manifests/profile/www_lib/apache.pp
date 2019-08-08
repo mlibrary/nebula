@@ -329,10 +329,11 @@ class nebula::profile::www_lib::apache (
     'www.lib-ssl':
       servername      => 'www.lib.umich.edu',
       port            => 443,
+      error_log_file  => 'error.log',
 
       access_logs     => [
         {
-          file => 'error.log',
+          file => 'access.log',
           format => 'combined'
         },
         {
