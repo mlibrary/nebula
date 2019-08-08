@@ -296,6 +296,12 @@ class nebula::profile::www_lib::apache (
     CosignAllowPublicAccess on
   |EOT
 
+  $cosign_public_access_off = @(EOT)
+    AuthType cosign
+    Require valid-user
+    CosignAllowPublicAccess off
+  |EOT
+
   concat::fragment { "www.lib-ssl-cosign":
     target => "www.lib-ssl.conf",
     order  => 59,
@@ -346,7 +352,7 @@ class nebula::profile::www_lib::apache (
           {
             provider        => $provider_path[0],
             path            => $provider_path[1],
-            custom_fragment => 'CosignAllowPublicAccess off',
+            custom_fragment => $cosign_public_access_off,
             require         => []
           }
         }
