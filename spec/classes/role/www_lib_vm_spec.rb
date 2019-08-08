@@ -23,7 +23,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it { is_expected.to contain_apache__vhost('000-default-ssl').with_ssl('true') }
 
-      it { is_expected.to contain_apache__vhost('www.lib ssl').with_ssl('true') }
+      it { is_expected.to contain_apache__vhost('www.lib-ssl').with_ssl('true') }
 
       it do
         is_expected.to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')

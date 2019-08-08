@@ -125,6 +125,7 @@ class nebula::profile::www_lib::apache (
   apache::mod { 'cosign':
     package => 'libapache2-mod-cosign'
   }
+  # FIXME: need to make /var/cosign/filter
   class { 'apache::mod::deflate': }
   class { 'apache::mod::dir':
     indexes => ['index.html','index.htm','index.php','index.phtml','index.shtml']
@@ -228,6 +229,7 @@ class nebula::profile::www_lib::apache (
       }
     ],
     log_level      => 'warn',
+    priority       => false # don't prepend a numeric identifier to the vhost
   }
 
   $cosign_protected_off_paths = [
@@ -297,6 +299,12 @@ class nebula::profile::www_lib::apache (
     CosignAllowPublicAccess on
   |EOT
 
+  concat::fragment { "www.lib-ssl-cosign":
+    target => "www.lib-ssl.conf",
+    order  => 59,
+    content => $cosign_fragment
+  }
+
   # https vhosts
   apache::vhost {
     default:
@@ -318,7 +326,7 @@ class nebula::profile::www_lib::apache (
         }
       ];
 
-    'www.lib ssl':
+    'www.lib-ssl':
       servername      => 'www.lib.umich.edu',
       port            => 443,
 
