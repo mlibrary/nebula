@@ -19,6 +19,7 @@ describe 'nebula::profile::named_instances' do
         it { is_expected.to contain_class(klass).with(path: '/l/local/bin/profile_puma_wrap') }
         it { is_expected.to contain_class(klass).with(rbenv_root: '/opt/rbenv') }
         it { is_expected.to contain_class(klass).with(puma_config: 'config/fauxpaas_puma.rb') }
+        it { is_expected.to contain_package('rsync') }
       end
     end
   end
