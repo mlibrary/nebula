@@ -3,7 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 
 define nebula::apache::ssl_keypair (
-  String $chain_crt,
+  String $chain_crt = lookup('nebula::apache::ssl_keypair::chain_crt')
 ) {
   $ssl_cert = "/etc/ssl/certs/${title}.crt"
   $ssl_key = "/etc/ssl/private/${title}.key"

@@ -60,10 +60,6 @@ class nebula::profile::www_lib::apache (
     ]
   }
 
-  $staff_networks = lookup('www_lib::networks::staff', default_value => []).flatten.unique.map |$network| {
-    "ip ${network['block']}"
-  }.sort
-
   class { 'apache':
     default_vhost          => false,
     default_ssl_vhost      => false,
@@ -106,7 +102,6 @@ class nebula::profile::www_lib::apache (
   apache::mod { 'authz_umichlib':
     package       => 'libapache2-mod-authz-umichlib',
     loadfile_name => 'zz_authz_umichlib.load'
-    # TODO: configure
   }
 
   file { 'authz_umichlib.conf':
@@ -125,7 +120,13 @@ class nebula::profile::www_lib::apache (
   apache::mod { 'cosign':
     package => 'libapache2-mod-cosign'
   }
-  # FIXME: need to make /var/cosign/filter
+
+  file { '/var/cosign/filter':
+    ensure => 'directory',
+    owner   => 'nobody',
+    group  => 'nogroup'
+  }
+
   class { 'apache::mod::deflate': }
   class { 'apache::mod::dir':
     indexes => ['index.html','index.htm','index.php','index.phtml','index.shtml']
@@ -150,14 +151,11 @@ class nebula::profile::www_lib::apache (
   }
   class { 'apache::mod::reqtimeout': }
   class { 'apache::mod::setenvif': }
-  class { 'apache::mod::shib': }
+  # causes apparent conflicts with cosign; to be resolved later
+  #  class { 'apache::mod::shib': }
   class { 'apache::mod::xsendfile': }
 
-
-  # TODO we will need more than one of these
-  class { 'nebula::profile::ssl_keypair':
-    common_name => 'www.lib.umich.edu'
-  }
+  nebula::apache::ssl_keypair { 'www.lib.umich.edu': }
 
   apache::custom_config { 'badrobots':
     source => 'puppet:///apache/badrobots.conf'
@@ -183,15 +181,11 @@ class nebula::profile::www_lib::apache (
 
   apache::listen { ['80','443']: }
 
-  $chain_crt = lookup('nebula::profile::ssl_keypair::chain_crt')
-
   $ssl_params     = {
-    ssl            => true,
-    ssl_protocol   => '+TLSv1.2',
-    ssl_cipher     => 'ECDHE-RSA-AES256-GCM-SHA384',
-    ssl_cert       => '/etc/ssl/certs/www.lib.umich.edu.crt',
-    ssl_key        => '/etc/ssl/private/www.lib.umich.edu.key',
-    ssl_chain      => "/etc/ssl/certs/${chain_crt}"
+    ssl          => true,
+    ssl_protocol => '+TLSv1.2',
+    ssl_cipher   => 'ECDHE-RSA-AES256-GCM-SHA384',
+    tag          => 'ssl-www.lib.umich.edu'
   }
 
 
@@ -264,9 +258,13 @@ class nebula::profile::www_lib::apache (
     {
       provider        => 'location',
       path            => '/cosign/valid',
-      handler         => 'cosign',
-      custom_fragment => 'CosignProtected Off',
-      require         => 'all granted'
+      sethandler      => 'cosign',
+      require         => 'all granted',
+      satisfy         => 'any',
+      custom_fragment => @(EOT),
+        Satisfy any
+        CosignProtected Off
+      |EOT
     },
     {
       provider => 'location',
