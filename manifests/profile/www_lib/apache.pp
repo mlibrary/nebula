@@ -21,7 +21,9 @@ class nebula::profile::www_lib::apache (
   }
 
 
-  ### MONITORING
+  ### MONITORING ########################################
+
+  # extract to separate profile?
 
   $monitor_path = '/monitor'
   $monitor_location = {
@@ -50,6 +52,8 @@ class nebula::profile::www_lib::apache (
     solr_cores => lookup('nebula::www_lib::monitor::solr_cores'),
     mysql      => lookup('nebula::www_lib::monitor::mysql')
   }
+
+  #####################################################
 
   $default_access = {
     enforce  => 'all',
@@ -99,6 +103,9 @@ class nebula::profile::www_lib::apache (
   class { 'apache::mod::authn_core': }
   class { 'apache::mod::dbd': }
 
+
+  ###### extract to authz_umichlib profile? ################################
+
   apache::mod { 'authz_umichlib':
     package       => 'libapache2-mod-authz-umichlib',
     loadfile_name => 'zz_authz_umichlib.load'
@@ -113,6 +120,15 @@ class nebula::profile::www_lib::apache (
     before  => File[$::apache::mod_dir],
     notify  => Class['apache::service'],
   }
+
+  file_line { '/etc/apache2/envvars ORACLE_HOME':
+    ensure => 'present',
+    line   => "export ORACLE_HOME=/etc/oracle",
+    match  => "/^export ORACLE_HOME=/",
+    path   => '/etc/apache2/envvars'
+  }
+
+  ##########################################################################
 
   class { 'apache::mod::authz_user': }
   class { 'apache::mod::autoindex': }
@@ -188,10 +204,8 @@ class nebula::profile::www_lib::apache (
     tag          => 'ssl-www.lib.umich.edu'
   }
 
-
-  # TODO all the vhosts
-
   # TODO: cron jobs common to all servers
+
   $vhost_defaults = {
     docroot        => "/www/www.lib/web",
     manage_docroot => false,
