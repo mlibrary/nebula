@@ -33,12 +33,4 @@ define nebula::apache::ssl_keypair (
     source => "puppet:///ssl-certs/${title}.key"
   }
 
-  Apache::Vhost <| tag == "ssl-${title}" |> {
-    ssl          => true,
-    ssl_protocol => '+TLSv1.2',
-    ssl_cipher   => 'ECDHE-RSA-AES256-GCM-SHA384',
-    ssl_cert     => "/etc/ssl/certs/${title}.crt",
-    ssl_key      => "/etc/ssl/private/${title}.key",
-    ssl_chain    => "/etc/ssl/certs/${chain_crt}"
-  }
 }

@@ -12,6 +12,7 @@ class nebula::profile::www_lib::apache (
   String $auth_dbd_params,
   String $prefix = '',
   String $domain = 'www.lib.umich.edu',
+  String $chain_crt = 'incommon_sha2.crt',
 ) {
 
   ensure_packages(['bsd-mailx'])
@@ -21,7 +22,9 @@ class nebula::profile::www_lib::apache (
   }
 
 
-  ### MONITORING
+  ### MONITORING ########################################
+
+  # extract to separate profile?
 
   $monitor_path = '/monitor'
   $monitor_location = {
@@ -51,18 +54,23 @@ class nebula::profile::www_lib::apache (
     mysql      => lookup('nebula::www_lib::monitor::mysql')
   }
 
-  $default_access = {
-    enforce  => 'all',
-    requires => [
-      'not env badrobot',
-      'not env loadbalancer',
-      'all granted'
-    ]
+  #####################################################
+
+  $ssl_chain = "/etc/ssl/certs/${chain_crt}"
+
+  file { $ssl_chain:
+    mode   => '0644',
+    owner  => 'root',
+    group  => 'root',
+    notify => Class['Apache::Service'],
+    source => "puppet:///ssl-certs/${chain_crt}"
   }
+
 
   class { 'apache':
     default_vhost          => false,
     default_ssl_vhost      => false,
+    default_ssl_chain      => $ssl_chain,
     timeout                => 300,
     keepalive_timeout      => 2,
     log_formats            => {
@@ -99,6 +107,9 @@ class nebula::profile::www_lib::apache (
   class { 'apache::mod::authn_core': }
   class { 'apache::mod::dbd': }
 
+
+  ###### extract to authz_umichlib profile? ################################
+
   apache::mod { 'authz_umichlib':
     package       => 'libapache2-mod-authz-umichlib',
     loadfile_name => 'zz_authz_umichlib.load'
@@ -113,6 +124,15 @@ class nebula::profile::www_lib::apache (
     before  => File[$::apache::mod_dir],
     notify  => Class['apache::service'],
   }
+
+  file_line { '/etc/apache2/envvars ORACLE_HOME':
+    ensure => 'present',
+    line   => "export ORACLE_HOME=/etc/oracle",
+    match  => "/^export ORACLE_HOME=/",
+    path   => '/etc/apache2/envvars'
+  }
+
+  ##########################################################################
 
   class { 'apache::mod::authz_user': }
   class { 'apache::mod::autoindex': }
@@ -155,7 +175,7 @@ class nebula::profile::www_lib::apache (
   #  class { 'apache::mod::shib': }
   class { 'apache::mod::xsendfile': }
 
-  nebula::apache::ssl_keypair { 'www.lib.umich.edu': }
+  @nebula::apache::ssl_keypair { 'www.lib.umich.edu': }
 
   apache::custom_config { 'badrobots':
     source => 'puppet:///apache/badrobots.conf'
@@ -181,71 +201,19 @@ class nebula::profile::www_lib::apache (
 
   apache::listen { ['80','443']: }
 
-  $ssl_params     = {
-    ssl          => true,
-    ssl_protocol => '+TLSv1.2',
-    ssl_cipher   => 'ECDHE-RSA-AES256-GCM-SHA384',
-    tag          => 'ssl-www.lib.umich.edu'
-  }
-
-
-  # TODO all the vhosts
 
   # TODO: cron jobs common to all servers
-  $vhost_defaults = {
-    docroot        => "/www/www.lib/web",
-    manage_docroot => false,
-    directories    => [
+
+  nebula::apache::www_lib_vhost { '000-default':
+    ssl        => false,
+    servername => 'www.lib.umich.edu',
+    rewrites   => [
       {
-        provider       => 'directory',
-        path           => '/www/www.lib/web',
-        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
-        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
-        require        => $default_access
-      },
-      {
-        provider       => 'directory',
-        path           => '/',
-        allow_override => ['None'],
-        options        => ['FollowSymLinks'],
-        require        => ''
-      },
-      {
-        provider       => 'directory',
-        path           => '/www/www.lib/cgi',
-        allow_override => ['None'],
-        options        => ['None'],
-        require        => $default_access
+        # redirect all access to https except monitoring
+        rewrite_cond => '%{REQUEST_URI} !^/monitor/monitor.pl',
+        rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
       }
-    ],
-    log_level      => 'warn',
-    priority       => false # don't prepend a numeric identifier to the vhost
-  }
-
-  $cosign_protected_off_paths = [
-    ['location','/login'],
-    ['location','/vf/vflogin_dbsess.php'],
-    ['location','/pk'],
-    ['directory','/www/www.lib/cgi/l/login'],
-    ['directory','/www/www.lib/cgi/m/medsearch']
-  ]
-
-  # http vhosts
-  apache::vhost {
-    default:
-      * =>  $vhost_defaults;
-
-    '000-default':
-      port       => 80,
-      servername => 'www.lib.umich.edu',
-      docroot    => '/www/www.lib/web',
-      rewrites   => [
-        {
-          # redirect all access to https except monitoring
-          rewrite_cond => '%{REQUEST_URI} !^/monitor/monitor.pl',
-          rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
-        }
-      ];
+    ];
   }
 
   $skynet_fragment = @(EOT)
@@ -254,135 +222,94 @@ class nebula::profile::www_lib::apache (
     CookieName skynet
   |EOT
 
-  $cosign_locations = [
-    {
-      provider        => 'location',
-      path            => '/cosign/valid',
-      sethandler      => 'cosign',
-      require         => 'all granted',
-      satisfy         => 'any',
-      custom_fragment => @(EOT),
-        Satisfy any
-        CosignProtected Off
-      |EOT
-    },
-    {
-      provider => 'location',
-      path     =>  '/robots.txt',
-      custom_fragment => 'CosignProtected Off',
-      require         => 'all granted'
-    },
-    {
-      provider        => 'location',
-      path            => '/ctools',
-      custom_fragment => 'CosignProtected Off',
-      require         => ''
-    }
-  ]
-
-  $cosign_fragment = @(EOT)
-    CosignProtected		On
-    CosignHostname		weblogin.umich.edu
-    CosignValidReference              ^https?:\/\/[^/]+.umich\.edu(\/.*)?
-    CosignValidationErrorRedirect      http://weblogin.umich.edu/cosign/validation_error.html
-    CosignCheckIP		never
-    CosignRedirect		https://weblogin.umich.edu/
-    CosignNoAppendRedirectPort	On
-    CosignPostErrorRedirect	https://weblogin.umich.edu/post_error.html
-    CosignService		www.lib
-    CosignCrypto            /etc/ssl/private/www.lib.umich.edu.key /etc/ssl/certs/www.lib.umich.edu.crt /etc/ssl/certs
-    CosignAllowPublicAccess on
-  |EOT
-
-  $cosign_public_access_off = @(EOT)
-    AuthType cosign
-    Require valid-user
-    CosignAllowPublicAccess off
-  |EOT
-
-  concat::fragment { "www.lib-ssl-cosign":
-    target => "www.lib-ssl.conf",
-    order  => 59,
-    content => $cosign_fragment
+  # https vhosts
+  nebula::apache::www_lib_vhost { '000-default-ssl':
+    ssl         => true,
+    ssl_cn      => 'www.lib.umich.edu',
+    servername  => $::fqdn,
+    directories => [ $monitor_location ],
+    aliases     => [
+      {
+        scriptalias => $monitor_path,
+        path        => $monitor_dir
+      }
+    ],
+    rewrites    => [
+      {
+        rewrite_cond => '%{REQUEST_URI} !^/monitor/monitor.pl',
+        rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
+      }
+    ];
   }
 
-  # https vhosts
-  apache::vhost {
-    default:
-      * =>  $vhost_defaults.merge($ssl_params);
+  nebula::apache::www_lib_vhost { 'www.lib-ssl':
+    servername      => 'www.lib.umich.edu',
+    ssl             => true,
+    error_log_file  => 'error.log',
+    cosign          => true,
+    cosign_public_access_off_dirs => [
+      {
+        provider => 'location',
+        path     => '/login'
+      },
+      {
+        provider => 'location',
+        path     => '/vf/vflogin_dbsess.php'
+      },
+      {
+        provider => 'location',
+        path     => '/pk',
+      },
+      {
+        provider => 'directory',
+        path     => '/www/www.lib/cgi/l/login',
+      },
+      {
+        provider => 'directory',
+        path     => '/www/www.lib/cgi/m/medsearch'
+      }
+    ],
 
-   '000-default-ssl':
-      port            => 443,
-      directories     => [ $monitor_location ] + $vhost_defaults['directories'],
-      aliases         => [
-        {
-          scriptalias => $monitor_path,
-          path        => $monitor_dir
-        }
-      ],
-      rewrites =>  [
-        {
-          rewrite_cond => '%{REQUEST_URI} !^/monitor/monitor.pl',
-          rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
-        }
-      ];
+    access_logs     => [
+      {
+        file => 'access.log',
+        format => 'combined'
+      },
+      {
+        file => 'clickstream.log',
+        format => 'usertrack'
+      },
+    ],
 
-    'www.lib-ssl':
-      servername      => 'www.lib.umich.edu',
-      port            => 443,
-      error_log_file  => 'error.log',
+    custom_fragment => $skynet_fragment,
 
-      access_logs     => [
-        {
-          file => 'access.log',
-          format => 'combined'
-        },
-        {
-          file => 'clickstream.log',
-          format => 'usertrack'
-        },
-      ],
-
-      custom_fragment => $skynet_fragment,
-
-      directories     => [
-        $cosign_protected_off_paths.map |$provider_path| {
-          {
-            provider        => $provider_path[0],
-            path            => $provider_path[1],
-            custom_fragment => $cosign_public_access_off,
-            require         => []
-          }
-        }
-      ] + $cosign_locations + $vhost_defaults['directories'],
-
-      # TODO: hopefully these can all be removed
-      rewrites        => [
-        {
-          # rewrite for wsfh
-          #
-          # remote after 2008-12-31
-          #
-          # jhovater - 2008-12-04 varnum said to keep
-          # 2008-08-28 csnavely per varnum
-          rewrite_rule =>  '^/wsfh		http://www.wsfh.org/	[redirect,last]'
-        },
-        {
-          # rewrites for aol-like, tinyurl-like "go" function
-          #
-          # 2007-05 csnavely
-          # 2013-01-23 keep for drupal7 - aelkiss per bertrama
-          rewrite_rule => '^/go/pubmed  http://searchtools.lib.umich.edu/V?func=native-link&resource=UMI01157 [redirect,last]'
-        },
-        {
-          # Redirect Islamic Manuscripts to the Lib Guides.
-          #
-          # Check with nancymou and ekropf for potential removal after 2016-09-01
-          #
-          # 2016-08-29 skorner per nancymou
-          rewrite_rule => '^/islamic	http://guides.lib.umich.edu/islamicmss/find 	[redirect=permanent,last]'
-        },
-      ];
+    # TODO: hopefully these can all be removed
+    rewrites        => [
+      {
+        # rewrite for wsfh
+        #
+        # remote after 2008-12-31
+        #
+        # jhovater - 2008-12-04 varnum said to keep
+        # 2008-08-28 csnavely per varnum
+        rewrite_rule =>  '^/wsfh		http://www.wsfh.org/	[redirect,last]'
+      },
+      {
+        # rewrites for aol-like, tinyurl-like "go" function
+        #
+        # 2007-05 csnavely
+        # 2013-01-23 keep for drupal7 - aelkiss per bertrama
+        rewrite_rule => '^/go/pubmed  http://searchtools.lib.umich.edu/V?func=native-link&resource=UMI01157 [redirect,last]'
+      },
+      {
+        # Redirect Islamic Manuscripts to the Lib Guides.
+        #
+        # Check with nancymou and ekropf for potential removal after 2016-09-01
+        #
+        # 2016-08-29 skorner per nancymou
+        rewrite_rule => '^/islamic	http://guides.lib.umich.edu/islamicmss/find 	[redirect=permanent,last]'
+      },
+    ];
   }
 
 
