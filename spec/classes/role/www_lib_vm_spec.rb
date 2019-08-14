@@ -25,7 +25,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it { is_expected.to contain_apache__vhost('www.lib-ssl').with(ssl: true, ssl_cert: "/etc/ssl/certs/www.lib.umich.edu.crt") }
 
-      it { is_expected.to contain_concat_fragment('www.lib-ssl-ssl').with_content('SSLCertificate /etc/ssl/certs/www.lib.umich.edu.crt') }
+      it { is_expected.to contain_concat_fragment('www.lib-ssl-ssl').with_content(%r{^\s*SSLCertificateFile\s*"/etc/ssl/certs/www.lib.umich.edu.crt"$}) }
 
       it do
         is_expected.to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
