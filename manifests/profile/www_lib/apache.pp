@@ -12,6 +12,8 @@ class nebula::profile::www_lib::apache (
   String $auth_dbd_params,
   String $prefix = '',
   String $domain = 'www.lib.umich.edu',
+  String $ssl_cn = $domain,
+  String $vhost_root = "/www/www.lib"
 ) {
 
   ensure_packages(['bsd-mailx'])
@@ -71,14 +73,15 @@ class nebula::profile::www_lib::apache (
   include nebula::profile::apache::authz_umichlib
   include nebula::profile::apache::cosign
 
-  @nebula::apache::ssl_keypair { 'www.lib.umich.edu': }
-
+  # should be moved elsewhere to include as virtual all that might be present on the puppet master
+  @nebula::apache::ssl_keypair { $ssl_cn: }
 
   # TODO: cron jobs common to all servers
 
   nebula::apache::www_lib_vhost { '000-default':
     ssl        => false,
-    servername => 'www.lib.umich.edu',
+    ssl_cn     => $ssl_cn,
+    servername => "$prefix$domain",
     rewrites   => [
       {
         # redirect all access to https except monitoring
@@ -97,7 +100,7 @@ class nebula::profile::www_lib::apache (
   # https vhosts
   nebula::apache::www_lib_vhost { '000-default-ssl':
     ssl         => true,
-    ssl_cn      => 'www.lib.umich.edu',
+    ssl_cn      => $ssl_cn,
     servername  => $::fqdn,
     directories => [ $nebula::profile::apache::monitoring::location ],
     aliases     => [ $nebula::profile::apache::monitoring::scriptalias ],
@@ -110,10 +113,11 @@ class nebula::profile::www_lib::apache (
   }
 
   nebula::apache::www_lib_vhost { 'www.lib-ssl':
-    servername      => 'www.lib.umich.edu',
-    ssl             => true,
-    error_log_file  => 'error.log',
-    cosign          => true,
+    servername                    => "${prefix}${domain}",
+    ssl                           => true,
+    error_log_file                => 'error.log',
+    vhost_root                    => $vhost_root,
+    cosign                        => true,
     cosign_public_access_off_dirs => [
       {
         provider => 'location',
@@ -129,15 +133,15 @@ class nebula::profile::www_lib::apache (
       },
       {
         provider => 'directory',
-        path     => '/www/www.lib/cgi/l/login',
+        path     => "${vhost_root}/cgi/l/login",
       },
       {
         provider => 'directory',
-        path     => '/www/www.lib/cgi/m/medsearch'
+        path     => "${vhost_root}/cgi/m/medsearch"
       }
     ],
 
-    access_logs     => [
+    access_logs                   => [
       {
         file => 'access.log',
         format => 'combined'
@@ -148,10 +152,10 @@ class nebula::profile::www_lib::apache (
       },
     ],
 
-    custom_fragment => $skynet_fragment,
+    custom_fragment               => $skynet_fragment,
 
     # TODO: hopefully these can all be removed
-    rewrites        => [
+    rewrites                      => [
       {
         # rewrite for wsfh
         #

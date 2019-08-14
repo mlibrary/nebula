@@ -9,7 +9,7 @@ define nebula::apache::www_lib_vhost (
   Boolean $cosign = false,
   Optional[String] $cosign_service = regsubst($servername,'\.umich\.edu$',''),
   String $ssl_cn = $servername,
-  String $docroot = "/www/www.lib/web",
+  String $vhost_root = "/www/www.lib",
   Array[Hash] $directories = [],
   Array[Hash] $cosign_public_access_off_dirs = [],
   Optional[Array] $rewrites = undef,
@@ -19,8 +19,9 @@ define nebula::apache::www_lib_vhost (
   Optional[String] $custom_fragment = undef,
 ) {
 
-  $ssl_cert = "/etc/ssl/certs/${ssl_cn}.crt"
-  $ssl_key = "/etc/ssl/private/${ssl_cn}.key"
+  $docroot = "$vhost_root/web"
+  $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
+  $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
 
   if($ssl) {
     $port = 443
@@ -121,7 +122,7 @@ define nebula::apache::www_lib_vhost (
     },
     {
       provider       => 'directory',
-      path           => '/www/www.lib/cgi',
+      path           => "${vhost_root}/cgi",
       allow_override => ['None'],
       options        => ['None'],
       require        => $default_access
