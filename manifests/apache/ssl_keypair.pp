@@ -2,12 +2,9 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-define nebula::apache::ssl_keypair (
-  String $chain_crt = lookup('nebula::apache::ssl_keypair::chain_crt')
-) {
-  $ssl_cert = "/etc/ssl/certs/${title}.crt"
-  $ssl_key = "/etc/ssl/private/${title}.key"
-  $ssl_chain = "/etc/ssl/certs/${chain_crt}"
+define nebula::apache::ssl_keypair () {
+  $ssl_cert = "$nebula::profile::apache::ssl_cert_dir/${title}.crt"
+  $ssl_key = "$nebula::profile::apache::ssl_key_dir/${title}.key"
 
   file { $ssl_cert:
     mode   => '0644',
@@ -16,14 +13,6 @@ define nebula::apache::ssl_keypair (
     notify => Class['Apache::Service'],
     source => "puppet:///ssl-certs/${title}.crt"
   }
-
-  ensure_resource('file', $ssl_chain, {
-    mode   => '0644',
-    owner  => 'root',
-    group  => 'root',
-    notify => Class['Apache::Service'],
-    source => "puppet:///ssl-certs/${chain_crt}"
-  })
 
   file { $ssl_key:
     mode   => '0600',
