@@ -21,22 +21,38 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it { is_expected.to contain_mount('/www') }
 
+      it { is_expected.to contain_apache__vhost('000-default').with(port: 80, ssl: false) }
+
       it { is_expected.to contain_apache__vhost('000-default-ssl').with(ssl: true, ssl_cert: "/etc/ssl/certs/www.lib.umich.edu.crt") }
 
-      it { is_expected.to contain_apache__vhost('www.lib-ssl').with(ssl: true, ssl_cert: "/etc/ssl/certs/www.lib.umich.edu.crt") }
+      it do
+        is_expected.to contain_apache__vhost('www.lib-ssl')
+          .with(servername: 'www.lib.umich.edu',
+                port: 443,
+                ssl: true,
+                ssl_cert: "/etc/ssl/certs/www.lib.umich.edu.crt")
+      end
 
-      it { is_expected.to contain_concat_fragment('www.lib-ssl-ssl').with_content(%r{^\s*SSLCertificateFile\s*"/etc/ssl/certs/www.lib.umich.edu.crt"$}) }
+      it do is_expected.to contain_concat_fragment('www.lib-ssl-ssl')
+        .with_content(%r{^\s*SSLCertificateFile\s*"/etc/ssl/certs/www.lib.umich.edu.crt"$})
+      end
 
       it do
         is_expected.to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('www.lib-ssl-cosign')
+          .with_content(%r(^\s*CosignCrypto\s*/etc/ssl/private/www.lib.umich.edu.key /etc/ssl/certs/www.lib.umich.edu.crt /etc/ssl/certs))
       end
 
       # from hiera
       it { is_expected.to contain_host('mysql-web').with_ip('10.0.0.123') }
 
       it do
+        # set via hiera
         is_expected.to contain_file('authz_umichlib.conf')
-          .with_content(/DLPSAuthExemption/)
+          .with_content(/DBDParams\s*user=somebody/)
       end
     end
   end
