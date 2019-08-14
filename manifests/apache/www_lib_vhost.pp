@@ -65,7 +65,7 @@ define nebula::apache::www_lib_vhost (
       }
     ]
 
-    $cosign_fragment = @(EOT)
+    $cosign_fragment = @("EOT")
       CosignProtected		On
       CosignHostname		weblogin.umich.edu
       CosignValidReference              ^https?:\/\/[^/]+.umich\.edu(\/.*)?
