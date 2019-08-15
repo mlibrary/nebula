@@ -75,7 +75,7 @@ define nebula::apache::www_lib_vhost (
       CosignNoAppendRedirectPort	On
       CosignPostErrorRedirect	https://weblogin.umich.edu/post_error.html
       CosignService		${cosign_service}
-      CosignCrypto            ${ssl_key} ${ssl_crt} /etc/ssl/certs
+      CosignCrypto            ${ssl_key} ${ssl_cert} ${nebula::profile::apache::ssl_cert_dir}
       CosignAllowPublicAccess on
     |EOT
 
@@ -130,6 +130,7 @@ define nebula::apache::www_lib_vhost (
   ]
 
   apache::vhost { $title:
+    servername      => $servername,
     docroot         => $docroot,
     manage_docroot  => false,
     directories     => $default_directories + $directories + $cosign_locations,

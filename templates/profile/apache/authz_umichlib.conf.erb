@@ -1,4 +1,4 @@
-DBDParams <%= @auth_dbd_params %>
+DBDParams <%= @dbd_params %>
 # parameters: client_ip, client_host, my_userid, my_coll, authzd, authzd_coll, public_coll
 # assumes in_addr_t is an unsigned int
 # DBDPrepareSQL "SELECT * from table(authz_umichlib.authzd_to_coll_function(%u,%s,%s,%s))" authzd_stmt

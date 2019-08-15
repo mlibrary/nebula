@@ -9,7 +9,6 @@
 # @example
 #   include nebula::profile::www_lib::apache
 class nebula::profile::www_lib::apache (
-  String $auth_dbd_params,
   String $prefix = '',
   String $domain = 'www.lib.umich.edu',
   String $ssl_cn = $domain,

@@ -6,10 +6,15 @@
 #
 # Configures authz_umichlib and oracle client for apache
 #
+# @param dbd_params The value to use for DBDParams, for example:
+#   "user=somebody,pass=whatever,server=whatever"
+#
 # @example
 #   include nebula::profile::apache::authz_umichlib
 
-class nebula::profile::apache::authz_umichlib () {
+class nebula::profile::apache::authz_umichlib (
+  String $dbd_params,
+) {
 
   include apache::mod::dbd
 
@@ -24,7 +29,7 @@ class nebula::profile::apache::authz_umichlib () {
     ensure  => file,
     path    => "${::apache::mod_dir}/authz_umichlib.conf",
     mode    => $::apache::file_mode,
-    content => template('nebula/profile/www_lib/authz_umichlib.conf.erb'),
+    content => template('nebula/profile/apache/authz_umichlib.conf.erb'),
     require => Exec["mkdir ${::apache::mod_dir}"],
     before  => File[$::apache::mod_dir],
     notify  => Class['apache::service'],

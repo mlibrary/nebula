@@ -20,6 +20,6 @@ nebula::role::webhost::www_lib_vm::hosts:
   mysql-web:
     ip: 10.0.0.123
 
-nebula::profile::www_lib::apache::auth_dbd_params: user=somebody,pass=whatever,server=whatever
+nebula::profile::apache::authz_umichlib::dbd_params: user=somebody,pass=whatever,server=whatever
 
 nebula::apache::ssl_keypair::chain_crt: foo.crt
