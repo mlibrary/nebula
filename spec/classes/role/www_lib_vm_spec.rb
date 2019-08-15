@@ -54,6 +54,12 @@ describe 'nebula::role::webhost::www_lib_vm' do
         is_expected.to contain_file('authz_umichlib.conf')
           .with_content(/DBDParams\s*user=somebody/)
       end
+
+      it do
+        is_expected.to contain_apache__vhost('000-default-ssl').
+          with_aliases([{ 'scriptalias' => '/monitor',
+                          'path' => '/usr/local/lib/cgi-bin/monitor' }])
+      end
     end
   end
 end
