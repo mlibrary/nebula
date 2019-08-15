@@ -131,6 +131,7 @@ define nebula::apache::www_lib_vhost (
 
   apache::vhost { $title:
     servername      => $servername,
+    port            => $port,
     docroot         => $docroot,
     manage_docroot  => false,
     directories     => $default_directories + $directories + $cosign_locations,

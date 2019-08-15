@@ -21,12 +21,15 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it { is_expected.to contain_mount('/www') }
 
+      it { is_expected.to contain_apache__vhost('000-default').with(port: 80, ssl: false) }
+
       it { is_expected.to contain_apache__vhost('000-default-ssl').with(ssl: true, ssl_cert: "/etc/ssl/certs/www.lib.umich.edu.crt") }
 
       it do
         is_expected.to contain_apache__vhost('www.lib-ssl')
-          .with(servername: 'www.lib.umich.edu', 
-                ssl: true, 
+          .with(servername: 'www.lib.umich.edu',
+                port: 443,
+                ssl: true,
                 ssl_cert: "/etc/ssl/certs/www.lib.umich.edu.crt")
       end
 
