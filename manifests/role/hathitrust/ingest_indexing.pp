@@ -34,5 +34,7 @@ class nebula::role::hathitrust::ingest_indexing (String $private_address_templat
   include nebula::profile::hathitrust::perl
   include nebula::profile::hathitrust::ingest_service
 
+  include nebula::profile::ruby
+
   nebula::usergroup { 'htingest': }
 }
