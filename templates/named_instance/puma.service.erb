@@ -16,6 +16,7 @@ UMask=0002
 User=<%= @title %>
 Group=<%= @title %>
 Environment="RBENV_ROOT=<%= @rbenv_root %>"
+Environment="RACK_ENV=production"
 Environment="RAILS_ENV=production"
 WorkingDirectory=<%= @path -%>/current
 ExecStart=<%= @puma_wrapper %>
