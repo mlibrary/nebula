@@ -50,7 +50,7 @@ define nebula::named_instance(
   String        $data_path = "${path}/data",
   String        $log_path = "${path}/log",
   String        $tmp_path = "${path}/tmp",
-  String        $bind_address = 'localhost',
+  String        $bind_address = '0.0.0.0',
   String        $mysql_host = 'localhost',
   Optional[String] $mysql_user = undef,
   Optional[String] $mysql_password = undef,

@@ -201,7 +201,7 @@ describe 'nebula::named_instance' do
             'deploy.env'                        => '{"deploy":{"env":{"rack_env":"production","rails_env":"production"}}}',
             'deploy.systemd_services'           => '{"deploy":{"systemd_services":["minimal-instance.target"]}}',
             'deploy.sites.user'                 => '{"deploy":{"sites":{"user":"minimal-instance"}}}',
-            'infrastructure.bind'               => '{"infrastructure":{"bind":"tcp://localhost:3001"}}',
+            'infrastructure.bind'               => '{"infrastructure":{"bind":"tcp://0.0.0.0:3001"}}',
           }.each do |fragment_title, content|
             describe fragment_title do
               it "sets #{content}" do
