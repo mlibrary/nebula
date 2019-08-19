@@ -54,6 +54,19 @@ describe 'nebula::role::webhost::www_lib_vm' do
         is_expected.to contain_file('authz_umichlib.conf')
           .with_content(/DBDParams\s*user=somebody/)
       end
+
+      it do
+        is_expected.to contain_apache__vhost('000-default-ssl').
+          with_aliases([{ 'scriptalias' => '/monitor',
+                          'path' => '/usr/local/lib/cgi-bin/monitor' }])
+      end
+
+      it do
+        is_expected.to contain_apache__vhost('theater-historiography.org-https')
+          .with_ssl_cert('/etc/ssl/certs/www.theater-historiography.org.crt')
+          .with_redirect_dest('https://www.theater-historiography.org/')
+          .with_serveraliases(%w[www.theater-historiography.com theater-historiography.com www.theatre-historiography.com theatre-historiography.com www.theatre-historiography.org theatre-historiography.org])
+      end
     end
   end
 end

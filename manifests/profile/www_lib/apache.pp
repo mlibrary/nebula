@@ -74,6 +74,18 @@ class nebula::profile::www_lib::apache (
 
   # should be moved elsewhere to include as virtual all that might be present on the puppet master
   @nebula::apache::ssl_keypair { $ssl_cn: }
+  @nebula::apache::ssl_keypair { 'www.theater-historiography.org': }
+  nebula::apache::redirect_vhost_https { 'theater-historiography.org':
+    ssl_cn        => 'www.theater-historiography.org',
+    serveraliases => [
+      'www.theater-historiography.com',
+      'theater-historiography.com',
+      'www.theatre-historiography.com',
+      'theatre-historiography.com',
+      'www.theatre-historiography.org',
+      'theatre-historiography.org',
+    ],
+  }
 
   # TODO: cron jobs common to all servers
 
