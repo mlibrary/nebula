@@ -17,9 +17,12 @@ define nebula::apache::www_lib_vhost (
   Optional[String] $error_log_file = undef,
   Optional[Array] $access_logs = undef,
   Optional[String] $custom_fragment = undef,
+  Optional[String] $redirect_source = undef,
+  Optional[String] $redirect_status = undef,
+  Optional[String] $redirect_dest = undef,
+  Variant[Boolean, String] $docroot = "${vhost_root}/web"
 ) {
 
-  $docroot = "$vhost_root/web"
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
   $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
 
@@ -146,6 +149,14 @@ define nebula::apache::www_lib_vhost (
     rewrites        => $rewrites,
     error_log_file  => $error_log_file,
     access_logs     => $access_logs,
-    custom_fragment => $custom_fragment
+    custom_fragment => $custom_fragment,
+    redirect_source => $redirect_source,
+    redirect_status => $redirect_status,
+    redirect_dest   => $redirect_dest,
+    serveraliases   => $serveraliases,
+    aliases         => [{
+      'scriptalias' => '/monitor',
+      'path'        => '/usr/local/lib/cgi-bin/monitor',
+    }],
   }
 }
