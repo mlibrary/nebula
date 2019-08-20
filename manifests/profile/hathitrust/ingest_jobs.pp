@@ -53,7 +53,7 @@ class nebula::profile::hathitrust::ingest_jobs(
     # mail previous days' rights load summary
     'mail rights load summary':
       command => "/bin/mail -s \"Rights load summary\" ${recipient} < ${rights_log};\
- mv ${rights_log} ${feed_log}/populate_rights_`date +\"%Y%m%d\"`.log",
+ mv ${rights_log} ${feed_log}/populate_rights_`date +\"\\%Y\\%m\\%d\"`.log",
       hour    => 23,
       minute  => 59;
 
