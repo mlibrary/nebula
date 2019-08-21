@@ -1,0 +1,5 @@
+- targets: [ '<%= @static_node['targets'].join("', '") %>' ]
+  labels:
+<% @static_node['labels'].each do |key, value| -%>
+    <%= key %>: '<%= value %>'
+<% end -%>

@@ -70,6 +70,7 @@ nebula::profile::groups::all_groups:
   htprod: 12345
   htingest: 12346
   solr: 12347
+  prometheus: 108
 
 nebula::virtual::users::all_users:
   htingest:
@@ -84,6 +85,11 @@ nebula::virtual::users::all_users:
     comment: Solr user
     uid: 123458
     home: /var/lib/solr
+  prometheus:
+    uid: 108
+    gid: prometheus
+    comment: Prometheus
+    home: /var/lib/prometheus
 
 nebula::hathitrust::monitor::solr_cores:
   - solrcore1

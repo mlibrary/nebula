@@ -16,8 +16,38 @@ describe 'nebula::profile::prometheus::exporter::node' do
           .that_requires('Package[prometheus-node-exporter]')
       end
 
+      it do
+        is_expected.to contain_file('/etc/systemd/system/prometheus-node-exporter.service')
+          .that_notifies('Service[prometheus-node-exporter]')
+          .that_requires('Package[prometheus-node-exporter]')
+      end
+
       it { is_expected.to contain_service('prometheus-node-exporter') }
-      it { is_expected.to contain_package('prometheus-node-exporter') }
+
+      it do
+        is_expected.to contain_package('prometheus-node-exporter')
+          .that_requires('User[prometheus]')
+          .that_requires('File[/var/lib/prometheus/node-exporter]')
+      end
+
+      it do
+        is_expected.to contain_file('/var/lib/prometheus/node-exporter')
+          .with_ensure('directory')
+          .with_mode('2775')
+          .with_owner('prometheus')
+          .with_group('prometheus')
+          .that_requires('User[prometheus]')
+          .that_requires('File[/var/lib/prometheus]')
+      end
+
+      it do
+        is_expected.to contain_file('/var/lib/prometheus')
+          .with_ensure('directory')
+          .with_mode('2775')
+          .with_owner('prometheus')
+          .with_group('prometheus')
+          .that_requires('User[prometheus]')
+      end
 
       it "exports itself to the default datacenter's service discovery" do
         expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
