@@ -14,4 +14,22 @@ class nebula::profile::base::hp {
   }
 
   package { 'ssacli': }
+
+# hp raid status monitoring script
+  file { '/usr/local/sbin/hp_raid_status.sh':
+    ensure => 'file',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0750',
+    source => 'https://${http_files}/ae-utils/bins/hp_raid_status.sh',
+  }
+
+# Create cron to check raid status daily at 6AM
+  cron { 'check hp raid status':
+    command => '/usr/local/sbin/hp_raid_status.sh',
+    user    => 'root',
+    minute  => '0',
+    hour    => '6',
+  }
+
 }
