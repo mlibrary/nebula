@@ -16,7 +16,7 @@ describe 'nebula::role::hathitrust::ingest_indexing::primary' do
 
       it do
         is_expected.to contain_cron('mail rights load summary')
-          .with_command('/bin/mail -s "Rights load summary" nobody@default.invalid < /tmp/populate_rights.log; mv /tmp/populate_rights.log /htfeed/var/log/populate_rights_`date +"%Y%m%d"`.log')
+          .with_command('/bin/mail -s "Rights load summary" nobody@default.invalid < /tmp/populate_rights.log; mv /tmp/populate_rights.log /htfeed/var/log/populate_rights_`date +"\%Y\%m\%d"`.log')
       end
 
       it do
