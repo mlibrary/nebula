@@ -18,14 +18,17 @@ class nebula::profile::www_lib::vhosts::datamart (
 ) {
   $servername = "${prefix}datamart.${domain}"
 
+  # FIXME get log base from elsewhere
+  file { '/var/log/apache2/datamart.lib':
+    ensure => 'directory'
+  }
+
   nebula::apache::www_lib_vhost { 'datamart-http':
     servername     => $servername,
     docroot        => $docroot,
-    error_log_file => 'datamart.lib/error.log',
-    # TODO: access.log??
-    # TODO: prefix for log directory, make log dir?
+    logging_prefix => 'datamart.lib/',
 
-    rewrites       =>  [
+    rewrites       => [
       {
         rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,R]'
       },
@@ -33,13 +36,15 @@ class nebula::profile::www_lib::vhosts::datamart (
   }
 
   nebula::apache::www_lib_vhost { 'datamart-https':
-    servername  => $servername,
-    docroot     => $docroot,
-    ssl         => true,
-    ssl_cn      => $ssl_cn,
-    cosign      => true,
+    servername     => $servername,
+    docroot        => $docroot,
+    logging_prefix => 'datamart.lib/',
 
-    directories => [
+    ssl            => true,
+    ssl_cn         => $ssl_cn,
+    cosign         => true,
+
+    directories    => [
       {
         provider      => 'directory',
         path          => '/www/datamart.lib/public',
@@ -55,14 +60,7 @@ class nebula::profile::www_lib::vhosts::datamart (
       }
     ],
 
-    access_logs =>  [
-      {
-        file   => 'datamart.lib/access.log',
-        format => 'combined'
-      }
-    ],
-
-    rewrites    => [
+    rewrites       => [
       {
         rewrite_cond => ['%{REQUEST_URI} !^/cosign',
                         '%{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-f'],

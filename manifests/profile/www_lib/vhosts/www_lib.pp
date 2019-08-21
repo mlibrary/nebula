@@ -15,17 +15,12 @@ class nebula::profile::www_lib::vhosts::www_lib (
   String $vhost_root,
   String $ssl_cn = 'www.lib.umich.edu'
 ) {
-  $skynet_fragment = @(EOT)
-    CookieTracking on
-    CookieDomain .lib.umich.edu
-    CookieName skynet
-  |EOT
 
   nebula::apache::www_lib_vhost { 'www.lib-ssl':
     servername                    => "${prefix}www.${domain}",
     ssl                           => true,
-    error_log_file                => 'error.log',
     vhost_root                    => $vhost_root,
+    usertrack                     => true,
     cosign                        => true,
     cosign_public_access_off_dirs => [
       {
@@ -49,19 +44,6 @@ class nebula::profile::www_lib::vhosts::www_lib (
         path     => "${vhost_root}/cgi/m/medsearch"
       }
     ],
-
-    access_logs                   => [
-      {
-        file   => 'access.log',
-        format => 'combined'
-      },
-      {
-        file   => 'clickstream.log',
-        format => 'usertrack'
-      },
-    ],
-
-    custom_fragment               => $skynet_fragment,
 
     # TODO: hopefully these can all be removed
     rewrites                      => [

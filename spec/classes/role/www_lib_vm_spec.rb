@@ -32,6 +32,16 @@ describe 'nebula::role::webhost::www_lib_vm' do
                 port: 443,
                 ssl: true,
                 ssl_cert: '/etc/ssl/certs/www.lib.umich.edu.crt')
+          .with_error_log_file('error.log')
+          .with_custom_fragment(%r{CookieName skynet})
+      end
+
+      it 'www.lib vhost has clickstream and access log' do
+        expect(catalogue.resource('apache::vhost', 'www.lib-ssl')[:access_logs])
+          .to contain_exactly(
+            { 'file' => 'access.log', 'format' => 'combined' },
+            'file' => 'clickstream.log', 'format' => 'usertrack',
+          )
       end
 
       it do
@@ -66,6 +76,12 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it do
         is_expected.to contain_apache__vhost('datamart-https')
           .with_servername('datamart.lib.umich.edu')
+          .with_error_log_file('datamart.lib/error.log')
+      end
+
+      it 'datamart vhost has access log datamart.lib/access.log only' do
+        expect(catalogue.resource('apache::vhost', 'datamart-https')[:access_logs])
+          .to contain_exactly('file' => 'datamart.lib/access.log', 'format' => 'combined')
       end
 
       it do
