@@ -1,0 +1,25 @@
+nebula::profile::ssl_keypair::chain_crt: 'intermediate_ca.crt'
+
+nebula::profile::www_lib::mounts::prod_target: 'somewhere:/invalid'
+nebula::profile::www_lib::mounts::dev_target: 'elsewhere:/invalid'
+
+nebula::profile::geoip::license_key: defaultkey
+nebula::profile::geoip::user_id: "12345"
+
+umich::networks::staff: []
+
+nebula::www_lib::monitor::solr_cores:
+  - solrcore1
+  - solrcore2
+
+nebula::www_lib::monitor::mysql:
+  param1: value1
+  param2: value2
+
+nebula::role::webhost::www_lib_vm::hosts:
+  mysql-web:
+    ip: 10.0.0.123
+
+nebula::profile::apache::authz_umichlib::dbd_params: user=somebody,pass=whatever,server=whatever
+
+nebula::apache::ssl_keypair::chain_crt: foo.crt
