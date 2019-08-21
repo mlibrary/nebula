@@ -17,8 +17,8 @@
 #   include nebula::profile::apache::monitoring
 
 class nebula::profile::apache::monitoring (
-  String $cgi_dir = "/usr/local/lib/cgi-bin",
-  String $monitor_uri = "/monitor",
+  String $cgi_dir = '/usr/local/lib/cgi-bin',
+  String $monitor_uri = '/monitor',
   String $monitor_dir = "${cgi_dir}/monitor",
 ) {
 

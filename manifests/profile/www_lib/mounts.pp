@@ -18,7 +18,7 @@ class nebula::profile::www_lib::mounts (
   create_resources(nebula::nfs_mount,$nfs_mounts)
   create_resources(nebula::cifs_mount,$cifs_mounts,$cifs_defaults)
 
-  nebula::nfs_mount { "/www":
+  nebula::nfs_mount { '/www':
     remote_target   => $prod_target,
     monitored       => true,
     # may not always be true, but doesn't hurt to wait until the private
@@ -26,7 +26,7 @@ class nebula::profile::www_lib::mounts (
     private_network => true
   }
 
-  nebula::nfs_mount { "/www-dev":
+  nebula::nfs_mount { '/www-dev':
     remote_target   => $dev_target,
     monitored       => false,
     # may not always be true, but doesn't hurt to wait until the private
