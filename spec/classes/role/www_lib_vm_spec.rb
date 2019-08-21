@@ -64,6 +64,11 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
+        is_expected.to contain_apache__vhost('datamart-https')
+          .with_servername('datamart.lib.umich.edu')
+      end
+
+      it do
         is_expected.to contain_apache__vhost('theater-historiography.org-https')
           .with_ssl_cert('/etc/ssl/certs/www.theater-historiography.org.crt')
           .with_redirect_dest('https://www.theater-historiography.org/')
