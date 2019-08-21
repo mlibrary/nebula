@@ -10,8 +10,8 @@
 #   include nebula::profile::apache
 class nebula::profile::apache (
   String $chain_crt = 'incommon_sha2.crt',
-  String $ssl_cert_dir = "/etc/ssl/certs",
-  String $ssl_key_dir = "/etc/ssl/private",
+  String $ssl_cert_dir = '/etc/ssl/certs',
+  String $ssl_key_dir = '/etc/ssl/private',
   Optional[Hash] $log_formats = undef,
 ) {
 
@@ -19,7 +19,7 @@ class nebula::profile::apache (
     fact_for($nodename, 'networking')['ip']
   }
 
-  $ssl_chain = "$ssl_cert_dir/${chain_crt}"
+  $ssl_chain = "${ssl_cert_dir}/${chain_crt}"
 
   file { $ssl_chain:
     mode   => '0644',

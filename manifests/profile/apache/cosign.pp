@@ -17,7 +17,7 @@ class nebula::profile::apache::cosign () {
 
   file { '/var/cosign/filter':
     ensure => 'directory',
-    owner   => 'nobody',
+    owner  => 'nobody',
     group  => 'nogroup'
   }
 }

@@ -26,7 +26,7 @@ define nebula::cifs_mount(
   String $uid,
   String $gid,
   String $user,
-  String $credentials = "puppet:///cifs-credentials/$user-credentials",
+  String $credentials = "puppet:///cifs-credentials/${user}-credentials",
   String $file_mode = '0644',
   String $dir_mode = '0755',
   String $extra_options = 'vers=2.1'
@@ -37,7 +37,7 @@ define nebula::cifs_mount(
     ensure => 'directory',
   }
 
-  file { "/etc/default/$user-credentials",
+  file { "/etc/default/${user}-credentials":
     source => $credentials,
     mode   => '0400',
     owner  => 'root',
@@ -47,7 +47,7 @@ define nebula::cifs_mount(
   mount { $title:
     ensure  => 'mounted',
     device  => $remote_target,
-    options => "credentials=$credentials,uid=$uid,gid=$gid,file_mode=$file_mode,dir_mode=$dir_mode,$extra_options",
+    options => "credentials=${credentials},uid=${uid},gid=${gid},file_mode=${file_mode},dir_mode=${dir_mode},${extra_options}",
     fstype  => 'cifs',
     require => Package[cifs-utils]
   }

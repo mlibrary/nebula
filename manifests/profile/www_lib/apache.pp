@@ -12,7 +12,7 @@ class nebula::profile::www_lib::apache (
   String $prefix = '',
   String $domain = 'www.lib.umich.edu',
   String $ssl_cn = $domain,
-  String $vhost_root = "/www/www.lib"
+  String $vhost_root = '/www/www.lib'
 ) {
 
   ensure_packages(['bsd-mailx'])
@@ -57,7 +57,7 @@ class nebula::profile::www_lib::apache (
     # we'll configure php 7.3 separately
     package_name => 'libapache2-mod-php5.6',
     extensions   => ['.php','.phtml'],
-    php_version  => "5.6"
+    php_version  => '5.6'
   }
 
   include apache::mod::proxy
@@ -92,7 +92,7 @@ class nebula::profile::www_lib::apache (
   nebula::apache::www_lib_vhost { '000-default':
     ssl        => false,
     ssl_cn     => $ssl_cn,
-    servername => "$prefix$domain",
+    servername => "${prefix}${domain}",
     rewrites   => [
       {
         # redirect all access to https except monitoring
@@ -154,11 +154,11 @@ class nebula::profile::www_lib::apache (
 
     access_logs                   => [
       {
-        file => 'access.log',
+        file   => 'access.log',
         format => 'combined'
       },
       {
-        file => 'clickstream.log',
+        file   => 'clickstream.log',
         format => 'usertrack'
       },
     ],

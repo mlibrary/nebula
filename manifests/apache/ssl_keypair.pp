@@ -3,8 +3,8 @@
 # BSD License. See LICENSE.txt for details.
 
 define nebula::apache::ssl_keypair () {
-  $ssl_cert = "$nebula::profile::apache::ssl_cert_dir/${title}.crt"
-  $ssl_key = "$nebula::profile::apache::ssl_key_dir/${title}.key"
+  $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${title}.crt"
+  $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${title}.key"
 
   file { $ssl_cert:
     mode   => '0644',

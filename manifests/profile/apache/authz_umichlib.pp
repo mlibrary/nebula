@@ -37,8 +37,8 @@ class nebula::profile::apache::authz_umichlib (
 
   file_line { '/etc/apache2/envvars ORACLE_HOME':
     ensure => 'present',
-    line   => "export ORACLE_HOME=/etc/oracle",
-    match  => "/^export ORACLE_HOME=/",
+    line   => 'export ORACLE_HOME=/etc/oracle',
+    match  => '/^export ORACLE_HOME=/',
     path   => '/etc/apache2/envvars'
   }
 

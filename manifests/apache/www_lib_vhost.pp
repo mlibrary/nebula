@@ -9,7 +9,7 @@ define nebula::apache::www_lib_vhost (
   Boolean $cosign = false,
   Optional[String] $cosign_service = regsubst($servername,'\.umich\.edu$',''),
   String $ssl_cn = $servername,
-  String $vhost_root = "/www/www.lib",
+  String $vhost_root = '/www/www.lib',
   Array[Hash] $directories = [],
   Array[Hash] $cosign_public_access_off_dirs = [],
   Optional[Array] $rewrites = undef,
@@ -89,8 +89,8 @@ define nebula::apache::www_lib_vhost (
     |EOT
 
     concat::fragment { "${title}-cosign":
-      target => "${title}.conf",
-      order  => 59,
+      target  => "${title}.conf",
+      order   => 59,
       content => $cosign_fragment
     }
 
