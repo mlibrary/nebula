@@ -133,6 +133,7 @@ class nebula::profile::www_lib::perl () {
     'Mojo::Server::FastCGI', # must pin to version
     'Relations',
     'Relations::Query',
+    'SQL::Beautify',
     'SQL::Tokenizer',
     'Test::Deep',
     'Test::Exception',
