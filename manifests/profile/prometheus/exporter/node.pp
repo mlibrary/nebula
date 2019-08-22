@@ -34,10 +34,18 @@ class nebula::profile::prometheus::exporter::node (
   # we don't have jessie machines anymore.
   #
   # For more info, http://www.serveradminblog.com/2015/05/kernel-acpi-error-smbusipmigenericserialbus/
-  if $facts['os']['distro']['codename'] == 'jessie' and $facts['dmi']['manufacturer'] == 'HP' {
-    $disable_hwmon = true
-  } else {
-    $disable_hwmon = false
+  if $facts {
+    if $facts['os'] and $facts['dmi'] {
+      if $facts['os']['distro'] and $facts['dmi']['manufacturer'] {
+        if $facts['os']['distro']['codename'] {
+          if $facts['os']['distro']['codename'] == 'jessie' and $facts['dmi']['manufacturer'] == 'HP' {
+            $disable_hwmon = true
+          } else {
+            $disable_hwmon = false
+          }
+        }
+      }
+    }
   }
 
   file { '/etc/default/prometheus-node-exporter':
