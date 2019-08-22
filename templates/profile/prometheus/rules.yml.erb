@@ -45,6 +45,13 @@ groups:
     annotations:
       summary: 'Node {{$labels.hostname}} isn''t responding to Prometheus.'
   - alert: DiskPressure
+    expr: '((avg_over_time(node_filesystem_size_bytes[1m]) - avg_over_time(node_filesystem_avail_bytes[1m])) / avg_over_time(node_filesystem_size_bytes[1m])) > 0.95'
+    for: 30m
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
+  - alert: LegacyDiskPressure
     expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .95'
     for: 30m
     labels:
@@ -52,6 +59,13 @@ groups:
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
   - alert: DiskFull
+    expr: '((avg_over_time(node_filesystem_size_bytes[1m]) - avg_over_time(node_filesystem_avail_bytes[1m])) / avg_over_time(node_filesystem_size_bytes[1m])) > 0.99'
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+  - alert: LegacyDiskFull
     expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .99'
     for: 5m
     labels:
