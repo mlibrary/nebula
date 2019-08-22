@@ -11,18 +11,14 @@ Puppet::Functions.create_function(:public_ip) do
 
   def run
     if aws_node?
-      ec2_metadata['public_ipv4']
+      ec2_metadata['public-ipv4']
     else
-      ipaddress
+      facts['ipaddress']
     end
   end
 
   def aws_node?
-    datacenter.start_with?('aws-') && ec2_metadata.key?('public_ipv4')
-  end
-
-  def datacenter
-    facts['datacenter']
+    ec2_metadata.key?('public-ipv4')
   end
 
   def facts
@@ -35,9 +31,5 @@ Puppet::Functions.create_function(:public_ip) do
     else
       {}
     end
-  end
-
-  def ipaddress
-    facts['ipaddress']
   end
 end
