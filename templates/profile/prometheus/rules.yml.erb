@@ -8,37 +8,37 @@ groups:
     labels:
       severity: ticket
     annotations:
-      summary: 'Node {{$labels.host}} hasn''t recently synced with puppet.'
+      summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} hasn''t recently synced with puppet.'
   - alert: PuppetEventFailing
     expr: 'puppet_report_events{environment="production", name="Failure"} > 0'
     for: 2h
     labels:
       severity: ticket
     annotations:
-      summary: 'Node {{$labels.host}} is failing to sync with puppet.'
+      summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} is failing to sync with puppet.'
   - alert: PuppetResourcesFailing
     expr: 'puppet_report_resources{environment="production", name=~"Failed.*"} > 0'
     for: 2h
     labels:
       severity: ticket
     annotations:
-      summary: 'Node {{$labels.host}} has failing puppet resources.'
+      summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} has failing puppet resources.'
   - alert: PuppetZeroResources
     expr: 'puppet_report_resources{environment="production", name="Total"} == 0'
     for: 2h
     labels:
       severity: ticket
     annotations:
-      summary: 'Node {{$labels.host}} has zero puppet resources'
+      summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} has zero puppet resources.'
   - alert: PuppetAlwaysCorrecting
     expr: 'puppet_report_resources{environment="production", name="Corrective change"} > 0'
     for: 2h
     labels:
       severity: ticket
     annotations:
-      summary: 'Node {{$labels.host}} keeps needing corrective changes'
+      summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} keeps needing corrective changes.'
   - alert: InstanceDown
-    expr: up == 0
+    expr: 'up{job="node"} == 0'
     for: 10m
     labels:
       severity: page
@@ -51,13 +51,6 @@ groups:
       severity: ticket
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
-  - alert: LegacyDiskPressure
-    expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .95'
-    for: 30m
-    labels:
-      severity: ticket
-    annotations:
-      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
   - alert: DiskFull
     expr: '((avg_over_time(node_filesystem_size_bytes[1m]) - avg_over_time(node_filesystem_avail_bytes[1m])) / avg_over_time(node_filesystem_size_bytes[1m])) > 0.99'
     for: 5m
@@ -65,7 +58,16 @@ groups:
       severity: page
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
-  - alert: LegacyDiskFull
+
+  # These are legacy alerts that can be removed when RHEL5 is gone.
+  - alert: DiskPressure
+    expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .95'
+    for: 30m
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
+  - alert: DiskFull
     expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .99'
     for: 5m
     labels:
