@@ -12,16 +12,17 @@
 class nebula::profile::www_lib::vhosts::www_lib (
   String $prefix,
   String $domain,
-  String $vhost_root,
-  String $ssl_cn = 'www.lib.umich.edu'
+  String $ssl_cn = 'www.lib.umich.edu',
+  String $www_lib_root = '/www/www.lib',
+  String $docroot = "${www_lib_root}/web"
 ) {
 
   nebula::apache::www_lib_vhost { 'www.lib-ssl':
     servername                    => "${prefix}www.${domain}",
     ssl                           => true,
-    vhost_root                    => $vhost_root,
     usertrack                     => true,
     cosign                        => true,
+    docroot                       => $docroot,
     cosign_public_access_off_dirs => [
       {
         provider => 'location',
@@ -37,11 +38,28 @@ class nebula::profile::www_lib::vhosts::www_lib (
       },
       {
         provider => 'directory',
-        path     => "${vhost_root}/cgi/l/login",
+        path     => "${www_lib_root}/cgi/l/login",
       },
       {
         provider => 'directory',
-        path     => "${vhost_root}/cgi/m/medsearch"
+        path     => "${www_lib_root}/cgi/m/medsearch"
+      }
+    ],
+
+    directories                   => [
+      {
+        provider       => 'directory',
+        path           => $docroot,
+        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
+        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
+        require        => $nebula::profile::www_lib::apache::default_access
+      },
+      {
+        provider       => 'directory',
+        path           => "${www_lib_root}/cgi",
+        allow_override => ['None'],
+        options        => ['None'],
+        require        => $nebula::profile::www_lib::apache::default_access
       }
     ],
 

@@ -6,12 +6,25 @@
 #
 # Install apache for www_lib applications
 #
+# @param $prefix Will be applied to the beginning of all servernames, e.g. 'dev.' or 'test.'
+# @param $domain Will be used as the suffix of all servernames, e.g. '.some.other.domain'
+# @param $default_access Default access rules to use for server documentroots.
+#   Should be in the format as accepted by the 'require' parameter for
+#   directories for apache::vhost, for example: $default_access = 'all granted'
+#
 # @example
 #   include nebula::profile::www_lib::apache
 class nebula::profile::www_lib::apache (
   String $prefix = '',
   String $domain = 'lib.umich.edu',
-  String $vhost_root = '/www/www.lib'
+  Variant[Hash,String] $default_access = {
+    enforce  => 'all',
+    requires => [
+      'not env badrobot',
+      'not env loadbalancer',
+      'all granted'
+    ]
+  }
 ) {
 
   ensure_packages(['bsd-mailx'])
@@ -90,13 +103,13 @@ class nebula::profile::www_lib::apache (
     ],
   }
 
+
   $vhost_prefix = 'nebula::profile::www_lib::vhosts'
 
   ['default','www_lib','datamart'].each |$vhost| {
     class { "nebula::profile::www_lib::vhosts::${vhost}":
-      prefix     => $prefix,
-      domain     => $domain,
-      vhost_root => $vhost_root
+      prefix => $prefix,
+      domain => $domain,
     }
   }
 

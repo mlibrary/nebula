@@ -12,14 +12,12 @@
 class nebula::profile::www_lib::vhosts::datamart (
   String $prefix,
   String $domain,
-  String $vhost_root,
   String $ssl_cn = 'datamart.lib.umich.edu',
   String $docroot = '/www/datamart.lib/public'
 ) {
   $servername = "${prefix}datamart.${domain}"
 
-  # FIXME get log base from elsewhere
-  file { '/var/log/apache2/datamart.lib':
+  file { "${apache::params::logroot}/datamart.lib":
     ensure => 'directory'
   }
 
@@ -47,7 +45,7 @@ class nebula::profile::www_lib::vhosts::datamart (
     directories    => [
       {
         provider      => 'directory',
-        path          => '/www/datamart.lib/public',
+        path          => $docroot,
         allowoverride => 'None',
         options       => '+ExecCGI -MultiViews +SymLinksIfOwnerMatch',
         require       => 'all granted',

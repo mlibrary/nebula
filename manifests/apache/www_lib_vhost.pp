@@ -4,13 +4,13 @@
 
 define nebula::apache::www_lib_vhost (
   String $servername,
+  Variant[Boolean, String] $docroot,
   Array[String] $serveraliases = [],
   Boolean $ssl = false,
   Boolean $cosign = false,
   Boolean $usertrack = false,
   Optional[String] $cosign_service = regsubst($servername,'\.umich\.edu$',''),
   String $ssl_cn = $servername,
-  String $vhost_root = '/www/www.lib',
   Array[Hash] $directories = [],
   Array[Hash] $cosign_public_access_off_dirs = [],
   Optional[Array] $rewrites = undef,
@@ -19,8 +19,7 @@ define nebula::apache::www_lib_vhost (
   String $custom_fragment = '',
   Optional[String] $redirect_source = undef,
   Optional[String] $redirect_status = undef,
-  Optional[String] $redirect_dest = undef,
-  Variant[Boolean, String] $docroot = "${vhost_root}/web"
+  Optional[String] $redirect_dest = undef
 ) {
 
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
@@ -30,15 +29,6 @@ define nebula::apache::www_lib_vhost (
     $port = 443
   } else {
     $port = 80
-  }
-
-  $default_access = {
-    enforce  => 'all',
-    requires => [
-      'not env badrobot',
-      'not env loadbalancer',
-      'all granted'
-    ]
   }
 
   if($usertrack) {
@@ -129,25 +119,11 @@ define nebula::apache::www_lib_vhost (
   $default_directories = [
     {
       provider       => 'directory',
-      path           => $docroot,
-      options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
-      allow_override => ['AuthConfig','FileInfo','Limit','Options'],
-      require        => $default_access
-    },
-    {
-      provider       => 'directory',
       path           => '/',
       allow_override => ['None'],
       options        => ['FollowSymLinks'],
       require        => 'all denied'
     },
-    {
-      provider       => 'directory',
-      path           => "${vhost_root}/cgi",
-      allow_override => ['None'],
-      options        => ['None'],
-      require        => $default_access
-    }
   ]
 
   apache::vhost { $title:
@@ -180,9 +156,6 @@ define nebula::apache::www_lib_vhost (
     redirect_status => $redirect_status,
     redirect_dest   => $redirect_dest,
     serveraliases   => $serveraliases,
-    aliases         => [{
-      'scriptalias' => '/monitor',
-      'path'        => '/usr/local/lib/cgi-bin/monitor',
-    }],
+    aliases         => $aliases
   }
 }

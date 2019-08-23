@@ -13,7 +13,6 @@
 class nebula::profile::www_lib::vhosts::default (
   String $prefix,
   String $domain,
-  String $vhost_root,
   String $ssl_cn = 'www.lib.umich.edu'
 ) {
 
@@ -21,6 +20,7 @@ class nebula::profile::www_lib::vhosts::default (
     ssl        => false,
     ssl_cn     => $ssl_cn,
     servername => "${prefix}${domain}",
+    docroot    => false,
     rewrites   => [
       {
         # redirect all access to https except monitoring
@@ -36,6 +36,7 @@ class nebula::profile::www_lib::vhosts::default (
     servername  => $::fqdn,
     directories => [ $nebula::profile::apache::monitoring::location ],
     aliases     => [ $nebula::profile::apache::monitoring::scriptalias ],
+    docroot     => false,
     rewrites    => [
       {
         rewrite_cond => '%{REQUEST_URI} !^/monitor/monitor.pl',
