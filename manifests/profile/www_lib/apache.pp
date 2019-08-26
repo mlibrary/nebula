@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -6,13 +6,25 @@
 #
 # Install apache for www_lib applications
 #
+# @param $prefix Will be applied to the beginning of all servernames, e.g. 'dev.' or 'test.'
+# @param $domain Will be used as the suffix of all servernames, e.g. '.some.other.domain'
+# @param $default_access Default access rules to use for server documentroots.
+#   Should be in the format as accepted by the 'require' parameter for
+#   directories for apache::vhost, for example: $default_access = 'all granted'
+#
 # @example
 #   include nebula::profile::www_lib::apache
 class nebula::profile::www_lib::apache (
   String $prefix = '',
-  String $domain = 'www.lib.umich.edu',
-  String $ssl_cn = $domain,
-  String $vhost_root = '/www/www.lib'
+  String $domain = 'lib.umich.edu',
+  Variant[Hash,String] $default_access = {
+    enforce  => 'all',
+    requires => [
+      'not env badrobot',
+      'not env loadbalancer',
+      'all granted'
+    ]
+  }
 ) {
 
   ensure_packages(['bsd-mailx'])
@@ -73,8 +85,12 @@ class nebula::profile::www_lib::apache (
   include nebula::profile::apache::cosign
 
   # should be moved elsewhere to include as virtual all that might be present on the puppet master
-  @nebula::apache::ssl_keypair { $ssl_cn: }
-  @nebula::apache::ssl_keypair { 'www.theater-historiography.org': }
+  @nebula::apache::ssl_keypair {
+    ['www.lib.umich.edu',
+    'datamart.lib.umich.edu',
+    'www.theater-historiography.org']:
+  }
+
   nebula::apache::redirect_vhost_https { 'theater-historiography.org':
     ssl_cn        => 'www.theater-historiography.org',
     serveraliases => [
@@ -87,112 +103,14 @@ class nebula::profile::www_lib::apache (
     ],
   }
 
-  # TODO: cron jobs common to all servers
 
-  nebula::apache::www_lib_vhost { '000-default':
-    ssl        => false,
-    ssl_cn     => $ssl_cn,
-    servername => "${prefix}${domain}",
-    rewrites   => [
-      {
-        # redirect all access to https except monitoring
-        rewrite_cond => '%{REQUEST_URI} !^/monitor/monitor.pl',
-        rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
-      }
-    ];
+  $vhost_prefix = 'nebula::profile::www_lib::vhosts'
+
+  ['default','www_lib','datamart'].each |$vhost| {
+    class { "nebula::profile::www_lib::vhosts::${vhost}":
+      prefix => $prefix,
+      domain => $domain,
+    }
   }
-
-  $skynet_fragment = @(EOT)
-    CookieTracking on
-    CookieDomain .lib.umich.edu
-    CookieName skynet
-  |EOT
-
-  # https vhosts
-  nebula::apache::www_lib_vhost { '000-default-ssl':
-    ssl         => true,
-    ssl_cn      => $ssl_cn,
-    servername  => $::fqdn,
-    directories => [ $nebula::profile::apache::monitoring::location ],
-    aliases     => [ $nebula::profile::apache::monitoring::scriptalias ],
-    rewrites    => [
-      {
-        rewrite_cond => '%{REQUEST_URI} !^/monitor/monitor.pl',
-        rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
-      }
-    ];
-  }
-
-  nebula::apache::www_lib_vhost { 'www.lib-ssl':
-    servername                    => "${prefix}${domain}",
-    ssl                           => true,
-    error_log_file                => 'error.log',
-    vhost_root                    => $vhost_root,
-    cosign                        => true,
-    cosign_public_access_off_dirs => [
-      {
-        provider => 'location',
-        path     => '/login'
-      },
-      {
-        provider => 'location',
-        path     => '/vf/vflogin_dbsess.php'
-      },
-      {
-        provider => 'location',
-        path     => '/pk',
-      },
-      {
-        provider => 'directory',
-        path     => "${vhost_root}/cgi/l/login",
-      },
-      {
-        provider => 'directory',
-        path     => "${vhost_root}/cgi/m/medsearch"
-      }
-    ],
-
-    access_logs                   => [
-      {
-        file   => 'access.log',
-        format => 'combined'
-      },
-      {
-        file   => 'clickstream.log',
-        format => 'usertrack'
-      },
-    ],
-
-    custom_fragment               => $skynet_fragment,
-
-    # TODO: hopefully these can all be removed
-    rewrites                      => [
-      {
-        # rewrite for wsfh
-        #
-        # remote after 2008-12-31
-        #
-        # jhovater - 2008-12-04 varnum said to keep
-        # 2008-08-28 csnavely per varnum
-        rewrite_rule =>  '^/wsfh		http://www.wsfh.org/	[redirect,last]'
-      },
-      {
-        # rewrites for aol-like, tinyurl-like "go" function
-        #
-        # 2007-05 csnavely
-        # 2013-01-23 keep for drupal7 - aelkiss per bertrama
-        rewrite_rule => '^/go/pubmed  http://searchtools.lib.umich.edu/V?func=native-link&resource=UMI01157 [redirect,last]'
-      },
-      {
-        # Redirect Islamic Manuscripts to the Lib Guides.
-        #
-        # Check with nancymou and ekropf for potential removal after 2016-09-01
-        #
-        # 2016-08-29 skorner per nancymou
-        rewrite_rule => '^/islamic	http://guides.lib.umich.edu/islamicmss/find 	[redirect=permanent,last]'
-      },
-    ];
-  }
-
 
 }

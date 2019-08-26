@@ -4,23 +4,22 @@
 
 define nebula::apache::www_lib_vhost (
   String $servername,
+  Variant[Boolean, String] $docroot,
   Array[String] $serveraliases = [],
   Boolean $ssl = false,
   Boolean $cosign = false,
+  Boolean $usertrack = false,
   Optional[String] $cosign_service = regsubst($servername,'\.umich\.edu$',''),
   String $ssl_cn = $servername,
-  String $vhost_root = '/www/www.lib',
   Array[Hash] $directories = [],
   Array[Hash] $cosign_public_access_off_dirs = [],
   Optional[Array] $rewrites = undef,
   Optional[Array] $aliases = undef,
-  Optional[String] $error_log_file = undef,
-  Optional[Array] $access_logs = undef,
-  Optional[String] $custom_fragment = undef,
+  String $logging_prefix = '',
+  String $custom_fragment = '',
   Optional[String] $redirect_source = undef,
   Optional[String] $redirect_status = undef,
-  Optional[String] $redirect_dest = undef,
-  Variant[Boolean, String] $docroot = "${vhost_root}/web"
+  Optional[String] $redirect_dest = undef
 ) {
 
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
@@ -32,13 +31,21 @@ define nebula::apache::www_lib_vhost (
     $port = 80
   }
 
-  $default_access = {
-    enforce  => 'all',
-    requires => [
-      'not env badrobot',
-      'not env loadbalancer',
-      'all granted'
+  if($usertrack) {
+    $usertrack_fragment = @(EOT)
+      CookieTracking on
+      CookieDomain .lib.umich.edu
+      CookieName skynet
+    |EOT
+    $usertrack_log = [
+      {
+        file   => 'clickstream.log',
+        format => 'usertrack'
+      },
     ]
+  } else {
+    $usertrack_fragment = ''
+    $usertrack_log = []
   }
 
   if($cosign) {
@@ -108,14 +115,8 @@ define nebula::apache::www_lib_vhost (
     realize Nebula::Apache::Ssl_keypair[$ssl_cn]
   }
 
+
   $default_directories = [
-    {
-      provider       => 'directory',
-      path           => $docroot,
-      options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
-      allow_override => ['AuthConfig','FileInfo','Limit','Options'],
-      require        => $default_access
-    },
     {
       provider       => 'directory',
       path           => '/',
@@ -123,13 +124,6 @@ define nebula::apache::www_lib_vhost (
       options        => ['FollowSymLinks'],
       require        => 'all denied'
     },
-    {
-      provider       => 'directory',
-      path           => "${vhost_root}/cgi",
-      allow_override => ['None'],
-      options        => ['None'],
-      require        => $default_access
-    }
   ]
 
   apache::vhost { $title:
@@ -147,16 +141,21 @@ define nebula::apache::www_lib_vhost (
     ssl_cert        => $ssl_cert,
     ssl_key         => $ssl_key,
     rewrites        => $rewrites,
-    error_log_file  => $error_log_file,
-    access_logs     => $access_logs,
-    custom_fragment => $custom_fragment,
+    error_log_file  => "${logging_prefix}error.log",
+    access_logs     => [
+      {
+        file   => "${logging_prefix}access.log",
+        format => 'combined'
+      }
+    ] + $usertrack_log,
+    custom_fragment => @("EOT"),
+      ${custom_fragment}
+      ${usertrack_fragment}
+    | EOT
     redirect_source => $redirect_source,
     redirect_status => $redirect_status,
     redirect_dest   => $redirect_dest,
     serveraliases   => $serveraliases,
-    aliases         => [{
-      'scriptalias' => '/monitor',
-      'path'        => '/usr/local/lib/cgi-bin/monitor',
-    }],
+    aliases         => $aliases
   }
 }
