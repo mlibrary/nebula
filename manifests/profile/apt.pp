@@ -65,7 +65,7 @@ class nebula::profile::apt (
     }
 
     apt::source { 'security':
-      release => "${::lsbdistcodename}/updates",
+      release => "stretch/updates",
       repos   => 'main contrib non-free',
     }
 
@@ -89,7 +89,7 @@ class nebula::profile::apt (
 
         apt::source { 'updates':
           location => $mirror,
-          release  => "${::lsbdistcodename}-updates",
+          release  => "stretch-updates",
           repos    => 'main contrib non-free',
         }
 
@@ -98,7 +98,7 @@ class nebula::profile::apt (
 
     apt::source { 'adoptopenjdk':
       location => 'https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/',
-      release  => $::lsbdistcodename,
+      release  => "stretch",
       repos    => 'main',
       key      => {
         'id'     => '8ED17AF5D7E675EB3EE3BCE98AC3B29174885C03',
@@ -114,7 +114,7 @@ class nebula::profile::apt (
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
       apt::source { 'hp':
         location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
-        release  => "${::lsbdistcodename}/current",
+        release  => "stretch/current",
         repos    => 'non-free',
         key      => {
           'id'     => '57446EFDE098E5C934B69C7DC208ADDE26C2B797',
