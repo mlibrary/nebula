@@ -23,7 +23,7 @@ define nebula::apache::www_lib_vhost (
   Array $request_headers = [],
   Array $headers = [],
   Boolean $ssl_proxyengine = false,
-	Optional[String] $ssl_proxy_check_peer_name = undef,
+  Optional[String] $ssl_proxy_check_peer_name = undef,
   Optional[String] $ssl_proxy_check_peer_expire = undef
 ) {
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
@@ -80,16 +80,16 @@ define nebula::apache::www_lib_vhost (
     ]
 
     $cosign_fragment = @("EOT")
-      CosignProtected		On
-      CosignHostname		weblogin.umich.edu
+      CosignProtected  On
+      CosignHostname   weblogin.umich.edu
       CosignValidReference              ^https?:\/\/[^/]+.umich\.edu(\/.*)?
       CosignValidationErrorRedirect      http://weblogin.umich.edu/cosign/validation_error.html
-      CosignCheckIP		never
-      CosignRedirect		https://weblogin.umich.edu/
-      CosignNoAppendRedirectPort	On
-      CosignPostErrorRedirect	https://weblogin.umich.edu/post_error.html
-      CosignService		${cosign_service}
-      CosignCrypto            ${ssl_key} ${ssl_cert} ${nebula::profile::apache::ssl_cert_dir}
+      CosignCheckIP    never
+      CosignRedirect   https://weblogin.umich.edu/
+      CosignNoAppendRedirectPort  On
+      CosignPostErrorRedirect  https://weblogin.umich.edu/post_error.html
+      CosignService    ${cosign_service}
+      CosignCrypto     ${ssl_key} ${ssl_cert} ${nebula::profile::apache::ssl_cert_dir}
       CosignAllowPublicAccess on
     |EOT
 

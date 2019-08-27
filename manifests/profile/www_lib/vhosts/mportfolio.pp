@@ -12,25 +12,25 @@
 class nebula::profile::www_lib::vhosts::mportfolio (
   String $prefix,
   String $domain,
-  String $ssl_cn = 'mportfolio.lib.umich.edu',
-  String $docroot = '/www/mportfolio.lib/web'
+  String $ssl_cn = 'www.mportfolio.umich.edu',
+  String $docroot = '/www/www.mportfolio/web'
 ) {
-  $servername = "${prefix}mportfolio.${domain}"
+  $servername = "${prefix}www.mportfolio.${domain}"
 
-  file { "${apache::params::logroot}/mportfolio.lib":
-    ensure => 'directory'
+  file { "${apache::params::logroot}/mportfolio":
+    ensure => 'directory',
   }
 
   nebula::apache::www_lib_vhost { 'mportfolio-http':
     servername     => $servername,
     docroot        => $docroot,
-    logging_prefix => 'mportfolio.lib/',
+    logging_prefix => 'mportfolio/',
 
     rewrites       => [
       {
         rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,R]'
       },
-    ]
+    ],
   }
 
   nebula::apache::www_lib_vhost { 'mportfolio-https':
@@ -44,27 +44,13 @@ class nebula::profile::www_lib::vhosts::mportfolio (
 
     directories    => [
       {
-        provider      => 'directory',
-        path          => $docroot,
-        options       => 'IncludesNOEXEC Indexes FollowSymLinks MultiView',
-        allowoverride => 'AuthConfig FileInfo Limit Options',
-        require       => $nebula::profile::www_lib::apache::default_access,
-        addhandlers   => [
-          {
-            extensions => ['cgi'],
-            handler    => 'cgi-script'
-          }
-        ]
-      }
+        provider       => 'directory',
+        path           => $docroot,
+        options        => 'IncludesNOEXEC Indexes FollowSymLinks MultiViews',
+        allow_override => 'AuthConfig FileInfo Limit Options',
+        require        => $nebula::profile::www_lib::apache::default_access,
+      },
     ],
-
-    rewrites       => [
-      {
-        rewrite_cond => ['%{REQUEST_URI} !^/cosign',
-                        '%{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-f'],
-        rewrite_rule => '^(.*)$ /dispatch.cgi/$1 [qsappend,last]'
-      }
-    ]
 
   }
 }
