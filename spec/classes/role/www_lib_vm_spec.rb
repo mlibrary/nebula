@@ -95,6 +95,13 @@ describe 'nebula::role::webhost::www_lib_vm' do
                                  www.theatre-historiography.org
                                  theatre-historiography.org])
       end
+
+      it do
+        is_expected.to contain_apache__vhost('deepblue-https')
+          .with_ssl_cert('/etc/ssl/certs/deepblue.lib.umich.edu.crt')
+          .with_servername('deepblue.lib.umich.edu')
+          .with_ssl_proxyengine(true)
+      end
     end
   end
 end

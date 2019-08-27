@@ -19,9 +19,13 @@ define nebula::apache::www_lib_vhost (
   String $custom_fragment = '',
   Optional[String] $redirect_source = undef,
   Optional[String] $redirect_status = undef,
-  Optional[String] $redirect_dest = undef
+  Optional[String] $redirect_dest = undef,
+  Array $request_headers = [],
+  Array $headers = [],
+  Boolean $ssl_proxyengine = false,
+	Optional[String] $ssl_proxy_check_peer_name = undef,
+  Optional[String] $ssl_proxy_check_peer_expire = undef
 ) {
-
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
   $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
 
@@ -72,7 +76,7 @@ define nebula::apache::www_lib_vhost (
         path            => '/ctools',
         custom_fragment => 'CosignProtected Off',
         require         => ''
-      }
+      },
     ]
 
     $cosign_fragment = @("EOT")
@@ -98,13 +102,13 @@ define nebula::apache::www_lib_vhost (
     concat::fragment { "${title}-cosign":
       target  => "${title}.conf",
       order   => 59,
-      content => $cosign_fragment
+      content => $cosign_fragment,
     }
 
     $cosign_locations = $default_cosign_locations + $cosign_public_access_off_dirs.map |$dir| {
       $dir.merge( {
         custom_fragment => $cosign_public_access_off,
-        require         => []
+        require         => [],
       })
     }
   } else {
@@ -114,7 +118,6 @@ define nebula::apache::www_lib_vhost (
   if($ssl) {
     realize Nebula::Apache::Ssl_keypair[$ssl_cn]
   }
-
 
   $default_directories = [
     {
@@ -127,35 +130,38 @@ define nebula::apache::www_lib_vhost (
   ]
 
   apache::vhost { $title:
-    servername      => $servername,
-    port            => $port,
-    docroot         => $docroot,
-    manage_docroot  => false,
-    directories     => $default_directories + $directories + $cosign_locations,
-    log_level       => 'warn',
-    priority        => false, # don't prepend a numeric identifier to the vhost
-    ssl             => $ssl,
+    servername                  => $servername,
+    port                        => $port,
+    docroot                     => $docroot,
+    manage_docroot              => false,
+    directories                 => $default_directories + $directories + $cosign_locations,
+    log_level                   => 'warn',
+    priority                    => false, # don't prepend a numeric identifier to the vhost
+    ssl                         => $ssl,
     # unused if ssl is false
-    ssl_protocol    => '+TLSv1.2',
-    ssl_cipher      => 'ECDHE-RSA-AES256-GCM-SHA384',
-    ssl_cert        => $ssl_cert,
-    ssl_key         => $ssl_key,
-    rewrites        => $rewrites,
-    error_log_file  => "${logging_prefix}error.log",
-    access_logs     => [
+    ssl_protocol                => '+TLSv1.2',
+    ssl_cipher                  => 'ECDHE-RSA-AES256-GCM-SHA384',
+    ssl_cert                    => $ssl_cert,
+    ssl_key                     => $ssl_key,
+    rewrites                    => $rewrites,
+    error_log_file              => "${logging_prefix}error.log",
+    access_logs                 => [
       {
         file   => "${logging_prefix}access.log",
         format => 'combined'
-      }
+      },
     ] + $usertrack_log,
-    custom_fragment => @("EOT"),
+    custom_fragment             => @("EOT"),
       ${custom_fragment}
       ${usertrack_fragment}
     | EOT
-    redirect_source => $redirect_source,
-    redirect_status => $redirect_status,
-    redirect_dest   => $redirect_dest,
-    serveraliases   => $serveraliases,
-    aliases         => $aliases
+    redirect_source             => $redirect_source,
+    redirect_status             => $redirect_status,
+    redirect_dest               => $redirect_dest,
+    serveraliases               => $serveraliases,
+    aliases                     => $aliases,
+    ssl_proxyengine             => $ssl_proxyengine,
+    ssl_proxy_check_peer_name   => $ssl_proxy_check_peer_name,
+    ssl_proxy_check_peer_expire => $ssl_proxy_check_peer_expire,
   }
 }
