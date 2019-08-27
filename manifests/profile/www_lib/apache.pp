@@ -87,8 +87,10 @@ class nebula::profile::www_lib::apache (
   # should be moved elsewhere to include as virtual all that might be present on the puppet master
   @nebula::apache::ssl_keypair {
     ['www.lib.umich.edu',
+    'www.mportfolio.umich.edu',
     'datamart.lib.umich.edu',
-    'www.theater-historiography.org']:
+    'www.theater-historiography.org',
+    ]:
   }
 
   nebula::apache::redirect_vhost_https { 'theater-historiography.org':
