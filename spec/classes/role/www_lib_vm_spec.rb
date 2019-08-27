@@ -108,6 +108,12 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_ssl_cert('/etc/ssl/certs/www.mportfolio.umich.edu.crt')
           .with_servername('www.mportfolio.umich.edu')
       end
+
+      it do
+        is_expected.to contain_apache__vhost('openmich-https')
+          .with_ssl_cert('/etc/ssl/certs/open.umich.edu.crt')
+          .with_servername('open.umich.edu')
+      end
     end
   end
 end
