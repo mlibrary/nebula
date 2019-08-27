@@ -109,11 +109,16 @@ class nebula::profile::www_lib::apache (
 
   $vhost_prefix = 'nebula::profile::www_lib::vhosts'
 
-  ['default','www_lib','datamart','deepblue','mportfolio'].each |$vhost| {
+  ['default','www_lib','datamart','deepblue'].each |$vhost| {
     class { "nebula::profile::www_lib::vhosts::${vhost}":
       prefix => $prefix,
       domain => $domain,
     }
+  }
+
+  class { 'nebula::profile::www_lib::vhosts::mportfolio':
+    prefix => $prefix,
+    domain => 'umich.edu'
   }
 
 }

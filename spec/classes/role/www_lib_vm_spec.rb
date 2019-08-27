@@ -99,6 +99,13 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it do
         is_expected.to contain_apache__vhost('deepblue-https')
           .with_ssl_cert('/etc/ssl/certs/deepblue.lib.umich.edu.crt')
+          .with_servername('deepblue.lib.umich.edu')
+      end
+
+      it do
+        is_expected.to contain_apache__vhost('mportfolio-https')
+          .with_ssl_cert('/etc/ssl/certs/www.mportfolio.umich.edu.crt')
+          .with_servername('www.mportfolio.umich.edu')
       end
     end
   end

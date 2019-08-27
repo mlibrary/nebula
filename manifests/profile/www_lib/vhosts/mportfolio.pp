@@ -12,10 +12,10 @@
 class nebula::profile::www_lib::vhosts::mportfolio (
   String $prefix,
   String $domain,
-  String $ssl_cn = 'mportfolio.lib.umich.edu',
-  String $docroot = '/www/mportfolio.lib/web'
+  String $ssl_cn = 'www.mportfolio.umich.edu',
+  String $docroot = '/www/www.mportfolio/web'
 ) {
-  $servername = "${prefix}mportfolio.${domain}"
+  $servername = "${prefix}www.mportfolio.${domain}"
 
   file { "${apache::params::logroot}/mportfolio.lib":
     ensure => 'directory'
@@ -24,7 +24,7 @@ class nebula::profile::www_lib::vhosts::mportfolio (
   nebula::apache::www_lib_vhost { 'mportfolio-http':
     servername     => $servername,
     docroot        => $docroot,
-    logging_prefix => 'mportfolio.lib/',
+    logging_prefix => 'mportfolio/',
 
     rewrites       => [
       {
