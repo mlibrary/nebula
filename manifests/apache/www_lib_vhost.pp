@@ -19,9 +19,13 @@ define nebula::apache::www_lib_vhost (
   String $custom_fragment = '',
   Optional[String] $redirect_source = undef,
   Optional[String] $redirect_status = undef,
-  Optional[String] $redirect_dest = undef
+  Optional[String] $redirect_dest = undef,
+  Array $request_headers = [],
+  Array $headers = [],
+  Boolean $ssl_proxyengine = false,
+	Optional[String] $ssl_proxy_check_peer_name = undef,
+  Optional[String] $ssl_proxy_check_peer_expire = undef
 ) {
-
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
   $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
 
@@ -114,7 +118,6 @@ define nebula::apache::www_lib_vhost (
   if($ssl) {
     realize Nebula::Apache::Ssl_keypair[$ssl_cn]
   }
-
 
   $default_directories = [
     {
