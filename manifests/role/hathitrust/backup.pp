@@ -18,4 +18,6 @@ class nebula::role::hathitrust::backup (String $private_address_template = '192.
     readonly            => true
   }
 
+  class { 'nebula::profile::tsm': }
+
 }
