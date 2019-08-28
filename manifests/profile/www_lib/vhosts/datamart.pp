@@ -48,7 +48,7 @@ class nebula::profile::www_lib::vhosts::datamart (
         path          => $docroot,
         allowoverride => 'None',
         options       => '+ExecCGI -MultiViews +SymLinksIfOwnerMatch',
-        require       => 'all granted',
+        require       => $nebula::profile::www_lib::apache::default_access,
         addhandlers   => [
           {
             extensions => ['cgi'],

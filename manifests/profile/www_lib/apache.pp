@@ -86,10 +86,13 @@ class nebula::profile::www_lib::apache (
 
   # should be moved elsewhere to include as virtual all that might be present on the puppet master
   @nebula::apache::ssl_keypair {
-    ['www.lib.umich.edu',
-    'www.mportfolio.umich.edu',
-    'datamart.lib.umich.edu',
-    'www.theater-historiography.org',
+    [
+      'www.lib.umich.edu',
+      'www.mportfolio.umich.edu',
+      'datamart.lib.umich.edu',
+      'deepblue.lib.umich.edu',
+      'www.theater-historiography.org',
+      'open.umich.edu',
     ]:
   }
 
@@ -105,14 +108,12 @@ class nebula::profile::www_lib::apache (
     ],
   }
 
-
   $vhost_prefix = 'nebula::profile::www_lib::vhosts'
 
-  ['default','www_lib','datamart'].each |$vhost| {
+  ['default','www_lib','datamart','deepblue', 'openmich', 'mportfolio'].each |$vhost| {
     class { "nebula::profile::www_lib::vhosts::${vhost}":
       prefix => $prefix,
       domain => $domain,
     }
   }
-
 }

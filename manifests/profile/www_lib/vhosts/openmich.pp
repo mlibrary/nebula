@@ -3,44 +3,46 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::www_lib::vhosts::mportfolio
+# nebula::profile::www_lib::vhosts::openmich
 #
-# mportfolio virtual host
+# Open Michigan virtual host
 #
 # @example
-#   include nebula::profile::www_lib::vhosts::mportfolio
-class nebula::profile::www_lib::vhosts::mportfolio (
+#   include nebula::profile::www_lib::vhosts::openmich
+class nebula::profile::www_lib::vhosts::openmich (
   String $prefix,
   String $domain,
-  String $ssl_cn = 'www.mportfolio.umich.edu',
-  String $docroot = '/www/www.mportfolio/web'
+  String $ssl_cn = 'open.umich.edu',
+  String $docroot = '/www/openmich/web'
 ) {
-  $servername = "${prefix}www.mportfolio.umich.edu"
+  $servername = "${prefix}open.umich.edu"
 
-  file { "${apache::params::logroot}/mportfolio":
-    ensure => 'directory',
+  file { "${apache::params::logroot}/openmich":
+    ensure => 'directory'
   }
 
-  nebula::apache::www_lib_vhost { 'mportfolio-http':
+  nebula::apache::www_lib_vhost { 'openmich-http':
     servername     => $servername,
+    serveraliases  => ["${prefix}openmich.www.lib.${domain}"],
     docroot        => $docroot,
-    logging_prefix => 'mportfolio/',
+    logging_prefix => 'openmich/',
 
     rewrites       => [
       {
         rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,R]'
       },
-    ],
+    ]
   }
 
-  nebula::apache::www_lib_vhost { 'mportfolio-https':
+  nebula::apache::www_lib_vhost { 'openmich-https':
     servername     => $servername,
+    serveraliases  => ["${prefix}openmich.www.lib.${domain}"],
     docroot        => $docroot,
-    logging_prefix => 'mportfolio/',
+    logging_prefix => 'openmich/',
 
     ssl            => true,
     ssl_cn         => $ssl_cn,
-    cosign         => true,
+    cosign         => false,
 
     directories    => [
       {
@@ -48,9 +50,8 @@ class nebula::profile::www_lib::vhosts::mportfolio (
         path           => $docroot,
         options        => 'IncludesNOEXEC Indexes FollowSymLinks MultiViews',
         allow_override => 'AuthConfig FileInfo Limit Options',
-        require        => $nebula::profile::www_lib::apache::default_access,
-      },
+        require        => $nebula::profile::www_lib::apache::default_access
+      }
     ],
-
   }
 }
