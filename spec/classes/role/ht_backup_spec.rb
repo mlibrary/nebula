@@ -21,15 +21,13 @@ describe 'nebula::role::hathitrust::backup' do
       it { is_expected.not_to contain_concat_fragment('monitor nfs /sdr1') }
       it { is_expected.to contain_mount('/htprep') }
 
-      it { is_expected.to contain_package('tivsm-ba') }
-
-      it { is_expected.to contain_service('tsm') }
       it do
-        is_expected.to contain_service('dsmcad')
-          .with_ensure('stopped')
-          .with_enable(false)
+        is_expected.to contain_class("nebula::profile::tsm")
+          .with_encryption(true)
+          .with_servername("tsmserver")
+          .with_serveraddress("tsm.default.invalid")
       end
-      it { is_expected.to contain_file('/etc/init.d/tsm.service') }
+
     end
   end
 end
