@@ -25,7 +25,7 @@ describe 'nebula::profile::tsm' do
 
       it do
         is_expected.to contain_file(dsm_sys)
-          .with_content(%r{SErvername\s+tsmserver1$}i)
+          .with_content(%r{Servername\s+tsmserver1$}i)
           .with_content(%r{VIRTUALMOUNTPOINT /etc})
           .with_content(%r{EXCLUDE.DIR "/afs/"})
           .with_content(%r{TCPServeraddress\s+tsmserver1.example.invalid}i)
@@ -46,7 +46,7 @@ describe 'nebula::profile::tsm' do
           .with_enable(false)
       end
 
-      it { is_expected.to contain_file('/etc/init.d/tsm.service') }
+      it { is_expected.to contain_file('/etc/systemd/system/tsm.service') }
 
       it { is_expected.to contain_file(inclexcl) }
 
@@ -72,7 +72,7 @@ describe 'nebula::profile::tsm' do
 
         it do
           is_expected.to contain_file(dsm_sys)
-            .with_content(%r{^SErvername otherserver})
+            .with_content(%r{^Servername otherserver}i)
             .with_content(%r{VIRTUALMOUNTPOINT /vmount})
             .with_content(%r{encryptiontype})
             .with_content(%r{TCPPort\s*1234})
