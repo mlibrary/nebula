@@ -36,7 +36,7 @@ class nebula::profile::tsm (
   String $serveraddress,
   Boolean $encryption = false,
   Integer $port = 1510,
-  Array[String] $inclexcl = [],
+  Array[String] $inclexcl = ['exclude /.../.nfs*', 'exclude.dir /.../.snapshot'],
   Array[String] $domains = ['/etc','/opt','/var'],
   Array[String] $virtualmountpoints = ['/etc','/opt','/var'],
   Array[String] $exclude_dirs = ['/afs/','/net/','/nfs/','/usr/vice/cache/']
