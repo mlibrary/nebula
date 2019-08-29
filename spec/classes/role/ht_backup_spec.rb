@@ -22,12 +22,11 @@ describe 'nebula::role::hathitrust::backup' do
       it { is_expected.to contain_mount('/htprep') }
 
       it do
-        is_expected.to contain_class("nebula::profile::tsm")
+        is_expected.to contain_class('nebula::profile::tsm')
           .with_encryption(true)
-          .with_servername("tsmserver")
-          .with_serveraddress("tsm.default.invalid")
+          .with_servername('tsmserver')
+          .with_serveraddress('tsm.default.invalid')
       end
-
     end
   end
 end

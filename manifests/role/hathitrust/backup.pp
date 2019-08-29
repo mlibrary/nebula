@@ -6,24 +6,26 @@
 #
 # @example
 #   include nebula::role::hathitrust::backup
-class nebula::role::hathitrust::backup (String $private_address_template = '192.168.0.%s',
-String $tsm_servername,
-String $tsm_serveraddress) {
+class nebula::role::hathitrust::backup (
+  String $tsm_servername,
+  String $tsm_serveraddress,
+  String $private_address_template = '192.168.0.%s'
+) {
   include nebula::role::hathitrust
 
   class { 'nebula::profile::networking::private':
-    address_template => $private_address_template
+    address_template => $private_address_template,
   }
 
   class { 'nebula::profile::hathitrust::mounts':
     smartconnect_mounts => ['/htapps','/htprep'],
-    readonly            => true
+    readonly            => true,
   }
 
   class { 'nebula::profile::tsm':
     servername    => $tsm_servername,
     serveraddress => $tsm_serveraddress,
-    encryption    => true
+    encryption    => true,
   }
 
 }

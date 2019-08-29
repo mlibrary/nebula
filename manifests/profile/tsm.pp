@@ -37,40 +37,40 @@ class nebula::profile::tsm (
   Boolean $encryption = false,
   Integer $port = 1510,
   Array[String] $inclexcl = [],
-  Array[String] $domains = ["/etc","/opt","/var"],
-  Array[String] $virtualmountpoints = ["/etc","/opt","/var"],
-  Array[String] $exclude_dirs = ["/afs/","/net/","/nfs/","/usr/vice/cache/"]
+  Array[String] $domains = ['/etc','/opt','/var'],
+  Array[String] $virtualmountpoints = ['/etc','/opt','/var'],
+  Array[String] $exclude_dirs = ['/afs/','/net/','/nfs/','/usr/vice/cache/']
 ) {
   package { 'tivsm-ba': }
-  $tsm_home = "/opt/tivoli/tsm/client/ba/bin"
+  $tsm_home = '/opt/tivoli/tsm/client/ba/bin'
 
   file { '/etc/init.d/tsm.service':
-    source => 'puppet:///modules/nebula/tsm/tsm.service'
+    source => 'puppet:///modules/nebula/tsm/tsm.service',
   }
 
   service { 'dsmcad':
     ensure => 'stopped',
-    enable => false
+    enable => false,
   }
 
   service { 'tsm':
-    enable => true
+    enable => true,
   }
 
   file { '/etc/adsm':
-    ensure => 'directory'
+    ensure => 'directory',
   }
 
   file { '/etc/adsm/inclexcl':
-    content => $inclexcl.join("\n")
+    content => $inclexcl.join("\n"),
   }
 
   file { "${tsm_home}/dsm.opt":
-    content => template('nebula/profile/tsm/dsm.opt.erb')
+    content => template('nebula/profile/tsm/dsm.opt.erb'),
   }
 
   file { "${tsm_home}/dsm.sys":
-    content => template('nebula/profile/tsm/dsm.sys.erb')
+    content => template('nebula/profile/tsm/dsm.sys.erb'),
   }
 
 }
