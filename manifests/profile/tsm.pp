@@ -44,7 +44,7 @@ class nebula::profile::tsm (
   package { 'tivsm-ba': }
   $tsm_home = '/opt/tivoli/tsm/client/ba/bin'
 
-  file { '/etc/init.d/tsm.service':
+  file { '/etc/systemd/system/tsm.service':
     source => 'puppet:///modules/nebula/tsm/tsm.service',
   }
 
