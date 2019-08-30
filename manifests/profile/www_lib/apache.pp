@@ -94,6 +94,7 @@ class nebula::profile::www_lib::apache (
       'www.theater-historiography.org',
       'open.umich.edu',
       'mirlyn.lib.umich.edu',
+      'staff.lib.umich.edu',
     ]:
   }
 
@@ -111,7 +112,7 @@ class nebula::profile::www_lib::apache (
 
   $vhost_prefix = 'nebula::profile::www_lib::vhosts'
 
-  ['default','www_lib','datamart','deepblue', 'openmich', 'mportfolio'].each |$vhost| {
+  ['default','www_lib','staff_lib','datamart','deepblue', 'openmich', 'mportfolio'].each |$vhost| {
     class { "nebula::profile::www_lib::vhosts::${vhost}":
       prefix => $prefix,
       domain => $domain,
