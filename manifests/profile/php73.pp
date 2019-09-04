@@ -1,5 +1,4 @@
-
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 #
@@ -44,5 +43,16 @@ class nebula::profile::php73 (
   'php7.3-sqlite3',
   'php7.3-xml' ]: }
 
-
+  php::config { 'fpm php.ini':
+    file   => '/etc/php/7.3/fpm/php.ini',
+    config => {
+      'PHP/short_open_tag'          => 'On',
+      'PHP/max_input_vars'          => '2000',
+      'PHP/memory_limit'            => '256M',
+      'PHP/error_reporting'         => 'E_ALL & ~E_DEPRECATED',
+      'PHP/upload_max_filesize'     => '32M',
+      'Date/date.timezone'          => 'America/Detroit',
+      'mail function/sendmail_path' => '/usr/sbin/sendmail -t -i',
+    }
+  }
 }
