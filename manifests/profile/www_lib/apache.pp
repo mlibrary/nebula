@@ -134,6 +134,11 @@ class nebula::profile::www_lib::apache (
     prefix        => 'beta.',
     serveraliases => ['mbeta.mirlyn', 'mbeta.mirlyn.lib', 'mbeta.mirlyn.lib.umich.edu', 'mirlyn2-beta', 'mirlyn2-beta.lib', 'mirlyn2-beta.lib.umich.edu'],
   }
+
+  file { "${apache::params::logroot}/bmc":
+    ensure => 'directory',
+  }
+
   apache::vhost { 'bmc.lib.umich.edu':
     servername      => 'bmc.lib.umich.edu',
     port            => 80,
@@ -169,6 +174,7 @@ class nebula::profile::www_lib::apache (
       },
     ],
     serveraliases   => ['bmc.lib'],
+    require         => File["${apache::params::logroot}/bmc"],
   }
 
 }
