@@ -20,6 +20,8 @@ class nebula::profile::hathitrust::ingest_jobs(
   String $rights_log = '/tmp/populate_rights.log'
 ) {
 
+  package { 'heirloom-mailx': }
+
   $feed_perl = "/usr/bin/perl -I ${feed_home}/lib ${feed_home}/bin"
   $feed_log  = "${feed_home}/var/log"
   $joined_dcu_recipients = $dcu_recipients.join(',')
