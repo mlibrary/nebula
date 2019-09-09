@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Usage: startup_press
+
+exec >> /tmp/press.out 2>> /tmp/press.err
+
+NPROC=<%= @num_proc %>
+BIND=<%= @bind %>
+SCRIPT=<%= @script %>
+
+MOJO_REVERSE_PROXY=1 /usr/bin/plackup \
+  -R '<%= @script %>' \
+  --nproc <%= @num_proc %> \
+  --listen '<%= @bind %>' \
+  '<%= @script %>' &
+
+trap "echo 'REMOVING press'; kill -TERM -$$; rm -fv /tmp/fastcgi/press.sock; exit" SIGINT SIGTERM SIGQUIT
+
+wait
+
