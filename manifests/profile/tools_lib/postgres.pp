@@ -40,24 +40,27 @@ class nebula::profile::tools_lib::postgres (
   }
 
   file { $pg_backup_dir:
-    ensure => 'directory',
-    mode   => '2775',
-    owner  => 'root',
-    group  => 'postgres'
+    ensure  => 'directory',
+    mode    => '2775',
+    owner   => 'root',
+    group   => 'postgres',
+    require => Class['postgresql::server']
   }
 
   file { "${pg_backup_dir}/backup":
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-    source => 'puppet:///modules/nebula/pg_backup'
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    source  => 'puppet:///modules/nebula/pg_backup',
+    require => File[$pg_backup_dir]
   }
 
   cron { 'backup postgres databases':
     command => "cd ${pg_backup_dir} && ( ./backup confluence; ./backup jira ) > pgbackup.log 2>&1",
     user    => 'postgres',
     hour    => 0,
-    minute  => 7
+    minute  => 7,
+    require => Class['postgresql::server']
   }
 
   if($s3_backup_dest) {

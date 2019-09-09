@@ -11,7 +11,7 @@
 #   include nebula::role::tools_lib
 class nebula::role::tools_lib (
   String $domain,
-  String $mail_recipient
+  String $mail_recipient = lookup('nebula::automation_email')
 ) {
 
   include nebula::role::aws

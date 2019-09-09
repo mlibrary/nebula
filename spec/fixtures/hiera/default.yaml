@@ -5,6 +5,7 @@
 role: invalid_role
 
 nebula::root_email: root@default.invalid
+nebula::automation_email: automation@default.invalid
 nebula::puppetmaster: puppetmaster.default.invalid
 nebula::puppetdb: puppetdb.default.invalid
 
