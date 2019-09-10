@@ -49,7 +49,7 @@ class nebula::profile::hathitrust::apache::catalog (
     directories       => [
       {
         provider => 'filesmatch',
-        location =>  '~$',
+        path     =>  '~$',
         require  => 'all denied'
       },
       {
