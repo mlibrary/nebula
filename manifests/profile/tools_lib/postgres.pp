@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -18,7 +18,7 @@
 #   include nebula::profile::tools_lib::postgres
 
 class nebula::profile::tools_lib::postgres (
-  String $mail_recipient = lookup('nebula::role::tools_lib::mail_recipient'),
+  String $mail_recipient,
   Optional[String] $s3_backup_dest = null,
   String $pg_backup_dir = '/var/local/pgbackup'
 ) {

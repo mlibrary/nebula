@@ -24,14 +24,20 @@ class nebula::role::tools_lib (
   package { 'fonts-dejavu-core': }
   package { 'fontconfig': }
 
+  class { 'nebula::profile::tools_lib::postgres':
+    mail_recipient =>  $mail_recipient,
+  }
+
   class { 'nebula::profile::tools_lib::confluence':
     domain         => $domain,
-    mail_recipient =>  $mail_recipient
+    mail_recipient => $mail_recipient,
+    require        => Class['nebula::profile::tools_lib::postgres'],
   }
 
   class { 'nebula::profile::tools_lib::jira':
     domain         => $domain,
-    mail_recipient =>  $mail_recipient
+    mail_recipient => $mail_recipient,
+    require        => Class['nebula::profile::tools_lib::postgres'],
   }
 
 }

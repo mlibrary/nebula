@@ -24,11 +24,10 @@ class nebula::profile::tools_lib::confluence (
   Optional[String] $s3_backup_dest = null
 ) {
 
-  include nebula::profile::tools_lib::postgres
   include nebula::profile::tools_lib::jdk
 
   class { 'confluence':
-    require      => [ Class['nebula::profile::tools_lib::jdk'], Class['nebula::profile::tools_lib::postgres'] ],
+    require      => Class['nebula::profile::tools_lib::jdk'],
     javahome     => Class['nebula::profile::tools_lib::jdk']['java_home'],
     installdir   => '/opt/conflunce',
     homedir      => $homedir,

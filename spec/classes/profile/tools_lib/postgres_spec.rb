@@ -10,6 +10,11 @@ describe 'nebula::profile::tools_lib::postgres' do
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:hiera_config) { 'spec/fixtures/hiera/tools_lib_config.yaml' }
+      let(:params) do
+        {
+          mail_recipient: 'nobody@default.invalid',
+        }
+      end
 
       it { is_expected.to contain_postgresql__server__db('jira') }
       it { is_expected.to contain_postgresql__server__db('confluence') }
@@ -18,7 +23,12 @@ describe 'nebula::profile::tools_lib::postgres' do
       it { is_expected.to contain_cron('backup postgres databases').with_command(%r{.*backup.*}) }
 
       context 'with configured s3 backup destination' do
-        let(:params) { { s3_backup_dest: 's3://somewhere/whatever' } }
+        let(:params) do
+          {
+            mail_recipient: 'nobody@default.invalid',
+            s3_backup_dest: 's3://somewhere/whatever',
+          }
+        end
 
         it do
           is_expected.to contain_cron('backup postgres confluence dump to s3')
