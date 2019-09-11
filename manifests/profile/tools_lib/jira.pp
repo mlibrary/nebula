@@ -24,11 +24,10 @@ class nebula::profile::tools_lib::jira (
   Optional[String] $s3_backup_dest = null
 ) {
 
-  include nebula::profile::tools_lib::postgres
   include nebula::profile::tools_lib::jdk
 
   class { 'jira':
-    require                   => [ Class['nebula::profile::tools_lib::jdk'], Class['nebula::profile::tools_lib::postgres'] ],
+    require                   => Class['nebula::profile::tools_lib::jdk'],
     javahome                  => Class['nebula::profile::tools_lib::jdk']['java_home'],
     download_url              => 'https://www.atlassian.com/software/jira/downloads/binary',
     installdir                => '/opt/jira',
