@@ -119,6 +119,8 @@ class nebula::profile::www_lib::apache (
     }
   }
 
+  include nebula::profile::www_lib::vhosts::publishing
+
   nebula::apache::mirlyn_vhost { 'mirlyn':
     domain  => 'lib.umich.edu',
     app_url => 'http://app-mirlyn-api-production:30730/',
