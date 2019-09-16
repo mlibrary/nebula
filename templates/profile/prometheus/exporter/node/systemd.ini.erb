@@ -11,6 +11,9 @@ ExecStart=/usr/bin/prometheus-node-exporter $ARGS
 ExecReload=/bin/kill -HUP $MAINPID
 TimeoutStopSec=20s
 SendSIGKILL=no
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=prometheus-node-exporter
 
 [Install]
 WantedBy=multi-user.target

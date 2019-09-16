@@ -24,6 +24,7 @@ class nebula::profile::prometheus::exporter::node (
   Optional[String] $version = undef,
   Array $covered_datacenters = [],
   String $default_datacenter = 'default',
+  String $log_file = '/var/log/prometheus-node-exporter.log',
 ) {
   include nebula::virtual::users
   include nebula::profile::groups
@@ -56,8 +57,31 @@ class nebula::profile::prometheus::exporter::node (
 
   file { '/etc/systemd/system/prometheus-node-exporter.service':
     content => template('nebula/profile/prometheus/exporter/node/systemd.ini.erb'),
-    notify  => Service['prometheus-node-exporter'],
+    notify  => [Service['prometheus-node-exporter'], Exec['reload systemctl daemons for prometheus']],
     require => Package['prometheus-node-exporter'],
+  }
+
+  exec { 'reload systemctl daemons for prometheus':
+    command     => '/bin/systemctl daemon-reload',
+    refreshonly => true,
+  }
+
+  include nebula::profile::rsyslog
+  file { '/etc/rsyslog.d/prometheus-node-exporter.conf':
+    content => template('nebula/profile/prometheus/exporter/node/rsyslog.conf.erb'),
+    notify  => Service['prometheus-node-exporter', 'rsyslog'],
+  }
+
+  $prometheus_errors_total = $::prometheus_errors_total
+  file { '/var/lib/prometheus/node-exporter/node_exporter_errors.prom':
+    content => template('nebula/profile/prometheus/exporter/node/node_exporter_errors.prom.erb'),
+  }
+
+  file { $log_file:
+    owner   => 'root',
+    group   => 'adm',
+    mode    => '0640',
+    content => '',
   }
 
   service { 'prometheus-node-exporter':

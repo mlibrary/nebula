@@ -22,6 +22,20 @@ describe 'nebula::profile::prometheus::exporter::node' do
           .that_requires('Package[prometheus-node-exporter]')
       end
 
+      it do
+        is_expected.to contain_file('/etc/rsyslog.d/prometheus-node-exporter.conf')
+          .that_notifies('Service[prometheus-node-exporter]')
+          .that_notifies('Service[rsyslog]')
+      end
+
+      it do
+        is_expected.to contain_file('/var/log/prometheus-node-exporter.log')
+          .with_owner('root')
+          .with_group('adm')
+          .with_mode('0640')
+          .with_content('')
+      end
+
       it { is_expected.to contain_service('prometheus-node-exporter') }
 
       it do
