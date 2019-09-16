@@ -163,6 +163,45 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_servername('staff.lib.umich.edu')
           .with_ssl_cert('/etc/ssl/certs/staff.lib.umich.edu.crt')
       end
+
+      it do
+        is_expected.to contain_apache__vhost('www.publishing-http')
+      end
+
+      it do
+        # SSL offloading
+        is_expected.to contain_apache__vhost('www.publishing-https')
+          .with_servername('https://www.publishing.umich.edu')
+          .with_ssl(false)
+          .with_port(443)
+      end
+
+      it do
+        # Name-based multi-site Wordpress
+        is_expected.to contain_apache__vhost('publishing-partners-http')
+          .with_servername('www.textcreationpartnership.org')
+          .with_serveraliases([
+                                'blog.press.umich.edu',
+                                'www.theater-historiography.org',
+                                'www.digitalculture.org',
+                                'www.digitalrhetoriccollaborative.org',
+                              ])
+      end
+
+      it do
+        # SSL offloading
+        # Name-based multi-site Wordpress
+        is_expected.to contain_apache__vhost('publishing-partners-https')
+          .with_servername('https://www.textcreationpartnership.org')
+          .with_ssl(false)
+          .with_port(443)
+          .with_serveraliases([
+                                'blog.press.umich.edu',
+                                'www.theater-historiography.org',
+                                'www.digitalculture.org',
+                                'www.digitalrhetoriccollaborative.org',
+                              ])
+      end
     end
   end
 end
