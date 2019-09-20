@@ -75,4 +75,17 @@ class nebula::profile::www_lib::php () {
       # XML_Util
     },
   }
+
+  class { 'php::apache_config':
+    settings => {
+      'PHP/short_open_tag'          => 'On',
+      'PHP/max_input_vars'          => '2000',
+      'PHP/memory_limit'            => '256M',
+      'PHP/error_reporting'         => 'E_ALL & ~E_DEPRECATED',
+      'PHP/upload_max_filesize'     => '32M',
+      'Date/date.timezone'          => 'America/Detroit',
+      'mail function/sendmail_path' => '/usr/sbin/sendmail -t -i'
+    },
+  }
+
 }
