@@ -3,14 +3,15 @@
 # BSD License. See LICENSE.txt for details.
 
 define nebula::apache::redirect_vhost_http (
-  String $servername,
   Array[String] $serveraliases = [],
-  String $target = "http://www.${servername}",
+  String $target = "http://www.${title}/",
+  $priority = false,
 ) {
-  apache::vhost { "${servername}-http":
+  apache::vhost { "${title}-redirect-http":
     port            => '80',
+    priority        => $priority,
     docroot         => false,
-    servername      => $servername,
+    servername      => $title,
     serveraliases   => $serveraliases,
     redirect_source => '/',
     redirect_status => 'permanent',
