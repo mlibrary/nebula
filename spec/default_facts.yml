@@ -9,6 +9,7 @@ macaddress: "AA:AA:AA:AA:AA:AA"
 dmi: {}
 installed_backports: []
 datacenter: "mydatacenter"
+prometheus_errors_total: 0
 mountpoints: {}
 disks: {}
 root_home: "/root"

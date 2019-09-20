@@ -40,9 +40,7 @@ class nebula::profile::named_instances (
   }
 
   ensure_packages(['rsync'], { 'ensure' => 'present' })
-  # we don't create or manage this, but puppet needs to know about it in order
-  # to notify it
-  ensure_resource('service', 'rsyslog', { 'hasrestart' => true })
+  include nebula::subscriber::rsyslog
 
   file { '/etc/rsyslog.d/drop-rbenv.conf':
     content => ':programname, isequal, "rbenv" ~',

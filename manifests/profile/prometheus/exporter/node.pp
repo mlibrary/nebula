@@ -25,8 +25,12 @@ class nebula::profile::prometheus::exporter::node (
   Array $covered_datacenters = [],
   String $default_datacenter = 'default',
 ) {
+  $log_file = '/var/log/prometheus-node-exporter.log'
+
   include nebula::virtual::users
   include nebula::profile::groups
+  include nebula::subscriber::rsyslog
+  include nebula::subscriber::systemctl_daemon_reload
 
   # There's a bug in HP machines that only affects pre-stretch that
   # makes hwmon checks spew a bunch of annoying log messages. This can
@@ -56,8 +60,25 @@ class nebula::profile::prometheus::exporter::node (
 
   file { '/etc/systemd/system/prometheus-node-exporter.service':
     content => template('nebula/profile/prometheus/exporter/node/systemd.ini.erb'),
-    notify  => Service['prometheus-node-exporter'],
+    notify  => [Service['prometheus-node-exporter'], Exec['systemctl daemon-reload']],
     require => Package['prometheus-node-exporter'],
+  }
+
+  file { '/etc/rsyslog.d/prometheus-node-exporter.conf':
+    content => template('nebula/profile/prometheus/exporter/node/rsyslog.conf.erb'),
+    notify  => Service['prometheus-node-exporter', 'rsyslog'],
+  }
+
+  $prometheus_errors_total = $::prometheus_errors_total
+  file { '/var/lib/prometheus/node-exporter/node_exporter_errors.prom':
+    content => template('nebula/profile/prometheus/exporter/node/node_exporter_errors.prom.erb'),
+  }
+
+  file { $log_file:
+    owner   => 'root',
+    group   => 'adm',
+    mode    => '0640',
+    content => '',
   }
 
   service { 'prometheus-node-exporter':
