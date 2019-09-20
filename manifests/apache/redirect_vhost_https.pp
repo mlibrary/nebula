@@ -5,11 +5,14 @@
 define nebula::apache::redirect_vhost_https (
   Array[String] $serveraliases = [],
   String $target = "https://www.${title}/",
-  String $ssl_cn = $title,
+  $priority = false,
 ) {
-  nebula::apache::www_lib_vhost { "${title}-https":
-    ssl             => true,
-    ssl_cn          => $ssl_cn,
+  nebula::apache::redirect_vhost_http { "${title}":
+    serveraliases => $serveraliases
+  }
+  apache::vhost { "${title}-redirect-https":
+    port            => '443',
+    priority        => $priority,
     docroot         => false,
     servername      => $title,
     serveraliases   => $serveraliases,

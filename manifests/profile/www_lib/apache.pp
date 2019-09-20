@@ -38,6 +38,7 @@ class nebula::profile::www_lib::apache (
   }
 
   include nebula::profile::apache::monitoring
+  include nebula::profile::www_lib::vhosts::redirects
 
   class { 'nebula::profile::monitor_pl':
     directory  => $nebula::profile::apache::monitoring::monitor_dir,
@@ -96,18 +97,6 @@ class nebula::profile::www_lib::apache (
       'mirlyn.lib.umich.edu',
       'staff.lib.umich.edu',
     ]:
-  }
-
-  nebula::apache::redirect_vhost_https { 'theater-historiography.org':
-    ssl_cn        => 'www.theater-historiography.org',
-    serveraliases => [
-      'www.theater-historiography.com',
-      'theater-historiography.com',
-      'www.theatre-historiography.com',
-      'theatre-historiography.com',
-      'www.theatre-historiography.org',
-      'theatre-historiography.org',
-    ],
   }
 
   $vhost_prefix = 'nebula::profile::www_lib::vhosts'
