@@ -40,7 +40,7 @@ class nebula::profile::named_instances (
   }
 
   ensure_packages(['rsync'], { 'ensure' => 'present' })
-  include nebula::profile::rsyslog
+  include nebula::subscriber::rsyslog
 
   file { '/etc/rsyslog.d/drop-rbenv.conf':
     content => ':programname, isequal, "rbenv" ~',

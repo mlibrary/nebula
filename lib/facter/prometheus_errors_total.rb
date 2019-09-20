@@ -15,7 +15,7 @@ Facter.add(:prometheus_errors_total) do
     error_count = %r{(?<=error gathering metrics: )\d*(?= error)}
 
     if File.size? log_path
-      [1, File.read(log_path)[error_count].to_i].max
+      [1, Integer(File.read(log_path)[error_count])].max
     else
       0
     end
