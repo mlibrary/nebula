@@ -12,11 +12,12 @@ class nebula::profile::www_lib::vhosts::publishing (
   String $docroot = '/www/www.publishing/web',
 ) {
   apache::vhost { 'www.publishing-http':
-    servername => 'www.publishing.umich.edu',
-    ssl        => false,
-    port       => 80,
-    docroot    => $docroot,
-    rewrites   => [
+    servername     => 'www.publishing.umich.edu',
+    ssl            => false,
+    port           => 80,
+    docroot        => $docroot,
+    manage_docroot => false,
+    rewrites       => [
       {
         rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]'
       },
