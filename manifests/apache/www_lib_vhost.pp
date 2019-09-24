@@ -25,7 +25,8 @@ define nebula::apache::www_lib_vhost (
   Boolean $ssl_proxyengine = false,
   Optional[String] $ssl_proxy_check_peer_name = undef,
   Optional[String] $ssl_proxy_check_peer_expire = undef,
-  Optional[Array] $setenvifnocase = undef
+  Optional[Array] $setenv = undef,
+  Optional[Array] $setenvifnocase = undef,
 ) {
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
   $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
@@ -165,5 +166,6 @@ define nebula::apache::www_lib_vhost (
     ssl_proxy_check_peer_name   => $ssl_proxy_check_peer_name,
     ssl_proxy_check_peer_expire => $ssl_proxy_check_peer_expire,
     setenvifnocase              => $setenvifnocase,
+    setenv                      => $setenv,
   }
 }

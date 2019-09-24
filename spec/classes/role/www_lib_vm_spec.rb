@@ -202,6 +202,18 @@ describe 'nebula::role::webhost::www_lib_vm' do
                                 'www.digitalrhetoriccollaborative.org',
                               ])
       end
+
+      it do
+        is_expected.to contain_apache__vhost('press-http')
+          .with_servername('www.press.umich.edu')
+      end
+
+      it do
+        is_expected.to contain_apache__vhost('press-https')
+          .with_servername('www.press.umich.edu')
+          .with_ssl_cert('/etc/ssl/certs/www.press.umich.edu.crt')
+          .with_setenv(['HTTPS on'])
+      end
     end
   end
 end
