@@ -85,7 +85,27 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('theater-historiography.org-https')
+        is_expected.to contain_apache__vhost('mediaindustriesjournal.org-redirect-http')
+          .with_redirect_dest('http://www.mediaindustriesjournal.org/')
+          .with_serveraliases([])
+      end
+
+      it do
+        is_expected.to contain_apache__vhost('michiganelt.org-redirect-https')
+          .with_redirect_dest('https://www.michiganelt.org/')
+          .with_serveraliases([])
+      end
+
+      it do
+        is_expected.to contain_apache__vhost('lib.umich.edu-redirect-https')
+          .with_redirect_dest('https://www.lib.umich.edu/')
+          .with_serveraliases(%w[lib
+                                 library.umich.edu
+                                 www.library.umich.edu])
+      end
+
+      it do
+        is_expected.to contain_apache__vhost('theater-historiography.org-redirect-https')
           .with_ssl_cert('/etc/ssl/certs/www.theater-historiography.org.crt')
           .with_redirect_dest('https://www.theater-historiography.org/')
           .with_serveraliases(%w[www.theater-historiography.com

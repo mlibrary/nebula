@@ -27,6 +27,7 @@ define nebula::apache::www_lib_vhost (
   Optional[String] $ssl_proxy_check_peer_expire = undef,
   Optional[Array] $setenv = undef,
   Optional[Array] $setenvifnocase = undef,
+  $priority = false
 ) {
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
   $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
@@ -138,7 +139,7 @@ define nebula::apache::www_lib_vhost (
     manage_docroot              => false,
     directories                 => $default_directories + $directories + $cosign_locations,
     log_level                   => 'warn',
-    priority                    => false, # don't prepend a numeric identifier to the vhost
+    priority                    => $priority,
     ssl                         => $ssl,
     # unused if ssl is false
     ssl_protocol                => '+TLSv1.2',
