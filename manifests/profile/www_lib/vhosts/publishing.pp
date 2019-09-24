@@ -98,7 +98,7 @@ class nebula::profile::www_lib::vhosts::publishing (
     ssl            => false,
     port           => 80,
     docroot        => $docroot,
-    manage_docroot => $docroot,
+    manage_docroot => false,
     directories    => [
       {
         provider       => 'directory',
@@ -120,7 +120,7 @@ class nebula::profile::www_lib::vhosts::publishing (
       'www.digitalrhetoriccollaborative.org',
     ],
     docroot        => $docroot,
-    manage_docroot => $docroot,
+    manage_docroot => false,
     ssl            => false,
     port           => 443,
     setenv         => ['HTTPS on'],
