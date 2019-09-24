@@ -88,17 +88,18 @@ class nebula::profile::www_lib::vhosts::publishing (
 
   # A range of other sites served under the same Wordpress installation
   apache::vhost { 'publishing-partners-http':
-    servername    => 'www.textcreationpartnership.org',
-    serveraliases => [
+    servername     => 'www.textcreationpartnership.org',
+    serveraliases  => [
       'blog.press.umich.edu',
       'www.theater-historiography.org',
       'www.digitalculture.org',
       'www.digitalrhetoriccollaborative.org',
     ],
-    ssl           => false,
-    port          => 80,
-    docroot       => $docroot,
-    directories   => [
+    ssl            => false,
+    port           => 80,
+    docroot        => $docroot,
+    manage_docroot => $docroot,
+    directories    => [
       {
         provider       => 'directory',
         path           => $docroot,
@@ -111,18 +112,19 @@ class nebula::profile::www_lib::vhosts::publishing (
 
   # As with above, SSL is terminated at the load balancer
   apache::vhost { 'publishing-partners-https':
-    servername    => 'https://www.textcreationpartnership.org',
-    serveraliases => [
+    servername     => 'https://www.textcreationpartnership.org',
+    serveraliases  => [
       'blog.press.umich.edu',
       'www.theater-historiography.org',
       'www.digitalculture.org',
       'www.digitalrhetoriccollaborative.org',
     ],
-    docroot       => $docroot,
-    ssl           => false,
-    port          => 443,
-    setenv        => ['HTTPS on'],
-    directories   => [
+    docroot        => $docroot,
+    manage_docroot => $docroot,
+    ssl            => false,
+    port           => 443,
+    setenv         => ['HTTPS on'],
+    directories    => [
       {
         provider       => 'directory',
         path           => $docroot,
