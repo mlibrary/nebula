@@ -77,7 +77,7 @@ class nebula::profile::www_lib::php () {
   }
 
   class { 'php::apache_config':
-    ini_file => '/etc/php/5.6/apache2/php.ini',
+    inifile => '/etc/php/5.6/apache2/php.ini',
     settings => {
       'PHP/short_open_tag'          => 'On',
       'PHP/max_input_vars'          => '2000',
