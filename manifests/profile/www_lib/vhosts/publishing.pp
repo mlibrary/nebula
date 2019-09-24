@@ -30,6 +30,7 @@ class nebula::profile::www_lib::vhosts::publishing (
   apache::vhost { 'www.publishing-https':
     servername      => 'https://www.publishing.umich.edu',
     docroot         => $docroot,
+    manage_docroot  => false,
     ssl             => false,
     port            => 443,
     setenv          => ['HTTPS on'],
