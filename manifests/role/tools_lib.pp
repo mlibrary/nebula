@@ -4,9 +4,6 @@
 
 # stand up apache server w/ dependencies for confluence and apache
 #
-# vhost name is: tools.lib.umich.edu
-#
-#
 # @example
 #   include nebula::role::tools_lib
 class nebula::role::tools_lib (
