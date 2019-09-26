@@ -19,8 +19,8 @@
 
 class nebula::profile::tools_lib::postgres (
   String $mail_recipient,
-  Optional[String] $s3_backup_dest = null,
-  String $pg_backup_dir = '/var/local/pgbackup'
+  String $pg_backup_dir = '/var/local/pgbackup',
+  Optional[String] $s3_backup_dest = undef,
 ) {
   class { 'postgresql::globals':
     encoding => 'UTF-8',

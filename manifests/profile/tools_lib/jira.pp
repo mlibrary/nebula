@@ -21,7 +21,7 @@ class nebula::profile::tools_lib::jira (
   String $domain,
   String $mail_recipient,
   String $homedir = '/var/opt/jira',
-  Optional[String] $s3_backup_dest = null
+  Optional[String] $s3_backup_dest = undef,
 ) {
 
   include nebula::profile::tools_lib::jdk
