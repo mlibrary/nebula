@@ -115,13 +115,9 @@ class nebula::profile::tools_lib::apache (
     proxy_preserve_host => true,
   }
 
-  apache::vhost { "${servername} non-ssl":
-    servername      => $servername,
-    docroot         => false,
-    port            => '80',
-    redirect_source => '/',
-    redirect_status => 'permanent',
-    redirect_dest   => "https://${servername}/",
+  nebula::apache::redirect_vhost_http { $servername:
+    serveraliases => ["confluence.${servername}","jira.${servername}"],
+    target        => "https://${servername}"
   }
 
   firewall { '200 HTTP':
