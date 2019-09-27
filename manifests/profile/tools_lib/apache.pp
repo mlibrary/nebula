@@ -97,6 +97,11 @@ class nebula::profile::tools_lib::apache (
         require  => 'all denied'
       },
       {
+        provider => 'locationmatch',
+        path     => '/jira/plugins/servlet/gadgets/makeRequest.*',
+        require  => 'all denied'
+      },
+      {
         provider => 'location',
         path     => '/synchrony',
         rewrites => [{
