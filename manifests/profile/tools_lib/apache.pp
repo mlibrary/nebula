@@ -13,9 +13,27 @@
 class nebula::profile::tools_lib::apache (
   String $servername,
   String $keyname,
+  Array[String] $blocked_paths = [],
 ) {
 
   $docroot = '/srv/www'
+
+  $directories = [{
+    provider => 'proxy',
+    path     => '*',
+    require  => 'all granted',
+  }] + $blocked_paths.map |$path| {{
+    provider => 'locationmatch',
+    path     => $path,
+    require  => 'all denied',
+  }} + [{
+    provider => 'location',
+    path     => '/synchrony',
+    rewrites => [{
+      rewrite_cond => ['%{HTTP:UPGRADE} ^WebSocket$ [NC]', '%{HTTP:CONNECTION} Upgrade$ [NC]' ],
+      rewrite_rule => ['.* ws://localhost:8091%{REQUEST_URI} [P]'],
+    }],
+  }]
 
   file {
     default:
@@ -84,32 +102,7 @@ class nebula::profile::tools_lib::apache (
 
     # from babel-common
     directoryindex      => 'index.html',
-
-    directories         => [
-      {
-        provider => 'proxy',
-        path     => '*',
-        require  => 'all granted'
-      },
-      {
-        provider => 'locationmatch',
-        path     => 'SendBulkMail',
-        require  => 'all denied'
-      },
-      {
-        provider => 'locationmatch',
-        path     => '/jira/plugins/servlet/gadgets/makeRequest.*',
-        require  => 'all denied'
-      },
-      {
-        provider => 'location',
-        path     => '/synchrony',
-        rewrites => [{
-          rewrite_cond => ['%{HTTP:UPGRADE} ^WebSocket$ [NC]', '%{HTTP:CONNECTION} Upgrade$ [NC]' ],
-          rewrite_rule => ['.* ws://localhost:8091%{REQUEST_URI} [P]']
-        }],
-      }
-    ],
+    directories         => $directories,
 
     proxy_pass          => [
       { path => '/confluence', url => 'http://localhost:8090/confluence', keywords => ['nocanon'] },
