@@ -53,37 +53,6 @@ class nebula::profile::www_lib::vhosts::publishing (
         }],
       }
     ],
-    # Redirects from legacy URLs, expire 09-01-2020
-    redirect_source => [
-      '/publications/journals',
-      '/publications/digital-projects',
-      '/publications/textbooks',
-      '/publications/books',
-      '/publications/conference-volumes',
-      '/publications/reprints',
-      '/blog',
-      '/about/contact-information',
-      '/about/our-organization',
-      '/services/copyright-services',
-      '/services/journal-services',
-      '/services/repository-services',
-      '/um-press',
-    ],
-    redirect_dest   => [
-      'http://www.publishing.umich.edu/journals',
-      'http://www.publishing.umich.edu/publications/#digital-projects',
-      'http://www.publishing.umich.edu/publications',
-      'http://www.publishing.umich.edu/publications/#imprints',
-      'http://www.publishing.umich.edu/publications/#conference-volumes',
-      'http://www.publishing.umich.edu/publications/#reprints',
-      'http://www.publishing.umich.edu/news',
-      'http://www.publishing.umich.edu/#contact',
-      'http://www.publishing.umich.edu/about',
-      'http://www.lib.umich.edu/copyright',
-      'http://www.publishing.umich.edu/journals',
-      'http://deepblue.lib.umich.edu',
-      'http://www.press.umich.edu',
-    ],
   }
 
   # A range of other sites served under the same Wordpress installation
