@@ -13,6 +13,7 @@ class nebula::profile::www_lib::vhosts::publishing (
 ) {
   apache::vhost { 'www.publishing-http':
     servername     => 'www.publishing.umich.edu',
+    serveraliases  => ['services.publishing.umich.edu','maps.publishing.umich.edu'],
     ssl            => false,
     port           => 80,
     docroot        => $docroot,
@@ -29,6 +30,7 @@ class nebula::profile::www_lib::vhosts::publishing (
   # URL generation, etc.
   apache::vhost { 'www.publishing-https':
     servername      => 'https://www.publishing.umich.edu',
+    serveraliases   => ['services.publishing.umich.edu','maps.publishing.umich.edu'],
     docroot         => $docroot,
     manage_docroot  => false,
     ssl             => false,
