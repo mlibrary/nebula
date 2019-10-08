@@ -29,15 +29,15 @@ class nebula::profile::www_lib::vhosts::publishing (
   # SSL. We pass an ENV var to signal that the request is over HTTPS for app
   # URL generation, etc.
   apache::vhost { 'www.publishing-https':
-    servername      => 'https://www.publishing.umich.edu',
-    serveraliases   => ['services.publishing.umich.edu','maps.publishing.umich.edu'],
-    docroot         => $docroot,
-    manage_docroot  => false,
-    ssl             => false,
-    port            => 443,
-    setenv          => ['HTTPS on'],
-    setenvifnocase  => '^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1',
-    directories     => [
+    servername     => 'https://www.publishing.umich.edu',
+    serveraliases  => ['services.publishing.umich.edu','maps.publishing.umich.edu'],
+    docroot        => $docroot,
+    manage_docroot => false,
+    ssl            => false,
+    port           => 443,
+    setenv         => ['HTTPS on'],
+    setenvifnocase => '^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1',
+    directories    => [
       {
         provider       => 'directory',
         path           => $docroot,
@@ -54,37 +54,6 @@ class nebula::profile::www_lib::vhosts::publishing (
           handler    => 'proxy:unix:/run/php/php7.3-fpm.sock|fcgi://localhost'
         }],
       }
-    ],
-    # Redirects from legacy URLs, expire 09-01-2020
-    redirect_source => [
-      '/publications/journals',
-      '/publications/digital-projects',
-      '/publications/textbooks',
-      '/publications/books',
-      '/publications/conference-volumes',
-      '/publications/reprints',
-      '/blog',
-      '/about/contact-information',
-      '/about/our-organization',
-      '/services/copyright-services',
-      '/services/journal-services',
-      '/services/repository-services',
-      '/um-press',
-    ],
-    redirect_dest   => [
-      'http://www.publishing.umich.edu/journals',
-      'http://www.publishing.umich.edu/publications/#digital-projects',
-      'http://www.publishing.umich.edu/publications',
-      'http://www.publishing.umich.edu/publications/#imprints',
-      'http://www.publishing.umich.edu/publications/#conference-volumes',
-      'http://www.publishing.umich.edu/publications/#reprints',
-      'http://www.publishing.umich.edu/news',
-      'http://www.publishing.umich.edu/#contact',
-      'http://www.publishing.umich.edu/about',
-      'http://www.lib.umich.edu/copyright',
-      'http://www.publishing.umich.edu/journals',
-      'http://deepblue.lib.umich.edu',
-      'http://www.press.umich.edu',
     ],
   }
 
