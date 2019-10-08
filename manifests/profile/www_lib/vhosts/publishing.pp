@@ -29,15 +29,15 @@ class nebula::profile::www_lib::vhosts::publishing (
   # SSL. We pass an ENV var to signal that the request is over HTTPS for app
   # URL generation, etc.
   apache::vhost { 'www.publishing-https':
-    servername      => 'https://www.publishing.umich.edu',
-    serveraliases   => ['services.publishing.umich.edu','maps.publishing.umich.edu'],
-    docroot         => $docroot,
-    manage_docroot  => false,
-    ssl             => false,
-    port            => 443,
-    setenv          => ['HTTPS on'],
-    setenvifnocase  => '^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1',
-    directories     => [
+    servername     => 'https://www.publishing.umich.edu',
+    serveraliases  => ['services.publishing.umich.edu','maps.publishing.umich.edu'],
+    docroot        => $docroot,
+    manage_docroot => false,
+    ssl            => false,
+    port           => 443,
+    setenv         => ['HTTPS on'],
+    setenvifnocase => '^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1',
+    directories    => [
       {
         provider       => 'directory',
         path           => $docroot,
