@@ -23,7 +23,7 @@ class nebula::profile::www_lib::vhosts::openmich (
 
   nebula::apache::www_lib_vhost { 'openmich-http':
     servername     => $servername,
-    serveraliases  => ["${prefix}openmich.www.lib.${domain}"],
+    serveraliases  => ["${prefix}openmich.www.${domain}"],
     docroot        => $docroot,
     logging_prefix => 'openmich/',
 
@@ -36,7 +36,7 @@ class nebula::profile::www_lib::vhosts::openmich (
 
   nebula::apache::www_lib_vhost { 'openmich-https':
     servername     => $servername,
-    serveraliases  => ["${prefix}openmich.www.lib.${domain}"],
+    serveraliases  => ["${prefix}openmich.www.${domain}"],
     docroot        => $docroot,
     logging_prefix => 'openmich/',
 
