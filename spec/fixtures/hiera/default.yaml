@@ -148,3 +148,6 @@ nebula::known_addresses::staff: default.invalid
 nebula::known_addresses::datacenter: default.invalid
 
 umich::networks::all_trusted_machines: []
+umich::networks::campus_wired_and_wireless: []
+umich::networks::staff: []
+umich::networks::bentley: []
