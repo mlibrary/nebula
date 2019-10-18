@@ -20,6 +20,16 @@ class nebula::profile::apache::authz_umichlib (
 
   package { 'libaprutil1-dbd-oracle': }
 
+  file { '/etc/ld.so.conf.d/oracle-instantclient.conf':
+    content => "/usr/lib/oracle/12.1/client64/lib\n",
+    notify  => Exec['oracle driver ldconfig'],
+  }
+
+  exec { 'oracle driver ldconfig':
+    refreshonly => true,
+    command     => '/sbin/ldconfig',
+  }
+
   apache::mod { 'authz_umichlib':
     package       => 'libapache2-mod-authz-umichlib',
     loadfile_name => 'zz_authz_umichlib.load'
