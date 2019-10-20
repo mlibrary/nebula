@@ -35,7 +35,7 @@ class nebula::role::webhost::www_lib_vm (
   include nebula::profile::www_lib::dependencies
   include nebula::profile::www_lib::perl
   include nebula::profile::www_lib::php
-  #  include nebula::profile::www_lib::shibboleth
+  include nebula::profile::www_lib::shibboleth
   include nebula::profile::www_lib::apache
   include nebula::profile::unison
 
