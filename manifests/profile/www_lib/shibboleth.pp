@@ -9,7 +9,7 @@
 # @example
 #   include nebula::profile::www_lib::shibboleth
 class nebula::profile::www_lib::shibboleth () {
-  include nebula::profile::hathitrust::apache
+  include nebula::profile::www_lib::apache
   include nebula::systemd::daemon_reload
 
   package {
