@@ -95,23 +95,12 @@ class nebula::profile::networking::firewall (
     }
   }
 
-  firewallchain {
-    default:
-      ensure => 'present',
-      purge  => true,
-    ;
-
-    'INPUT:filter:IPv6':
-      policy => 'drop',
-    ;
-
-    'OUTPUT:filter:IPv6':
-      policy => 'drop',
-    ;
-
-    'FORWARD:filter:IPv6':
-      policy => 'drop',
-    ;
+  # Disable IPv6  
+  firewallchain { 'INPUT:filter:IPv6':
+    purge => true,
+    ensure => present,
+    policy => drop,
+    before => undef,
   }
 
   $firewall_defaults = {
@@ -140,4 +129,5 @@ class nebula::profile::networking::firewall (
     action => 'drop',
     before => undef,
   }
+
 }
