@@ -114,7 +114,6 @@ class nebula::profile::networking::firewall (
     ;
   }
 
-
   $firewall_defaults = {
     proto  => 'tcp',
     state  => 'NEW',
