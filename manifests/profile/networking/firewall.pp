@@ -97,6 +97,7 @@ class nebula::profile::networking::firewall (
 
   # Disable IPv6  
   firewallchain { 'INPUT:filter:IPv6':
+    purge => true,  
     ensure => present,
     policy => drop,
     before => undef,
