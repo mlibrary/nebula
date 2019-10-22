@@ -92,21 +92,28 @@ class nebula::profile::networking::firewall (
         ignore => $forward_ignore,
       ;
 
-      # Purge and then block all IPv6 traffic
-
-      'INPUT:filter:IPv6':
-        policy => drop,
-      ;
-
-      'FORWARD:filter:IPv6':
-        policy => drop,
-      ;
-
-      'OUTPUT:filter:IPv6':
-        policy => drop,
-      ;
     }
   }
+
+  firewallchain {
+    default:
+      ensure => 'present',
+      purge  => true,
+    ;
+
+    'INPUT:filter:IPv6':
+      policy => 'drop',
+    ;
+
+    'OUTPUT:filter:IPv6':
+      policy => 'drop',
+    ;
+
+    'FORWARD:filter:IPv6':
+      policy => 'drop',
+    ;
+  }
+
 
   $firewall_defaults = {
     proto  => 'tcp',
