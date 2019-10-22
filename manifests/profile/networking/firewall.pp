@@ -98,8 +98,8 @@ class nebula::profile::networking::firewall (
   # Disable IPv6 by making chains DROP everything 
   firewallchain {
     default:
-      purge => true,  
       ensure => present,
+      purge  => true,
       policy => drop,
       # before => undef,
     ;
