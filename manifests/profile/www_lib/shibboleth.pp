@@ -51,21 +51,14 @@ class nebula::profile::www_lib::shibboleth () {
   }
 
   file { '/etc/shibboleth':
-    ensure  => 'directory',
-    mode    => '0775',
-    owner   => 'root',
-    group   => 'root',
-    recurse => true,
-    purge   => true,
-    links   => 'follow',
-    source  => 'puppet:///shibboleth-www_lib'
-  }
-
-  file { '/etc/shibboleth/shibboleth2.xml':
-    mode   => '0440',
-    owner  => '_shibd',
-    group  => 'nogroup',
-    source => 'puppet:///shibboleth-www_lib/shibboleth2.xml'
+    ensure             => 'directory',
+    owner              => 'root',
+    group              => '_shibd',
+    recurse            => true,
+    purge              => true,
+    links              => 'follow',
+    source             => 'puppet:///shibboleth-www_lib',
+    source_permissions => 'use'
   }
 
   file { '/etc/systemd/system/shibd.service.d':
