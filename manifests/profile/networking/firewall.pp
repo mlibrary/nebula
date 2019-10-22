@@ -101,7 +101,7 @@ class nebula::profile::networking::firewall (
       purge => true,  
       ensure => present,
       policy => drop,
-      before => undef,
+      # before => undef,
     ;
 
     ['INPUT:filter:IPv6', 'OUTPUT:filter:IPv6', 'FORWARD:filter:IPv6']:
