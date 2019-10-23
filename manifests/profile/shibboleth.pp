@@ -63,9 +63,9 @@ class nebula::profile::shibboleth (
 
   file { '/etc/shibboleth':
     ensure  => 'directory',
-    mode    => '0750',
+    mode    => 'u=rw,u+X,g=r,g+X,o=r,o+X',
     owner   => 'root',
-    group   => '_shibd',
+    group   => 'root',
     recurse => true,
     purge   => true,
     links   => 'follow',
