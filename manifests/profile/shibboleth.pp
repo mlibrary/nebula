@@ -1,27 +1,38 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::hathitrust::shibboleth
+# nebula::profile::shibboleth
 #
-# Install shibboleth for HathiTrust applications
+# Install Shibboleth (Service Provider and Apache module)
+#
+# @param config_source Source URI for /etc/shibboleth content, typically a
+#   fileserver path on the puppet-master.
 #
 # @example
-#   include nebula::profile::hathitrust::shibboleth
-class nebula::profile::hathitrust::shibboleth () {
-  include nebula::profile::hathitrust::apache
+#   class { 'nebula::profile::shibboleth':
+#     config_source => 'puppet:///shibboleth'
+#   }
+class nebula::profile::shibboleth (
+  String $config_source,
+) {
   include nebula::systemd::daemon_reload
 
   package {
     [
       'unixodbc',
-      'libapache2-mod-shib2',
       'shibboleth-sp2-common',
       'shibboleth-sp2-utils',
       'mariadb-unixodbc'
     ]:
   }
 
+  # We require 'apache' here to make sure that this profile is used in
+  # conjunction with a managed Apache installation, rather than just pulling
+  # in an unmanaged package with APT.
+  package { 'libapache2-mod-shib2':
+    require => [Class['apache']],
+  }
 
   file { '/etc/odbcinst.ini':
     ensure  => 'file',
@@ -52,20 +63,20 @@ class nebula::profile::hathitrust::shibboleth () {
 
   file { '/etc/shibboleth':
     ensure  => 'directory',
-    mode    => '0775',
+    mode    => '0750',
     owner   => 'root',
-    group   => 'root',
+    group   => '_shibd',
     recurse => true,
     purge   => true,
     links   => 'follow',
-    source  => 'puppet:///shibboleth'
+    source  => $config_source
   }
 
   file { '/etc/shibboleth/shibboleth2.xml':
     mode   => '0440',
     owner  => '_shibd',
     group  => 'nogroup',
-    source => 'puppet:///shibboleth/shibboleth2.xml'
+    source => "${config_source}/shibboleth2.xml"
   }
 
   file { '/etc/systemd/system/shibd.service.d':

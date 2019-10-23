@@ -27,6 +27,11 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it { is_expected.to contain_apache__vhost('000-default-ssl').with(ssl: true, ssl_cert: '/etc/ssl/certs/www.lib.umich.edu.crt') }
 
       it do
+        is_expected.to contain_file('/etc/systemd/system/shibd.service.d/increase-timeout.conf')
+          .with_content("[Service]\nTimeoutStartSec=900")
+      end
+
+      it do
         is_expected.to contain_apache__vhost('www.lib-ssl')
           .with(servername: 'www.lib.umich.edu',
                 port: 443,
