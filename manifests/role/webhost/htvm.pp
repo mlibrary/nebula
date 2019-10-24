@@ -30,9 +30,12 @@ class nebula::role::webhost::htvm (
     sdrview  => 'full'
   }
 
-  include nebula::profile::hathitrust::shibboleth
   include nebula::profile::hathitrust::apache
   include nebula::profile::unison
+
+  class { 'nebula::profile::shibboleth':
+    config_source => 'puppet:///shibboleth'
+  }
 
   nebula::usergroup { 'htprod': }
 }
