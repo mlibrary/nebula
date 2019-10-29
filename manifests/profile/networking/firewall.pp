@@ -91,7 +91,28 @@ class nebula::profile::networking::firewall (
       'FORWARD:filter:IPv4':
         ignore => $forward_ignore,
       ;
+
     }
+  }
+
+  # Disable IPv6 by making chains DROP everything 
+  firewallchain {
+    default:
+      ensure => present,
+      purge  => true,
+    ;
+
+    'INPUT:filter:IPv6':
+      policy => drop,
+    ;
+
+    'FORWARD:filter:IPv6':
+      policy => drop,
+    ;
+
+    'OUTPUT:filter:IPv6':
+      policy => drop,
+    ;
   }
 
   $firewall_defaults = {
@@ -120,4 +141,5 @@ class nebula::profile::networking::firewall (
     action => 'drop',
     before => undef,
   }
+
 }
