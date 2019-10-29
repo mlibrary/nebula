@@ -74,12 +74,16 @@ class nebula::profile::networking::firewall (
       }
     }
 
+    # todo: Revisit Kubernetes ignores when we treat IPv6.
+    #
     firewallchain {
       default:
         ensure => 'present',
         purge  => true,
       ;
 
+      # -- IPv4 ----
+      #
       'INPUT:filter:IPv4':
         ignore => $input_ignore,
       ;
@@ -92,27 +96,22 @@ class nebula::profile::networking::firewall (
         ignore => $forward_ignore,
       ;
 
+      # ---- IPv6 ----
+      # 
+      # Security: disable IPv6, all chains default to DROP.
+      'INPUT:filter:IPv6':
+        policy => drop,
+      ;
+
+      'FORWARD:filter:IPv6':
+        policy => drop,
+      ;
+
+      'OUTPUT:filter:IPv6':
+        policy => drop,
+      ;
     }
-  }
 
-  # Disable IPv6 by making chains DROP everything 
-  firewallchain {
-    default:
-      ensure => present,
-      purge  => true,
-    ;
-
-    'INPUT:filter:IPv6':
-      policy => drop,
-    ;
-
-    'FORWARD:filter:IPv6':
-      policy => drop,
-    ;
-
-    'OUTPUT:filter:IPv6':
-      policy => drop,
-    ;
   }
 
   $firewall_defaults = {
