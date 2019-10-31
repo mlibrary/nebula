@@ -9,6 +9,8 @@
 # and the firewall.
 class nebula::role::archivematica {
   include nebula::role::minimum
+  include nebula::profile::duo
+  include nebula::profile::networking
 
   nebula::exposed_port { '200 HTTP Dashboard':
     port  => 80,
@@ -22,6 +24,11 @@ class nebula::role::archivematica {
 
   nebula::exposed_port { '200 HTTP Storage Bentley':
     port  => 8000,
+    block => 'umich::networks::bentley',
+  }
+
+  nebula::exposed_port { '100 SSH Bentley':
+    port  => 22,
     block => 'umich::networks::bentley',
   }
 }
