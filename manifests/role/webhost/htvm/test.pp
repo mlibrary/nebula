@@ -17,7 +17,7 @@ class nebula::role::webhost::htvm::test {
   #   ipaddress     => $::ipaddress
   # }
 
-  lookup('umich::networks::staff').flatten.each |$network| {
+  lookup('umich::networks::all_trusted_machines').flatten.each |$network| {
     firewall { "100 HTTP ${network['name']}":
       proto  => 'tcp',
       dport  => [80,443],
