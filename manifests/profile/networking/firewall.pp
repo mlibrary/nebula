@@ -82,8 +82,6 @@ class nebula::profile::networking::firewall (
         purge  => true,
       ;
 
-      # -- IPv4 ----
-      #
       'INPUT:filter:IPv4':
         ignore => $input_ignore,
       ;
@@ -96,19 +94,13 @@ class nebula::profile::networking::firewall (
         ignore => $forward_ignore,
       ;
 
-      # ---- IPv6 ----
-      # 
-      # Security: disable IPv6, all chains default to DROP.
       'INPUT:filter:IPv6':
-        policy => drop,
       ;
 
       'FORWARD:filter:IPv6':
-        policy => drop,
       ;
 
       'OUTPUT:filter:IPv6':
-        policy => drop,
       ;
     }
 
@@ -122,7 +114,7 @@ class nebula::profile::networking::firewall (
 
   create_resources(firewall,$rules,$firewall_defaults)
 
-  # Default items, sorted by title
+  # Default IPv4 items, sorted by title
   firewall { '001 accept related established rules':
     proto  => 'all',
     state  => ['RELATED', 'ESTABLISHED'],
@@ -139,6 +131,28 @@ class nebula::profile::networking::firewall (
     proto  => 'all',
     action => 'drop',
     before => undef,
+  }
+
+  # Default IPv6 items, sorted by title
+  firewall { '001 accept related established rules (v6)':
+    proto    => 'all',
+    state    => ['RELATED', 'ESTABLISHED'],
+    action   => 'accept',
+    provider => 'ip6tables',
+  }
+
+  firewall { '001 accept all to lo interface (v6)':
+    proto    => 'all',
+    iniface  => 'lo',
+    action   => 'accept',
+    provider => 'ip6tables',
+  }
+
+  firewall { '999 drop all (v6)':
+    proto    => 'all',
+    action   => 'drop',
+    before   => undef,
+    provider => 'ip6tables',
   }
 
 }

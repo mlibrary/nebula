@@ -21,10 +21,28 @@ describe 'nebula::profile::networking::firewall' do
       end
 
       it do
+        is_expected.to contain_firewall('001 accept related established rules (v6)').with(
+          proto: 'all',
+          state: %w[RELATED ESTABLISHED],
+          action: 'accept',
+          provider: 'ip6tables',
+        )
+      end
+
+      it do
         is_expected.to contain_firewall('001 accept all to lo interface').with(
           proto: 'all',
           iniface: 'lo',
           action: 'accept',
+        )
+      end
+
+      it do
+        is_expected.to contain_firewall('001 accept all to lo interface (v6)').with(
+          proto: 'all',
+          iniface: 'lo',
+          action: 'accept',
+          provider: 'ip6tables',
         )
       end
 
@@ -56,7 +74,15 @@ describe 'nebula::profile::networking::firewall' do
         )
       end
 
-      it { is_expected.to have_firewall_resource_count(5) }
+      it do
+        is_expected.to contain_firewall('999 drop all (v6)').with(
+          proto: 'all',
+          action: 'drop',
+          provider: 'ip6tables',
+        )
+      end
+
+      it { is_expected.to have_firewall_resource_count(8) }
 
       it { is_expected.to contain_package('iptables-persistent') }
       it { is_expected.to contain_package('netfilter-persistent') }
@@ -71,6 +97,12 @@ describe 'nebula::profile::networking::firewall' do
         %w[INPUT OUTPUT FORWARD].each do |chain|
           it do
             is_expected.to contain_firewallchain("#{chain}:filter:IPv4")
+              .with_ensure('present')
+              .with_purge(true)
+          end
+
+          it do
+            is_expected.to contain_firewallchain("#{chain}:filter:IPv6")
               .with_ensure('present')
               .with_purge(true)
           end
