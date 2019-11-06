@@ -12,8 +12,8 @@ describe 'nebula::profile::elastic::metricbeat' do
 
       it do
         is_expected.to contain_service('metricbeat').with(
-          ensure: 'running',
-          enable: true,
+          ensure: 'stopped',
+          enable: false,
         )
       end
 
