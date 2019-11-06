@@ -28,6 +28,14 @@ class nebula::profile::networking::firewall (
     resources { 'firewall':
       purge => true,
     }
+
+    firewallchain {
+      ['INPUT:filter:IPv4', 'OUTPUT:filter:IPv4', 'FORWARD:filter:IPv4',
+      'INPUT:filter:IPv6', 'OUTPUT:filter:IPv6', 'FORWARD:filter:IPv6']:
+        ensure => 'present',
+        policy => 'accept',
+      ;
+    }
   } else {
     case $internal_routing {
       'docker': {
@@ -80,6 +88,7 @@ class nebula::profile::networking::firewall (
       default:
         ensure => 'present',
         purge  => true,
+        policy => 'accept',
       ;
 
       'INPUT:filter:IPv4':
