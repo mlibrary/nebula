@@ -23,8 +23,8 @@ class nebula::profile::elastic::metricbeat (
   include nebula::profile::elastic
 
   service { 'metricbeat':
-    ensure     => 'running',
-    enable     => true,
+    ensure     => 'stopped',
+    enable     => false,
     hasrestart => true,
   }
 
