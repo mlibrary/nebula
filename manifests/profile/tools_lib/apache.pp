@@ -102,6 +102,16 @@ class nebula::profile::tools_lib::apache (
         require  => 'all denied'
       },
       {
+        provider => 'locationmatch',
+        path     => '/jira/servicedesk/.*\.jsp.*',
+        require  => 'all denied'
+      },
+      {
+        provider => 'locationmatch',
+        path     => '/jira/.*\.\..*',
+        require  => 'all denied'
+      },
+      {
         provider => 'location',
         path     => '/synchrony',
         rewrites => [{
