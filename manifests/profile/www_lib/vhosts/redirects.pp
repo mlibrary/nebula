@@ -208,6 +208,25 @@ class nebula::profile::www_lib::vhosts::redirects(
     ]
   }
 
+  nebula::apache::redirect_vhost_http { 'copyright.umich.edu':
+    serveraliases => ['www.copyright.umich.edu'],
+    target        => 'https://copyright.umich.edu/'
+  }
+
+  nebula::apache::www_lib_vhost { 'copyright.umich.edu-redirect-https-all':
+    priority      => false,
+    ssl           => true,
+    ssl_cn        => 'copyright.umich.edu',
+    docroot       => false,
+    servername    => 'copyright.umich.edu',
+    serveraliases => ['www.copyright.umich.edu'],
+    rewrites      => [
+      {
+        rewrite_rule => ['^/.*$ https://www.lib.umich.edu/copyright/?utm_source=copyright.umich.edu&utm_medium=redirect [redirect,noescape]']
+      }
+    ]
+  }
+
   apache::vhost { 'searchtools.lib.umich.edu-redirect-http':
     priority      => false,
     port          => '80',

@@ -239,6 +239,19 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_ssl_cert('/etc/ssl/certs/www.press.umich.edu.crt')
           .with_setenv(['HTTPS on'])
       end
+
+      it do
+        is_expected.to contain_apache__vhost('copyright.umich.edu-redirect-http')
+          .with_servername('copyright.umich.edu')
+          .with_port(80)
+      end
+
+      it do
+        is_expected.to contain_apache__vhost('copyright.umich.edu-redirect-https-all')
+          .with_servername('copyright.umich.edu')
+          .with_ssl_cert('/etc/ssl/certs/copyright.umich.edu.crt')
+          .with_port(443)
+      end
     end
   end
 end
