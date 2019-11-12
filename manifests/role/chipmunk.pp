@@ -5,6 +5,24 @@ class nebula::role::chipmunk {
   if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
     include nebula::profile::hathitrust::dependencies
     include nebula::profile::hathitrust::perl
+
+    # Ensure that group-write umask is set for uploaders
+    file { '/etc/pam.d/sshd':
+      require => File["/etc/pam.d/sshd-${::lsbdistcodename}"],
+      notify  => Service['sshd'],
+      content => @("EOT")
+        # Managed by puppet (manifests/role/chipmunk)
+
+        @include sshd-${::lsbdistcodename}
+
+        # Set the umask for uploads
+        session    optional   pam_umask.so umask=0002
+      | EOT
+    }
+
+    file { "/etc/pam.d/sshd-${::lsbdistcodename}":
+      source => "puppet:///modules/nebula/pam.d/sshd-${::lsbdistcodename}",
+    }
   }
 
   # should be conditionally included from named_instances::apache when the
