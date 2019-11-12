@@ -15,6 +15,10 @@ describe 'nebula::role::chipmunk' do
       let(:hiera_config) { 'spec/fixtures/hiera/chipmunk_config.yaml' }
 
       it { is_expected.to compile }
+
+      if os == 'debian-9-x86_64'
+        it { is_expected.to contain_file('/etc/pam.d/sshd-stretch') }
+      end
     end
   end
 end
