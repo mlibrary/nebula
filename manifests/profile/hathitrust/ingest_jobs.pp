@@ -22,7 +22,9 @@ class nebula::profile::hathitrust::ingest_jobs(
 
   package { 'heirloom-mailx': }
 
-  $feed_perl = "/usr/bin/perl -I ${feed_home}/lib ${feed_home}/bin"
+  $feed_perl = "/usr/bin/perl -I ${feed_home}/lib"
+  $feed_jobs = "${feed_home}/bin/feed_jobs"
+  $feed_daily = "${feed_jobs}/feed.daily"
   $feed_log  = "${feed_home}/var/log"
   $joined_dcu_recipients = $dcu_recipients.join(',')
   $base_env = [
@@ -40,14 +42,14 @@ class nebula::profile::hathitrust::ingest_jobs(
 
     # Pickup rights from CRMS & aleph and populate the rights database
     'CRMS rights pickup':
-      command     => "${feed_perl}/feed.hourly/populate_rights_data.pl --pickup \
+      command     => "${feed_perl} ${feed_jobs}/feed.hourly/populate_rights_data.pl --pickup \
 --screen --level INFO 2>&1 >> ${rights_log}",
       environment => $base_env + [ "HTFEED_CONFIG=${rights_db_config}" ],
       minute      => 25;
 
     # Queue volumes for conversion on GRIN and check their statuses
     'GRIN conversion / status check':
-      command => "${feed_perl}/feed.hourly/ready_from_grin.pl 2>&1 > /dev/null",
+      command => "${feed_perl} ${feed_jobs}/feed.hourly/ready_from_grin.pl 2>&1 > /dev/null",
       minute  => 30;
 
     ## DAILY JOBS
@@ -61,13 +63,13 @@ class nebula::profile::hathitrust::ingest_jobs(
 
     # summary of previous day's ingest activity
     'ingest summary':
-      command => "/bin/bash ${feed_home}/bin/feed.daily/ingest_summary.sh",
+      command => "/bin/bash ${feed_daily}/ingest_summary.sh",
       hour    => 0,
       minute  => 5;
 
     # run daily tasks: update grin, get bibrecords, queue new material, deposit rights
     'daily tasks':
-      command => "for script in ${feed_home}/bin/feed.daily/enabled/*.pl; do perl -I${feed_home}/lib \$script; done",
+      command => "for script in ${feed_daily}/enabled/*.pl; do ${feed_perl} \$script; done",
       hour    => 3,
       minute  => 0;
 
@@ -78,7 +80,7 @@ class nebula::profile::hathitrust::ingest_jobs(
       minute  => 5;
 
     'copy google rejects list':
-      command     => "${feed_home}/bin/feed.daily/copy_rejects.sh",
+      command     => "${feed_daily}/copy_rejects.sh",
       environment => "MAILTO=${joined_dcu_recipients}",
       hour        => 3,
       minute      => 5;
@@ -86,31 +88,31 @@ class nebula::profile::hathitrust::ingest_jobs(
     ## WEEKLY JOBS
 
     'get brittle books data':
-      command => "${feed_perl}/feed.weekly/get_brittle_books_data.pl 2>&1 > /dev/null",
+      command => "${feed_perl} ${feed_jobs}/feed.weekly/get_brittle_books_data.pl 2>&1 > /dev/null",
       weekday => 1,
       hour    => 8,
       minute  => 0;
 
     'generate ingest logs':
-      command =>  "${feed_perl}/feed.weekly/generate_logs.pl",
+      command =>  "${feed_perl} ${feed_jobs}/feed.weekly/generate_logs.pl",
       weekday => 1,
       hour    => 1,
       minute  => 0;
 
     'generate ingest reports':
-      command => "${feed_perl}/feed.weekly/ingest_reporting.pl",
+      command => "${feed_perl} ${feed_jobs}/feed.weekly/ingest_reporting.pl",
       weekday => 1,
       hour    => 2,
       minute  => 0;
 
     'repository statistics':
-      command => "/bin/bash ${feed_home}/bin/feed.weekly/repostat.sh",
+      command => "/bin/bash ${feed_jobs}/feed.weekly/repostat.sh",
       weekday => 1,
       hour    => 0,
       minute  => 0;
 
     'audit statistics':
-      command => "/bin/bash ${feed_home}/bin/feed.weekly/auditstat.sh",
+      command => "/bin/bash ${feed_jobs}/feed.weekly/auditstat.sh",
       weekday => 1,
       hour    => 0,
       minute  => 5;
@@ -124,20 +126,20 @@ class nebula::profile::hathitrust::ingest_jobs(
 
     # not sure if this is still needed: "disposition 0 volumes"
     'grin reports':
-      command  => "${feed_perl}/feed.monthly/grin_reports.pl",
+      command  => "${feed_perl} ${feed_jobs}/feed.monthly/grin_reports.pl",
       monthday => 8,
       hour     => 1,
       minute   => 1;
 
     'grin gfv':
-      command     => "${feed_perl}/feed.monthly/grin_gfv.pl",
+      command     => "${feed_perl} ${feed_jobs}/feed.monthly/grin_gfv.pl",
       environment => $base_env + [ "HTFEED_CONFIG=${rights_db_config}" ],
       monthday    => 29,
       hour        => 1,
       minute      => 1;
 
     'all sources':
-      command  => "/bin/bash ${feed_home}/bin/feed.monthly/all_sources.sh",
+      command  => "/bin/bash ${feed_jobs}/feed.monthly/all_sources.sh",
       monthday => 1,
       hour     => 2,
       minute   => 40;
@@ -155,19 +157,19 @@ class nebula::profile::hathitrust::ingest_jobs(
     # 25 2 1 * * /bin/bash $FEED_HOME/bin/feed.monthly/grin_error_range.sh
 
     'monthly ingest count':
-      command  => "${feed_perl}/feed.monthly/monthly_ingest_count.pl",
+      command  => "${feed_perl} ${feed_jobs}/feed.monthly/monthly_ingest_count.pl",
       monthday => 1,
       hour     => 2,
       minute   => 20;
 
     'copyright distribution snapshot':
-      command  => "${feed_perl}/feed.monthly/copyright_distribution_snapshot.pl",
+      command  => "${feed_perl} ${feed_jobs}/feed.monthly/copyright_distribution_snapshot.pl",
       monthday => 1,
       hour     => 2,
       minute   => 10;
 
     'full zephir comparison':
-      command  => "${feed_perl}/feed.monthly/zephir_diff.pl",
+      command  => "${feed_perl} ${feed_jobs}/feed.monthly/zephir_diff.pl",
       monthday => 1,
       hour     => 4,
       minute   => 0;
