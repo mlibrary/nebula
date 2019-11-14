@@ -87,6 +87,7 @@ class nebula::profile::www_lib::apache (
   # should be moved elsewhere to include as virtual all that might be present on the puppet master
   @nebula::apache::ssl_keypair {
     [
+      'copyright.umich.edu',
       'datamart.lib.umich.edu',
       'deepblue.lib.umich.edu',
       'developingwritersbook.com',
