@@ -23,13 +23,6 @@ groups:
     for: 2h
     labels:
       severity: ticket
-  - alert: PuppetAlwaysCorrecting
-    annotations:
-      summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} keeps needing corrective changes.'
-    expr: 'puppet_report_resources{environment="production", name="Corrective change"} > 0'
-    for: 2h
-    labels:
-      severity: ticket
   - alert: InstanceDown
     annotations:
       summary: 'Node {{$labels.hostname}} isn''t responding to Prometheus.'
