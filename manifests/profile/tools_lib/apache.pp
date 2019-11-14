@@ -92,21 +92,25 @@ class nebula::profile::tools_lib::apache (
         require  => 'all granted'
       },
       {
+        # CVE-2019-11581
         provider => 'locationmatch',
         path     => 'SendBulkMail',
         require  => 'all denied'
       },
       {
+        # CVE-2019-8451
         provider => 'locationmatch',
         path     => '/jira/plugins/servlet/gadgets/makeRequest.*',
         require  => 'all denied'
       },
       {
+        # CVE-2019-15003 CVE-2019-15004
         provider => 'locationmatch',
         path     => '/jira/servicedesk/.*\.jsp.*',
         require  => 'all denied'
       },
       {
+        # CVE-2019-15003 CVE-2019-15004
         provider => 'locationmatch',
         path     => '/jira/.*\.\..*',
         require  => 'all denied'
