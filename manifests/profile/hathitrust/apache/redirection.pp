@@ -37,7 +37,7 @@ class nebula::profile::hathitrust::apache::redirection (
       redirect_dest     => "https://${servername}/",
       access_log_file   => "${vhost}/access.log",
       access_log_format => 'combined',
-      error_log_file    => "${vhost}/error.log"
+      error_log_file    => "${vhost}/error.log",
     }
 
     file { "/var/log/apache2/${vhost}":
@@ -48,29 +48,39 @@ class nebula::profile::hathitrust::apache::redirection (
     }
   }
 
-  apache::vhost { 'hathitrust canonical name redirection':
-    servername        => $domain,
-    docroot           => false,
-    port              => '80',
-    serveraliases     => $alias_domains + $alias_domains.map |$alias_domain| { "www.${alias_domain}" },
-    redirect_source   => '/',
-    redirect_status   => 'permanent',
-    redirect_dest     => "https://${www_servername}/",
-    error_log_file    => 'error.log',
-    access_log_file   => 'access.log',
-    access_log_format => 'combined',
-  }
+  apache::vhost {
+    default:
+      error_log_file    => 'error.log',
+      access_log_file   => 'access.log',
+      access_log_format => 'combined',
+      docroot           => false;
 
-  apache::vhost { "m.${catalog_servername} redirection":
-    servername        => "m.${catalog_servername}",
-    docroot           => false,
-    port              => '80',
-    redirect_source   => '/',
-    redirect_status   => 'permanent',
-    redirect_dest     => "https://m.${prefix}${domain}/",
-    error_log_file    => 'error.log',
-    access_log_file   => 'access.log',
-    access_log_format => 'combined',
+    'hathitrust canonical name redirection':
+      servername      => $domain,
+      port            => '80',
+      serveraliases   => $alias_domains + $alias_domains.map |$alias_domain| { "www.${alias_domain}" },
+      redirect_source => '/',
+      redirect_status => 'permanent',
+      redirect_dest   => "https://${www_servername}/";
+
+    "m.${catalog_servername} redirection":
+      servername      => "m.${catalog_servername}",
+      port            => '80',
+      redirect_source => '/',
+      redirect_status => 'permanent',
+      redirect_dest   => "https://m.${prefix}${domain}/";
+
+    "${prefix}m.${domain} https redirection":
+      servername => "${prefix}m.${domain}",
+      port       => '443',
+      rewrites   => [
+        {
+          rewrite_rule => ["^/?$ https://${www_servername} [last,redirect=permanent]"],
+        },
+        {
+          rewrite_rule => ["^/(.*)$ https://${catalog_servername}/\$1 [last,redirect=permanent]"],
+        }
+      ],
   }
 
 }
