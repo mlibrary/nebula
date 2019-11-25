@@ -21,7 +21,7 @@ WorkingDirectory=<%= @path -%>/current
 ExecStart=<%= @rbenv_root -%>/bin/rbenv exec bundle exec bin/<%= @subservice %>
 
 <% if @os['release']['major'] == '8' %>
-StartLimitIntervalSec=900
+StartLimitInterval=900
 StartLimitBurst=5
 <% end %>
 TimeoutStartSec=60
