@@ -34,8 +34,8 @@ class nebula::profile::hathitrust::dependencies () {
   }
 
   # install jhove, pin it to buster if we're on stretch
-  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
-    include nebula::profile::apt::testing
+  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename == 'stretch' {
+    include nebula::profile::apt::buster
     include apt::backports
 
     $packages = ['jhove','libjaxb-api-java','libactivation-java']
@@ -46,7 +46,7 @@ class nebula::profile::hathitrust::dependencies () {
       codename    => $release,
       priority    => 700,
       packages    => $packages,
-      require     => Class['nebula::profile::apt::testing']
+      require     => Class['nebula::profile::apt::buster']
     }
 
     package {
