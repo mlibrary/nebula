@@ -44,6 +44,13 @@ describe 'nebula::profile::kubernetes' do
         end
 
         it do
+          is_expected.to contain_apt__pin('kubernetes').with(
+            packages: %w[kubeadm kubelet],
+            version: '1.14.2-00',
+          )
+        end
+
+        it do
           is_expected.to contain_file('/etc/systemd/system/docker.service.d')
             .with_ensure('directory')
         end
@@ -105,6 +112,7 @@ describe 'nebula::profile::kubernetes' do
         it { is_expected.to contain_package('kubeadm').with_ensure('1.11.9-00') }
         it { is_expected.to contain_package('kubelet').with_ensure('1.11.9-00') }
         it { is_expected.to contain_class('nebula::profile::docker').with_version('18.06.2~ce~3-0~debian') }
+        it { is_expected.to contain_apt__pin('kubernetes').with_version('1.11.9-00') }
 
         describe 'exported resources' do
           subject { exported_resources }

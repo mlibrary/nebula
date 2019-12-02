@@ -64,6 +64,12 @@ class nebula::profile::kubernetes (
     require => [Apt::Source['kubernetes'], Class['docker']],
   }
 
+  apt::pin { 'kubernetes':
+    packages => ['kubeadm', 'kubelet'],
+    version  => "${kubernetes_version}-00",
+    priority => 999,
+  }
+
   apt::source { 'kubernetes':
     location => 'https://apt.kubernetes.io/',
     release  => 'kubernetes-xenial',

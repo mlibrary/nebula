@@ -69,5 +69,11 @@ class nebula::profile::docker (
       version          => $version,
       extra_parameters => ['--insecure-registry=hatcher-kubernetes.umdl.umich.edu:32030'],
     }
+
+    apt::pin { 'docker-ce':
+      packages => ['docker-ce', 'docker-ce-cli'],
+      version  => $version,
+      priority => 999,
+    }
   }
 }
