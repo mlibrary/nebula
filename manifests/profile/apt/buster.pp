@@ -10,7 +10,7 @@ class nebula::profile::apt::buster {
   # pinning first so we don't install things we don't want
   apt::pin { 'buster':
     explanation => 'Deprioritize packages from Debian buster',
-    release     => 'buster',
+    codename    => 'buster',
     priority    => -10,
     packages    => '*',
     before      => Apt::Source['buster']
