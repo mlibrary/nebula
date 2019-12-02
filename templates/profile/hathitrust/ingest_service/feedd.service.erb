@@ -7,6 +7,7 @@ Type=simple
 RemainAfterExit=no
 User=libadm
 Environment="HTFEED_CONFIG=<%= @config %>"
+Environment="TMPDIR=/ram"
 ExecStart=/usr/bin/perl /htapps/babel/feed/bin/feedd.pl
 Restart=always
 
