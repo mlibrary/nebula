@@ -52,12 +52,20 @@ describe 'nebula::profile::docker' do
 
       context 'without version set' do
         it { is_expected.to contain_class('docker').without_version }
+        it { is_expected.not_to contain_apt__pin('docker-ce') }
       end
 
       context 'with version set to 5' do
         let(:params) { { version: '5' } }
 
         it { is_expected.to contain_class('docker').with_version('5') }
+
+        it do
+          is_expected.to contain_apt__pin('docker-ce').with(
+            packages: %w[docker-ce docker-ce-cli],
+            version: '5',
+          )
+        end
       end
     end
   end
