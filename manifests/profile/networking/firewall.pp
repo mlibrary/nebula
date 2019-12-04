@@ -46,12 +46,31 @@ class nebula::profile::networking::firewall (
           '-j DOCKER',
         ]
 
-        $forward_ignore = [
-          '-j DOCKER-USER',
-          '-j DOCKER-ISOLATION',
-          '-i docker0',
-          '-o docker0',
-        ]
+        case $::os['name'] {
+          default: {
+            $forward_ignore = []
+          }
+
+          'Debian': {
+            $forward_ignore = [
+              '-j DOCKER-USER',
+              '-j DOCKER-ISOLATION',
+              '-i docker0',
+              '-o docker0',
+            ]
+          }
+
+          'Ubuntu': {
+            $forward_ignore = [
+              '-j DOCKER-USER',
+              '-j DOCKER-ISOLATION',
+              '-i docker0',
+              '-o docker0',
+              '-i br-',
+              '-o br-',
+            ]
+          }
+        }
       }
 
       'kubernetes_calico': {
