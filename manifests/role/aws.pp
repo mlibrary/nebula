@@ -6,9 +6,12 @@
 #
 # @example
 #   include nebula::role::aws
-class nebula::role::aws {
-
-  include nebula::role::minimum
+class nebula::role::aws (
+  String $internal_routing = '',
+) {
+  class { 'nebula::role::minimum':
+    internal_routing => $internal_routing,
+  }
 
   ########################################
   # this needs to be in a profile
