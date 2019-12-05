@@ -7,8 +7,6 @@
 # @example
 #   include nebula::role::aws::auto
 class nebula::role::aws::auto {
-  include nebula::role::aws
-
   if $::ec2_tag_role {
     include Class[$::ec2_tag_role]
   } else {
