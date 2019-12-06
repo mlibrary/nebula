@@ -107,7 +107,7 @@ describe 'nebula::named_instance::app' do
         let(:home) { "/var/local/#{title}" }
 
         it { is_expected.to contain_file(home).with(ensure: 'directory') }
-        it { is_expected.to contain_file(home).with(mode: '2775') }
+        it { is_expected.to contain_file(home).with(mode: '0755') }
         it { is_expected.to contain_file(home).with(owner: uid) }
         it { is_expected.to contain_file(home).with(group: gid) }
       end
@@ -127,7 +127,7 @@ describe 'nebula::named_instance::app' do
           let(:path) { '/some/app/path' }
 
           it { is_expected.to contain_file(path).with(ensure: 'directory') }
-          it { is_expected.to contain_file(path).with(mode: '2775') }
+          it { is_expected.to contain_file(path).with(mode: '0755') }
           it { is_expected.to contain_file(path).with(owner: uid) }
           it { is_expected.to contain_file(path).with(group: gid) }
         end
@@ -136,7 +136,7 @@ describe 'nebula::named_instance::app' do
           let(:path) { "/var/local/#{title}" }
 
           it { is_expected.to contain_file(path).with(ensure: 'directory') }
-          it { is_expected.to contain_file(path).with(mode: '2775') }
+          it { is_expected.to contain_file(path).with(mode: '0755') }
           it { is_expected.to contain_file(path).with(owner: uid) }
           it { is_expected.to contain_file(path).with(group: gid) }
         end
