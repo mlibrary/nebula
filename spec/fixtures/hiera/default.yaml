@@ -138,6 +138,11 @@ nebula::virtual::users::all_users:
     gid: prometheus
     comment: Prometheus
     home: /var/lib/prometheus
+  docker:
+    uid: 999
+    gid: docker
+    comment: Docker
+    home: /var/lib/docker
 
 nebula::named_instance::solr_core::default_config: '/nonexistent/solr/conf'
 nebula::named_instance::solr_core::core_home: '/nonexistent/solr_home'
@@ -151,3 +156,4 @@ umich::networks::all_trusted_machines: []
 umich::networks::campus_wired_and_wireless: []
 umich::networks::staff: []
 umich::networks::bentley: []
+umich::networks::datacenter: []
