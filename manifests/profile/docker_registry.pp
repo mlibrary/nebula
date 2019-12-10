@@ -24,11 +24,8 @@ class nebula::profile::docker_registry (
     image    => 'registry:2',
     ports    => '5000:5000',
     volumes  => '/docker-registry:/var/lib/registry',
-    username => 'docker',
-    require  => [User['docker'], Nebula::Nfs_mount['/docker-registry']],
+    require  => Nebula::Nfs_mount['/docker-registry'],
   }
-
-  realize User['docker']
 
   nebula::nfs_mount { '/docker-registry':
     remote_target => $storage_volume,
