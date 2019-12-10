@@ -21,10 +21,10 @@ class nebula::profile::docker_registry (
   }
 
   docker::run { 'registry':
-    image    => 'registry:2',
-    ports    => '5000:5000',
-    volumes  => '/docker-registry:/var/lib/registry',
-    require  => Nebula::Nfs_mount['/docker-registry'],
+    image   => 'registry:2',
+    ports   => '5000:5000',
+    volumes => '/docker-registry:/var/lib/registry',
+    require => Nebula::Nfs_mount['/docker-registry'],
   }
 
   nebula::nfs_mount { '/docker-registry':
