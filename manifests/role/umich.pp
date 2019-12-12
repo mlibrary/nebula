@@ -10,9 +10,12 @@
 #   include nebula::role::umich
 class nebula::role::umich (
   $bridge_network = false,
+  $internal_routing = '',
 ) {
 
-  include nebula::role::minimum
+  class { 'nebula::role::minimum':
+    internal_routing => $internal_routing,
+  }
 
   if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
     include nebula::profile::duo
