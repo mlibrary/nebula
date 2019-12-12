@@ -10,7 +10,10 @@
 # @example
 #   include nebula::role::deploy_host
 class nebula::role::deploy_host {
-  include nebula::role::umich
+  class { 'nebula::role::umich':
+    internal_routing => 'docker',
+  }
+
   include nebula::profile::ruby
   include nebula::profile::nodejs
   include nebula::profile::moku
@@ -19,4 +22,6 @@ class nebula::role::deploy_host {
     include nebula::profile::afs
     include nebula::profile::users
   }
+
+  include nebula::profile::docker
 }
