@@ -67,7 +67,10 @@ class nebula::profile::docker (
   } else {
     class { 'docker':
       version          => $version,
-      extra_parameters => ['--insecure-registry=hatcher-kubernetes.umdl.umich.edu:32030'],
+      extra_parameters => [
+        '--insecure-registry=hatcher-kubernetes.umdl.umich.edu:32030',
+        '--insecure-registry=docker-registry.umdl.umich.edu:5000',
+      ],
     }
 
     apt::pin { 'docker-ce':
