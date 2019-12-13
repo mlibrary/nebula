@@ -63,13 +63,17 @@ class nebula::profile::docker (
   }
 
   if $version == '' {
-    include docker
+    class { 'docker':
+      extra_parameters => [
+        '--insecure-registry=docker-registry.umdl.umich.edu:80',
+      ],
+    }
   } else {
     class { 'docker':
       version          => $version,
       extra_parameters => [
         '--insecure-registry=hatcher-kubernetes.umdl.umich.edu:32030',
-        '--insecure-registry=docker-registry.umdl.umich.edu:5000',
+        '--insecure-registry=docker-registry.umdl.umich.edu:80',
       ],
     }
 

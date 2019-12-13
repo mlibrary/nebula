@@ -16,13 +16,13 @@ class nebula::profile::docker_registry (
   # only open to our own servers. If we ever want developers to be able
   # to push their own images, this will need revisiting.
   nebula::exposed_port { '200 Docker Registry':
-    port  => 5000,
+    port  => 80,
     block => 'umich::networks::datacenter',
   }
 
   docker::run { 'registry':
     image   => 'registry:2',
-    ports   => '5000:5000',
+    ports   => '80:5000',
     volumes => '/docker-registry:/var/lib/registry',
     require => Nebula::Nfs_mount['/docker-registry'],
   }
