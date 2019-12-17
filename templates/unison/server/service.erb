@@ -2,6 +2,7 @@
 Description=<%= @title %> Unison
 After=network.target
 <%- @filesystems.each do |filesystem| -%>
+After=<%= filesystem %>.mount
 Requires=<%= filesystem %>.mount
 <%- end -%>
 
