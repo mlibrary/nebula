@@ -10,6 +10,8 @@
 class nebula::profile::kubernetes::worker {
   include nebula::profile::kubernetes
 
+  ensure_packages(['nfs-common'], {'ensure' => 'present'})
+
   $cluster = lookup('nebula::profile::kubernetes::cluster')
 
   @@concat_fragment { "haproxy nodeports ${::hostname}":

@@ -13,6 +13,7 @@ describe 'nebula::profile::kubernetes::worker' do
 
       it { is_expected.to compile }
       it { is_expected.to contain_class('Nebula::Profile::Kubernetes') }
+      it { is_expected.to contain_package('nfs-common') }
 
       describe 'exported resources' do
         subject { exported_resources }
