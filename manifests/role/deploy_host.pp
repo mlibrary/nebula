@@ -10,18 +10,22 @@
 # @example
 #   include nebula::role::deploy_host
 class nebula::role::deploy_host {
-  class { 'nebula::role::umich':
-    internal_routing => 'docker',
-  }
+  if $::lsbdistcodename == 'jessie' {
+    include nebula::role::umich
 
-  include nebula::profile::ruby
-  include nebula::profile::nodejs
-  include nebula::profile::moku
+    include nebula::profile::ruby
+    include nebula::profile::nodejs
+    include nebula::profile::moku
+  } else {
+    class { 'nebula::role::umich':
+      internal_routing => 'docker',
+    }
 
-  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
+    include nebula::profile::ruby
+    include nebula::profile::nodejs
+    include nebula::profile::moku
     include nebula::profile::afs
     include nebula::profile::users
+    include nebula::profile::docker
   }
-
-  include nebula::profile::docker
 }

@@ -25,7 +25,7 @@ class nebula::profile::moku (
 
   apt::source { 'kubernetes':
     location => 'https://apt.kubernetes.io/',
-    release  => "kubernetes-${::lsbdistcodename}",
+    release  => 'kubernetes-xenial',
     repos    => 'main',
     key      => {
       'id'     => '54A647F9048D5688D7DA2ABE6A030B21BA07F4FB',
