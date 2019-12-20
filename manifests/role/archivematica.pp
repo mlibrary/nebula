@@ -12,12 +12,7 @@ class nebula::role::archivematica {
   include nebula::profile::afs
   include nebula::profile::duo
   include nebula::profile::networking
-
-  # TSM to be included via puppet starting with Debian 9 onwards
-  if $facts['os']['family'] == 'Debian' \
-    and $facts['os']['distro']['codename'] != 'jessie' { 
-    include nebula::profile::tsm
-  }
+  include nebula::profile::tsm
 
   nebula::exposed_port { '200 HTTP Dashboard':
     port  => 80,
