@@ -39,18 +39,18 @@ describe 'nebula::profile::solr' do
         end
       end
 
-      context 'with config file' do
+      context 'with file' do
         [
-          '/var/lib/solr',
-          '/var/lib/solr/home',
-          '/var/lib/solr/logs',
+          '/var/lib/solr/log4j.properties',
+          '/var/lib/solr/solr.in.sh',
+          '/var/lib/solr/home/solr.xml',
         ].each do |path|
           it do
             is_expected.to contain_file(path).with(
               owner: 'solr',
               group: 'solr',
-              ensure: 'directory',
-              mode: '0750',
+              ensure: 'file',
+              mode: '0644',
             )
           end
         end
