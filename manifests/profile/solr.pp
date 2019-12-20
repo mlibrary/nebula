@@ -22,16 +22,19 @@ class nebula::profile::solr (
   file {
     default:
       owner => 'solr',
-      group => 'solr';
+      group => 'solr',
     [$base, $home, $logs]:
       ensure => 'directory',
-      mode   => '0750';
+      mode   => '0750',
     "${base}/log4j.properties":
-      content => template('nebula/profile/solr/log4j.properties.erb');
+      ensure => 'present',
+      content => template('nebula/profile/solr/log4j.properties.erb'),
     "${base}/solr.in.sh":
-      content => template('nebula/profile/solr/solr.in.sh.erb');
+      ensure => 'present',
+      content => template('nebula/profile/solr/solr.in.sh.erb'),
     "${home}/solr.xml":
-      content =>  template('nebula/profile/solr/solr.xml.erb')
+      ensure => 'present',
+      content =>  template('nebula/profile/solr/solr.xml.erb'),
   }
 
   file { '/etc/systemd/system/solr.service':
