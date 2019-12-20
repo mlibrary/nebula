@@ -27,13 +27,10 @@ class nebula::profile::solr (
       ensure => 'directory',
       mode   => '0750',
     "${base}/log4j.properties":
-      ensure => 'present',
       content => template('nebula/profile/solr/log4j.properties.erb'),
     "${base}/solr.in.sh":
-      ensure => 'present',
       content => template('nebula/profile/solr/solr.in.sh.erb'),
     "${home}/solr.xml":
-      ensure => 'present',
       content =>  template('nebula/profile/solr/solr.xml.erb'),
   }
 
