@@ -1,3 +1,3 @@
-nebula::role::tsm::tsm_servername: tsmserver
-nebula::role::tsm::tsm_serveraddress: tsm.default.invalid
+nebula::profile::tsm::tsm_servername: tsmserver
+nebula::profile::tsm::tsm_serveraddress: tsm.default.invalid
 
