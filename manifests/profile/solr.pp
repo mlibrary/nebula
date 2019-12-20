@@ -19,10 +19,6 @@ class nebula::profile::solr (
 
   nebula::usergroup { 'solr': }
 
-  $log4j_props = "${base}/log4j.properties"
-  $solr_in_sh = "${base}/solr.in.sh"
-  $solr_bin = '/opt/solr/bin/solr'
-
   file {
     default:
       owner => 'solr',
@@ -30,9 +26,9 @@ class nebula::profile::solr (
     [$base, $home, $logs]:
       ensure => 'directory',
       mode   => '0750';
-    $log4j_props:
+    "${base}/log4j.properties":
       content => template('nebula/profile/solr/log4j.properties.erb');
-    $solr_in_sh:
+    "${base}/solr.in.sh":
       content => template('nebula/profile/solr/solr.in.sh.erb');
     "${home}/solr.xml":
       content =>  template('nebula/profile/solr/solr.xml.erb')
