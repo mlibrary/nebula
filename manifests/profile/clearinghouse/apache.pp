@@ -13,7 +13,7 @@
 #   include nebula::role::app_host::standalone
 class nebula::profile::clearinghouse::apache (
   String $base_domain = 'clearinghouse.net',
-  String $ch_root = '/l/web'
+  String $ch_root = '/clearinghouse/web'
 ) {
   include nebula::profile::named_instances::apache
 
@@ -51,10 +51,16 @@ class nebula::profile::clearinghouse::apache (
     ssl_certs_dir  => '/etc/ssl/chain'
   }
 
+  $aliases_common = {
+    alias => '/chDocs/',
+    path  => "${ch_root}/chDocs/"
+  }
+
   apache::vhost {
     default:
-      port     => '80',
-      rewrites => [{
+      port           => '80',
+      manage_docroot => false,
+      rewrites       => [{
         rewrite_rule => ['^(.*)$ https://%{HTTP_HOST}$1 [L,NE,R]']
       }];
 
@@ -67,32 +73,43 @@ class nebula::profile::clearinghouse::apache (
 
   apache::vhost {
     'public-https':
-      port     => '443',
-      aliases  => [
-        {
-          alias => '/chDocs/',
-          path  => "${ch_root}/chDocs"
-        }
-      ],
-
-      rewrites => [
+      port           => '443',
+      manage_docroot => false,
+      aliases        => [$aliases_common],
+      rewrites       => [
         $nocache_pdf,
         {
           # block SQL injection attempts
           rewrite_cond => '%{QUERY_STRING}   (select|insert|update|delete)   [nocase]',
           rewrite_rule => '(.*)      -         [forbidden,last]'
         },
+        {
+          rewrite_rule => '^/policy$ https://www.law.umich.edu/special/policyclearinghouse/Pages/default.aspx [redirect=permanent,nocase]'
+        },
+        {
+          rewrite_rule => '^/schoolhouse$ https://schoolhouse.clearinghouse.net [redirect=permanent,nocase]'
+        },
       ],
 
-      *        => $public_common.merge($ssl_params)
+      *              => $public_common.merge($ssl_params)
   }
 
   apache::vhost {
     'admin-https':
-      port     => '443',
-      rewrites => [$nocache_pdf],
+      port           => '443',
+      manage_docroot => false,
+      aliases        => [$aliases_common],
+      rewrites       => [$nocache_pdf],
 
-      *        => $admin_common.merge($ssl_params)
+      *              => $admin_common.merge($ssl_params)
+  }
+
+  php::config { 'fpm php.ini':
+    file   => '/etc/php/7.3/fpm/php.ini',
+    config => {
+      'PHP/post_max_size'           => '64M',
+      'PHP/upload_max_filesize'     => '64M',
+    },
   }
 
 }

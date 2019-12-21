@@ -13,6 +13,9 @@ class nebula::role::clearinghouse {
 
   include nebula::profile::mysql
   include nebula::profile::clearinghouse::apache
-
+  package { ['git',
+  'libimage-exiftool-perl',
+  'poppler-utils',
+  'php7.3-tidy' ]: }
 
 }
