@@ -15,14 +15,14 @@ describe 'nebula::role::app_host::hyrax' do
 
       context 'with class' do
         [
-          'include nebula::role::umich',
-          'include nebula::profile::ruby',
-          'include nebula::profile::nodejs',
-          'include nebula::profile::named_instances',
-          'include nebula::profile::named_instances::apache',
-          'include nebula::profile::mysql',
-          'include nebula::profile::redis',
-          'include nebula::profile::solr',
+          'nebula::role::umich',
+          'nebula::profile::ruby',
+          'nebula::profile::nodejs',
+          'nebula::profile::named_instances',
+          'nebula::profile::named_instances::apache',
+          'nebula::profile::mysql',
+          'nebula::profile::redis',
+          'nebula::profile::solr',
         ].each do |class_name|
           it { is_expected.to contain_class(class_name) }
         end
