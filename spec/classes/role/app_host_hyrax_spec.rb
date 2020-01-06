@@ -10,6 +10,7 @@ describe 'nebula::role::app_host::hyrax' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
+      let(:hiera_config) { 'spec/fixtures/hiera/hyrax_config.yaml' }
 
       it { is_expected.to compile }
 
