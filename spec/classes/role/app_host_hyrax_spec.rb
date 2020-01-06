@@ -13,7 +13,7 @@ describe 'nebula::role::app_host::hyrax' do
 
       it { is_expected.to compile }
 
-      context "with class" do
+      context 'with class' do
         [
           'include nebula::role::umich',
           'include nebula::profile::ruby',

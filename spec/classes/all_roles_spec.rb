@@ -56,6 +56,7 @@ end
             %w[nebula::role::tools_lib tools_lib],
             %w[nebula::role::chipmunk chipmunk],
             %w[nebula::role::app_host::standalone chipmunk],
+            %w[nebula::role::app_host::hyrax hyrax],
             %w[nebula::role::clearinghouse chipmunk],
             %w[nebula::role::deb_server deb_server],
             %w[nebula::role::deploy_host named_instances],

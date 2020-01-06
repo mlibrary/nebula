@@ -30,17 +30,17 @@ class nebula::profile::solr (
     ;
     "${base}/log4j.properties":
       ensure  => 'file',
-      mode    => '0644',  
+      mode    => '0644',
       content => template('nebula/profile/solr/log4j.properties.erb'),
     ;
     "${base}/solr.in.sh":
       ensure  => 'file',
-      mode    => '0644',  
+      mode    => '0644',
       content => template('nebula/profile/solr/solr.in.sh.erb'),
     ;
     "${home}/solr.xml":
       ensure  => 'file',
-      mode    => '0644',  
+      mode    => '0644',
       content => template('nebula/profile/solr/solr.xml.erb'),
     ;
   }
