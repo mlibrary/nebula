@@ -1,0 +1,10 @@
+.git
+.gitignore
+.bundle
+
+log/*
+
+tmp/*
+
+*.swp
+*.swo
