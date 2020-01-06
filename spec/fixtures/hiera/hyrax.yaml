@@ -1,2 +1,0 @@
-nebula::profile::mysql::password: changeme
-nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt
