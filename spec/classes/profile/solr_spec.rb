@@ -12,7 +12,8 @@ describe 'nebula::profile::solr' do
 
       it { is_expected.to compile }
 
-      context 'with package' do
+      # Packages
+      it 'install packages' do
         [
           'openjdk-8-jre-headless',
           'solr',
@@ -22,7 +23,8 @@ describe 'nebula::profile::solr' do
         end
       end
 
-      context 'with directory' do
+      # Directories
+      it 'include directories with proper permissions' do
         [
           '/var/lib/solr',
           '/var/lib/solr/home',
@@ -39,7 +41,8 @@ describe 'nebula::profile::solr' do
         end
       end
 
-      context 'with file' do
+      # Files
+      it 'include files with proper permissions' do
         [
           '/var/lib/solr/log4j.properties',
           '/var/lib/solr/solr.in.sh',
@@ -56,7 +59,8 @@ describe 'nebula::profile::solr' do
         end
       end
 
-      context 'with solr service' do
+      # Service
+      it 'start the solr service' do
         it do
           is_expected.to contain_service('solr').with(
             enable: true,
