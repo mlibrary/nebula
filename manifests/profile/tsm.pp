@@ -42,7 +42,7 @@ class nebula::profile::tsm (
   Array[String] $exclude_dirs = ['/afs/','/net/','/nfs/','/usr/vice/cache/']
 ) {
 
-  ensure_package(['tivsm-ba',] )
+  ensure_packages(['tivsm-ba',])
   $tsm_home = '/opt/tivoli/tsm/client/ba/bin'
 
   file { '/etc/systemd/system/tsm.service':
@@ -63,17 +63,17 @@ class nebula::profile::tsm (
   }
 
   file { '/etc/adsm/inclexcl':
-    ensure => 'file',
+    ensure  => 'file',
     content => $inclexcl.join("\n"),
   }
 
   file { "${tsm_home}/dsm.opt":
-    ensure => 'file',
+    ensure  => 'file',
     content => template('nebula/profile/tsm/dsm.opt.erb'),
   }
 
   file { "${tsm_home}/dsm.sys":
-    ensure => 'file',
+    ensure  => 'file',
     content => template('nebula/profile/tsm/dsm.sys.erb'),
   }
 
