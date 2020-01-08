@@ -22,3 +22,14 @@ scrape_configs:
 - job_name: node
   file_sd_configs:
   - files: [ nodes.yml ]
+<% unless @static_wmi_nodes.empty? -%>
+- job_name: wmi
+  static_configs:
+<% @static_wmi_nodes.each do |wmi_node| -%>
+  - targets: [ '<%= wmi_node['targets'].join("', '") %>' ]
+    labels:
+<% wmi_node['labels'].each do |key, value| -%>
+      <%= key %>: '<%= value %>'
+<% end -%>
+<% end -%>
+<% end -%>

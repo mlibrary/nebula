@@ -16,6 +16,7 @@
 class nebula::profile::prometheus (
   Array $alert_managers = [],
   Array $static_nodes = [],
+  Array $static_wmi_nodes = [],
   String $version = 'latest',
 ) {
   include nebula::profile::docker

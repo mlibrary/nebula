@@ -112,6 +112,39 @@ describe 'nebula::profile::prometheus' do
           it { is_expected.to contain_concat_fragment(fragment).with_content(content) }
         end
       end
+
+      it do
+        is_expected.to contain_file('/etc/prometheus/prometheus.yml')
+          .without_content(%r{job_name: wmi})
+      end
+
+      context 'with some static wmi nodes set' do
+        let(:params) do
+          {
+            static_wmi_nodes: [
+              {
+                'targets' => ['10.11.12.13:9182'],
+                'labels' => {
+                  'datacenter' => 'windows_center',
+                  'hostname' => 'windows_host',
+                  'role' => 'windows::role',
+                },
+              },
+            ],
+          }
+        end
+
+        [
+          "datacenter: 'windows_center'",
+          "hostname: 'windows_host'",
+          "role: 'windows::role'",
+        ].each do |label|
+          it do
+            is_expected.to contain_file('/etc/prometheus/prometheus.yml')
+              .with_content(%r{job_name: wmi\n.*labels:\n.*#{label}}m)
+          end
+        end
+      end
     end
   end
 end
