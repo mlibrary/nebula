@@ -23,10 +23,17 @@ groups:
     for: 2h
     labels:
       severity: ticket
-  - alert: InstanceDown
+  - alert: LinuxInstanceDown
     annotations:
-      summary: 'Node {{$labels.hostname}} isn''t responding to Prometheus.'
+      summary: 'Linux node {{$labels.hostname}} isn''t responding to Prometheus.'
     expr: 'up{job="node"} == 0'
+    for: 10m
+    labels:
+      severity: page
+  - alert: WindowsInstanceDown
+    annotations:
+      summary: 'Windows node {{$labels.hostname}} isn''t responding to Prometheus.'
+    expr: 'up{job="wmi"} == 0'
     for: 10m
     labels:
       severity: page
