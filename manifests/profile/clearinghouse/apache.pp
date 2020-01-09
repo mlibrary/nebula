@@ -104,12 +104,4 @@ class nebula::profile::clearinghouse::apache (
       *              => $admin_common.merge($ssl_params)
   }
 
-  php::config { 'fpm php.ini':
-    file   => '/etc/php/7.3/fpm/php.ini',
-    config => {
-      'PHP/post_max_size'           => '64M',
-      'PHP/upload_max_filesize'     => '64M',
-    },
-  }
-
 }
