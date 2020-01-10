@@ -145,7 +145,8 @@ class nebula::profile::hathitrust::perl () {
     'Test::Exception',
     'Devel::Cycle',
     'Test::Memory::Cycle',
-    'Mozilla::CA']:
+    'Mozilla::CA',
+    'Noid']:
   }
 
 }
