@@ -53,6 +53,16 @@ describe 'nebula::profile::solr' do
         end
       end
 
+      # Executable
+      it do
+        is_expected.to contain_file('/opt/solr/bin/solr').with(
+          owner: 'solr',
+          group: 'solr',
+          ensure: 'file',
+          mode: '0755',
+        )
+      end
+
       # Service
       it do
         is_expected.to contain_service('solr').with(
