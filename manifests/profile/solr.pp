@@ -10,7 +10,7 @@ class nebula::profile::solr (
   String $base = '/var/lib/solr',
   String $home = "${base}/home",
   String $logs = "${base}/logs",
-  String $solr_bin = '/opt/solr/bin/solr',
+  String $solr_bin = '/opt/solr/bin/solr', # Used by solr.service template file
   String $heap = '1G',
   Integer $port = 8983
 ) {
