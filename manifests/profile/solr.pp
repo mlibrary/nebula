@@ -45,8 +45,8 @@ class nebula::profile::solr (
       content => template('nebula/profile/solr/solr.xml.erb'),
     ;
     "${solr_bin}":
-      ensure  => 'file',
-      mode    => '0755',
+      ensure => 'file',
+      mode   => '0755',
     ;
   }
 
