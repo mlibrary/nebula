@@ -10,6 +10,7 @@ class nebula::profile::solr (
   String $base = '/var/lib/solr',
   String $home = "${base}/home",
   String $logs = "${base}/logs",
+  String $solr_bin = '/opt/solr/bin/solr',
   String $heap = '1G',
   Integer $port = 8983
 ) {
@@ -42,6 +43,10 @@ class nebula::profile::solr (
       ensure  => 'file',
       mode    => '0644',
       content => template('nebula/profile/solr/solr.xml.erb'),
+    ;
+    "${solr_bin}":
+      ensure  => 'file',
+      mode    => '0755',
     ;
   }
 
