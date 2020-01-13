@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=solr
 Type=forking
-Environment="SOLR_INCLUDE=<%= @solr_in_sh %>"
+Environment="SOLR_INCLUDE=<%= @base/solr.in.sh %>"
 Environment="UMASK=002"
 ExecStart=<%= @solr_bin %> start
 ExecStop=<%= @solr_bin %> stop
