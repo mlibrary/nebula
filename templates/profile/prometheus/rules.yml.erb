@@ -47,7 +47,7 @@ groups:
   - alert: DiskFull
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
-    expr: '((avg_over_time(node_filesystem_size_bytes{mountpoint!="/aspace",fstype!="afs",fstype!="nfs",fstype!="cifs",device!="rootfs"}[1m]) - avg_over_time(node_filesystem_avail_bytes[1m])) / avg_over_time(node_filesystem_size_bytes[1m])) > 0.99'
+    expr: '((avg_over_time(node_filesystem_size_bytes{mountpoint!="/usr",mountpoint!="/aspace",fstype!="afs",fstype!="nfs",fstype!="cifs",device!="rootfs"}[1m]) - avg_over_time(node_filesystem_avail_bytes[1m])) / avg_over_time(node_filesystem_size_bytes[1m])) > 0.99'
     for: 5m
     labels:
       severity: page
