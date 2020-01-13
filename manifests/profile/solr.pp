@@ -6,11 +6,14 @@
 #
 # Install Solr with base configuration.
 # 
+# Note: The variables set are also used by the erb files. 
 class nebula::profile::solr (
   String $base = '/var/lib/solr',
   String $home = "${base}/home",
   String $logs = "${base}/logs",
-  String $solr_bin = '/opt/solr/bin/solr', # Used by solr.service template file
+  String $log4j_properties = "${base}/log4j.properties",
+  String $solr_in_sh = "${base}/solr.in.sh",
+  String $solr_bin = '/opt/solr/bin/solr',
   String $heap = '1G',
   Integer $port = 8983
 ) {
@@ -29,12 +32,12 @@ class nebula::profile::solr (
       ensure => 'directory',
       mode   => '0750',
     ;
-    "${base}/log4j.properties":
+    $log4j_properties:
       ensure  => 'file',
       mode    => '0644',
       content => template('nebula/profile/solr/log4j.properties.erb'),
     ;
-    "${base}/solr.in.sh":
+    $solr_in_sh:
       ensure  => 'file',
       mode    => '0644',
       content => template('nebula/profile/solr/solr.in.sh.erb'),
@@ -44,7 +47,7 @@ class nebula::profile::solr (
       mode    => '0644',
       content => template('nebula/profile/solr/solr.xml.erb'),
     ;
-    "${solr_bin}":
+    $solr_bin:
       ensure => 'file',
       mode   => '0755',
     ;
