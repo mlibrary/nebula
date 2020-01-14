@@ -21,54 +21,46 @@ describe 'nebula::profile::solr' do
         it { is_expected.to contain_package(package) }
       end
 
-      # Directories
-      [
-        '/var/lib/solr',
-        '/var/lib/solr/home',
-        '/var/lib/solr/logs',
-      ].each do |path|
+      context 'with default parameters' do
+        # Directories
+        [
+          '/var/lib/solr',
+          '/var/lib/solr/home',
+          '/var/lib/solr/logs',
+        ].each do |path|
+          it do
+            is_expected.to contain_file(path).with(
+              owner: 'solr',
+              group: 'solr',
+              ensure: 'directory',
+              mode: '0750',
+            )
+          end
+        end
+
+        # Files
+        [
+          '/var/lib/solr/log4j.properties',
+          '/var/lib/solr/solr.in.sh',
+          '/var/lib/solr/home/solr.xml',
+        ].each do |path|
+          it do
+            is_expected.to contain_file(path).with(
+              owner: 'solr',
+              group: 'solr',
+              ensure: 'file',
+              mode: '0644',
+            )
+          end
+        end
+
+        # Service
         it do
-          is_expected.to contain_file(path).with(
-            owner: 'solr',
-            group: 'solr',
-            ensure: 'directory',
-            mode: '0750',
+          is_expected.to contain_service('solr').with(
+            enable: true,
+            ensure: 'running',
           )
         end
-      end
-
-      # Files
-      [
-        '/var/lib/solr/log4j.properties',
-        '/var/lib/solr/solr.in.sh',
-        '/var/lib/solr/home/solr.xml',
-      ].each do |path|
-        it do
-          is_expected.to contain_file(path).with(
-            owner: 'solr',
-            group: 'solr',
-            ensure: 'file',
-            mode: '0644',
-          )
-        end
-      end
-
-      # Executable
-      it do
-        is_expected.to contain_file('/opt/solr/bin/solr').with(
-          owner: 'solr',
-          group: 'solr',
-          ensure: 'file',
-          mode: '0755',
-        )
-      end
-
-      # Service
-      it do
-        is_expected.to contain_service('solr').with(
-          enable: true,
-          ensure: 'running',
-        )
       end
     end
   end
