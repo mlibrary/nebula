@@ -47,10 +47,6 @@ class nebula::profile::solr (
       mode    => '0644',
       content => template('nebula/profile/solr/solr.xml.erb'),
     ;
-    $solr_bin:
-      ensure => 'file',
-      mode   => '0755',
-    ;
   }
 
   file { '/etc/systemd/system/solr.service':
