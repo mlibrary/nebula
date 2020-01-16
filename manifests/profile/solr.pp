@@ -13,13 +13,16 @@ class nebula::profile::solr (
   String $logs = "${base}/logs",
   String $log4j_properties = "${base}/log4j.properties",
   String $solr_in_sh = "${base}/solr.in.sh",
-  String $solr_bin = '/opt/solr/bin/solr',
+  String $solr_xml = "${home}/solr.xml",
   String $heap = '1G',
   Integer $port = 8983
 ) {
 
   ensure_packages(['openjdk-8-jre-headless','solr','lsof'])
+
+  # Note: Along with variables above these are used in erb files also.
   $java_home = '/usr/lib/jvm/java-8-openjdk-amd64/jre'
+  $solr_bin = '/opt/solr/bin/solr'
 
   nebula::usergroup { 'solr': }
 
@@ -42,7 +45,7 @@ class nebula::profile::solr (
       mode    => '0644',
       content => template('nebula/profile/solr/solr.in.sh.erb'),
     ;
-    "${home}/solr.xml":
+    $solr_xml:
       ensure  => 'file',
       mode    => '0644',
       content => template('nebula/profile/solr/solr.xml.erb'),
