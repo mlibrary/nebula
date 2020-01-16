@@ -42,7 +42,6 @@ class nebula::profile::tsm (
   Array[String] $exclude_dirs = ['/afs/','/net/','/nfs/','/usr/vice/cache/']
 ) {
 
-  #ensure_packages(['tivsm-ba', 'tivsm-api64', 'gskcrypt64', 'gskssl64',])
   ensure_packages(['tivsm-ba',])
   $tsm_home = '/opt/tivoli/tsm/client/ba/bin'
 
