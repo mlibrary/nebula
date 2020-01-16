@@ -1,0 +1,9 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - chipmunk
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'
+
