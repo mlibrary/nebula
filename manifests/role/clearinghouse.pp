@@ -14,6 +14,7 @@ class nebula::role::clearinghouse {
   include nebula::profile::mysql
   include nebula::profile::clearinghouse::apache
   package { ['git',
+  'clamav','clamav-daemon','clamdscan',
   'libimage-exiftool-perl',
   'poppler-utils',
   'php7.3-tidy' ]: }
