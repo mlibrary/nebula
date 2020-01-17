@@ -12,6 +12,7 @@ class nebula::role::archivematica {
   include nebula::profile::afs
   include nebula::profile::duo
   include nebula::profile::networking
+  include nebula::profile::tsm
 
   nebula::exposed_port { '200 HTTP Dashboard':
     port  => 80,
@@ -32,4 +33,5 @@ class nebula::role::archivematica {
     port  => 22,
     block => 'umich::networks::bentley',
   }
+
 }
