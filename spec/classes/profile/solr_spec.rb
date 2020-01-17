@@ -21,6 +21,14 @@ describe 'nebula::profile::solr' do
         it { is_expected.to contain_package(package) }
       end
 
+      # Service
+      it do
+        is_expected.to contain_service('solr').with(
+          enable: true,
+          ensure: 'running',
+        )
+      end
+
       context 'with default parameters' do
         # Directories
         [
@@ -52,14 +60,6 @@ describe 'nebula::profile::solr' do
               mode: '0644',
             )
           end
-        end
-
-        # Service
-        it do
-          is_expected.to contain_service('solr').with(
-            enable: true,
-            ensure: 'running',
-          )
         end
       end
     end
