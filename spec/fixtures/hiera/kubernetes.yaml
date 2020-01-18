@@ -23,3 +23,6 @@ nebula::profile::kubernetes::clusters:
   implicit_kubernetes_version:
     address: 10.0.0.4
     docker_version: 5:18.09.6~3-0~debian-stretch
+
+nebula::cifs::credentials::users:
+- kubernetes

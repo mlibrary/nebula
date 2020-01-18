@@ -1,0 +1,4 @@
+nebula::cifs::credentials::users:
+- default_cifs_user
+- example_cifs_user
+- an_unused_user
