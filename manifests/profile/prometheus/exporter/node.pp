@@ -124,5 +124,7 @@ class nebula::profile::prometheus::exporter::node (
     content => template('nebula/profile/prometheus/exporter/node/target.yaml.erb'),
   }
 
-  Firewall <<| tag == "${monitoring_datacenter}_prometheus_node_exporter" |>>
+  if $::lsbdistcodename != 'jessie' {
+    Firewall <<| tag == "${monitoring_datacenter}_prometheus_node_exporter" |>>
+  }
 }
