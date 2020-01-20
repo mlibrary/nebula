@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019-2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -7,7 +7,9 @@
 # This opens up the ports we need open on workers. This does not start
 # kubernetes or attempt to connect this node to the cluster. All it does
 # is ensure the possibility of you doing it by hand.
-class nebula::profile::kubernetes::worker {
+class nebula::profile::kubernetes::worker (
+  Hash[String, Hash] $cifs_mounts = {},
+) {
   include nebula::profile::kubernetes
 
   ensure_packages(['nfs-common'], {'ensure' => 'present'})
@@ -25,6 +27,12 @@ class nebula::profile::kubernetes::worker {
     target  => '/etc/kubernetes_addresses.yaml',
     content => "addresses: {work: {${::hostname}: '${::ipaddress}'}}",
     tag     => "${cluster}_proxy_ips",
+  }
+
+  $cifs_mounts.each |$mount_title, $mount_parameters| {
+    nebula::cifs_mount { "/mnt/legacy_cifs_${mount_title}":
+      * => $mount_parameters,
+    }
   }
 
   # Worker nodes accept connections from controller nodes for kubelet.

@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019-2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -31,23 +31,20 @@ define nebula::cifs_mount(
   String $dir_mode = '0755',
   String $extra_options = 'vers=2.1'
 ) {
+  include nebula::cifs::credentials
+
+  realize File["/etc/default/${user}-credentials"]
+
   ensure_packages(['cifs-utils'], {'ensure' => 'present'})
 
   file { $title:
     ensure => 'directory',
   }
 
-  file { "/etc/default/${user}-credentials":
-    source => $credentials,
-    mode   => '0400',
-    owner  => 'root',
-    group  => 'root'
-  }
-
   mount { $title:
     ensure  => 'mounted',
     device  => $remote_target,
-    options => "credentials=${credentials},uid=${uid},gid=${gid},file_mode=${file_mode},dir_mode=${dir_mode},${extra_options}",
+    options => "credentials=/etc/default/${user}-credentials,uid=${uid},gid=${gid},file_mode=${file_mode},dir_mode=${dir_mode},${extra_options}",
     fstype  => 'cifs',
     require => Package[cifs-utils]
   }
