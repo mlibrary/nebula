@@ -15,9 +15,14 @@ Facter.add(:prometheus_errors_total) do
     error_count = %r{(?<=error gathering metrics: )\d*(?= error)}
 
     if File.size? log_path
-      [1, Integer(File.read(log_path)[error_count])].max
+      count_string = File.read(log_path)[error_count]
+      if count_string.nil?
+        1 # The log file exists but doesn't have errors puppet can count
+      else
+        Integer(count_string)
+      end
     else
-      0
+      0 # No log file means no errors
     end
   end
 end
