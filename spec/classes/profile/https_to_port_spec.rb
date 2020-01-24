@@ -67,6 +67,15 @@ describe 'nebula::profile::https_to_port' do
           end
         end
 
+        context "and server_name is set to something that doesn't have keys yet" do
+          let(:server_name) { 'nokeysyet.invalid' }
+          let(:params) do
+            super().merge(server_name: server_name)
+          end
+
+          it { is_expected.not_to contain_nginx__resource__server('https-forwarder') }
+        end
+
         context 'and webroot is set to /opt/html' do
           let(:params) do
             super().merge(webroot: '/opt/html')

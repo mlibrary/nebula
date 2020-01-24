@@ -64,8 +64,19 @@ describe 'nebula::profile::prometheus' do
       end
 
       it do
+        is_expected.to contain_class('nebula::profile::https_to_port')
+          .with_port(9090)
+      end
+
+      it do
         is_expected.to contain_nebula__exposed_port('010 Prometheus HTTP')
           .with_port(9090)
+          .with_block('umich::networks::all_trusted_machines')
+      end
+
+      it do
+        is_expected.to contain_nebula__exposed_port('010 Prometheus HTTPS')
+          .with_port(443)
           .with_block('umich::networks::all_trusted_machines')
       end
 
