@@ -22,6 +22,14 @@ describe 'nebula::cert' do
             .with_manage_cron(true)
         end
 
+        it do
+          is_expected.to contain_firewall('200 HTTP')
+            .with_proto('tcp')
+            .with_dport(80)
+            .with_state('NEW')
+            .with_action('accept')
+        end
+
         context 'and with additional_domains set to sub.example.invalid' do
           let(:params) { { additional_domains: ['sub.example.invalid'] } }
 

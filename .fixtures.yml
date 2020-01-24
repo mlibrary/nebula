@@ -61,6 +61,9 @@ fixtures:
     letsencrypt:
       repo: "puppet/letsencrypt"
       ref: "5.0.0"
+    nginx:
+      repo: "puppet/nginx"
+      ref: "1.0.0"
     php:
       repo: "puppet/php"
       ref: "6.0.2"

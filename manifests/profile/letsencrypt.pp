@@ -8,4 +8,11 @@ class nebula::profile::letsencrypt (
   class { 'letsencrypt':
     email => $email,
   }
+
+  firewall { '200 HTTP':
+    proto  => 'tcp',
+    dport  => 80,
+    state  => 'NEW',
+    action => 'accept',
+  }
 }
