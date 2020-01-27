@@ -67,3 +67,25 @@ groups:
       severity: page
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+
+  # These are aggregate rules for federated collection across our full
+  # system. By putting them here, we essentially precompile them.
+  - record: datacenter_role:network_transmit_bytes:rate5m
+    expr: >
+      sum without(device, hostname, instance)(
+        rate(node_network_transmit_bytes_total[5m])
+      )
+  - record: datacenter_role:network_receive_bytes:rate5m
+    expr: >
+      sum without(device, hostname, instance)(
+        rate(node_network_receive_bytes_total[5m])
+      )
+  - record: datacenter_role:node_cpu_seconds:max_not_idle_mean30s
+    expr: >
+      max without(hostname, instance)(
+        avg without(cpu)(
+          sum without(mode)(
+            rate(node_cpu_seconds_total{mode!="idle"}[30s])
+          )
+        )
+      )

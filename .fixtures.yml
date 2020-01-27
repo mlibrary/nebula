@@ -58,6 +58,12 @@ fixtures:
     logrotate:
       repo: "puppet/logrotate"
       ref: "3.4.0"
+    letsencrypt:
+      repo: "puppet/letsencrypt"
+      ref: "5.0.0"
+    nginx:
+      repo: "puppet/nginx"
+      ref: "0.15.0"
     php:
       repo: "puppet/php"
       ref: "6.0.2"
