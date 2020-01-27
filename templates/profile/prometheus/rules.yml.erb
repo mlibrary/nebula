@@ -12,7 +12,12 @@ groups:
   - alert: PuppetResourcesFailing
     annotations:
       summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} has failing puppet resources.'
-    expr: 'sum without(name) (puppet_report_events{environment="production",name="Failure"}) + sum without(name) (puppet_report_resources{environment="production",name="Failed"}) > 0'
+    expr: >
+      sum without(name)(
+        puppet_report_events{environment="production", name="Failure"}
+      ) + sum without(name)(
+        puppet_report_resources{environment="production", name="Failed"}
+      ) > 0
     for: 2h
     labels:
       severity: ticket
@@ -40,28 +45,79 @@ groups:
   - alert: DiskPressure
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
-    expr: '((avg_over_time(node_filesystem_size_bytes{mountpoint!="/usr",mountpoint!="/aspace",fstype!="afs",fstype!="nfs",fstype!="tmpfs",fstype!="cifs",device!="rootfs"}[1m]) - avg_over_time(node_filesystem_avail_bytes[1m])) / avg_over_time(node_filesystem_size_bytes[1m])) > 0.95'
+    expr: >
+      (
+        (
+          avg_over_time(
+            node_filesystem_size_bytes{mountpoint!="/usr", mountpoint!="/aspace", fstype!="afs", fstype!="nfs", fstype!="tmpfs", fstype!="cifs", device!="rootfs"}[1m]
+          ) - avg_over_time(
+            node_filesystem_avail_bytes[1m]
+          )
+        ) / avg_over_time(
+          node_filesystem_size_bytes[1m]
+        )
+      ) > 0.95
     for: 30m
     labels:
       severity: ticket
   - alert: DiskFull
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
-    expr: '((avg_over_time(node_filesystem_size_bytes{mountpoint!="/usr",mountpoint!="/aspace",fstype!="afs",fstype!="nfs",fstype!="cifs",device!="rootfs"}[1m]) - avg_over_time(node_filesystem_avail_bytes[1m])) / avg_over_time(node_filesystem_size_bytes[1m])) > 0.99'
+    expr: >
+      (
+        (
+          avg_over_time(
+            node_filesystem_size_bytes{mountpoint!="/usr", mountpoint!="/aspace", fstype!="afs", fstype!="nfs", fstype!="tmpfs", fstype!="cifs", device!="rootfs"}[1m]
+          ) - avg_over_time(
+            node_filesystem_avail_bytes[1m]
+          )
+        ) / avg_over_time(
+          node_filesystem_size_bytes[1m]
+        )
+      ) > 0.99
     for: 5m
+    labels:
+      severity: page
+  - alert: DiskRunningOutOfINodes
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is running out of inodes.'
+      expr: 'node_filesystem_files_free{fstype!="cifs",fstype!="vfat",fstype!="fuse.lxcfs",fstype!="rpc_pipefs"} < 10000'
+    for: 30m
     labels:
       severity: page
 
   # These are legacy alerts that can be removed when RHEL5 is gone.
   - alert: DiskPressure
-    expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .95'
+    expr: >
+      (
+        (
+          avg_over_time(
+            node_filesystem_size[1m]
+          ) - avg_over_time(
+            node_filesystem_avail[1m]
+          )
+        ) / avg_over_time(
+          node_filesystem_size[1m]
+        )
+      ) > 0.95
     for: 30m
     labels:
       severity: ticket
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
   - alert: DiskFull
-    expr: '((avg_over_time(node_filesystem_size[1m]) - avg_over_time(node_filesystem_avail[1m])) / avg_over_time(node_filesystem_size[1m])) > .99'
+    expr: >
+      (
+        (
+          avg_over_time(
+            node_filesystem_size[1m]
+          ) - avg_over_time(
+            node_filesystem_avail[1m]
+          )
+        ) / avg_over_time(
+          node_filesystem_size[1m]
+        )
+      ) > 0.99
     for: 5m
     labels:
       severity: page
