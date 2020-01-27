@@ -2,6 +2,17 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
+# Forward HTTPS to a local port
+#
+# This allows us to expose what would be an HTTP port as HTTPS instead.
+# It also creates a simple webroot to use with actual HTTP connections
+# so that cert verification can be automatic.
+#
+# @param port The local HTTP port to forward HTTPS connections to
+# @param server_name The domain we expect connections to (defaults to
+#   the fqdn fact)
+# @param webroot The path to where we want HTTP connections over port 80
+#   to land (defaults to `/var/www`)
 class nebula::profile::https_to_port (
   Integer $port,
   String $server_name = $::fqdn,
