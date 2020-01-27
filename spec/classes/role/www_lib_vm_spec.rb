@@ -252,6 +252,16 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_ssl_cert('/etc/ssl/certs/copyright.umich.edu.crt')
           .with_port(443)
       end
+
+      it do
+        is_expected.to contain_apache__vhost('apps.lib-https')
+          .with(servername: 'apps.lib.umich.edu',
+                port: 443,
+                ssl: true,
+                ssl_cert: '/etc/ssl/certs/apps.lib.umich.edu.crt')
+          .with_error_log_file('error.log')
+          .with_custom_fragment(%r{CookieName skynet})
+      end
     end
   end
 end
