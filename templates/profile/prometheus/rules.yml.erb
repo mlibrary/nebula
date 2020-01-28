@@ -139,9 +139,7 @@ groups:
   - record: datacenter_role:node_cpu_seconds:max_not_idle_mean30s
     expr: >
       max without(hostname, instance)(
-        avg without(cpu)(
-          sum without(mode)(
-            rate(node_cpu_seconds_total{mode!="idle"}[30s])
-          )
+        avg without(cpu, mode)(
+          1 - rate(node_cpu_seconds_total{mode="idle"}[30s])
         )
       )
