@@ -6,6 +6,7 @@
 ARGS="--collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\\d+n\\d+p)\\d+$ \
       --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/) \
       --collector.netdev.ignored-devices=^lo$ \
+      --collector.systemd \
 <% if @disable_hwmon -%>
       --no-collector.hwmon \
 <% end -%>
