@@ -6,7 +6,9 @@ class nebula::role::chipmunk {
     include nebula::profile::hathitrust::dependencies
     include nebula::profile::hathitrust::perl
 
-    # Ensure that group-write umask is set for uploaders
+    # Ensure that group-write umask is set for uploaders.
+    # This does not take effect when the repository storage is mounted via
+    # CIFS, but does when on local disk or NFS.
     file { '/etc/pam.d/sshd':
       require => File["/etc/pam.d/sshd-${::lsbdistcodename}"],
       notify  => Service['sshd'],

@@ -13,6 +13,7 @@
 #   include nebula::profile::networking::sshd
 class nebula::profile::networking::sshd (
   Array[String] $whitelist,
+  String $addon_directives = '',
 ) {
 
   # This will do nothing if the keytab doesn't exist
