@@ -17,6 +17,7 @@ class nebula::profile::hathitrust::apache::babel (
   String $prefix,
   String $domain,
   String $gwt_code,
+  String $useradmin_endpoint,
   Array[String] $cache_paths = [ ],
 ) {
 
@@ -60,19 +61,19 @@ class nebula::profile::hathitrust::apache::babel (
   $imgsrv_address = lookup('nebula::profile::hathitrust::imgsrv::bind');
 
   apache::vhost { "${servername} ssl":
-    servername        => $servername,
-    serveraliases     => [ "crms-training.${servername}" ],
-    port              => '443',
-    docroot           => $sdrroot,
-    manage_docroot    => false,
-    error_log_file    => 'babel/error.log',
-    access_log_file   => 'babel/access.log',
-    access_log_format => 'combined',
-    *                 => $ssl_params,
+    servername                  => $servername,
+    serveraliases               => [ "crms-training.${servername}" ],
+    port                        => '443',
+    docroot                     => $sdrroot,
+    manage_docroot              => false,
+    error_log_file              => 'babel/error.log',
+    access_log_file             => 'babel/access.log',
+    access_log_format           => 'combined',
+    *                           => $ssl_params,
 
     # from babel-common
 
-    aliases           => [
+    aliases                     => [
       {
         scriptalias => $monitor_location,
         path        => $monitor_dir
@@ -98,20 +99,20 @@ class nebula::profile::hathitrust::apache::babel (
       }
     ],
 
-    directoryindex    => 'index.html',
+    directoryindex              => 'index.html',
 
-    setenv            => [
+    setenv                      => [
       "SDRROOT ${sdrroot}",
       'SDRDATAROOT /sdr1',
       "ASSERTION_EMAIL ${sdremail}"
     ],
 
-    setenvifnocase    => [
+    setenvifnocase              => [
       "Host ^crms-training.${servername} CRMS_INSTANCE=crms-training",
       "Host ^${servername} CRMS_INSTANCE=production"
     ],
 
-    rewrites          => [
+    rewrites                    => [
       {
         # Map web content URLs to the web directories within each application repository,
         # if the file being requested exists.
@@ -203,9 +204,14 @@ class nebula::profile::hathitrust::apache::babel (
         rewrite_rule => ["  ^(/$|/index.html$)      https://${servername}/cgi/mb  [redirect=permanent,last]"],
       },
 
+      {
+        # user administration ruby application
+        rewrite_rule =>  ["^(/useradmin.*)$ ${useradmin_endpoint}$1 [P]"]
+      },
+
     ],
 
-    directories       => [
+    directories                 => [
       {
         provider => 'filesmatch',
         location =>  '~$',
@@ -283,9 +289,36 @@ class nebula::profile::hathitrust::apache::babel (
 
     ],
 
-    custom_fragment   =>  "
+    ssl_proxyengine             => true,
+    ssl_proxy_check_peer_name   => 'on',
+    ssl_proxy_check_peer_expire => 'on',
+
+    custom_fragment             => "
     <Proxy \"fcgi://${imgsrv_address}\" enablereuse=off max=10>
-    </Proxy>",
+    </Proxy>
+
+    ProxyPassReverse /useradmin ${useradmin_endpoint}
+    ",
+
+    request_headers             => [
+      # Explicitly forward attributes extracted via Shibboleth
+      'set X-Shib-Persistent-ID %{persistent-id}e',
+      'set X-Shib-eduPersonPrincipalName %{eppn}e',
+      'set X-Shib-displayName %{displayName}e',
+      'set X-Shib-mail %{email}e',
+      'set X-Shib-eduPersonScopedAffiliation %{affiliation}e',
+      'set X-Shib-Authentication-Method %{Shib-Authentication-Method}e',
+      'set X-Shib-AuthnContext-Class %{Shib-AuthnContext-Class}e',
+      'set X-Shib-Identity-Provider %{Shib-Identity-Provider}e',
+      # Setting remote user for 2.4
+      'set X-Remote-User "expr=%{REMOTE_USER}"',
+      # Fix redirects being sent to non ssl url (https -> http)
+      'set X-Forwarded-Proto "https"',
+      # Remove existing X-Forwarded-For headers; mod_proxy will automatically add the correct one.
+      'unset X-Forwarded-For',
+    ],
+
+    allow_encoded_slashes       =>  'on',
 
   }
 
