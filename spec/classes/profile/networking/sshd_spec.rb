@@ -87,6 +87,16 @@ describe 'nebula::profile::networking::sshd' do
         is_expected.to contain_file('/etc/ssh/ssh_config')
           .with_content(%r{^\s*SendEnv LANG LC_\*$})
       end
+
+      it { is_expected.to contain_file('/etc/pam.d/sshd-defaults') }
+
+      it { is_expected.to contain_concat_file('/etc/pam.d/sshd').with_path('/etc/pam.d/sshd') }
+
+      it do
+        is_expected.to contain_concat_fragment('/etc/pam.d/sshd: base')
+          .with_target('/etc/pam.d/sshd')
+          .with_content(%r{@include sshd-defaults})
+      end
     end
   end
 end

@@ -34,4 +34,22 @@ class nebula::profile::networking::sshd (
   file { '/etc/ssh/ssh_config':
     content => template('nebula/profile/networking/ssh_config.erb'),
   }
+
+  # The PAM defaults for sshd have been unchanged between jessie and buster...
+  # If we need to update them, we can add some file selection here.
+  file { '/etc/pam.d/sshd-defaults':
+    source => 'puppet:///modules/nebula/pam.d/sshd-defaults',
+  }
+
+  concat_file { '/etc/pam.d/sshd': }
+
+  concat_fragment { '/etc/pam.d/sshd: base':
+    target  => '/etc/pam.d/sshd',
+    order   => '01',
+    content => @("EOT")
+      # Managed by puppet (manifests/profile/networking/sshd)
+
+      @include sshd-defaults
+      | EOT
+  }
 }

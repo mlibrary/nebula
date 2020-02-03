@@ -16,9 +16,7 @@ describe 'nebula::role::chipmunk' do
 
       it { is_expected.to compile }
 
-      if os == 'debian-9-x86_64'
-        it { is_expected.to contain_file('/etc/pam.d/sshd-stretch') }
-      end
+      it { is_expected.to contain_class('nebula::profile::networking::sshd_group_umask') }
     end
   end
 end
