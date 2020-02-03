@@ -1,8 +1,11 @@
+# This file is managed by Puppet (nebula/files/pam.d/sshd-defaults)
+# These defaults are the same for the openssh package on Debian jessie,
+# stretch, and buster. See profile/networking/sshd if variation is needed.
+
 # PAM configuration for the Secure Shell service
 
 # Standard Un*x authentication.
 @include common-auth
-auth required pam_duo.so
 
 # Disallow non-root logins when /etc/nologin exists.
 account    required     pam_nologin.so
