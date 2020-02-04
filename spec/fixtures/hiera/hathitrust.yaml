@@ -10,6 +10,7 @@ nebula::profile::hathitrust::imgsrv::sdrview: 'sdrview'
 nebula::profile::hathitrust::imgsrv::sdrdataroot: '/sdrdataroot'
 nebula::profile::hathitrust::imgsrv::bind: '127.0.0.1:31028'
 nebula::profile::hathitrust::apache::babel::gwt_code: 'somecode'
+nebula::profile::hathitrust::apache::babel::useradmin_endpoint: 'https://useradmin.default.invalid:3000'
 
 nebula::profile::hathitrust::hosts::mysql_sdr: '10.1.2.4'
 nebula::profile::hathitrust::hosts::mysql_htdev: '2.2.2.2'
