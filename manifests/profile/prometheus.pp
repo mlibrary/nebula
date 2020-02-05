@@ -73,11 +73,6 @@ class nebula::profile::prometheus (
     port => 9090,
   }
 
-  nebula::exposed_port { '010 Prometheus HTTP':
-    port  => 9090,
-    block => 'umich::networks::all_trusted_machines',
-  }
-
   nebula::exposed_port { '010 Prometheus HTTPS':
     port  => 443,
     block => 'umich::networks::all_trusted_machines',
