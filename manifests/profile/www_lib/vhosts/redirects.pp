@@ -107,6 +107,13 @@ class nebula::profile::www_lib::vhosts::redirects(
     serveraliases => [ 'nyupress.fulcrum.org', 'nyupress.fulcrumservices.org']
   }
 
+  nebula::apache::redirect_vhost_https { 'dialogue.fulcrumscholar.org':
+    ssl_cn        => 'fulcrum.org',
+    priority      => '08',
+    target        => 'https://www.fulcrum.org/dialogue',
+    serveraliases => [ 'dialogue.fulcrum.org', 'dialogue.fulcrumservices.org']
+  }
+
   nebula::apache::redirect_vhost_https { 'fulcrum.org':
     priority      => '14',
     serveraliases => [
