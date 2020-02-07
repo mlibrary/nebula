@@ -88,10 +88,7 @@ class nebula::profile::hathitrust::ingest_jobs(
     ## WEEKLY JOBS
 
     'get brittle books data':
-      command => "${feed_perl} ${feed_jobs}/feed.weekly/get_brittle_books_data.pl 2>&1 > /dev/null",
-      weekday => 1,
-      hour    => 8,
-      minute  => 0;
+      ensure => 'absent';
 
     'generate ingest logs':
       command =>  "${feed_perl} ${feed_jobs}/feed.weekly/generate_logs.pl",
@@ -124,12 +121,8 @@ class nebula::profile::hathitrust::ingest_jobs(
     # pdus/gfv, and reset volumes that are pdus/gfv but not VIEW_FULL on GRIN to
     # their bib-determined rights
 
-    # not sure if this is still needed: "disposition 0 volumes"
     'grin reports':
-      command  => "${feed_perl} ${feed_jobs}/feed.monthly/grin_reports.pl",
-      monthday => 8,
-      hour     => 1,
-      minute   => 1;
+      ensure   => 'absent';
 
     'grin gfv':
       command     => "${feed_perl} ${feed_jobs}/feed.monthly/grin_gfv.pl",
@@ -149,12 +142,6 @@ class nebula::profile::hathitrust::ingest_jobs(
       monthday => 1,
       hour     => 2,
       minute   => 35;
-
-    # unneeded?
-    # 30 2 1 * * /bin/bash $FEED_HOME/bin/feed.monthly/grin_pod.sh
-
-    # TO REWRITE
-    # 25 2 1 * * /bin/bash $FEED_HOME/bin/feed.monthly/grin_error_range.sh
 
     'monthly ingest count':
       command  => "${feed_perl} ${feed_jobs}/feed.monthly/monthly_ingest_count.pl",
