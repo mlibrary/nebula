@@ -12,7 +12,6 @@ class nebula::profile::hathitrust::ingest_jobs(
   String $config,
   String $feed_home,
   String $stats_home,
-  Array[String] $dcu_recipients,
   String $crms_renewals_source,
   String $crms_renewals_dest,
   String $recipient,
@@ -26,7 +25,6 @@ class nebula::profile::hathitrust::ingest_jobs(
   $feed_jobs = "${feed_home}/bin/jobs"
   $feed_daily = "${feed_jobs}/feed.daily"
   $feed_log  = "${feed_home}/var/log"
-  $joined_dcu_recipients = $dcu_recipients.join(',')
   $base_env = [
     "MAILTO=${recipient}",
     "FEED_HOME=${feed_home}"
@@ -80,10 +78,7 @@ class nebula::profile::hathitrust::ingest_jobs(
       minute  => 5;
 
     'copy google rejects list':
-      command     => "${feed_daily}/copy_rejects.sh",
-      environment => "MAILTO=${joined_dcu_recipients}",
-      hour        => 3,
-      minute      => 5;
+      ensure      => 'absent';
 
     ## WEEKLY JOBS
 

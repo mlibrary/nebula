@@ -28,12 +28,6 @@ describe 'nebula::role::hathitrust::ingest_indexing::primary' do
           ],
         )
       end
-
-      it do
-        is_expected.to contain_cron('copy google rejects list').with_environment(
-          ['MAILTO=aardvark@default.invalid,badger@default.invalid'],
-        )
-      end
     end
   end
 end

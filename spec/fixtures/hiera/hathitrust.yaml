@@ -106,9 +106,6 @@ nebula::profile::hathitrust::ingest_jobs::rights_db_config: '/default/rights_db.
 nebula::profile::hathitrust::ingest_jobs::feed_home: '/htfeed'
 nebula::profile::hathitrust::ingest_jobs::stats_home: '/somewhere/stats'
 nebula::profile::hathitrust::ingest_jobs::recipient: 'nobody@default.invalid'
-nebula::profile::hathitrust::ingest_jobs::dcu_recipients:
-  - aardvark@default.invalid
-  - badger@default.invalid
 
 nebula::profile::hathitrust::ingest_jobs::crms_renewals_source: somebody@somewhere:/wherever/file
 nebula::profile::hathitrust::ingest_jobs::crms_renewals_dest: /somewhere/files/
