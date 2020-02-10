@@ -85,6 +85,13 @@ groups:
     for: 30m
     labels:
       severity: page
+  - alert: WindowsUpdateBehind
+    annotations:
+      summary: 'Node {{$labels.hostname}} has not updated in 30+ days.'
+    expr: 'time() - windows_update > 30*24*3600'
+    for: 1h
+    labels:
+      severity: ticket
 
   # These are legacy alerts that can be removed when RHEL5 is gone.
   - alert: DiskPressure
