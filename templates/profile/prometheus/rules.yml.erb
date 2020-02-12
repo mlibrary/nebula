@@ -32,14 +32,14 @@ groups:
     annotations:
       summary: 'Linux node {{$labels.hostname}} isn''t responding to Prometheus.'
     expr: 'up{job="node"} == 0'
-    for: 10m
+    for: 30m
     labels:
       severity: page
   - alert: WindowsInstanceDown
     annotations:
       summary: 'Windows node {{$labels.hostname}} isn''t responding to Prometheus.'
     expr: 'up{job="wmi"} == 0'
-    for: 10m
+    for: 30m
     labels:
       severity: page
   - alert: DiskPressure
