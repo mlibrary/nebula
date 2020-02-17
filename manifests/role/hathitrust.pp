@@ -6,9 +6,13 @@
 #
 # @example
 #   include nebula::role::hathitrust
-class nebula::role::hathitrust {
+class nebula::role::hathitrust (
+  String $internal_routing = '',
+) {
 
-  include nebula::role::minimum
+  class { 'nebula::role::minimum':
+    internal_routing => $internal_routing,
+  }
 
   if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
     include nebula::profile::afs

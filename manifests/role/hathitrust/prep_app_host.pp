@@ -7,7 +7,11 @@
 # @example
 #   include nebula::role::hathitrust::prep_app_host
 class nebula::role::hathitrust::prep_app_host {
-  include nebula::role::hathitrust::prep
+  class { 'nebula::role::hathitrust::prep':
+    internal_routing => 'docker',
+  }
+
   include nebula::profile::python
   include nebula::profile::ruby
+  include nebula::profile::docker
 }
