@@ -18,7 +18,7 @@ describe 'nebula::named_instance::app' do
   let(:pubkey) { 'somepublickey' }
   let(:puma_wrapper) { '/l/local/bin/puma_wrapper' }
   let(:puma_config) { 'config/fauxpaas_puma.rb' }
-  let(:users) { %w[alice solr] }
+  let(:users) { %w[alice solr invalid_normal_admin] }
   let(:mysql_host) { 'localhost' }
   let(:mysql_user) { 'abcde' }
   let(:mysql_password) { '12345' }
@@ -71,6 +71,8 @@ describe 'nebula::named_instance::app' do
         it { is_expected.to contain_exec("invalid_normal_admin #{title} membership") }
         it { is_expected.to contain_exec("invalid_special_admin #{title} membership") }
         it { is_expected.to contain_exec("invalid_noauth_admin #{title} membership") }
+
+        it { is_expected.to contain_user('invalid_normal_admin') }
       end
 
       describe 'exported resources' do

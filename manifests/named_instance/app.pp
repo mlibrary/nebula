@@ -36,6 +36,7 @@ define nebula::named_instance::app (
   Optional[String] $mysql_user = undef,
   Optional[String] $mysql_password = undef,
 ) {
+  require nebula::virtual::users
 
   $pubkey = Class['Nebula::Profile::Named_instances']['pubkey']
   $puma_config = Class['Nebula::Profile::Named_instances']['puma_config']
@@ -51,11 +52,15 @@ define nebula::named_instance::app (
   }
 
   # Add sudoers and passed users to the group
-  (lookup('nebula::usergroup::membership')['sudo'] + $users).each |$user| {
+  (lookup('nebula::usergroup::membership')['sudo'] + $users).unique.each |$user| {
     exec { "${user} ${title} membership":
       unless  => "/bin/grep -q '${title}\\S*${user}' /etc/group",
       onlyif  => "/usr/bin/id ${user}",
       command => "/usr/sbin/usermod -aG ${title} ${user}",
+    }
+
+    if lookup('nebula::virtual::users::all_users').has_key($user) {
+      realize User[$user]
     }
   }
 
