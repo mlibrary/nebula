@@ -6,6 +6,10 @@
 #
 # @example
 #   include nebula::role::hathitrust::prep
-class nebula::role::hathitrust::prep {
-  include nebula::role::hathitrust
+class nebula::role::hathitrust::prep (
+  String $internal_routing = '',
+) {
+  class { 'nebula::role::hathitrust':
+    internal_routing => $internal_routing,
+  }
 }

@@ -50,6 +50,8 @@ describe 'nebula::profile::docker' do
         end
       end
 
+      it { is_expected.not_to contain_class('docker::compose') }
+
       context 'without version set' do
         it { is_expected.to contain_class('docker').without_version }
         it { is_expected.not_to contain_apt__pin('docker-ce') }
@@ -65,6 +67,16 @@ describe 'nebula::profile::docker' do
             packages: %w[docker-ce docker-ce-cli],
             version: '5',
           )
+        end
+      end
+
+      context 'with docker_compose_version set to 1.7.0' do
+        let(:params) { { docker_compose_version: '1.7.0' } }
+
+        it do
+          is_expected.to contain_class('docker::compose')
+            .with_ensure('present')
+            .with_version('1.7.0')
         end
       end
     end

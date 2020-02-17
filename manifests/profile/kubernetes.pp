@@ -81,7 +81,8 @@ class nebula::profile::kubernetes (
   }
 
   class { 'nebula::profile::docker':
-    version => $docker_version,
+    version                => $docker_version,
+    docker_compose_version => '',
   }
 
   @@firewall {

@@ -58,6 +58,7 @@ describe 'nebula::profile::kubernetes' do
         it do
           is_expected.to contain_class('nebula::profile::docker').with(
             version: '5:18.09.6~3-0~debian-stretch',
+            docker_compose_version: '',
           )
         end
 

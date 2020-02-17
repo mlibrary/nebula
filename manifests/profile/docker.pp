@@ -21,6 +21,7 @@
 #   }
 class nebula::profile::docker (
   String $version = '',
+  String $docker_compose_version = '',
 ) {
   concat_file { 'cri daemon':
     path    => '/etc/docker/daemon.json',
@@ -81,6 +82,13 @@ class nebula::profile::docker (
       packages => ['docker-ce', 'docker-ce-cli'],
       version  => $version,
       priority => 999,
+    }
+  }
+
+  if $docker_compose_version != '' {
+    class { 'docker::compose':
+      ensure  => 'present',
+      version => $docker_compose_version,
     }
   }
 }
