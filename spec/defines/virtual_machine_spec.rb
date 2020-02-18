@@ -335,6 +335,13 @@ describe 'nebula::virtual_machine' do
 
         it { is_expected.to compile }
       end
+
+      context 'with an existing vm' do
+        let(:title) { 'invalid_existing_guest' }
+
+        it { is_expected.to compile }
+        it { is_expected.not_to contain_install }
+      end
     end
   end
 end

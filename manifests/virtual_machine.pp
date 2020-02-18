@@ -101,39 +101,41 @@ define nebula::virtual_machine(
     $initrd_inject = ''
   }
 
-  exec { "${prefix}::virt-install":
-    require => [
-      Package['libvirt-clients'],
-      Package['virtinst'],
-    ],
-    creates => $full_image_path,
-    timeout => $timeout,
-    path    => [
-      '/usr/bin',
-      '/usr/sbin',
-      '/bin',
-      '/sbin',
-    ],
-    command => @("VIRT_INSTALL_EOF")
-      /usr/bin/virt-install                                           \
-        -n '${title}'                                                 \
-        -r ${ram_in_mb}                                               \
-        --vcpus ${cpus}                                               \
-        --location ${location}                                        \
-        --os-type=linux                                               \
-        --disk '${full_image_path},size=${disk}'                      \
-        --network bridge=br0,model=virtio                             \
-        --network bridge=br1,model=virtio                             \
-        --console pty,target_type=virtio                              \
-        --virt-type kvm                                               \
-        --graphics vnc                   ${initrd_inject}             \
-        --extra-args 'auto netcfg/disable_dhcp=true'
-      | VIRT_INSTALL_EOF
-  }
+  unless $::vm_guests.member($title) {
+    exec { "${prefix}::virt-install":
+      require => [
+        Package['libvirt-clients'],
+        Package['virtinst'],
+      ],
+      creates => $full_image_path,
+      timeout => $timeout,
+      path    => [
+        '/usr/bin',
+        '/usr/sbin',
+        '/bin',
+        '/sbin',
+      ],
+      command => @("VIRT_INSTALL_EOF")
+        /usr/bin/virt-install                                         \
+          -n '${title}'                                               \
+          -r ${ram_in_mb}                                             \
+          --vcpus ${cpus}                                             \
+          --location ${location}                                      \
+          --os-type=linux                                             \
+          --disk '${full_image_path},size=${disk}'                    \
+          --network bridge=br0,model=virtio                           \
+          --network bridge=br1,model=virtio                           \
+          --console pty,target_type=virtio                            \
+          --virt-type kvm                                             \
+          --graphics vnc                   ${initrd_inject}           \
+          --extra-args 'auto netcfg/disable_dhcp=true'
+        | VIRT_INSTALL_EOF
+    }
 
-  exec { "${prefix}::autostart":
-    require => Exec["${prefix}::virt-install"],
-    creates => "${autostart_path}/${title}.xml",
-    command => "/usr/bin/virsh autostart ${title}",
+    exec { "${prefix}::autostart":
+      require => Exec["${prefix}::virt-install"],
+      creates => "${autostart_path}/${title}.xml",
+      command => "/usr/bin/virsh autostart ${title}",
+    }
   }
 }
