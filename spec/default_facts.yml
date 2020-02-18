@@ -25,3 +25,5 @@ augeasversion: '1.4.0'
 apt_update_last_success: '1523250000'
 
 ec2_tag_role: nebula::role::aws
+
+vm_guests: ['invalid_existing_guest']
