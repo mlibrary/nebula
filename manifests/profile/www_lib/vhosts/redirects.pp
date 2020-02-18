@@ -130,6 +130,12 @@ class nebula::profile::www_lib::vhosts::redirects(
       '*.fulcrumscholar.net',
       '*.fulcrumservices.org',
       '*.fulcrumservices.net',
+      '*.heartofdarknessarchive.com',
+      'heartofdarknessarchive.com',
+      '*.heartofdarknessarchive.org',
+      'heartofdarknessarchive.org',
+      '*.heartofdarknessarchive.net',
+      'heartofdarknessarchive.net',
     ],
   }
 
