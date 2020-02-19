@@ -51,7 +51,6 @@ describe 'nebula::profile::kubernetes::stacked_controller' do
         subject { exported_resources }
 
         [
-          ['kubelet', 10_250],
           ['etcd', [2379, 2380]],
         ].each do |purpose, port|
           it do

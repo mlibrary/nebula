@@ -68,13 +68,6 @@ class nebula::profile::kubernetes::stacked_controller {
       action => 'accept',
     ;
 
-    # Controller nodes will need to access all nodes in this cluster
-    # over 10250 for kubelet.
-    "200 ${cluster_name} kubelet ${::fqdn}":
-      tag   => "${cluster_name}_kubelet",
-      dport => 10250,
-    ;
-
     # Controller nodes will need to access etcd nodes over 2379,2380 for
     # etcd.
     "200 ${cluster_name} etcd ${::fqdn}":

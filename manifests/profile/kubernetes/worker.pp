@@ -35,7 +35,7 @@ class nebula::profile::kubernetes::worker (
     }
   }
 
-  # Worker nodes accept connections from controller nodes for kubelet.
+  # Worker nodes accept connections from other nodes for kubelet.
   Firewall <<| tag == "${cluster}_kubelet" |>>
 
   # Worker nodes accept connections from all nodes in the cluster for

@@ -31,6 +31,7 @@
 # Gateway        80? 443?    The world?            (If we want web apps)
 # All internal   179, 4789   All internal          Internal networking
 # All internal   10250       Controllers           kubelet
+# All internal   10250       All internal          prometheus
 # Controller     6443        Gateways              kubectl
 # Controller     6443        All internal          Management API
 # Controller     2379, 2380  Controllers           etcd
@@ -105,6 +106,13 @@ class nebula::profile::kubernetes (
     "200 ${cluster} NodePort ${::fqdn}":
       tag   => "${cluster}_NodePort",
       dport => '30000-32767',
+    ;
+
+    # All nodes in this cluster will need to access all nodes in this
+    # cluster over 10250 for kubelet.
+    "200 ${cluster} kubelet ${::fqdn}":
+      tag   => "${cluster}_kubelet",
+      dport => 10250,
     ;
 
     "200 ${cluster} BGP ${::fqdn}":

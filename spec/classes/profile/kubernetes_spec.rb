@@ -80,6 +80,7 @@ describe 'nebula::profile::kubernetes' do
           [
             ['API', 6443],
             ['NodePort', '30000-32767'],
+            ['kubelet', 10_250],
             ['BGP', 179],
           ].each do |purpose, port|
             it do
