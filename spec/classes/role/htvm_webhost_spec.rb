@@ -17,8 +17,9 @@ describe 'nebula::role::webhost::htvm' do
       it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,nfsvers=3,ro') }
 
       it do
-        is_expected.to contain_file('/etc/systemd/system/shibd.service.d/increase-timeout.conf')
-          .with_content("[Service]\nTimeoutStartSec=900")
+        is_expected.to contain_class('nebula::profile::shibboleth')
+          .with(startup_timeout: 1800)
+          .with(watchdog_minutes: '*/30')
       end
 
       it { is_expected.to contain_php__extension('File_MARC').with_provider('pear') }
