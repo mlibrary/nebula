@@ -34,7 +34,9 @@ class nebula::role::webhost::htvm (
   include nebula::profile::unison
 
   class { 'nebula::profile::shibboleth':
-    config_source => 'puppet:///shibboleth'
+    config_source    => 'puppet:///shibboleth',
+    startup_timeout  => 1800,
+    watchdog_minutes => '*/30',
   }
 
   nebula::usergroup { 'htprod': }

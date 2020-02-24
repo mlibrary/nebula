@@ -8,13 +8,19 @@
 #
 # @param config_source Source URI for /etc/shibboleth content, typically a
 #   fileserver path on the puppet-master.
+# @param startup_timeout The time systemd will wait, in seconds, for startup
+# @param watchdog_minutes How often to run ckshibd, as a "minutes" cron expression
 #
 # @example
 #   class { 'nebula::profile::shibboleth':
-#     config_source => 'puppet:///shibboleth'
+#     config_source   => 'puppet:///shibboleth',
+#     startup_timeout => 300,
+#     watchdog_minutes => '*/5',
 #   }
 class nebula::profile::shibboleth (
   String $config_source,
+  Integer $startup_timeout = 900,
+  String $watchdog_minutes = '*/10',
 ) {
   include nebula::systemd::daemon_reload
 
@@ -100,7 +106,7 @@ class nebula::profile::shibboleth (
 
   file { '/etc/systemd/system/shibd.service.d/increase-timeout.conf':
     ensure  => 'file',
-    content => "[Service]\nTimeoutStartSec=900",
+    content => "[Service]\nTimeoutStartSec=${startup_timeout}",
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
@@ -112,7 +118,7 @@ class nebula::profile::shibboleth (
   cron { 'shibd existence check':
     command => '/usr/local/bin/ckshibd',
     user    => 'root',
-    minute  => '*/10',
+    minute  => $watchdog_minutes,
   }
 
   $http_files = lookup('nebula::http_files')

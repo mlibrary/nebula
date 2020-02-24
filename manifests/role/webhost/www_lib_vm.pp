@@ -39,7 +39,9 @@ class nebula::role::webhost::www_lib_vm (
   include nebula::profile::unison
 
   class { 'nebula::profile::shibboleth':
-    config_source => 'puppet:///shibboleth-www_lib'
+    config_source    => 'puppet:///shibboleth-www_lib',
+    startup_timeout  => 1800,
+    watchdog_minutes => '*/30',
   }
 
   # nebula::usergroup { user groups for www-lib: }
