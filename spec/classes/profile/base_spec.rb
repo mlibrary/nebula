@@ -102,7 +102,13 @@ describe 'nebula::profile::base' do
 
         it do
           is_expected.to contain_kmod__blacklist('hpwdt').with(
-            file: '/etc/modprobe.d/kpwdt-blacklist.conf',
+            file: '/etc/modprobe.d/hpwdt-blacklist.conf',
+          )
+        end
+
+        it do
+          is_expected.to contain_kmod__blacklist('acpi_power_meter').with(
+            file: '/etc/modprobe.d/acpi_power_meter-blacklist.conf',
           )
         end
       end
@@ -114,7 +120,13 @@ describe 'nebula::profile::base' do
 
         it do
           is_expected.to contain_kmod__blacklist('hpwdt').with(
-            file: '/etc/modprobe.d/kpwdt-blacklist.conf',
+            file: '/etc/modprobe.d/hpwdt-blacklist.conf',
+          )
+        end
+
+        it do
+          is_expected.to contain_kmod__blacklist('acpi_power_meter').with(
+            file: '/etc/modprobe.d/acpi_power_meter-blacklist.conf',
           )
         end
 
@@ -127,6 +139,7 @@ describe 'nebula::profile::base' do
         end
 
         it { is_expected.not_to contain_kmod__blacklist('hpwdt') }
+        it { is_expected.not_to contain_kmod__blacklist('acpi_power_meter') }
       end
 
       it { is_expected.not_to contain_package('i40e-dkms') }
