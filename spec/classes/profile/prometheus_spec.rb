@@ -39,10 +39,21 @@ describe 'nebula::profile::prometheus' do
           .that_requires('File[/etc/prometheus]')
       end
 
-      it do
-        is_expected.to contain_file('/etc/prometheus/rules.yml')
-          .that_notifies('Docker::Run[prometheus]')
-          .that_requires('File[/etc/prometheus]')
+      context 'with rules_variables set' do
+        let(:params) do
+          {
+            rules_variables: {
+              darkblue_device: '//storage.invalid/volume',
+            },
+          }
+        end
+
+        it do
+          is_expected.to contain_file('/etc/prometheus/rules.yml')
+            .that_notifies('Docker::Run[prometheus]')
+            .that_requires('File[/etc/prometheus]')
+            .with_content(%r{device="//storage.invalid/volume"})
+        end
       end
 
       it do

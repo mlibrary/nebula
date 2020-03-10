@@ -123,6 +123,24 @@ groups:
       severity: page
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+  - alert: DarkBlueFillingUp
+    expr: >
+      node_filesystem_avail_bytes{device="<%= @rules_variables['darkblue_device'] %>"} < (1 * 1024 * 1024 * 1024 * 1024)
+    for: 10m
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'Dark Blue repository storage, {{$labels.device}} is running low on available space.'
+      description: '{{$labels.device}} has had less than 1TB of available space for more than 10 minutes.'
+  - alert: DarkBlueFull
+    expr: >
+      node_filesystem_avail_bytes{device="<%= @rules_variables['darkblue_device'] %>"} < (100 * 1024 * 1024 * 1024)
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: 'Dark Blue repository storage, {{$labels.device}} is out of available space.'
+      description: '{{$labels.device}} has had less than 100GB of available space for more than 5 minutes.'
 
   # These are aggregate rules for federated collection across our full
   # system. By putting them here, we essentially precompile them.
