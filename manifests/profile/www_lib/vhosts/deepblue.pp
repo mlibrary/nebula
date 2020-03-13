@@ -51,7 +51,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
         #
         # 2016-03-14 skorner
         comment      => 'Work around critical DSpace security bug from 2016..??',
-        rewrite_rule => "^/+themes/.*:.*$ /error [R=permanent,L]"
+        rewrite_rule => '^/+themes/.*:.*$ /error [R=permanent,L]',
       },
       {
         comment      => 'Serve static assets through apache',
