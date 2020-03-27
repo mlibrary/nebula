@@ -37,6 +37,22 @@ describe 'nebula::profile::prometheus' do
       end
 
       it do
+        is_expected.to contain_docker__run('pushgateway')
+          .with_image('prom/pushgateway:latest')
+          .with_net('host')
+          .with_extra_parameters(%w[--restart=always])
+      end
+
+      context 'with pushgateway_version set to v2.11.1' do
+        let(:params) { { pushgateway_version: 'v2.11.1' } }
+
+        it do
+          is_expected.to contain_docker__run('pushgateway')
+            .with_image('prom/pushgateway:v2.11.1')
+        end
+      end
+
+      it do
         is_expected.to contain_file('/etc/prometheus/prometheus.yml')
           .that_notifies('Docker::Run[prometheus]')
           .that_requires('File[/etc/prometheus]')
@@ -149,6 +165,12 @@ describe 'nebula::profile::prometheus' do
           .with_source(facts[:ipaddress])
           .with_state('NEW')
           .with_action('accept')
+      end
+
+      it do
+        expect(exported_resources).to contain_concat_fragment('02 pushgateway url mydatacenter')
+          .with_target('/usr/local/bin/pushgateway')
+          .with_content("PUSHGATEWAY='http://#{facts[:fqdn]}:9091'\n")
       end
 
       context 'with some static nodes set' do

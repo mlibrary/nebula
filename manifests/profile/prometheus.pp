@@ -21,6 +21,7 @@ class nebula::profile::prometheus (
   Array $static_wmi_nodes = [],
   Hash $rules_variables = {},
   String $version = 'latest',
+  String $pushgateway_version = 'latest',
 ) {
   include nebula::profile::docker
   $hostname = $::hostname
@@ -39,6 +40,12 @@ class nebula::profile::prometheus (
       '/opt/prometheus:/prometheus',
     ],
     require          => File['/opt/prometheus', '/etc/prometheus/tls/ca.crt', '/etc/prometheus/tls/client.crt', '/etc/prometheus/tls/client.key'],
+  }
+
+  docker::run { 'pushgateway':
+    image            => "prom/pushgateway:${pushgateway_version}",
+    net              => 'host',
+    extra_parameters => ['--restart=always'],
   }
 
   file { '/etc/prometheus/prometheus.yml':
@@ -115,6 +122,11 @@ class nebula::profile::prometheus (
     block => 'umich::networks::all_trusted_machines',
   }
 
+  @@concat_fragment { "02 pushgateway url ${::datacenter}":
+    target  => '/usr/local/bin/pushgateway',
+    content => "PUSHGATEWAY='http://${::fqdn}:9091'\n",
+  }
+
   @@firewall { "010 prometheus node exporter ${::hostname}":
     tag    => "${::datacenter}_prometheus_node_exporter",
     proto  => 'tcp',
@@ -141,4 +153,6 @@ class nebula::profile::prometheus (
     state  => 'NEW',
     action => 'accept',
   }
+
+  Firewall <<| tag == "${::datacenter}_pushgateway_node" |>>
 }

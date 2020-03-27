@@ -11,7 +11,7 @@ class nebula::profile::puppet::query (
 ) {
   $puppetdb_server = lookup('nebula::puppetdb')
 
-  package { 'curl': }
+  ensure_packages(['curl'])
 
   file { '/usr/local/sbin/puppet-query':
     mode    => '0755',
