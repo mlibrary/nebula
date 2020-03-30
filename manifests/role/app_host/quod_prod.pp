@@ -2,19 +2,16 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::role::app_host::quod_dev
+# nebula::role::app_host::quod_prod
 #
-# Application host (QUOD development)
+# Application host (QUOD production)
 #
 # @example
-#   include nebula::role::app_host::quod_dev
-class nebula::role::app_host::quod_dev {
+#   include nebula::role::app_host::quod_prod
+class nebula::role::app_host::quod_prod {
   include nebula::role::umich
   include nebula::profile::afs
   include nebula::profile::users
-  include nebula::profile::ruby
-  include nebula::profile::nodejs
-  include nebula::profile::named_instances
   include nebula::profile::tsm
-  include nebula::profile::quod::dev::perl
+  include nebula::profile::quod::prod::perl
 }

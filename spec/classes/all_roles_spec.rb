@@ -65,7 +65,8 @@ end
             %w[nebula::role::webhost::www_lib_vm www_lib],
             %w[nebula::role::docker_registry docker_registry],
             %w[nebula::role::archivematica archivematica],
-            %w[nebula::role::app_host::quod_dev quod_dev],
+            %w[nebula::role::app_host::quod_dev quod],
+            %w[nebula::role::app_host::quod_prod quod],
             %w[nebula default],
           ].select { |role_base, _| role_name.start_with? role_base }.first[1]
         end
