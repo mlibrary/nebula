@@ -41,6 +41,10 @@ class nebula::profile::hathitrust::cron::mdp_misc (
       minute  => $mdp_sessions_minute,
       command => "${home}/scripts/managembookssessions.pl -m clean -a 120 2>&1 | /usr/bin/mail -s '${::hostname} managembooksessions output' ${mail_recipient}";
 
+    'manage exclusivity expiration':
+      minute  => $mdp_sessions_minute,
+      command => "${sdr_root}/pt/scripts/manage_exclusivity.pl";
+
     'harvest proxy downloads':
       minute  => 01,
       hour    => 00,
