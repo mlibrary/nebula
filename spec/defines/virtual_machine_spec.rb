@@ -342,6 +342,28 @@ describe 'nebula::virtual_machine' do
         it { is_expected.to compile }
         it { is_expected.not_to contain_install }
       end
+
+      context 'with title set to "myhost.mysub"' do
+        let(:title) { 'myhost.mysub' }
+
+        it do
+          is_expected.to contain_preseed.with_content(
+            %r{^d-i netcfg/get_hostname string myhost\.mysub\.default\.invalid$},
+          )
+        end
+
+        it do
+          is_expected.to contain_preseed.with_content(
+            %r{^d-i netcfg/get_domain string mysub\.default\.invalid$},
+          )
+        end
+
+        it do
+          is_expected.to contain_preseed.with_content(
+            %r{^d-i netcfg/hostname string myhost\.mysub\.default\.invalid$},
+          )
+        end
+      end
     end
   end
 end
