@@ -2,7 +2,7 @@
 :backends:
   - yaml
 :hierarchy:
-  - quod_dev
+  - quod
   - default
 :yaml:
   :datadir: 'spec/fixtures/hiera'

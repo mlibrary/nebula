@@ -2,27 +2,25 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::quod::dependencies
+# nebula::profile::quod::dependencies::packages
 #
 # Install miscellaneous package dependencies for quod applications
 #
 # @example
-#   include nebula::profile::quod::dependencies
-class nebula::profile::quod::dependencies () {
-
+#   include nebula::profile::quod::dependencies::packages
+class nebula::profile::quod::dependencies::packages () {
   ensure_packages (
     [
-      'libapache2-mod-cosign',
       'curl',
-      'git',
       'emacs',
+      'git',
       'imagemagick',
-      'openjdk-8-jre',
-      'libaprutil1-dbd-oracle',
       'libapache2-mod-authz-umichlib',
+      'libapache2-mod-cosign',
+      'libaprutil1-dbd-oracle',
+      'openjdk-8-jre',
+      'oracle-instantclient12.1-basic',
       'oracle-instantclient12.1-devel',
     ]
   )
-
-
 }
