@@ -29,7 +29,7 @@ class nebula::profile::quod::prod::perl () {
     'libregexp-common-perl',
     'libsoftware-license-perl',
     'libterm-ui-perl',
-    'libtest-tester-perl',
+    'libtest-simple-perl',
     'libtext-soundex-perl',
     'libtext-template-perl']:
   }
