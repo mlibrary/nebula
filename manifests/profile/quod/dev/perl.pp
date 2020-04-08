@@ -83,7 +83,6 @@ class nebula::profile::quod::dev::perl () {
   }
 
   -> nebula::cpan { [
-    'Domain::PublicSuffix',
     'Module::Build',
     'Net::IDN::Encode']:
   }
