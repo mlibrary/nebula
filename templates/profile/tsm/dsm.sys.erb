@@ -1,10 +1,19 @@
 Servername <%= @servername %>
-<% @virtualmountpoints.each do |mount| %>
+
+** Virtual Mountpoints
+
+<% @virtualmountpoints.each do |mount| -%>
 VIRTUALMOUNTPOINT <%= mount %>
-<% end %>
-<% @exclude_dirs.each do |dir| %>
+<% end -%>
+
+** Exclude Dirs
+
+<% @exclude_dirs.each do |dir| -%>
 EXCLUDE.DIR "<%= dir %>"
-<% end %>
+<% end -%>
+
+** Custom Settings
+
 INCLEXCL /etc/adsm/inclexcl
 COMPRESSION YES
    COMMmethod         TCPip
@@ -12,10 +21,10 @@ COMPRESSION YES
    TCPServeraddress   <%= @serveraddress %>
 passwordaccess generate
 passworddir /etc/adsm
-<% if @encryption %>
-  encryptiontype aes128
-  encryptkey save
-<% end %>
+<% if @encryption -%>
+encryptiontype aes128
+encryptkey save
+<% end -%>
 schedmode polling
 schedlogretention 31
 errorlogname /var/log/dsmerror.log

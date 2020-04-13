@@ -69,15 +69,19 @@ describe 'nebula::profile::tsm' do
           )
         end
 
-        it do
+        it 'adds domain settings to dsm.opt config file' do
           is_expected.to contain_file(dsm_opt)
             .with_content(%r{^DOMAIN "/baz"$})
             .with_content(%r{^DOMAIN "/quux"$})
+        end
+
+        it 'adds custom settings to dsm.opt config file' do
+          is_expected.to contain_file(dsm_opt)
             .with_content(%r{^first_setting first_value$})
             .with_content(%r{^second_setting "second_value"$})
         end
 
-        it do
+        it 'adds custom settings to dsm.sys config file' do
           is_expected.to contain_file(dsm_sys)
             .with_content(%r{^Servername otherserver}i)
             .with_content(%r{VIRTUALMOUNTPOINT /vmount})
@@ -87,7 +91,7 @@ describe 'nebula::profile::tsm' do
             .with_content(%r{EXCLUDE.DIR "/whatever"})
         end
 
-        it do
+        it 'adds custom settings to inclexcl config file' do
           is_expected.to contain_file(inclexcl)
             .with_content(%r{^exclude.dir /foo$})
             .with_content(%r{^include /bar otherpolicy$})
