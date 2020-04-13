@@ -36,6 +36,7 @@ describe 'nebula::profile::tsm' do
       it do
         is_expected.to contain_file(dsm_opt)
           .with_content(%r{DOMAIN "/etc"})
+          .with_content(%r{\* No custom settings})
       end
 
       it { is_expected.to contain_service('tsm') }
@@ -61,6 +62,10 @@ describe 'nebula::profile::tsm' do
             domains: ['/baz', '/quux'],
             virtualmountpoints: ['/vmount'],
             exclude_dirs: ['/whatever'],
+            opt_settings: [
+              'first_setting first_value',
+              'second_setting "second_value"',
+            ],
           )
         end
 
@@ -68,6 +73,8 @@ describe 'nebula::profile::tsm' do
           is_expected.to contain_file(dsm_opt)
             .with_content(%r{^DOMAIN "/baz"$})
             .with_content(%r{^DOMAIN "/quux"$})
+            .with_content(%r{^first_setting first_value$})
+            .with_content(%r{^second_setting "second_value"$})
         end
 
         it do

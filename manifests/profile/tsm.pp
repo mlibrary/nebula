@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -27,6 +27,9 @@
 # "/etc" is not its own filesystem)
 #
 # @param exclude_dirs Directories never to back up
+# 
+# @param opt_settings An Array containing node-specific configuration settings 
+# for the dsm.opt file.
 #
 # This does not automate entry of the node password or encryption key (if
 # used); "dsmc" must still be run manually to configure that.
@@ -39,7 +42,8 @@ class nebula::profile::tsm (
   Array[String] $inclexcl = ['exclude /.../.nfs*', 'exclude.dir /.../.snapshot'],
   Array[String] $domains = ['/etc','/opt','/var'],
   Array[String] $virtualmountpoints = ['/etc','/opt','/var'],
-  Array[String] $exclude_dirs = ['/afs/','/net/','/nfs/','/usr/vice/cache/']
+  Array[String] $exclude_dirs = ['/afs/','/net/','/nfs/','/usr/vice/cache/'],
+  Array[String] $opt_settings = ['* No custom settings']
 ) {
 
   ensure_packages(['tivsm-ba',])
