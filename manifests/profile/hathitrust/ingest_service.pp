@@ -24,18 +24,4 @@ class nebula::profile::hathitrust::ingest_service(
     enable     => true,
     hasrestart => true
   }
-
-  cron { 'stop ingest':
-    command => '/bin/systemctl stop feedd.service > /dev/null 2>&1',
-    user    => 'root',
-    minute  => '45',
-    hour    => '2',
-  }
-
-  cron { 'start ingest':
-    command => '/bin/systemctl start feedd.service > /dev/null 2>&1',
-    user    => 'root',
-    minute  => '30',
-    hour    => '3'
-  }
 }

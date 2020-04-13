@@ -10,7 +10,11 @@
 #   include nebula::profile::base::hp
 class nebula::profile::base::hp {
   kmod::blacklist { 'hpwdt':
-    file =>  '/etc/modprobe.d/kpwdt-blacklist.conf',
+    file =>  '/etc/modprobe.d/hpwdt-blacklist.conf',
+  }
+
+  kmod::blacklist { 'acpi_power_meter':
+    file =>  '/etc/modprobe.d/acpi_power_meter-blacklist.conf',
   }
 
   package { 'ssacli': }

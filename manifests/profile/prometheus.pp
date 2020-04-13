@@ -12,11 +12,14 @@
 # @param alert_managers A list of alert managers to push alerts to.
 # @param static_nodes A list of nodes to scrape in addition to those
 #   that don't export themselves via puppet.
+# @param rules_variables A hash of values to make available to the rules
+#   template
 # @param version The version of prometheus to run.
 class nebula::profile::prometheus (
   Array $alert_managers = [],
   Array $static_nodes = [],
   Array $static_wmi_nodes = [],
+  Hash $rules_variables = {},
   String $version = 'latest',
 ) {
   include nebula::profile::docker
