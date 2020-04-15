@@ -9,4 +9,5 @@
 class nebula::role::hathitrust::dev::app_host {
   include nebula::role::hathitrust::dev
   include nebula::profile::named_instances
+  include nebula::profile::ruby
 }
