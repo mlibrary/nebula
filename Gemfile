@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 minor_version = Gem::Version.new(RUBY_VERSION.dup).segments[0..1].join('.')
 
+gem 'rake', '>= 12.3.3'
+
 group :development do
   gem "fast_gettext",                                  require: false
   gem "puppet-module-posix-default-r#{minor_version}", require: false, platforms: [:ruby]
