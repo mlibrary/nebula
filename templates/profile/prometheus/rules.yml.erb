@@ -87,8 +87,8 @@ groups:
       severity: page
   - alert: WindowsUpdateBehind
     annotations:
-      summary: 'Node {{$labels.hostname}} has not updated in 30+ days.'
-    expr: 'time() - windows_update > 30*24*3600'
+      summary: 'Node {{$labels.hostname}} has not updated in 40+ days.'
+    expr: 'time() - windows_update > 40*24*3600'
     for: 1h
     labels:
       severity: ticket
