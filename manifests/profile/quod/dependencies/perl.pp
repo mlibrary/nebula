@@ -203,6 +203,7 @@ class nebula::profile::quod::dependencies::perl () {
     'File::Pairtree',
     'File::Value',
     'Mail::Sender',
+    'Net::IDN::Encode',
     'OAuth::Lite']:
   }
 

@@ -55,7 +55,6 @@ class nebula::profile::quod::dev::perl () {
     'libmouse-perl',
     'libnamespace-autoclean-perl',
     'libnet-dns-perl',
-    'libnet-idn-encode-perl',
     'libnet-ip-perl',
     'libossp-uuid-perl',
     'libparams-validate-perl',
@@ -79,11 +78,10 @@ class nebula::profile::quod::dev::perl () {
     'libxml-xpath-perl',
     'libyaml-appconfig-perl',
     'libyaml-libyaml-perl',
-    'xmlformat-perl']:
+    'xmlformat-perl',]:
   }
 
   -> nebula::cpan { [
-    'Module::Build',
-    'Net::IDN::Encode']:
+    'Module::Build']:
   }
 }
