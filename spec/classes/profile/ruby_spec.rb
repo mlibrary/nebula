@@ -71,6 +71,13 @@ describe 'nebula::profile::ruby' do
         it { is_expected.not_to contain_rbenv__build('2.5.0') }
       end
 
+      # AEIM-2776
+      context 'when given supported_versions of [jruby-1.7.anything]' do
+        let(:params) { { supported_versions: ['jruby-1.7.anything'] } }
+
+        it { is_expected.not_to contain_rbenv__build('jruby-1.7.anything') }
+      end
+
       context 'when given global_version of 2.4.1' do
         let(:params) { { global_version: '2.4.1', bundler_version: '~>1.14' } }
 
