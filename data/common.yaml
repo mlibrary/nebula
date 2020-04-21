@@ -23,10 +23,7 @@ nebula::profile::ruby::plugins:
 - tpope/rbenv-aliases
 
 nebula::profile::ruby::global_version: '2.4.3'
-nebula::profile::ruby::supported_versions:
-- '2.3.8'
-- '2.4.5'
-- '2.5.3'
+nebula::profile::ruby::supported_versions: []
 
 nebula::profile::ruby::gems:
 - rspec
