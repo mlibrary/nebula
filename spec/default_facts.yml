@@ -27,3 +27,10 @@ apt_update_last_success: '1523250000'
 ec2_tag_role: nebula::role::aws
 
 vm_guests: ['invalid_existing_guest']
+
+# The ruby tests by default are set to install 2.4.3 and 2.5.0, so 2.4.2
+# represents an installed but not desired version of ruby, while 2.5.0
+# represents an already-installed and still desired version of ruby.
+ruby_versions:
+- 2.4.2
+- 2.5.0

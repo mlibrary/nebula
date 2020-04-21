@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018, 2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -40,6 +40,16 @@ describe 'nebula::profile::ruby' do
           end
         end
       end
+
+      it do
+        is_expected.to contain_exec('rbenv uninstall 2.4.2')
+          .with_command('rbenv uninstall -f 2.4.2')
+          .with_environment(['RBENV_ROOT=/opt/rbenv'])
+          .with_path('/opt/rbenv/shims:/opt/rbenv/bin:/usr/bin:/bin')
+          .that_requires('Rbenv::Build[2.4.3]')
+      end
+
+      it { is_expected.not_to contain_exec('rbenv uninstall 2.5.0') }
 
       case os
       when 'debian-8-x86_64'
