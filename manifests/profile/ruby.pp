@@ -69,17 +69,19 @@ class nebula::profile::ruby (
   $supported_versions.each |$version| {
     # Ruby < 2.4 is incompatible with debian stretch
     unless $::os['release']['major'] == '9' and $version =~ /^2\.3\./ {
-      unless $version == $global_version {
-        rbenv::build { $version:
-          bundler_version => $bundler_version,
-        }
+      unless $version =~ /^jruby-1\.7\./ { # AEIM-2776
+        unless $version == $global_version {
+          rbenv::build { $version:
+            bundler_version => $bundler_version,
+          }
 
-        $gems.each |$gem| {
-          rbenv::gem { "${gem[gem]} ${version}":
-            gem          => $gem['gem'],
-            version      => $gem['version'],
-            ruby_version => $version,
-            require      => Rbenv::Build[$version],
+          $gems.each |$gem| {
+            rbenv::gem { "${gem[gem]} ${version}":
+              gem          => $gem['gem'],
+              version      => $gem['version'],
+              ruby_version => $version,
+              require      => Rbenv::Build[$version],
+            }
           }
         }
       }
