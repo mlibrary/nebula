@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018, 2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -84,6 +84,22 @@ class nebula::profile::ruby (
             }
           }
         }
+      }
+    }
+  }
+
+  $::ruby_versions.each |$version| {
+    unless $version in $supported_versions {
+      unless $version == $global_version {
+        exec { "rbenv uninstall ${version}":
+          command     => "rbenv uninstall -f ${version}",
+          environment => "RBENV_ROOT=${install_dir}",
+          path        => "${install_dir}/shims:${install_dir}/bin:/usr/bin:/bin",
+        }
+
+        # This uninstall exec requires every rbenv::build. Don't
+        # uninstall anything until everything is installed.
+        Rbenv::Build <| |> -> Exec <| title == "rbenv uninstall ${version}" |>
       }
     }
   }
