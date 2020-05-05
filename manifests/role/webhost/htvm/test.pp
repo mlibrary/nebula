@@ -28,7 +28,7 @@ class nebula::role::webhost::htvm::test {
   }
 
   include nebula::role::webhost::htvm
-  include nebula::role::hathitrust::dev::app_host
+  include nebula::profile::named_instances
   include nebula::profile::hathitrust::apache::test
 
 }
