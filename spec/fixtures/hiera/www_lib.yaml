@@ -21,5 +21,15 @@ nebula::role::webhost::www_lib_vm::hosts:
     ip: 10.0.0.123
 
 nebula::profile::apache::authz_umichlib::dbd_params: user=somebody,pass=whatever,server=whatever
+nebula::profile::apache::authz_umichlib::oracle_home: /oracle/home
+nebula::profile::apache::authz_umichlib::oracle_sid: abcd
+nebula::profile::apache::authz_umichlib::oracle_port: 1234
+nebula::profile::apache::authz_umichlib::oracle_servers:
+  myserver1:
+    - ORCL.MYSERVER1_ALIAS1
+    - ORCL.MYSERVER1_ALIAS2
+  myserver2:
+    - ORCL.MYSERVER2_ALIAS1
+    - ORCL.MYSERVER2_ALIAS2
 
 nebula::apache::ssl_keypair::chain_crt: foo.crt
