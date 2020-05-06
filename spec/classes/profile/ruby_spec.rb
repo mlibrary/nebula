@@ -81,11 +81,18 @@ describe 'nebula::profile::ruby' do
         it { is_expected.not_to contain_rbenv__build('2.5.0') }
       end
 
-      # AEIM-2776
+      # AEIM-2776 This is bad get rid of it ASAP
       context 'when given supported_versions of [jruby-1.7.anything]' do
         let(:params) { { supported_versions: ['jruby-1.7.anything'] } }
 
         it { is_expected.not_to contain_rbenv__build('jruby-1.7.anything') }
+      end
+
+      # AEIM-2776 This is bad get rid of it ASAP
+      context 'when given supported_versions of [jruby-9.0.anything]' do
+        let(:params) { { supported_versions: ['jruby-9.0.anything'] } }
+
+        it { is_expected.not_to contain_rbenv__build('jruby-9.0.anything') }
       end
 
       context 'when given global_version of 2.4.1' do

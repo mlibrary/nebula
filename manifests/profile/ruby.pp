@@ -69,7 +69,7 @@ class nebula::profile::ruby (
   $supported_versions.each |$version| {
     # Ruby < 2.4 is incompatible with debian stretch
     unless $::os['release']['major'] == '9' and $version =~ /^2\.3\./ {
-      unless $version =~ /^jruby-1\.7\./ { # AEIM-2776
+      unless $version =~ /^jruby-(1\.7|9\.0)\./ { # AEIM-2776 don't manage jruby-1.7.X and jruby-9.0.X This is bad get rid of it ASAP
         unless $version == $global_version {
           rbenv::build { $version:
             bundler_version => $bundler_version,
