@@ -164,17 +164,6 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('vufind-http-beta.mirlyn')
-          .with_servername('beta.mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-https-beta.mirlyn')
-          .with_ssl_cert('/etc/ssl/certs/mirlyn.lib.umich.edu.crt')
-          .with_servername('beta.mirlyn.lib.umich.edu')
-      end
-
-      it do
         is_expected.to contain_apache__vhost('bmc.lib.umich.edu')
           .with_servername('bmc.lib.umich.edu')
       end
