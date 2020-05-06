@@ -131,7 +131,7 @@ class nebula::profile::www_lib::apache (
     app_url => 'http://app-mirlyn-api-production:30730/',
     prefix  => 'm.',
   }
-  
+
   file { "${apache::params::logroot}/bmc":
     ensure => 'directory',
   }
