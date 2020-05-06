@@ -58,13 +58,6 @@ class nebula::profile::www_lib::vhosts::redirects(
     target   => 'https://tools.lib.umich.edu/confluence/display/FPS'
   }
 
-  nebula::apache::redirect_vhost_https { 'support.fulcrumscholar.org':
-    ssl_cn        => 'fulcrum.org',
-    priority      => '08',
-    target        => 'https://tools.lib.umich.edu/confluence/display/FPS',
-    serveraliases => ['support.fulcrum.org', 'support.fulcrumservices.org'],
-  }
-
   nebula::apache::redirect_vhost_https { 'northwestern.fulcrumscholar.org':
     ssl_cn        => 'fulcrum.org',
     priority      => '08',
