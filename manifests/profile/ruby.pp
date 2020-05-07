@@ -20,6 +20,11 @@ class nebula::profile::ruby (
   String $install_dir,
   Array  $plugins,
   Array  $gems,
+  # AEIM-2776 - We have a temporary blacklist on specific versions that are
+  # installed in some places, but should not be managed at all. If an installed
+  # version matches this regex, it will not appear in the catalogue at all.
+  # These should be removed as soon as practical in coordination with devs.
+  String $manage_blacklist = '^jruby-(1\.7|9\.0)\.',
 ) {
 
   package {[
@@ -69,7 +74,7 @@ class nebula::profile::ruby (
   $supported_versions.each |$version| {
     # Ruby < 2.4 is incompatible with debian stretch
     unless $::os['release']['major'] == '9' and $version =~ /^2\.3\./ {
-      unless $version =~ /^jruby-1\.7\./ { # AEIM-2776
+      unless $version =~ $manage_blacklist {
         unless $version == $global_version {
           rbenv::build { $version:
             bundler_version => $bundler_version,
