@@ -131,12 +131,6 @@ class nebula::profile::www_lib::apache (
     app_url => 'http://app-mirlyn-api-production:30730/',
     prefix  => 'm.',
   }
-  nebula::apache::mirlyn_vhost { 'beta.mirlyn':
-    domain        => 'lib.umich.edu',
-    app_url       => 'http://app-mirlyn-api-staging:30731/',
-    prefix        => 'beta.',
-    serveraliases => ['mbeta.mirlyn', 'mbeta.mirlyn.lib', 'mbeta.mirlyn.lib.umich.edu', 'mirlyn2-beta', 'mirlyn2-beta.lib', 'mirlyn2-beta.lib.umich.edu'],
-  }
 
   file { "${apache::params::logroot}/bmc":
     ensure => 'directory',
