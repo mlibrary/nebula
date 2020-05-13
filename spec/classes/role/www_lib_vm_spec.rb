@@ -68,12 +68,6 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it { is_expected.to contain_host('mysql-web').with_ip('10.0.0.123') }
 
       it do
-        # set via hiera
-        is_expected.to contain_file('authz_umichlib.conf')
-          .with_content(%r{DBDParams\s*user=somebody})
-      end
-
-      it do
         is_expected.to contain_apache__vhost('000-default-ssl')
           .with_aliases([{ 'scriptalias' => '/monitor',
                            'path' => '/usr/local/lib/cgi-bin/monitor' }])
@@ -251,6 +245,26 @@ describe 'nebula::role::webhost::www_lib_vm' do
                 ssl_cert: '/etc/ssl/certs/apps.lib.umich.edu.crt')
           .with_error_log_file('error.log')
           .with_custom_fragment(%r{CookieName skynet})
+      end
+
+      # Files
+      it { is_expected.to contain_file('sqlnet.ora') }
+
+      it 'adds custom params to file authz_umichlib.conf' do
+        is_expected.to contain_file('authz_umichlib.conf')
+          .with_content(%r{DBDParams\s*user=somebody})
+      end
+
+      it 'adds custom params to file tnsnames.ora' do
+        is_expected.to contain_file('tnsnames.ora')
+          .with_content(%r{^ORCL.MYSERVER1_ALIAS1\s+=})
+          .with_content(%r{^ORCL.MYSERVER1_ALIAS2\s+=})
+          .with_content(%r{^ORCL.MYSERVER2_ALIAS1\s+=})
+          .with_content(%r{^ORCL.MYSERVER2_ALIAS2\s+=})
+          .with_content(%r{HOST\s+=\s+myserver1.umdl.umich.edu})
+          .with_content(%r{HOST\s+=\s+myserver2.umdl.umich.edu})
+          .with_content(%r{SID\s+=\s+abcd})
+          .with_content(%r{PORT\s+=\s+1234})
       end
     end
   end
