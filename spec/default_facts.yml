@@ -34,3 +34,6 @@ vm_guests: ['invalid_existing_guest']
 ruby_versions:
 - 2.4.2
 - 2.5.0
+
+# This can be removed once the firewall module is updated.
+ip6tables_version: 1.6.0
