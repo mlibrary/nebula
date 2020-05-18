@@ -60,7 +60,7 @@ end
             %w[nebula::role::clearinghouse chipmunk],
             %w[nebula::role::deb_server deb_server],
             %w[nebula::role::deploy_host named_instances],
-            %w[nebula::role::kubernetes kubernetes],
+            %w[nebula::role::legacy::kubernetes kubernetes],
             %w[nebula::role::log_host log_host],
             %w[nebula::role::webhost::www_lib_vm www_lib],
             %w[nebula::role::docker_registry docker_registry],

@@ -7,14 +7,14 @@
 # This opens up the ports we need open on workers. This does not start
 # kubernetes or attempt to connect this node to the cluster. All it does
 # is ensure the possibility of you doing it by hand.
-class nebula::profile::kubernetes::worker (
+class nebula::profile::legacy::kubernetes::worker (
   Hash[String, Hash] $cifs_mounts = {},
 ) {
-  include nebula::profile::kubernetes
+  include nebula::profile::legacy::kubernetes
 
   ensure_packages(['nfs-common'], {'ensure' => 'present'})
 
-  $cluster = lookup('nebula::profile::kubernetes::cluster')
+  $cluster = lookup('nebula::profile::legacy::kubernetes::cluster')
 
   @@concat_fragment { "haproxy nodeports ${::hostname}":
     target  => '/etc/haproxy/haproxy.cfg',

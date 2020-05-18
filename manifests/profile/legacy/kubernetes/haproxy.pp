@@ -13,20 +13,20 @@
 # @param cluster The name of the cluster to serve as ambassador to. This
 #   defaults to nebula::profile::kubernetes::cluster, and you should
 #   almost certainly set that instead.
-class nebula::profile::kubernetes::haproxy (
+class nebula::profile::legacy::kubernetes::haproxy (
   Boolean $master = false,
   String $cluster = '',
 ) {
   include nebula::profile::networking::sysctl
 
   if $cluster == '' {
-    $cluster_name = lookup('nebula::profile::kubernetes::cluster')
+    $cluster_name = lookup('nebula::profile::legacy::kubernetes::cluster')
   } else {
     $cluster_name = $cluster
   }
 
   $email = lookup('nebula::root_email')
-  $floating_ip = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]['address']
+  $floating_ip = lookup('nebula::profile::legacy::kubernetes::clusters')[$cluster_name]['address']
   $monitoring_user = lookup('nebula::profile::haproxy::monitoring_user')
 
   concat_fragment { 'haproxy defaults':

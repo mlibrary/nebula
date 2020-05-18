@@ -3,7 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 
 # Kubernetes gateway node
-class nebula::role::kubernetes::gateway {
+class nebula::role::legacy::kubernetes::gateway {
   include nebula::role::minimum
-  include nebula::profile::kubernetes::haproxy
+  include nebula::profile::legacy::kubernetes::haproxy
 }

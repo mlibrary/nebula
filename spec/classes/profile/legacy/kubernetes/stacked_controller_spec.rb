@@ -5,14 +5,14 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::kubernetes::stacked_controller' do
+describe 'nebula::profile::legacy::kubernetes::stacked_controller' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:hiera_config) { 'spec/fixtures/hiera/kubernetes_config.yaml' }
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
-      it { is_expected.to contain_class('Nebula::Profile::Kubernetes') }
+      it { is_expected.to contain_class('Nebula::Profile::Legacy::Kubernetes') }
 
       it do
         is_expected.to contain_concat_file('kubeadm config').with(

@@ -5,7 +5,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::kubernetes' do
+describe 'nebula::profile::legacy::kubernetes' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:hiera_config) { 'spec/fixtures/hiera/kubernetes_config.yaml' }

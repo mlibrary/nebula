@@ -15,15 +15,15 @@
 # running. Due to the finicky nature of the bootstrapping process,
 # puppet's responsibility ends when the servers simply have the desired
 # software installed.
-class nebula::profile::kubernetes::stacked_controller {
-  include nebula::profile::kubernetes
+class nebula::profile::legacy::kubernetes::stacked_controller {
+  include nebula::profile::legacy::kubernetes
 
-  $cluster_name = lookup('nebula::profile::kubernetes::cluster')
-  $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
+  $cluster_name = lookup('nebula::profile::legacy::kubernetes::cluster')
+  $cluster = lookup('nebula::profile::legacy::kubernetes::clusters')[$cluster_name]
   $control_dns = $cluster['control_dns']
   $kubernetes_version = $cluster['kubernetes_version']
-  $service_cidr = pick($cluster['service_cidr'], lookup('nebula::profile::kubernetes::service_cidr'))
-  $pod_cidr = pick($cluster['pod_cidr'], lookup('nebula::profile::kubernetes::pod_cidr'))
+  $service_cidr = pick($cluster['service_cidr'], lookup('nebula::profile::legacy::kubernetes::service_cidr'))
+  $pod_cidr = pick($cluster['pod_cidr'], lookup('nebula::profile::legacy::kubernetes::pod_cidr'))
 
   concat_file { 'kubeadm config':
     path   => '/etc/kubeadm_config.yaml',

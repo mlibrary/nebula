@@ -3,10 +3,10 @@
 # BSD License. See LICENSE.txt for details.
 
 # Kubernetes worker node
-class nebula::role::kubernetes::worker {
+class nebula::role::legacy::kubernetes::worker {
   class { 'nebula::role::minimum':
     internal_routing => 'kubernetes_calico',
   }
 
-  include nebula::profile::kubernetes::worker
+  include nebula::profile::legacy::kubernetes::worker
 }

@@ -6,7 +6,7 @@
 require 'spec_helper'
 
 %w[controller worker].each do |role|
-  describe "nebula::role::kubernetes::#{role}" do
+  describe "nebula::role::legacy::kubernetes::#{role}" do
     on_supported_os.each do |os, os_facts|
       next if os == 'debian-8-x86_64'
 
