@@ -1,4 +1,3 @@
-sudo: false
 dist: trusty
 language: ruby
 cache: bundler
@@ -8,9 +7,14 @@ bundler_args: "--without system_tests"
 rvm:
 - 2.5
 - 2.4
+before_install:
+# This line is only required for ruby < 2.6 according to
+# https://docs.travis-ci.com/user/languages/ruby/
+- yes | gem update --system --force
+- gem install bundler
 env:
 - PUPPET_GEM_VERSION="~> 5.0" CHECK=spec
-matrix:
+jobs:
   fast_finish: true
   include:
   - env: CHECK=rubocop
@@ -22,12 +26,11 @@ branches:
   - "/^v\\d/"
 notifications:
   email: false
-  on_pull_requests: false
   slack:
     secure: rbGtASINs1MdIElVWqMjmPT5LMUpK7V2asiB9Rkwa1tT0e3GMTsbo5QuhTqZI84gsrKplX1Dc9jn0lb25WitsNfUdHMCNCOAPU4C05JeoRBplHDHaBdTNXQ1b03KNw9U9LURSC0L5u4iLOC8bZ6iv9JVgE9H7KHnEo9c/Qh2C/oOCOvgHu12AQgikFKigEGcNFkHoZWCikeZ2Zx4cTWmIpuEB+NfLpL5eqXR6Pfp6jFdYb7aXIazdVHKLxMTR/oqoEqHqGc1X34zb8f6inGoBPy6hPYyCK+M0hIY5pTjBgw7x1cBn74OgEpcbVrftXITo+sR5hxzF63xLe3YvBYI25rMdG6O6kLQ5nYS1R2+/kBEwBWvejeHWMCEda64RUPysFLOWEuGpqqp54VPW1dmAg5eOfcGfrpKWcaE+fh2706Bgtgd//JPjQVcT7P4cnvIbiHFSaxI0Cuif5aIMhiyDvtuJHlu9lMl5GxN8E3oux4LMsefeCxeVHPIR63iva23/pqLt/8F/0I2ecGSOkOlXij15R75sQ0cA/wof+IUWeXu/EMZn4mzRknY9VB9fOhXdnv7GZm2Nuc4euCNe/Bubv2A2l+Kp2VLEDWQF+hEjNKxBxxUxOZ6GLY0aHAholP1AoF5oqq55XsGLZWONujw7KhynmOuBunwEN5QpaM6pig=
 deploy:
   provider: puppetforge
-  user: puppet
+  username: puppet
   password:
     secure: ''
   on:
