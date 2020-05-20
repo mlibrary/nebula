@@ -3,10 +3,10 @@
 # BSD License. See LICENSE.txt for details.
 
 # Kubernetes controller plane and etcd server
-class nebula::role::kubernetes::controller {
+class nebula::role::legacy::kubernetes::controller {
   class { 'nebula::role::minimum':
     internal_routing => 'kubernetes_calico',
   }
 
-  include nebula::profile::kubernetes::stacked_controller
+  include nebula::profile::legacy::kubernetes::stacked_controller
 }

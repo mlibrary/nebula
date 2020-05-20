@@ -40,7 +40,7 @@
 #
 # @param cluster The unique name of the cluster.
 # @param clusters A hash of cluster names to cluster definitions.
-class nebula::profile::kubernetes (
+class nebula::profile::legacy::kubernetes (
   String             $cluster,
   Hash[String, Hash] $clusters,
 ) {

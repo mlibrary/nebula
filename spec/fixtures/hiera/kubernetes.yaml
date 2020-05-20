@@ -1,10 +1,10 @@
 # Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-nebula::profile::kubernetes::service_cidr: "192.168.0.0/16"
-nebula::profile::kubernetes::pod_cidr: "10.96.0.0/12"
-nebula::profile::kubernetes::cluster: first_cluster
-nebula::profile::kubernetes::clusters:
+nebula::profile::legacy::kubernetes::service_cidr: "192.168.0.0/16"
+nebula::profile::legacy::kubernetes::pod_cidr: "10.96.0.0/12"
+nebula::profile::legacy::kubernetes::cluster: first_cluster
+nebula::profile::legacy::kubernetes::clusters:
   first_cluster:
     address: 10.0.0.1
     docker_version: 5:18.09.6~3-0~debian-stretch
