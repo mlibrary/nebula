@@ -2,7 +2,8 @@
 :backends:
   - yaml
 :hierarchy:
-  - kubernetes
+  - kubernetes/implicit_public_address
+  - kubernetes/default
   - default
 :yaml:
   :datadir: 'spec/fixtures/hiera'

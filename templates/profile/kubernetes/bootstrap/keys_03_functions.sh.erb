@@ -1,0 +1,201 @@
+
+main() {
+  generate_etcd_keys
+  generate_controller_keys
+  generate_worker_keys
+  clean_up
+}
+
+generate_etcd_keys() {
+  mkdir -p shared-etcd
+  create_ca "shared-etcd/ca" \
+            "/CN=etcd-ca"
+
+  for i in "${ETCD_NODES[@]}"; do
+    local hostname="`get_hostname "$i"`"
+    local ipaddress="`get_ipaddress "$i"`"
+
+    mkdir -p "$hostname"
+    cp shared-etcd/* "$hostname"
+    create_crt "shared-etcd/ca" \
+               "$hostname/healthcheck" \
+               "/O=system:masters/CN=kube-etcd-healthcheck-client" \
+               "$ipaddress" "$hostname" \
+               "$ETCD_IPADDRESS" "$ETCD_ENDPOINT"
+    create_crt "shared-etcd/ca" \
+               "$hostname/peer" \
+               "/CN=$hostname.$DOMAIN" \
+               "$ipaddress" "$hostname" \
+               "$ETCD_IPADDRESS" "$ETCD_ENDPOINT"
+    create_crt "shared-etcd/ca" \
+               "$hostname/server" \
+               "/CN=etcd-all.$DOMAIN" \
+               "$ipaddress" "$hostname" \
+               "$ETCD_IPADDRESS" "$ETCD_ENDPOINT"
+  done
+}
+
+generate_controller_keys() {
+  mkdir -p shared-kubernetes/etcd
+  cp shared-etcd/ca.crt shared-kubernetes/etcd
+  create_ca "shared-kubernetes/ca" \
+            "/CN=$KUBE_CN"
+  create_ca "shared-kubernetes/front-proxy-ca" \
+            "/CN=front-proxy-ca"
+  create_keypair "shared-kubernetes/sa"
+
+  for i in "${KUBE_CONTROLLERS[@]}"; do
+    local hostname="`get_hostname "$i"`"
+    local ipaddress="`get_ipaddress "$i"`"
+
+    cp -r shared-kubernetes "$hostname"
+    create_crt "shared-etcd/ca" \
+               "$hostname/apiserver-etcd-client" \
+               "/O=system:masters/CN=kube-apiserver-etcd-client" \
+               "$ipaddress" "$hostname" \
+               "$KUBE_IPADDRESS" "$KUBE_ENDPOINT"
+    create_crt "shared-kubernetes/ca" \
+               "$hostname/apiserver-kubelet-client" \
+               "/O=system:masters/CN=kube-apiserver-kubelet-client" \
+               "$ipaddress" "$hostname" \
+               "$KUBE_IPADDRESS" "$KUBE_ENDPOINT"
+    create_crt "shared-kubernetes/ca" \
+               "$hostname/apiserver" \
+               "/CN=kube-apiserver" \
+               "$ipaddress" "$hostname" \
+               "$KUBE_IPADDRESS" "$KUBE_ENDPOINT" \
+               "this is the kube api cert"
+    create_crt "shared-kubernetes/front-proxy-ca" \
+               "$hostname/front-proxy-client" \
+               "/CN=front-proxy-client" \
+               "$ipaddress" "$hostname" \
+               "$KUBE_IPADDRESS" "$KUBE_ENDPOINT"
+  done
+}
+
+generate_worker_keys(){
+  for i in "${KUBE_WORKERS[@]}"; do
+    local hostname="`get_hostname "$i"`"
+
+    mkdir -p "$hostname"
+    cp shared-kubernetes/ca.crt "$hostname"
+  done
+}
+
+clean_up() {
+  rm -r shared-etcd
+  rm -r shared-kubernetes
+}
+
+get_hostname() {
+  echo "$1" | sed -e 's,/.*$,,'
+}
+
+get_ipaddress() {
+  echo "$1" | sed -e 's,^.*/,,'
+}
+
+create_ca() {
+  local ca_base="$1"
+  local subject="$2"
+
+  # If it already exists, ignore it. We don't renew these.
+  if ! [ -f "${ca_base}.key" ]; then
+    echo "Generating self-signed ${ca_base}.crt/${ca_base}.key ..."
+    openssl req \
+      -newkey rsa:4096 -nodes -sha256 -keyout "${ca_base}.key" \
+      -x509 -days "$CA_TTL" -subj "$subject" -out "${ca_base}.crt"
+  fi
+}
+
+create_crt() {
+  local ca_base="$1"
+  local crt_base="$2"
+  local subject="$3"
+  local single_ipaddress="$4"
+  local single_endpoint="$5"
+  local shared_ipaddress="$6"
+  local shared_endpoint="$7"
+  local kube_api="$8"
+
+  # We got this ini format from this gist:
+  # https://gist.github.com/sethvargo/81227d2316207b7bd110df328d83fad8
+  cat <<EOF > tmp.ini
+[req]
+default_bits = 2048
+encrypt_key  = no # Change to encrypt the private key using des3 or similar
+default_md   = sha256
+prompt       = no
+utf8         = yes
+
+# Speify the DN here so we aren't prompted (along with prompt = no above).
+distinguished_name = req_distinguished_name
+
+# Extensions for SAN IP and SAN DNS
+req_extensions = v3_req
+
+# Be sure to update the subject to match your organization.
+[req_distinguished_name]
+CN = My Certificate
+
+# Allow client and server auth. You may want to only allow server auth.
+# Link to SAN names.
+[v3_req]
+basicConstraints     = CA:FALSE
+subjectKeyIdentifier = hash
+keyUsage             = digitalSignature, keyEncipherment
+extendedKeyUsage     = clientAuth, serverAuth
+subjectAltName       = @alt_names
+
+# Alternative names are specified as IP.# and DNS.# for IP addresses and
+# DNS accordingly.
+[alt_names]
+DNS.1 = $single_endpoint.$DOMAIN
+DNS.2 = $shared_endpoint.$DOMAIN
+DNS.3 = localhost
+IP.1 = $single_ipaddress
+IP.2 = $shared_ipaddress
+IP.3 = 127.0.0.1
+IP.4 = 0:0:0:0:0:0:0:1
+EOF
+
+  if [ -n "$kube_api" ]; then
+    echo "DNS.4 = kubernetes" >> tmp.ini
+    echo "DNS.5 = kubernetes.default" >> tmp.ini
+    echo "DNS.6 = kubernetes.default.svc" >> tmp.ini
+    echo "DNS.7 = kubernetes.default.svc.cluster.local" >> tmp.ini
+    echo "DNS.8 = $CONTROL_DNS" >> tmp.ini
+    echo "IP.5 = $KUBE_INTERNAL_IP" >> tmp.ini
+    echo "IP.6 = $PUBLIC_ADDRESS" >> tmp.ini
+  fi
+
+  # Unlike CAs and keypairs, this will override existing certs and keys.
+  echo "Generating ${ca_base}.crt-signed ${crt_base}.crt/${crt_base}.key ..."
+  openssl req \
+    -config tmp.ini \
+    -newkey rsa:4096 -nodes -sha256 -keyout "${crt_base}.key" \
+    -subj "$subject" -out "${crt_base}.csr"
+
+  openssl x509 \
+    -req -days "$CERT_TTL" -sha256 -in "${crt_base}.csr" \
+    -CA "${ca_base}.crt" \
+    -CAkey "${ca_base}.key" \
+    -extensions v3_req -extfile tmp.ini \
+    -CAcreateserial -out "${crt_base}.crt"
+
+  rm "${ca_base}.srl" "${crt_base}.csr" tmp.ini
+}
+
+create_keypair() {
+  local base="$1"
+
+  # If it already exists, ignore it. We don't renew these.
+  if ! [ -f "${base}.key" ]; then
+    openssl genrsa -out "${base}.key" 4096
+    openssl rsa \
+      -in "${base}.key" \
+      -outform PEM -pubout -out "${base}.pub"
+  fi
+}
+
+main

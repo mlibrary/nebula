@@ -1,0 +1,9 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - kubernetes/first_cluster
+  - kubernetes/default
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'

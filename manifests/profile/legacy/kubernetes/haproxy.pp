@@ -32,7 +32,7 @@ class nebula::profile::legacy::kubernetes::haproxy (
   concat_fragment { 'haproxy defaults':
     target  => '/etc/haproxy/haproxy.cfg',
     order   => '01',
-    content => template('nebula/profile/kubernetes/haproxy/haproxy.cfg.erb'),
+    content => template('nebula/profile/legacy/kubernetes/haproxy/haproxy.cfg.erb'),
   }
 
   Concat_fragment <<| tag == "${cluster_name}_haproxy_kubectl" |>>
@@ -63,7 +63,7 @@ class nebula::profile::legacy::kubernetes::haproxy (
   concat_fragment { 'keepalived preamble':
     target  => '/etc/keepalived/keepalived.conf',
     order   => '01',
-    content => template('nebula/profile/kubernetes/haproxy/keepalived_pre.erb'),
+    content => template('nebula/profile/legacy/kubernetes/haproxy/keepalived_pre.erb'),
   }
 
   @@concat_fragment { "keepalived ${::hostname}":
@@ -80,7 +80,7 @@ class nebula::profile::legacy::kubernetes::haproxy (
   concat_fragment { 'keepalived postamble':
     target  => '/etc/keepalived/keepalived.conf',
     order   => '99',
-    content => template('nebula/profile/kubernetes/haproxy/keepalived_post.erb'),
+    content => template('nebula/profile/legacy/kubernetes/haproxy/keepalived_post.erb'),
   }
 
   concat { '/etc/keepalived/keepalived.conf':
