@@ -157,3 +157,9 @@ umich::networks::campus_wired_and_wireless: []
 umich::networks::staff: []
 umich::networks::bentley: []
 umich::networks::datacenter: []
+umich::networks::private_bastion_hosts: []
+umich::networks::private_blocks:
+- 10.0.0.0/8
+- 127.0.0.0/8
+- 172.16.0.0/12
+- 192.168.0.0/16
