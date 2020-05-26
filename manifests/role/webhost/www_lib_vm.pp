@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019-2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -31,7 +31,7 @@ class nebula::role::webhost::www_lib_vm (
   create_resources('host',$hosts)
 
   include nebula::profile::geoip
-  include nebula::profile::php73
+  #include nebula::profile::www_lib::php73
   include nebula::profile::www_lib::dependencies
   include nebula::profile::www_lib::perl
   include nebula::profile::www_lib::php
