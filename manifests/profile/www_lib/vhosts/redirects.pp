@@ -174,10 +174,6 @@ class nebula::profile::www_lib::vhosts::redirects(
     serveraliases => ['www.datainformationliteracy.org', 'datainformationliteracy.org'],
   }
 
-  nebula::apache::redirect_vhost_http { 'beta.lib.umich.edu':
-    target => 'http://www.lib.umich.edu/'
-  }
-
   nebula::apache::redirect_vhost_http { 'medsearch.lib.umich.edu':
     serveraliases => ['medsearch', 'medsearch.lib'],
     target        => 'http://www.lib.umich.edu/health-sciences-libraries/medsearch/'
