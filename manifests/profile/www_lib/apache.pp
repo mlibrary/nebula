@@ -131,47 +131,4 @@ class nebula::profile::www_lib::apache (
     app_url => 'http://app-mirlyn-api-production:30730/',
     prefix  => 'm.',
   }
-
-  file { "${apache::params::logroot}/bmc":
-    ensure => 'directory',
-  }
-
-  apache::vhost { 'bmc.lib.umich.edu':
-    servername      => 'bmc.lib.umich.edu',
-    port            => 80,
-    docroot         => '/www/vufind/web/bmc/web',
-    manage_docroot  => false,
-    directories     => [
-      {
-        provider       => 'directory',
-        path           => '/www/vufind/web/bmc/web',
-        options        => 'FollowSymlinks',
-        allow_override => 'All',
-        require        => $nebula::profile::www_lib::apache::default_access,
-      },
-    ],
-
-    log_level       => 'warn',
-    priority        => false, # don't prepend a numeric identifier to the vhost
-    error_documents => [
-      { 'error_code' => '410', 'document' => '/static/retired.html' },
-    ],
-    rewrites        => [
-      {
-        rewrite_cond => ['%{REQUEST_URI} !^/static/retired.html'],
-        rewrite_rule => ['^.*$ - [G]'],
-      },
-    ],
-
-    error_log_file  => 'bmc/error.log',
-    access_logs     => [
-      {
-        file   => 'bmc/access.log',
-        format => 'combined'
-      },
-    ],
-    serveraliases   => ['bmc.lib'],
-    require         => File["${apache::params::logroot}/bmc"],
-  }
-
 }

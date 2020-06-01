@@ -158,11 +158,6 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('bmc.lib.umich.edu')
-          .with_servername('bmc.lib.umich.edu')
-      end
-
-      it do
         is_expected.to contain_apache__vhost('staff.lib http redirect')
           .with_servername('staff.lib.umich.edu')
       end
