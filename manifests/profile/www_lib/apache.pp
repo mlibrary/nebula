@@ -103,7 +103,6 @@ class nebula::profile::www_lib::apache (
       'www.mportfolio.umich.edu',
       'www.press.umich.edu',
       'www.publishing.umich.edu',
-      'www.textcreationpartnership.org',
       'www.theater-historiography.org',
     ]:
   }

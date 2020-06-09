@@ -54,10 +54,6 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         provider => 'directory',
         path     => "${www_lib_root}/cgi/l/login",
       },
-      {
-        provider => 'directory',
-        path     => "${www_lib_root}/cgi/m/medsearch"
-      },
     ],
 
     directories                   => [

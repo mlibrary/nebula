@@ -183,9 +183,8 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it do
         # Name-based multi-site Wordpress
         is_expected.to contain_apache__vhost('publishing-partners-http')
-          .with_servername('www.textcreationpartnership.org')
+          .with_servername('blog.press.umich.edu')
           .with_serveraliases([
-                                'blog.press.umich.edu',
                                 'www.theater-historiography.org',
                                 'www.digitalculture.org',
                                 'www.digitalrhetoriccollaborative.org',
@@ -196,11 +195,10 @@ describe 'nebula::role::webhost::www_lib_vm' do
         # SSL offloading
         # Name-based multi-site Wordpress
         is_expected.to contain_apache__vhost('publishing-partners-https')
-          .with_servername('https://www.textcreationpartnership.org')
+          .with_servername('https://blog.press.umich.edu')
           .with_ssl(false)
           .with_port(443)
           .with_serveraliases([
-                                'blog.press.umich.edu',
                                 'www.theater-historiography.org',
                                 'www.digitalculture.org',
                                 'www.digitalrhetoriccollaborative.org',

@@ -145,11 +145,6 @@ class nebula::profile::www_lib::vhosts::redirects(
   nebula::apache::redirect_vhost_http { 'lgbtheritage.org':
   }
 
-  nebula::apache::redirect_vhost_https { 'textcreationpartnership.org':
-    ssl_cn        => 'www.textcreationpartnership.org',
-    serveraliases => ['www.textcreationpartnership.com', 'textcreationpartnership.com'],
-  }
-
   nebula::apache::redirect_vhost_https { 'theater-historiography.org':
     ssl_cn        => 'www.theater-historiography.org',
     serveraliases => [
@@ -172,21 +167,6 @@ class nebula::profile::www_lib::vhosts::redirects(
 
   nebula::apache::redirect_vhost_http { 'datainfolit.org':
     serveraliases => ['www.datainformationliteracy.org', 'datainformationliteracy.org'],
-  }
-
-  nebula::apache::redirect_vhost_http { 'medsearch.lib.umich.edu':
-    serveraliases => ['medsearch', 'medsearch.lib'],
-    target        => 'http://www.lib.umich.edu/health-sciences-libraries/medsearch/'
-  }
-
-  nebula::apache::redirect_vhost_http { 'm-update.lib.umich.edu':
-    serveraliases => ['m-update.lib'],
-    target        => 'http://m.lib.umich.edu/'
-  }
-
-  nebula::apache::redirect_vhost_http { 'www-update.lib.umich.edu':
-    serveraliases => ['www-update.lib'],
-    target        => 'http://www.lib.umich.edu/'
   }
 
   nebula::apache::redirect_vhost_http { 'pk.lib.umich.edu':
