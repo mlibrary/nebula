@@ -179,16 +179,6 @@ class nebula::profile::www_lib::vhosts::redirects(
     target        => 'http://www.lib.umich.edu/health-sciences-libraries/medsearch/'
   }
 
-  nebula::apache::redirect_vhost_http { 'm-update.lib.umich.edu':
-    serveraliases => ['m-update.lib'],
-    target        => 'http://m.lib.umich.edu/'
-  }
-
-  nebula::apache::redirect_vhost_http { 'www-update.lib.umich.edu':
-    serveraliases => ['www-update.lib'],
-    target        => 'http://www.lib.umich.edu/'
-  }
-
   nebula::apache::redirect_vhost_http { 'pk.lib.umich.edu':
     target => 'http://www.lib.umich.edu/pk/'
   }
