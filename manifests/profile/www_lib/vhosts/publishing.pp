@@ -59,9 +59,8 @@ class nebula::profile::www_lib::vhosts::publishing (
 
   # A range of other sites served under the same Wordpress installation
   apache::vhost { 'publishing-partners-http':
-    servername     => 'www.textcreationpartnership.org',
+    servername     => 'blog.press.umich.edu',
     serveraliases  => [
-      'blog.press.umich.edu',
       'www.theater-historiography.org',
       'www.digitalculture.org',
       'www.digitalrhetoriccollaborative.org',
@@ -83,9 +82,8 @@ class nebula::profile::www_lib::vhosts::publishing (
 
   # As with above, SSL is terminated at the load balancer
   apache::vhost { 'publishing-partners-https':
-    servername     => 'https://www.textcreationpartnership.org',
+    servername     => 'https://blog.press.umich.edu',
     serveraliases  => [
-      'blog.press.umich.edu',
       'www.theater-historiography.org',
       'www.digitalculture.org',
       'www.digitalrhetoriccollaborative.org',

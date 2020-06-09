@@ -145,11 +145,6 @@ class nebula::profile::www_lib::vhosts::redirects(
   nebula::apache::redirect_vhost_http { 'lgbtheritage.org':
   }
 
-  nebula::apache::redirect_vhost_https { 'textcreationpartnership.org':
-    ssl_cn        => 'www.textcreationpartnership.org',
-    serveraliases => ['www.textcreationpartnership.com', 'textcreationpartnership.com'],
-  }
-
   nebula::apache::redirect_vhost_https { 'theater-historiography.org':
     ssl_cn        => 'www.theater-historiography.org',
     serveraliases => [
