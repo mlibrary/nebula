@@ -259,6 +259,15 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_content(%r{SID\s+=\s+abcd})
           .with_content(%r{PORT\s+=\s+1234})
       end
+
+      it { is_expected.to contain_cron('update GeoIP database') }
+      it { is_expected.to contain_cron('purge cosign tickets') }
+      it { is_expected.to contain_cron('purge apache access logs 1/2') }
+      it { is_expected.to contain_cron('purge apache access logs 2/2') }
+      it { is_expected.to contain_cron('reload fcgi for Press site nightly') }
+      it { is_expected.to contain_cron('shibd existence check') }
+      it { is_expected.to contain_cron('staff.lib parse') }
+      it { is_expected.to contain_cron('Proactively scan the log files for suspcious activity') }
     end
   end
 end
