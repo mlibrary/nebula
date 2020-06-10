@@ -1,5 +1,4 @@
-
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019-2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -40,7 +39,6 @@ define nebula::apache::mirlyn_vhost (
     headers        => [
       'set "Strict-Transport-Security" "max-age=3600"',
     ],
-
   }
 
   nebula::apache::www_lib_vhost { "vufind-https-${title}":
@@ -52,6 +50,11 @@ define nebula::apache::mirlyn_vhost (
     ssl_cn                      => $ssl_cn,
     cosign                      => false,
     usertrack                   => false,
+
+    # We redirect all non-api URLs to the root of search.lib
+    redirectmatch_status        => 'permanent',
+    redirectmatch_regexp        => '^(/(?!api/).*)',
+    redirectmatch_dest          => 'https://search.lib.umich.edu',
 
     rewrites                    => [
       {
@@ -70,11 +73,13 @@ define nebula::apache::mirlyn_vhost (
       },
     ],
 
+    ssl_proxyengine             => true,
+    ssl_proxy_check_peer_name   => 'on',
+    ssl_proxy_check_peer_expire => 'on',
+
     request_headers             => [
-      # Setting remote user for apache 2.4
+      # Setting remote user for 2.4
       'set X-Remote-User "expr=%{REMOTE_USER}"',
-      # Fix redirects being sent to non ssl url (https -> http)
-      'set X-Forwarded-Proto "https"',
       # Remove existing X-Forwarded-For headers; mod_proxy will automatically add the correct one.
       'unset X-Forwarded-For',
     ],
@@ -83,13 +88,8 @@ define nebula::apache::mirlyn_vhost (
       'set "Strict-Transport-Security" "max-age=3600"',
     ],
 
-    ssl_proxyengine             => true,
-    ssl_proxy_check_peer_name   => 'on',
-    ssl_proxy_check_peer_expire => 'on',
-
     custom_fragment             => @("EOT"),
-        ProxyPassReverse /api ${app_url}
+      ProxyPassReverse /api/ ${app_url}
     | EOT
-
   }
 }
