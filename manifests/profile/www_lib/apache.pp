@@ -99,7 +99,6 @@ class nebula::profile::www_lib::apache (
       'staff.lib.umich.edu',
       'www.digitalculture.org',
       'www.lib.umich.edu',
-      'www.mblem.umich.edu',
       'www.mportfolio.umich.edu',
       'www.press.umich.edu',
       'www.publishing.umich.edu',
