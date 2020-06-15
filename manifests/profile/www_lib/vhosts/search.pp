@@ -31,6 +31,14 @@ class nebula::profile::www_lib::vhosts::search (
         rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,R,NE]'
       },
     ],
+
+    directories    => [
+      {
+        provider => 'location',
+        path     => '/',
+        require  => $nebula::profile::www_lib::apache::default_access,
+      },
+    ],
   }
 
   nebula::apache::www_lib_vhost { 'search-https':
