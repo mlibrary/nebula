@@ -32,7 +32,7 @@ define nebula::apache::mirlyn_vhost (
 
     rewrites       => [
       {
-        rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,R]'
+        rewrite_rule => '^(.*)$ https://%{HTTP_HOST}$1 [L,R,NE]'
       },
     ],
 
