@@ -92,6 +92,7 @@ class nebula::profile::www_lib::apache (
       'datamart.lib.umich.edu',
       'deepblue.lib.umich.edu',
       'developingwritersbook.com',
+      'digital.bentley.umich.edu',
       'fulcrum.org',
       'open.umich.edu',
       'michiganelt.org',
@@ -119,6 +120,7 @@ class nebula::profile::www_lib::apache (
     }
   }
 
+  include nebula::profile::www_lib::vhosts::midaily
   include nebula::profile::www_lib::vhosts::publishing
   include nebula::profile::www_lib::vhosts::med
 
