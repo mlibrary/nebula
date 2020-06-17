@@ -20,7 +20,7 @@ class nebula::profile::www_lib::vhosts::midaily (
 
   nebula::apache::www_lib_vhost { 'midaily-http':
     servername     => $servername,
-    docroot        => $docroot,
+    docroot        => false,
     logging_prefix => 'midaily/',
     usertrack      => true,
 
