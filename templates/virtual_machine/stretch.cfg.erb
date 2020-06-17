@@ -64,16 +64,28 @@ d-i netcfg/confirm_static boolean true
 #d-i netcfg/get_nameservers string fc00::1
 #d-i netcfg/confirm_static boolean true
 
+<%-
+  if /\./.match? @title
+    # If the vm name has dots, it's a fqdn.
+    the_fqdn = @title
+    the_domain = @title.split('.').drop(1).join('.')
+  else
+    # Otherwise, the vm name has no dots, and it's a hostname under our
+    # usual domain.
+    the_fqdn = "#{@title}.#{@domain}"
+    the_domain = @domain
+  end
+-%>
 # Any hostname and domain names assigned from dhcp take precedence over
 # values set here. However, setting the values still prevents the questions
 # from being shown, even if values come from dhcp.
-d-i netcfg/get_hostname string <%= @title %>.<%= @domain %>
-d-i netcfg/get_domain string <%= "#{@title}.#{@domain}".split('.').drop(1).join('.') %>
+d-i netcfg/get_hostname string <%= the_fqdn %>
+d-i netcfg/get_domain string <%= the_domain %>
 
 # If you want to force a hostname, regardless of what either the DHCP
 # server returns or what the reverse DNS entry for the IP is, uncomment
 # and adjust the following line.
-d-i netcfg/hostname string <%= @title %>.<%= @domain %>
+d-i netcfg/hostname string <%= the_fqdn %>
 
 # Disable that annoying WEP key dialog.
 d-i netcfg/wireless_wep string
