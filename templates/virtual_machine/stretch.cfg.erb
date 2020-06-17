@@ -65,7 +65,7 @@ d-i netcfg/confirm_static boolean true
 #d-i netcfg/confirm_static boolean true
 
 <%-
-  if /\./.match? @title
+  if @title.include? '.'
     # If the vm name has dots, it's a fqdn.
     the_fqdn = @title
     the_domain = @title.split('.').drop(1).join('.')
