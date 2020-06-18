@@ -7,6 +7,7 @@ define nebula::apache::www_lib_vhost (
   Variant[Boolean, String] $docroot,
   Array[String] $serveraliases = [],
   Boolean $ssl = false,
+  Optional[Integer] $port_override = undef,
   Boolean $cosign = false,
   Boolean $usertrack = false,
   Optional[String] $cosign_service = regsubst($servername,'\.umich\.edu$',''),
@@ -35,10 +36,16 @@ define nebula::apache::www_lib_vhost (
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
   $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
 
-  if($ssl) {
-    $port = 443
+  # @param port_override is used if you want to set the port differently
+  # such as using port 443 even with ssl set to false during a proxy.
+  if $port_override {
+    $port = $port_override
   } else {
-    $port = 80
+    if($ssl) {
+      $port = 443
+    } else {
+      $port = 80
+    }
   }
 
   if($usertrack) {
@@ -49,7 +56,7 @@ define nebula::apache::www_lib_vhost (
     |EOT
     $usertrack_log = [
       {
-        file   => 'clickstream.log',
+        file   => "${logging_prefix}clickstream.log",
         format => 'usertrack'
       },
     ]

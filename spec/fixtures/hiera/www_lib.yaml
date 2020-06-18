@@ -1,3 +1,7 @@
+nebula::profile::www_lib::vhosts::med::ip_restrict: 
+  - 100.100.100.100
+  - 200.200.200.200
+
 nebula::profile::ssl_keypair::chain_crt: 'intermediate_ca.crt'
 
 nebula::profile::www_lib::mounts::prod_target: 'invalid:/www-prod'
@@ -33,3 +37,4 @@ nebula::profile::apache::authz_umichlib::oracle_servers:
     - ORCL.MYSERVER2_ALIAS2
 
 nebula::apache::ssl_keypair::chain_crt: foo.crt
+
