@@ -112,7 +112,7 @@ class nebula::profile::www_lib::apache (
 
   $vhost_prefix = 'nebula::profile::www_lib::vhosts'
 
-  ['default','www_lib','apps_lib','staff_lib','datamart','deepblue', 'openmich', 'mportfolio', 'press', 'search'].each |$vhost| {
+  ['default','www_lib','apps_lib','staff_lib','datamart','deepblue', 'openmich', 'mgetit', 'mportfolio', 'press', 'search'].each |$vhost| {
     class { "nebula::profile::www_lib::vhosts::${vhost}":
       prefix => $prefix,
       domain => $domain,
