@@ -1,7 +1,7 @@
 nebula::profile::ssl_keypair::chain_crt: 'intermediate_ca.crt'
 
-nebula::profile::www_lib::mounts::prod_target: 'somewhere:/invalid'
-nebula::profile::www_lib::mounts::dev_target: 'elsewhere:/invalid'
+nebula::profile::www_lib::mounts::prod_target: 'invalid:/www-prod'
+nebula::profile::www_lib::mounts::dev_target: 'invalid:/www-dev'
 
 nebula::profile::geoip::license_key: defaultkey
 nebula::profile::geoip::user_id: "12345"
