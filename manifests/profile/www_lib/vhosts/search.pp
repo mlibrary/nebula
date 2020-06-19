@@ -22,7 +22,7 @@ class nebula::profile::www_lib::vhosts::search (
 
   nebula::apache::www_lib_vhost { 'search-http':
     servername     => $servername,
-    docroot        => $docroot,
+    docroot        => false,
     logging_prefix => 'search/',
     usertrack      => true,
 
