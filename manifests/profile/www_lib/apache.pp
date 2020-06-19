@@ -119,6 +119,7 @@ class nebula::profile::www_lib::apache (
     }
   }
 
+  include nebula::profile::www_lib::vhosts::fulcrum
   include nebula::profile::www_lib::vhosts::publishing
   include nebula::profile::www_lib::vhosts::med
 
