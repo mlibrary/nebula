@@ -75,13 +75,6 @@ class nebula::profile::www_lib::vhosts::fulcrum (
         require  => $nebula::profile::www_lib::apache::default_access,
       },
       {
-        provider              => 'location',
-        path                  => '/',
-        auth_type             => 'shibboleth',
-        require               => 'shibboleth',
-        shib_request_settings => { 'requiresession' => '0' },
-      },
-      {
         provider       => 'directory',
         path           => $docroot,
         options        => 'FollowSymlinks',
@@ -124,6 +117,16 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       # XSendFile settings
       XSendFile on
       XSendFilePath /hydra/heliotrope-production/current/tmp/derivatives
+      # Shibboleth Setting
+      LoadModule mod_shib /usr/lib/apache2/modules/mod_shib2.so
+      <Location /Shibboleth.sso>
+        SetHandler shib
+      </Location> 
+      <Location "/">
+        AuthType shibboleth
+        ShibRequestSetting requireSession 0
+        Require shibboleth
+      </Location>
     | EOT
   }
 }
