@@ -83,6 +83,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       },
     ],
 
+    # TODO: Review Shib headers for apache 2.4
     request_headers => [
       # Explicitly forward attributes extracted via Shibboleth
       'set X-Shib-Persistent-ID %{persistent-id}e',
