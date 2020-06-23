@@ -78,7 +78,7 @@ class nebula::profile::www_lib::apache (
   include apache::mod::reqtimeout
   include apache::mod::setenvif
   # causes apparent conflicts with cosign; to be resolved later
-  #  class { 'apache::mod::shib': }
+  class { 'apache::mod::shib': }
   include apache::mod::xsendfile
 
   include nebula::profile::apache::authz_umichlib
@@ -120,6 +120,8 @@ class nebula::profile::www_lib::apache (
     }
   }
 
+
+  include nebula::profile::www_lib::vhosts::fulcrum
   include nebula::profile::www_lib::vhosts::midaily
   include nebula::profile::www_lib::vhosts::publishing
   include nebula::profile::www_lib::vhosts::med
