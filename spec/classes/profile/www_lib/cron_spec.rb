@@ -7,6 +7,7 @@ require 'spec_helper'
 describe 'nebula::profile::www_lib::cron' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
+      let(:hiera_config) { 'spec/fixtures/hiera/www_lib_config.yaml' }
       let(:facts) { os_facts }
 
       it { is_expected.to compile }

@@ -7,6 +7,9 @@ class nebula::profile::www_lib::cron (
   String $mailto = 'crons@default.invalid',
   Hash $extra_jobs = {},
 ) {
+  include nebula::virtual::users
+  realize User[$user]
+
   $extra_jobs.each |String $cron_title, Hash $cron_resource| {
     cron { $cron_title:
       * => $cron_resource,

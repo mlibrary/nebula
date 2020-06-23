@@ -38,3 +38,16 @@ nebula::profile::apache::authz_umichlib::oracle_servers:
 
 nebula::apache::ssl_keypair::chain_crt: foo.crt
 
+nebula::virtual::users::all_users:
+  default_invalid: {}
+  cron_friend: {}
+  prometheus:
+    uid: 108
+    gid: prometheus
+    comment: Prometheus
+    home: /var/lib/prometheus
+  docker:
+    uid: 999
+    gid: docker
+    comment: Docker
+    home: /var/lib/docker
