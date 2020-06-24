@@ -69,13 +69,15 @@ class nebula::profile::apache (
     ensure  => 'directory',
     recurse => true,
     force   => true,
-    purge   => true
+    purge   => true,
+    require => Class['apache'],
   }
 
   file { '/etc/apache2/conf-available':
-    ensure => 'absent',
-    force  => true,
-    purge  => true
+    ensure  => 'absent',
+    force   => true,
+    purge   => true,
+    require => Class['apache'],
   }
 
   file { '/etc/logrotate.d/apache2':

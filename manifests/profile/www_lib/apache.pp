@@ -123,7 +123,7 @@ class nebula::profile::www_lib::apache (
     require => File['/etc/apache2/mods-available'],
   }
 
-  file { '/etc/apache2/mods-available/shib2.conf':
+  file { '/etc/apache2/mods-enabled/shib2.conf':
     ensure  => 'link',
     target  => '/etc/apache2/mods-available/shib2.conf',
     require => File['/etc/apache2/mods-available/shib2.conf'],
