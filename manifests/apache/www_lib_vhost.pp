@@ -108,9 +108,7 @@ define nebula::apache::www_lib_vhost (
     |EOT
 
     $cosign_public_access_off = @(EOT)
-      AuthType cosign
-      Require valid-user
-      CosignAllowPublicAccess off
+      CosignAllowPublicAccess Off
     |EOT
 
     concat::fragment { "${title}-cosign":
