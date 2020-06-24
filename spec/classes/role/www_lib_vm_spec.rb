@@ -33,6 +33,17 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
+        is_expected.to contain_file('/etc/apache2/mods-available/shib2.conf')
+          .with_content(%r{SetHandler shib-handler})
+      end
+
+      it do
+        is_expected.to contain_file('/etc/apache2/mods-enabled/shib2.conf')
+          .with_ensure('link')
+          .with_target('/etc/apache2/mods-available/shib2.conf')
+      end
+
+      it do
         is_expected.to contain_apache__vhost('www.lib-ssl')
           .with(servername: 'www.lib.umich.edu',
                 port: 443,

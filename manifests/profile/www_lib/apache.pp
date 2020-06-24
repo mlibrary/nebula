@@ -107,19 +107,9 @@ class nebula::profile::www_lib::apache (
     ]:
   }
 
-  file { '/etc/apache2/mods-available':
-    ensure  => 'directory',
-    require => Class['apache'],
-  }
-
-  file { '/etc/apache2/mods-enabled':
-    ensure  => 'directory',
-    require => Class['apache'],
-  }
-
   file { '/etc/apache2/mods-available/shib2.conf':
     ensure  => 'present',
-    content => template('nebula/profile/www_lib/shib2.conf.erg'),
+    content => template('nebula/profile/www_lib/shib2.conf.erb'),
     require => File['/etc/apache2/mods-available'],
   }
 
