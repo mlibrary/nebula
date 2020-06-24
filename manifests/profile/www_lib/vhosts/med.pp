@@ -47,7 +47,7 @@ class nebula::profile::www_lib::vhosts::med (
     docroot         => $docroot,
     logging_prefix  => 'dromedary-production/',
 
-    ssl             => false,
+    ssl             => true,
     port_override   => 443,
     usertrack       => true,
 

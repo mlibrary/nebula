@@ -51,7 +51,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
     docroot         => $docroot,
     logging_prefix  => "${logging_prefix}/",
 
-    ssl             => false,
+    ssl             => true,
     port_override   => 443,
     usertrack       => true,
 
