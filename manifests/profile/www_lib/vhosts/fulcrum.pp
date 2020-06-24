@@ -45,6 +45,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   }
 
   nebula::apache::www_lib_vhost { 'fulcrum-https':
+    priority        => '13',
     servername      => $servername,
     serveraliases   => $serveraliases,
     docroot         => $docroot,
