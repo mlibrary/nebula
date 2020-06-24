@@ -22,6 +22,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   }
 
   nebula::apache::www_lib_vhost { 'fulcrum-http':
+    priority       => '13',
     servername     => $servername,
     serveraliases  => $serveraliases,
     docroot        => false,
