@@ -121,9 +121,6 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       XSendFile on
       XSendFilePath /hydra/heliotrope-production/current/tmp/derivatives
       # Configure Shibboleth for authentication via InCommon partner login
-      <Location /Shibboleth.sso>
-        SetHandler shib
-      </Location> 
       <Location "/">
         AuthType shibboleth
         ShibRequestSetting requireSession 0

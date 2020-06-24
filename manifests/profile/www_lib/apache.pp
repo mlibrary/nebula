@@ -77,7 +77,6 @@ class nebula::profile::www_lib::apache (
   include apache::mod::proxy_http
   include apache::mod::reqtimeout
   include apache::mod::setenvif
-  # causes apparent conflicts with cosign; to be resolved later
   class { 'apache::mod::shib': }
   include apache::mod::xsendfile
 
@@ -106,6 +105,28 @@ class nebula::profile::www_lib::apache (
       'www.publishing.umich.edu',
       'www.theater-historiography.org',
     ]:
+  }
+
+  file { '/etc/apache2/mods-available':
+    ensure  => 'directory',
+    require => Class['apache'],
+  }
+
+  file { '/etc/apache2/mods-enabled':
+    ensure  => 'directory',
+    require => Class['apache'],
+  }
+
+  file { '/etc/apache2/mods-available/shib2.conf':
+    ensure  => 'present',
+    content => template('nebula/profile/www_lib/shib2.conf.erg'),
+    require => File['/etc/apache2/mods-available'],
+  }
+
+  file { '/etc/apache2/mods-available/shib2.conf':
+    ensure  => 'link',
+    target  => '/etc/apache2/mods-available/shib2.conf',
+    require => File['/etc/apache2/mods-available/shib2.conf'],
   }
 
   # depends on ssl_keypairs above
