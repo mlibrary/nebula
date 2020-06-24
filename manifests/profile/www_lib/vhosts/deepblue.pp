@@ -44,6 +44,13 @@ class nebula::profile::www_lib::vhosts::deepblue (
     cosign                      => true,
     usertrack                   => true,
 
+    cosign_public_access_off_dirs => [
+      {
+        provider        => 'location',
+        path            => '/webiso-login',
+      },
+    ],
+
     rewrites                    => [
       {
         # XXX: Is this really still an issue?
@@ -85,13 +92,6 @@ class nebula::profile::www_lib::vhosts::deepblue (
         # XXX: Before this allowed a single particular IP address that no
         # longer appears to be in use
         require  => 'all denied'
-      },
-      {
-        provider        => 'location',
-        path            => '/webiso-login',
-        auth_type       => 'cosign',
-        auth_require    => 'valid-user',
-        custom_fragment => 'CosignAllowPublicAccess Off',
       },
       {
         provider        => 'locationmatch',
