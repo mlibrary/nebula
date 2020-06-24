@@ -9,8 +9,6 @@
 # @example
 #   include nebula::profile::www_lib::vhosts::fulcrum
 class nebula::profile::www_lib::vhosts::fulcrum (
-  # TODO: Check if this is needed or not.
-  # String $ssl_cn = 'fulcrum.org',
   String $docroot = '/hydra/heliotrope-production/current/public'
 ) {
   $servername = 'www.fulcrum.org'
@@ -52,6 +50,8 @@ class nebula::profile::www_lib::vhosts::fulcrum (
     logging_prefix  => "${logging_prefix}/",
 
     ssl             => true,
+    # ServerName is really www.fulcrum.org, but this cert filename is odd: fulcrum.org.crt
+    ssl_cn          => 'fulcrum.org',
     port_override   => 443,
     usertrack       => true,
 
