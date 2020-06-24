@@ -41,9 +41,18 @@ class nebula::profile::www_lib::vhosts::www_lib (
         path     => "${www_lib_root}/cgi/l/login",
       },
       {
-        provider        => 'location',
-        path            => '/instruction/request/login',
-        custom_fragment => 'CosignAllowPublicAccess Off',
+        provider => 'location',
+        path     => '/instruction/request/login',
+      },
+    ],
+
+    directories                   => [
+      {
+        provider       => 'directory',
+        path           => $docroot,
+        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
+        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
+        require        => $nebula::profile::www_lib::apache::default_access
       },
       {
         provider        => 'locationmatch',
@@ -59,23 +68,6 @@ class nebula::profile::www_lib::vhosts::www_lib (
           Header set "Strict-Transport-Security" "max-age=3600"
         | EOT
       },
-    ],
-
-    directories                   => [
-      {
-        provider       => 'directory',
-        path           => $docroot,
-        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
-        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
-        require        => $nebula::profile::www_lib::apache::default_access
-      },
-      {
-        provider       => 'directory',
-        path           => "${www_lib_root}/cgi",
-        allow_override => ['None'],
-        options        => ['None'],
-        require        => $nebula::profile::www_lib::apache::default_access
-      }
     ],
 
     # TODO: hopefully these can all be removed
