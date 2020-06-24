@@ -95,6 +95,7 @@ class nebula::profile::www_lib::apache (
       'fulcrum.org',
       'open.umich.edu',
       'michiganelt.org',
+      'med.lib.umich.edu',
       'mirlyn.lib.umich.edu',
       'staff.lib.umich.edu',
       'search.lib.umich.edu',
