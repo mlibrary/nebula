@@ -118,8 +118,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       # XSendFile settings
       XSendFile on
       XSendFilePath /hydra/heliotrope-production/current/tmp/derivatives
-      # Shibboleth Setting
-      LoadModule mod_shib /usr/lib/apache2/modules/mod_shib2.so
+      # Configure Shibboleth for authentication via InCommon partner login
       <Location /Shibboleth.sso>
         SetHandler shib
       </Location> 
