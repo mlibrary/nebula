@@ -112,6 +112,19 @@ class nebula::profile::www_lib::vhosts::deepblue (
       },
     ],
 
+    request_headers             => [
+      # Setting remote user for 2.4
+      'set X-Remote-User "expr=%{REMOTE_USER}"',
+      # Fix redirects being sent to non ssl url (https -> http)
+      'set X-Forwarded-Proto "https"',
+      # Remove existing X-Forwarded-For headers; mod_proxy will automatically add the correct one.
+      'unset X-Forwarded-For',
+    ],
+
+    headers                     => [
+      'set "Strict-Transport-Security" "max-age=3600"',
+    ],
+
     ssl_proxyengine             => true,
     ssl_proxy_check_peer_name   => 'on',
     ssl_proxy_check_peer_expire => 'on',
@@ -123,13 +136,6 @@ class nebula::profile::www_lib::vhosts::deepblue (
     custom_fragment             => @(EOT)
       ProxyPassReverse /data https://app-deepbluedata.deepblue.lib.umich.edu:30060/
       ProxyPassReverse / http://bulleit-2.umdl.umich.edu:8080/
-      Header set "Strict-Transport-Security" "max-age=3600"
-      # Setting remote user for 2.4
-      RequestHeader set X-Remote-User "expr=%{REMOTE_USER}"
-      # Fix redirects being sent to non ssl url (https -> http)
-      RequestHeader set X-Forwarded-Proto "https"
-      # Remove existing X-Forwarded-For headers; mod_proxy will automatically add the correct one.
-      RequestHeader unset X-Forwarded-For
     | EOT
   }
 }
