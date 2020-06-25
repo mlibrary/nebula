@@ -93,6 +93,11 @@ define nebula::apache::www_lib_vhost (
       },
     ]
 
+    # For www_lib, we are sure that Shibboleth is installed, and we must
+    # disable its "compatibility mode" with valid-user, or mod_cosign never
+    # gets a chance at the request. The name of the option and its docs
+    # imply the reverse, but we want Compat On.
+    # https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPApacheConfig#NativeSPApacheConfig-Server/VirtualHostOptions
     $cosign_fragment = @("EOT")
       CosignProtected  On
       CosignHostname   weblogin.umich.edu
@@ -105,11 +110,13 @@ define nebula::apache::www_lib_vhost (
       CosignService    ${cosign_service}
       CosignCrypto     ${ssl_key} ${ssl_cert} ${nebula::profile::apache::ssl_cert_dir}
       CosignAllowPublicAccess on
+      ShibCompatValidUser On
     |EOT
 
     $cosign_public_access_off = @(EOT)
       CosignAllowPublicAccess Off
       AuthType Cosign
+      Require valid-user
     |EOT
 
     concat::fragment { "${title}-cosign":
