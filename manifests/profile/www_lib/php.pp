@@ -186,6 +186,29 @@ class nebula::profile::www_lib::php (
     request_terminate_timeout => 0,
   }
 
+  # PHP 5.6 defaults to using www-data, while we need to use nobody:nogroup for sockets
+  file_line {
+    default:
+      path    => '/etc/php/5.6/fpm/pool.d/www.conf',
+      require => Package['php5.6-fpm'],
+      ;
+    'PHP 5.6 FPM user':
+      line  => 'user = nobody',
+      match => '^user =',
+      ;
+    'PHP 5.6 FPM group':
+      line  => 'group = nogroup',
+      match => '^group =',
+      ;
+    'PHP 5.6 FPM listen.owner':
+      line  => 'listen.owner = nobody',
+      match => '^listen\.owner =',
+      ;
+    'PHP 5.6 FPM listen.group':
+      line  => 'listen.group = nogroup',
+      match => '^listen\.group =',
+      ;
+  }
 
   # Configure Apache PHP module
   class { 'php::apache_config':
