@@ -279,6 +279,13 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it { is_expected.to contain_cron('shibd existence check') }
       it { is_expected.to contain_cron('staff.lib parse') }
       it { is_expected.to contain_cron('Proactively scan the log files for suspcious activity') }
+
+      describe 'exported resources' do
+        subject { exported_resources }
+
+        it { is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} www-lib") }
+        it { is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} deepblue") }
+      end
     end
   end
 end
