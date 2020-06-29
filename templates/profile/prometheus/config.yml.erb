@@ -9,7 +9,12 @@ rule_files:
 <% unless @alert_managers.empty? -%>
 alerting:
   alertmanagers:
-  - static_configs:
+  - scheme: https
+    tls_config:
+      ca_file: /tls/ca.crt
+      cert_file: /tls/client.crt
+      key_file: /tls/client.key
+    static_configs:
     - targets:
 <% @alert_managers.each do |alert_manager| -%>
       - <%= alert_manager %>

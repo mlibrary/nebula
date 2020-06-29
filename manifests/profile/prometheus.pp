@@ -32,9 +32,10 @@ class nebula::profile::prometheus (
       '/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml',
       '/etc/prometheus/rules.yml:/etc/prometheus/rules.yml',
       '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
+      '/etc/prometheus/tls:/tls',
       '/opt/prometheus:/prometheus',
     ],
-    require          => File['/opt/prometheus'],
+    require          => File['/opt/prometheus', '/etc/prometheus/tls/ca.crt', '/etc/prometheus/tls/client.crt', '/etc/prometheus/tls/client.key'],
   }
 
   file { '/etc/prometheus/prometheus.yml':
@@ -64,6 +65,22 @@ class nebula::profile::prometheus (
 
   file { '/etc/prometheus':
     ensure => 'directory',
+  }
+
+  file { '/etc/prometheus/tls':
+    ensure => 'directory',
+  }
+
+  file { '/etc/prometheus/tls/ca.crt':
+    source => 'puppet:///ssl-certs/prometheus-pki/ca.crt',
+  }
+
+  file { '/etc/prometheus/tls/client.crt':
+    source => "puppet:///ssl-certs/prometheus-pki/${::fqdn}.crt",
+  }
+
+  file { '/etc/prometheus/tls/client.key':
+    source => "puppet:///ssl-certs/prometheus-pki/${::fqdn}.key",
   }
 
   file { '/opt/prometheus':
