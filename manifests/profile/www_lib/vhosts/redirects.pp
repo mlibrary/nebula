@@ -13,8 +13,9 @@ class nebula::profile::www_lib::vhosts::redirects(
     serveraliases => []
   }
 
-  nebula::apache::redirect_vhost_http { 'www.michiganelt.org':
-    target => 'http://www.press.umich.edu/elt'
+  nebula::apache::redirect_vhost_https { 'www.michiganelt.org':
+    ssl_cn => 'michiganelt.org',
+    target => 'https://www.press.umich.edu/elt'
   }
 
   nebula::apache::redirect_vhost_https { 'lib.umich.edu':
