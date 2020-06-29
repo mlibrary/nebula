@@ -20,6 +20,7 @@ describe 'nebula::profile::prometheus' do
           .with_volumes(['/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml',
                          '/etc/prometheus/rules.yml:/etc/prometheus/rules.yml',
                          '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
+                         '/etc/prometheus/tls:/tls',
                          '/opt/prometheus:/prometheus'])
           .that_requires('File[/opt/prometheus]')
       end
@@ -65,6 +66,37 @@ describe 'nebula::profile::prometheus' do
       it do
         is_expected.to contain_file('/etc/prometheus')
           .with_ensure('directory')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/prometheus/tls')
+          .with_ensure('directory')
+          .that_requires('File[/etc/prometheus]')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/prometheus/tls/ca.crt')
+          .with_source('puppet:///ssl-certs/prometheus-pki/ca.crt')
+          .that_requires('File[/etc/prometheus/tls]')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/prometheus/tls/client.crt')
+          .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:fqdn]}.crt")
+          .that_requires('File[/etc/prometheus/tls]')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/prometheus/tls/client.key')
+          .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:fqdn]}.key")
+          .that_requires('File[/etc/prometheus/tls]')
+      end
+
+      %w[ca.crt client.crt client.key].each do |filename|
+        it do
+          is_expected.to contain_docker__run('prometheus')
+            .that_requires("File[/etc/prometheus/tls/#{filename}]")
+        end
       end
 
       it do
