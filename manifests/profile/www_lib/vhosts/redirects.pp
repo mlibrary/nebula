@@ -24,11 +24,6 @@ class nebula::profile::www_lib::vhosts::redirects(
     serveraliases => ['mportfolio.nslb.umdl.umich.edu'],
   }
 
-  nebula::apache::redirect_vhost_https { 'publishing.umich.edu':
-    ssl_cn        => 'www.publishing.umich.edu',
-    serveraliases => ['publishing'],
-  }
-
   nebula::apache::redirect_vhost_https { 'press.umich.edu':
     ssl_cn        => 'www.press.umich.edu',
     serveraliases => ['press.lib.umich.edu', 'press.nslb.umdl.umich.edu']
