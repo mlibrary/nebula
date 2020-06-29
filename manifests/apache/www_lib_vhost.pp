@@ -49,6 +49,14 @@ define nebula::apache::www_lib_vhost (
     }
   }
 
+  # The perl path parameter is required to make sure scripts are found.
+  # So we make sure it is added whether the variable is set or not.
+  if $setenv {
+    $setenv_with_perl = $setenv + 'PERL_USE_UNSAFE_INC 1'
+  } else {
+    $setenv_with_perl = [ 'PERL_USE_UNSAFE_INC 1' ]
+  }
+
   if($usertrack) {
     $usertrack_fragment = @(EOT)
       CookieTracking on
@@ -189,7 +197,7 @@ define nebula::apache::www_lib_vhost (
     ssl_proxy_check_peer_name   => $ssl_proxy_check_peer_name,
     ssl_proxy_check_peer_expire => $ssl_proxy_check_peer_expire,
     setenvifnocase              => $setenvifnocase,
-    setenv                      => $setenv,
+    setenv                      => $setenv_with_perl,
     error_documents             => $error_documents,
   }
 }

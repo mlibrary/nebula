@@ -225,7 +225,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
         is_expected.to contain_apache__vhost('press-https')
           .with_servername('www.press.umich.edu')
           .with_ssl_cert('/etc/ssl/certs/www.press.umich.edu.crt')
-          .with_setenv(['HTTPS on'])
+          .with_setenv(['HTTPS on', 'PERL_USE_UNSAFE_INC 1'])
       end
 
       it do
