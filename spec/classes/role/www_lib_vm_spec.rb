@@ -103,8 +103,8 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it do
         is_expected.to contain_apache__vhost('michiganelt.org-redirect-https')
-          .with_redirect_dest('https://www.michiganelt.org/')
-          .with_serveraliases([])
+          .with_redirect_dest('https://www.press.umich.edu/elt')
+          .with_serveraliases(['www.michiganelt.org'])
       end
 
       it do
