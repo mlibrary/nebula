@@ -148,4 +148,9 @@ class nebula::profile::www_lib::perl () {
     'UNIVERSAL::isa']:
   }
 
+  file { '/etc/profile.d/perl-include.sh':
+    ensure  => 'file',
+    content => template('nebula/profile/www_lib/etc/profile.d/perl-include.sh.erb'),
+  }
+
 }

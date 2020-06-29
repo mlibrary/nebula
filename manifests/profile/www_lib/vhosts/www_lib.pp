@@ -49,6 +49,13 @@ class nebula::profile::www_lib::vhosts::www_lib (
     directories                   => [
       {
         provider       => 'directory',
+        path           => "${www_lib_root}/cgi",
+        allow_override => ['None'],
+        options        => ['None'],
+        require        => $nebula::profile::www_lib::apache::default_access,
+      },
+      {
+        provider       => 'directory',
         path           => $docroot,
         options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
         allow_override => ['AuthConfig','FileInfo','Limit','Options'],
@@ -99,6 +106,13 @@ class nebula::profile::www_lib::vhosts::www_lib (
       {
         rewrite_cond => '%{REQUEST_URI} !^/cosign/valid',
         rewrite_rule => '^(/instruction/request.*)$ http://app-sali-production:30789$1 [P]',
+      },
+    ],
+
+    aliases                       => [
+      {
+        scriptalias => '/cgi/',
+        path        => "${www_lib_root}/cgi/",
       },
     ],
 
