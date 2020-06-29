@@ -12,14 +12,7 @@ class nebula::role::webhost::www_lib_vm (
 ) {
   include nebula::role::umich
   include nebula::profile::elastic::filebeat::prospectors::clickstream
-
-  @@nebula::haproxy::binding { "${::hostname} www-lib-testing":
-      service       => 'www-lib-testing',
-      https_offload => false,
-      datacenter    => $::datacenter,
-      hostname      => $::hostname,
-      ipaddress     => $::ipaddress
-  }
+  include nebula::profile::www_lib::register_for_load_balancing
 
   class { 'nebula::profile::networking::private':
     address_template => $private_address_template
