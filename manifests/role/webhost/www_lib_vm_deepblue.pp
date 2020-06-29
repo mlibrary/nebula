@@ -11,5 +11,5 @@ class nebula::role::webhost::www_lib_vm_deepblue (
   Hash $hosts = {}
 ) {
   include nebula::role::webhost::www_lib_vm
-  include nebula::profile::www_lib::register_for_load_balancing_deepblue
+  #include nebula::profile::www_lib::register_for_load_balancing_deepblue
 }
