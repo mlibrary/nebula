@@ -23,7 +23,7 @@ describe 'nebula::role::webhost::www_lib_vm_deepblue' do
         subject { exported_resources }
 
         it { is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} www-lib") }
-        it { is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} deepblue") }
+        # it { is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} deepblue") }
       end
     end
   end

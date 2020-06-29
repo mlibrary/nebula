@@ -12,7 +12,7 @@ class nebula::profile::www_lib::register_for_load_balancing {
     ;
 
     "${::hostname} www-lib":
-      service => 'www-lib',
+      service => 'www-lib-testing',
     ;
   }
 }
