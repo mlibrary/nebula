@@ -5,11 +5,17 @@ root = <%= @remote_root %>
 path = <%= path %>
 <% end -%>
 
-batch		      = true
-confirmbigdel	= true
-prefer		    = newer
-group		      = true
-logfile		    = /var/log/unison_<%= @title %>.log
-owner		      = true
-times		      = true
-numericids	  = true
+<% unless @ignores.nil? -%> 
+<% @ignores.each do |ignore| -%>
+ignore = Path <%= ignore %>
+<% end -%>
+<% end -%>
+
+batch         = true
+confirmbigdel = true
+prefer        = newer
+group         = true
+logfile       = /var/log/unison_<%= @title %>.log
+owner         = true
+times         = true
+numericids    = true

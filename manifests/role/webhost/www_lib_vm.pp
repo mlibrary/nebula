@@ -30,7 +30,6 @@ class nebula::role::webhost::www_lib_vm (
   include nebula::profile::www_lib::php
   include nebula::profile::www_lib::apache
   include nebula::profile::www_lib::cron
-  include nebula::profile::unison
 
   class { 'nebula::profile::shibboleth':
     config_source    => 'puppet:///shibboleth-www_lib',
