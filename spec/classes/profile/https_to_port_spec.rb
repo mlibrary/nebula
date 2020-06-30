@@ -43,6 +43,11 @@ describe 'nebula::profile::https_to_port' do
             .that_requires("Nebula::Cert[#{server_name}]")
         end
 
+        it do
+          is_expected.to contain_cron('restart nginx weekly to keep SSL keys up to date')
+            .with_command('/bin/systemctl restart nginx')
+        end
+
         context 'and server_name is set to example.invalid' do
           let(:server_name) { 'example.invalid' }
           let(:params) do

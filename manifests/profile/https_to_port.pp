@@ -49,4 +49,13 @@ class nebula::profile::https_to_port (
   file { $webroot:
     ensure => 'directory',
   }
+
+  cron { 'restart nginx weekly to keep SSL keys up to date':
+    # This will run once per week sometime between midnight and 4:00 in
+    # the morning.
+    weekday => fqdn_rand(7),
+    hour    => fqdn_rand(3),
+    minute  => fqdn_rand(60),
+    command => '/bin/systemctl restart nginx',
+  }
 }
