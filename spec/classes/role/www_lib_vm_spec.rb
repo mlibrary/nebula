@@ -18,6 +18,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it { is_expected.to compile }
 
+      it { is_expected.to contain_class('Nebula::Profile::Www_lib::Register_for_load_balancing') }
       it { is_expected.to contain_class('php') }
 
       it { is_expected.to contain_mount('/www') }
@@ -279,12 +280,6 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it { is_expected.to contain_cron('shibd existence check') }
       it { is_expected.to contain_cron('staff.lib parse') }
       it { is_expected.to contain_cron('Proactively scan the log files for suspcious activity') }
-
-      describe 'exported resources' do
-        subject { exported_resources }
-
-        it { is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} www-lib") }
-      end
     end
   end
 end
