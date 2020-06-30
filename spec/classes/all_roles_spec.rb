@@ -63,7 +63,6 @@ end
             %w[nebula::role::legacy::kubernetes kubernetes],
             %w[nebula::role::log_host log_host],
             %w[nebula::role::webhost::www_lib_vm www_lib],
-            %w[nebula::role::webhost::www_lib_vm_deepblue www_lib],
             %w[nebula::role::docker_registry docker_registry],
             %w[nebula::role::archivematica archivematica],
             %w[nebula::role::app_host::quod_dev quod],
