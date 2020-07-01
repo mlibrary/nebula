@@ -44,12 +44,13 @@ class nebula::profile::www_lib::vhosts::datamart (
 
     directories    => [
       {
-        provider      => 'directory',
-        path          => $docroot,
-        allowoverride => 'None',
-        options       => '+ExecCGI -MultiViews +SymLinksIfOwnerMatch',
-        require       => $nebula::profile::www_lib::apache::default_access,
-        addhandlers   => [
+        provider        => 'directory',
+        path            => $docroot,
+        allowoverride   => 'None',
+        options         => '+ExecCGI -MultiViews +SymLinksIfOwnerMatch',
+        require         => $nebula::profile::www_lib::apache::default_access,
+        custom_fragment => 'CosignAllowPublicAccess Off',
+        addhandlers     => [
           {
             extensions => ['cgi'],
             handler    => 'cgi-script'
