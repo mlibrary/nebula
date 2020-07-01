@@ -34,23 +34,29 @@ class nebula::profile::www_lib::vhosts::datamart (
   }
 
   nebula::apache::www_lib_vhost { 'datamart-https':
-    servername     => $servername,
-    docroot        => $docroot,
-    logging_prefix => 'datamart.lib/',
+    servername                    => $servername,
+    docroot                       => $docroot,
+    logging_prefix                => 'datamart.lib/',
 
-    ssl            => true,
-    ssl_cn         => $ssl_cn,
-    cosign         => true,
+    ssl                           => true,
+    ssl_cn                        => $ssl_cn,
+    cosign                        => true,
 
-    directories    => [
+    cosign_public_access_off_dirs => [
       {
-        provider        => 'directory',
-        path            => $docroot,
-        allowoverride   => 'None',
-        options         => '+ExecCGI -MultiViews +SymLinksIfOwnerMatch',
-        require         => $nebula::profile::www_lib::apache::default_access,
-        custom_fragment => 'CosignAllowPublicAccess Off',
-        addhandlers     => [
+        provider => 'location',
+        path     => '/',
+      },
+    ],
+
+    directories                   => [
+      {
+        provider      => 'directory',
+        path          => $docroot,
+        allowoverride => 'None',
+        options       => '+ExecCGI -MultiViews +SymLinksIfOwnerMatch',
+        require       => $nebula::profile::www_lib::apache::default_access,
+        addhandlers   => [
           {
             extensions => ['cgi'],
             handler    => 'cgi-script'
@@ -59,7 +65,7 @@ class nebula::profile::www_lib::vhosts::datamart (
       }
     ],
 
-    rewrites       => [
+    rewrites                      => [
       {
         rewrite_cond => ['%{REQUEST_URI} !^/cosign',
                         '%{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-f'],
