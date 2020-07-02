@@ -38,5 +38,5 @@ class nebula::role::webhost::www_lib_vm (
     watchdog_minutes => '*/30',
   }
 
-  # nebula::usergroup { user groups for www-lib: }
+  include nebula::profile::www_lib::users
 }
