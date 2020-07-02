@@ -141,27 +141,9 @@ stout:
       hour: [0, 3, 6, 9, 12, 15, 18, 21]
       minute: 0
       command: '/usr/bin/drush -r /www/www.mportfolio/web -l http://www.mportfolio.umich.edu cron >/dev/null 2>&1'
-# All following commands have user libadm and environment
-# ['MAILTO=libwebsystems@umich.edu'], and they are on stout. Convert the
-# given five numbers to minute/hour/day/month/weekday, and all that's
-# left is the command. Stars can be ignored, as above.
-#
-# For example the following should look like this:
-#
-#     # To run site search log reporting each day on <HOST> at 3:40 AM.  KJV, 1/15/2013
-#     #Ejournals update from mirlyn, and reindex in solr every morning 4:07 am - bertrama 5/21/2009
-#     'Ejournals update from mirlyn':
-#       user: libadm
-#       environment: ['MAILTO=libwebsystems@umich.edu']
-#       hour: 5
-#       minute: 7
-#       command: '/www/www.lib/cron/bin/index-ejournals > /www/www.lib/cron/logs/ejournals.log 2>&1'
-#
-# If you see things like `6,18` and `*/5`, you can look above to see
-# examples of how that syntax works in this case (it's pretty
-# straightforward).
-
-# To run site search log reporting each day on <HOST> at 3:40 AM.  KJV, 1/15/2013
+stout:
+  nebula::profile::www_lib::cron::extra_jobs:
+    # To run site search log reporting each day on <HOST> at 3:40 AM.  KJV, 1/15/2013
     # Ejournals update from mirlyn, and reindex in solr every morning 4:07 am - bertrama 5/21/2009
     'Ejournals update from mirlyn, and reindex in solr every morning 4:07 am - bertrama 5/21/2009':
       user: libadm
@@ -177,7 +159,6 @@ stout:
       hour: 6
       weekday: 0
       command: '/www/www.lib/cron/bin/newbooks > /www/www.lib/cron/logs/newbooks.log 2>&1'
-    
     'drupal cron every 20 minutes for indexing changed or new content - bertrama 5/21/2009':
       user: libadm
       environment: ['MAILTO=libwebsystems@umich.edu']
@@ -200,7 +181,6 @@ stout:
       hour: 5
       weekday: [1, 2, 3, 4, 5]
       command: '/www/www.lib/cron/bin/staff.lib-drupal8-staff-export > /www/www.lib/cron/logs/staff-export.log 2>&1'
-    
     #uncomment line below to avoid user issues on lib when exports fail
     #2 21 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-staff-export > /www/www.lib/cron/logs/staff-export.log 2>&1
     #0,20,40 * * * * /usr/bin/php /www/www.lib/cron/bin/d6-staff.lib-cron.php > /www/www.lib/cron/logs/staff.log 2>&1
@@ -236,7 +216,6 @@ stout:
       environment: ['MAILTO=libwebsystems@umich.edu']
       minute: 17
       command: '/www/www.lib/cron/bin/d7-www.lib-ensure-uid0'
-    
     #update drupal's users:
     ##50 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-update-users > /www/www.lib/cron/logs/drupal8-users.log 2>&1
     'update drupal users':
@@ -295,7 +274,6 @@ stout:
       hour: 6
       weekday: [1, 2, 3, 4, 5]
       command: '/www/www.lib/cron/bin/staff.lib-drupal8-update-ptf-sub-site > /www/www.lib/cron/logs/staff.lib-drupal8-update-ptf-sub-site.log 2>&1'
-    
     # locations imports need to move to marsala due to deadlocks
     #04 4 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-update-locations > /www/www.lib/cron/logs/staff.lib-drupal8-update-locations.log 2>&1
     'locations imports need to move to marsala due to deadlocks':
@@ -305,7 +283,6 @@ stout:
       hour: 6
       weekday: [1, 2, 3, 4, 5]
       command: '/www/www.lib/cron/bin/staff.lib-drupal8-locations-export > /www/www.lib/cron/logs/locations-export.log 2>&1'
-    
     # Import the digital collections from Search Tools
     # index drupals users
     # Ensure that users on staff.lib have - bertrama 2013-12-04
@@ -326,7 +303,6 @@ stout:
       minute: 7
       hour: 7
       command: '/www/www.lib/cron/bin/d7-www.lib-ensure-email-address > /www/www.lib/cron/logs/public-email-addresses.log 2>&1'
-    
     # Update the export for the database.
     'Update the export for the database':
       user: libadm
@@ -376,7 +352,6 @@ stout:
       minute: 36
       hour: 7
       command: '/www/www.lib/cron/bin/d7-mportfolio-export-database > /www/www.lib/cron/logs/d7-mportfolio-export-database.log 2>&1'
-    
     #Cron for staff.lib/textbooks
     'staff.lib/textbooks':
       user: libadm
@@ -392,7 +367,6 @@ stout:
       hour: 4
       weekday: [7, 3]
       command: '/www/www.lib/cron/bin/update-textbooks 1 >> /www/www.lib/cron/logs/textbooks-nightly.log 2>&1'
-    
     # For Dropbox files in Omeka instances
     'For Dropbox files in Omeka instances':
       user: libadm
@@ -404,7 +378,6 @@ stout:
       environment: ['MAILTO=libwebsystems@umich.edu']
       minute: 5
       command: '/usr/bin/find /mnt/exhibits/auto -type f -exec /bin/mv {} /www/www.lib/web/upstart200/plugins/Dropbox/files \; > /dev/null 2>&1'
-    
     # To generate search graphs for search dashboard nightly, after log files are updated. Only runs on one server. At 4:30 AM.  KJV, 01/08/2013
     # 27 15 * * * /usr/bin/php /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/google-chart.php > /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/logs/google-chart.log 2>&1
     'To generate search graphs for search dashboard nightly, after log files are updated. Only runs on one server. At 4:30 AM.  KJV, 01/08/2013':
@@ -413,7 +386,6 @@ stout:
       minute: 30
       hour: 4
       command: '/usr/bin/php /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/google-chart.php > /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/logs/google-chart.log 2>&1'
-    
     # To run site search log reporting each day on tripel at 3:20 AM.  KJV, 5/26/2010
     'To run site search log reporting each day on tripel at 3:20 AM.  KJV, 5/26/2010':
       user: libadm
@@ -421,7 +393,6 @@ stout:
       minute: 45
       hour: 3
       command: '/usr/bin/perl /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/favorite-unique-users.pl > /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/logs/favorite-unique-users.log 2>&1'
-    
     ##linkscan=linkscan
     #Linkscan (currently keyed to <HOST>)
     'Linkscan (currently keyed to <HOST>)':
@@ -445,9 +416,8 @@ stout:
       hour: 3
       weekday: 6
       command: '/www/www.lib/cron/bin/linkscan-run-libguides.weekly getfiles > /www/www.lib/cron/logs/linkscan-run-libguides-weekly.log 2>&1'
-    
     #Wordpress's native cron functions.
-    'Wordpress native cron functions.':
+    'Wordpress native cron functions':
       user: libadm
       environment: ['MAILTO=libwebsystems@umich.edu']
       minute: [1, 21, 41]
