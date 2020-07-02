@@ -94,6 +94,7 @@ class nebula::profile::www_lib::vhosts::press (
 
     custom_fragment => @("EOT")
       ProxyPassReverse / http://${bind}
+      ProxyPassReverse / https://${bind}
     | EOT
   }
 }
