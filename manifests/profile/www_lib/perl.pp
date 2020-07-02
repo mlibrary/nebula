@@ -145,7 +145,8 @@ class nebula::profile::www_lib::perl () {
     'Test::Warn',
     'Try::Tiny',
     'UNIVERSAL::can',
-    'UNIVERSAL::isa']:
+    'UNIVERSAL::isa',
+    'WebService::Solr::Tiny']:
   }
 
   file { '/etc/profile.d/perl-include.sh':
