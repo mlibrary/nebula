@@ -38,5 +38,6 @@ class nebula::role::webhost::www_lib_vm (
     watchdog_minutes => '*/30',
   }
 
+  include nebula::profile::afs
   include nebula::profile::www_lib::users
 }
