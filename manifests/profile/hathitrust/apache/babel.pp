@@ -18,6 +18,7 @@ class nebula::profile::hathitrust::apache::babel (
   String $domain,
   String $gwt_code,
   String $useradmin_endpoint,
+  String $useradmin_basic_auth,
   Array[String] $cache_paths = [ ],
 ) {
 
@@ -286,6 +287,14 @@ class nebula::profile::hathitrust::apache::babel (
         path     => '/monitor',
         require  => $monitor_requires
       },
+      {
+        provider              => 'location',
+        path                  => '/usermanage',
+        auth_type             => 'shibboleth',
+        require               => 'shibboleth',
+        shib_request_settings => { 'requireSession' => '0'},
+        request_headers       => ["set Authorization \"Basic ${useradmin_basic_auth}\""],
+      },
 
     ],
 
@@ -296,8 +305,6 @@ class nebula::profile::hathitrust::apache::babel (
     custom_fragment             => "
     <Proxy \"fcgi://${imgsrv_address}\" enablereuse=off max=10>
     </Proxy>
-
-    ProxyPassReverse /usermanage ${useradmin_endpoint}
     ",
 
     request_headers             => [
