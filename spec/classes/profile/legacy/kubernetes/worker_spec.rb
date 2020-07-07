@@ -8,7 +8,7 @@ require 'spec_helper'
 describe 'nebula::profile::legacy::kubernetes::worker' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:hiera_config) { 'spec/fixtures/hiera/kubernetes_config.yaml' }
+      let(:hiera_config) { 'spec/fixtures/hiera/legacy_kubernetes_config.yaml' }
       let(:facts) { os_facts }
 
       it { is_expected.to compile }

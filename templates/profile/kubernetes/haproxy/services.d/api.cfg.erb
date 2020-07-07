@@ -1,0 +1,11 @@
+# Managed by puppet (nebula/profile/kubernetes/haproxy/services.d/api.cfg.erb)
+frontend kubernetes-api-front
+  bind <%= @kube_api_address %>:6443
+  mode tcp
+  option tcplog
+  default_backend kubernetes-api-back
+
+backend kubernetes-api-back
+  mode tcp
+  option tcp-check
+  balance roundrobin

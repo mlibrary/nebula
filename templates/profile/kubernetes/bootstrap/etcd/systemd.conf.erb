@@ -1,0 +1,5 @@
+# Managed by puppet (nebula/profile/kubernetes/bootstrap/etcd/systemd.conf.erb)
+[Service]
+ExecStart=
+ExecStart=/usr/bin/kubelet --address=127.0.0.1 --pod-manifest-path=/etc/kubernetes/manifests --cgroup-driver=systemd
+Restart=always

@@ -1,0 +1,9 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - kubernetes/implicit_docker_version
+  - kubernetes/default
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'
