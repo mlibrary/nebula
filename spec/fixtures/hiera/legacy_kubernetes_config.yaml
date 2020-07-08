@@ -1,8 +1,0 @@
----
-:backends:
-  - yaml
-:hierarchy:
-  - legacy_kubernetes
-  - default
-:yaml:
-  :datadir: 'spec/fixtures/hiera'
