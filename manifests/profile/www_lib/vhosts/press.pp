@@ -16,12 +16,25 @@ class nebula::profile::www_lib::vhosts::press (
   String $bind = '127.0.0.1:31028',
   Integer $num_proc = 10,
   String $script = '/www/www.press/script/puppet-press',
+  String $logging_prefix = 'press'
 ) {
   $servername = "${prefix}www.press.umich.edu"
+  $log_path = "${apache::params::logroot}/${logging_prefix}"
 
-  file { "${apache::params::logroot}/press":
+  file { $log_path:
     ensure => 'directory'
   }
+
+  logrotate::rule { 'press':
+    path          => [ "${log_path}/press.out", "${log_path}/press.err" ],
+    rotate        => 7,
+    rotate_every  => 'day',
+    missingok     => true,
+    ifempty       => false,
+    delaycompress => true,
+    compress      => true,
+  }
+
 
   file { '/usr/local/bin/startup_press':
     ensure  => 'present',
@@ -45,7 +58,7 @@ class nebula::profile::www_lib::vhosts::press (
   nebula::apache::www_lib_vhost { 'press-http':
     servername     => $servername,
     docroot        => $docroot,
-    logging_prefix => 'press/',
+    logging_prefix => "${logging_prefix}/",
 
     rewrites       => [
       {
@@ -67,7 +80,7 @@ class nebula::profile::www_lib::vhosts::press (
   nebula::apache::www_lib_vhost { 'press-https':
     servername      => $servername,
     docroot         => $docroot,
-    logging_prefix  => 'press/',
+    logging_prefix  => "${logging_prefix}/",
     ssl             => true,
     ssl_cn          => $ssl_cn,
     setenv          => ['HTTPS on'],

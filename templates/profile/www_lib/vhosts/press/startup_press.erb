@@ -2,7 +2,7 @@
 
 # Usage: startup_press
 
-exec >> /tmp/press.out 2>> /tmp/press.err
+exec >> <%= @log_path %>/press.out 2>> <%= @log_path %>/press.err
 
 NPROC=<%= @num_proc %>
 BIND=<%= @bind %>
