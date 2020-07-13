@@ -26,6 +26,7 @@ class nebula::profile::www_lib::apache (
     ]
   }
 ) {
+  include nebula::profile::logrotate
 
   ensure_packages(['bsd-mailx'])
 
