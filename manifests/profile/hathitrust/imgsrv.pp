@@ -2,9 +2,9 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::hathitrust::apache
+# nebula::profile::hathitrust::imgsrv
 #
-# Install apache for HathiTrust applications
+# Install imgsrv for HathiTrust applications
 #
 # @example
 #   include nebula::profile::hathitrust::imgsrv
@@ -13,8 +13,26 @@ class nebula::profile::hathitrust::imgsrv (
   String $sdrroot,
   String $sdrview,
   String $sdrdataroot,
-  String $bind
+  String $bind,
+  String $log_root = '/var/log',
+  String $logging_prefix = 'imgsrv'
 ) {
+  $log_path = "${log_root}/${logging_prefix}"
+
+  file { $log_path:
+    ensure => 'directory',
+    mode   => '0755'
+  }
+
+  logrotate::rule { 'imgsrv':
+    path          => [ "${log_path}/imgsrv.out", "${log_path}/imgsrv.err" ],
+    rotate        => 7,
+    rotate_every  => 'day',
+    missingok     => true,
+    ifempty       => false,
+    delaycompress => true,
+    compress      => true,
+  }
 
   file { '/usr/local/bin/startup_imgsrv':
     ensure  => 'present',

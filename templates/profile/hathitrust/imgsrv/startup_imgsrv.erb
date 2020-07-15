@@ -2,7 +2,7 @@
 
 # Usage: startup_imgsrv
 
-exec >> /tmp/imgsrv.out 2>> /tmp/imgsrv.err
+exec >> <%= @log_path %>/imgsrv.out 2>> <%= @log_path %>/imgsrv.err
 
 NPROC=<%= @num_proc %>
 SDRDATAROOT=<%= @sdrdataroot %>
