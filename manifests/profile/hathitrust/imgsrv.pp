@@ -21,6 +21,8 @@ class nebula::profile::hathitrust::imgsrv (
 
   file { $log_path:
     ensure => 'directory',
+    owner  => 'nobody',
+    group  => 'nogroup',
     mode   => '0755'
   }
 
