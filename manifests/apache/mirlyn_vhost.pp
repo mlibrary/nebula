@@ -54,7 +54,7 @@ define nebula::apache::mirlyn_vhost (
     # We redirect all non-api URLs except Record and Search to the 
     # root of search.lib.
     redirectmatch_status        => 'permanent',
-    redirectmatch_regexp        => '^(/(?!(api|Record|Search)/).*)',
+    redirectmatch_regexp        => '^(/(?!(api|Record|Search|index.php)/).*)',
     redirectmatch_dest          => 'https://search.lib.umich.edu',
 
     rewrites                    => [
