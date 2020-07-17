@@ -14,7 +14,6 @@ class nebula::role::kubernetes::worker {
   include nebula::profile::kubernetes::prometheus
   include nebula::profile::kubernetes::destination_port::http
   include nebula::profile::kubernetes::destination_port::https
-  include nebula::profile::kubernetes::destination_port::http_alt
   include nebula::profile::kubernetes::destination_port::https_alt
   include nebula::profile::kubernetes::bootstrap::destination
   include nebula::profile::kubernetes::register_for_keys::worker
