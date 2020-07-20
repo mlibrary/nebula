@@ -56,7 +56,6 @@ describe 'nebula::profile::kubernetes::haproxy' do
           [:etcd,     2379, 'etcd'],
           [:public,   80,   'http'],
           [:public,   443,  'https'],
-          [:private,  8080, 'http_alt'],
           [:private,  8443, 'https_alt'],
         ].each do |ip, port, service|
           describe 'the firewall' do

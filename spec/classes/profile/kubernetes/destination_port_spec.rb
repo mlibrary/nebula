@@ -10,7 +10,6 @@ require 'spec_helper'
   ['etcd',       2379],
   ['http',      30080],
   ['https',     30443],
-  ['http_alt',  31080],
   ['https_alt', 31443],
 ].each do |service, port|
   describe "nebula::profile::kubernetes::destination_port::#{service}" do
