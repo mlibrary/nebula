@@ -175,7 +175,7 @@ class nebula::profile::www_lib::php (
     listen_owner              => 'nobody',
     listen_group              => 'nogroup',
     pm                        => 'dynamic',
-    pm_max_children           => 5,
+    pm_max_children           => 10,
     pm_start_servers          => 2,
     pm_min_spare_servers      => 1,
     pm_max_spare_servers      => 3,
