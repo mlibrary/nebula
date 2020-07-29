@@ -18,9 +18,9 @@ class nebula::profile::haproxy::prereqs {
   }
 
   service { 'haproxy':
-    ensure     => 'running',
-    enable     => true,
-    hasrestart => true,
+    ensure  => 'running',
+    enable  => true,
+    restart => '/bin/systemctl reload haproxy',
   }
 
   file { '/etc/haproxy':
@@ -29,5 +29,9 @@ class nebula::profile::haproxy::prereqs {
 
   file { '/etc/haproxy/services.d':
     ensure => 'directory'
+  }
+
+  exec { 'check haproxy config':
+    command => '/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -c -q -f /etc/haproxy/services.d',
   }
 }
