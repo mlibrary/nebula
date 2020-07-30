@@ -63,7 +63,7 @@ class nebula::profile::www_lib::cron (
       weekday => '1-6',
       hour    => 0,
       minute  => 4,
-      command => '/usr/bin/pkill -HUP -f "perl /www/www.press/script/press" > /dev/null 2>&1',
+      command => '/bin/systemctl restart press',
     ;
   }
 
