@@ -62,7 +62,13 @@ describe 'nebula::profile::haproxy' do
           is_expected.to contain_service('haproxy').with(
             ensure: 'running',
             enable: true,
-            hasrestart: true,
+            restart: '/bin/systemctl reload haproxy',
+          )
+        end
+
+        it do
+          is_expected.to contain_exec('check haproxy config').with(
+            command: "/usr/sbin/haproxy -f #{haproxy_conf} -c -q -f /etc/haproxy/services.d",
           )
         end
 
