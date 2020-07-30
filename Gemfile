@@ -16,6 +16,7 @@ gem 'puppet', '~> 5.5'
 gem 'puppet-strings'
 gem 'semantic_puppet'
 gem 'yard', '>= 0.9.20'
+gem 'json', '>= 2.3.0'
 
 # Evaluate Gemfile.local and ~/.gemfile if they exist
 [
@@ -26,4 +27,3 @@ gem 'yard', '>= 0.9.20'
     eval(File.read(gemfile), binding)
   end
 end
-
