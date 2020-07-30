@@ -14,6 +14,7 @@ define nebula::apache::www_lib_vhost (
   String $ssl_cn = $servername,
   Array[Hash] $directories = [],
   Array[Hash] $cosign_public_access_off_dirs = [],
+  Array[Hash] $cosign_public_access_off_php5_dirs = [],
   Optional[Array] $rewrites = undef,
   Optional[Array] $aliases = undef,
   String $logging_prefix = '',
@@ -137,6 +138,15 @@ define nebula::apache::www_lib_vhost (
       $dir.merge( {
         custom_fragment => $cosign_public_access_off,
         require         => [],
+      })
+    } + $cosign_public_access_off_php5_dirs.map |$dir| {
+      $dir.merge( {
+        custom_fragment => $cosign_public_access_off,
+        require         => [],
+        addhandlers => [{
+          extensions => ['.php'],
+          handler => 'application/x-httpd-php'
+        }],
       })
     }
   } else {
