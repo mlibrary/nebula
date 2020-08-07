@@ -141,8 +141,6 @@ stout:
       hour: [0, 3, 6, 9, 12, 15, 18, 21]
       minute: 0
       command: '/usr/bin/drush -r /www/www.mportfolio/web -l http://www.mportfolio.umich.edu cron >/dev/null 2>&1'
-stout:
-  nebula::profile::www_lib::cron::extra_jobs:
     # To run site search log reporting each day on <HOST> at 3:40 AM.  KJV, 1/15/2013
     # Ejournals update from mirlyn, and reindex in solr every morning 4:07 am - bertrama 5/21/2009
     'Ejournals update from mirlyn, and reindex in solr every morning 4:07 am - bertrama 5/21/2009':
