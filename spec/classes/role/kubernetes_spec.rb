@@ -107,6 +107,8 @@ end
               .with_order('02')
               .with_content("KUBE_WORKERS=(\"${KUBE_WORKERS[@]}\" \"#{facts[:hostname]}/#{facts[:ipaddress]}\")\n")
           end
+
+          it { is_expected.to contain_package('lvm2') }
         end
       end
     end

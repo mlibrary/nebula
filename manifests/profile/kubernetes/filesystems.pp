@@ -5,7 +5,7 @@
 class nebula::profile::kubernetes::filesystems (
   Hash[String, Hash] $cifs_mounts = {},
 ) {
-  ensure_packages(['nfs-common'], {'ensure' => 'present'})
+  ensure_packages(['nfs-common', 'lvm2'], {'ensure' => 'present'})
 
   $cifs_mounts.each |$mount_title, $mount_parameters| {
     nebula::cifs_mount { "/mnt/legacy_cifs_${mount_title}":
