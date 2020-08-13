@@ -7,7 +7,8 @@ define nebula::unison::server (
   Array[String] $paths,
   Array[String] $filesystems,
   String $home = '/root',
-  Integer $port = 2647
+  Integer $port = 2647,
+  Optional[Array[String]] $ignores = undef,
 ) {
   ensure_packages(['unison'])
 
@@ -28,6 +29,7 @@ define nebula::unison::server (
     port        => $port,
     root        => $root,
     paths       => $paths,
+    ignores     => $ignores,
     filesystems => $filesystems
   }
 

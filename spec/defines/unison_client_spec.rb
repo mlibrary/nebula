@@ -33,24 +33,21 @@ describe 'nebula::unison::client' do
         end
       end
 
-      it do
+      it 'generates a prf file for unison clients' do
         is_expected.to contain_file('/root/.unison/myinstance.prf')
-          .with_content(<<~EOT)
-            root = /myroot
-            root = socket://somehost.default.invalid:12345/myroot
-
-            path = path1
-            path = path2
-
-            batch		      = true
-            confirmbigdel	= true
-            prefer		    = newer
-            group		      = true
-            logfile		    = /var/log/unison_myinstance.log
-            owner		      = true
-            times		      = true
-            numericids	  = true
-        EOT
+          .with_content(%r{root\s+=\s+/myroot})
+          .with_content(%r{root\s+=\s+socket://somehost.default.invalid:12345/myroot})
+          .with_content(%r{path\s+=\s+path1})
+          .with_content(%r{path\s+=\s+path2})
+          .with_content(%r{batch\s+=\s+true})
+          .with_content(%r{confirmbigdel\s+=\s+true})
+          .with_content(%r{prefer\s+=\s+newer})
+          .with_content(%r{group\s+=\s+true})
+          .with_content(%r{logfile\s+=\s+/var/log/unison_myinstance.log})
+          .with_content(%r{owner\s+=\s+true})
+          .with_content(%r{times\s+=\s+true})
+          .with_content(%r{numericids\s+=\s+true})
+          .without_content(%r{ignore\s+=\s+Path})
       end
 
       it do
@@ -66,6 +63,37 @@ describe 'nebula::unison::client' do
           source: facts[:ipaddress],
           tag: 'unison-client-myinstance',
         )
+      end
+
+      context 'with optional params' do
+        let(:params) do
+          {
+            server: 'somehost.default.invalid',
+            port: 12_345,
+            root: '/myroot',
+            paths: %w[path1 path2],
+            filesystems: ['fs1'],
+            ignores: %w[ignore_path1 ignore_path2],
+          }
+        end
+
+        it 'generates a prf file for unison clients' do
+          is_expected.to contain_file('/root/.unison/myinstance.prf')
+            .with_content(%r{root\s+=\s+/myroot})
+            .with_content(%r{root\s+=\s+socket://somehost.default.invalid:12345/myroot})
+            .with_content(%r{path\s+=\s+path1})
+            .with_content(%r{path\s+=\s+path2})
+            .with_content(%r{batch\s+=\s+true})
+            .with_content(%r{confirmbigdel\s+=\s+true})
+            .with_content(%r{prefer\s+=\s+newer})
+            .with_content(%r{group\s+=\s+true})
+            .with_content(%r{logfile\s+=\s+/var/log/unison_myinstance.log})
+            .with_content(%r{owner\s+=\s+true})
+            .with_content(%r{times\s+=\s+true})
+            .with_content(%r{numericids\s+=\s+true})
+            .with_content(%r{ignore\s+=\s+Path\s+ignore_path1})
+            .with_content(%r{ignore\s+=\s+Path\s+ignore_path2})
+        end
       end
     end
   end
