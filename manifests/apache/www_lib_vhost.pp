@@ -33,7 +33,8 @@ define nebula::apache::www_lib_vhost (
   Optional[Array] $setenv = undef,
   Optional[Array] $setenvifnocase = undef,
   Optional[Array] $error_documents = undef,
-  $priority = false
+  $priority = false,
+  Array[String] $default_allow_override = ['None'],
 ) {
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
   $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
@@ -138,11 +139,13 @@ define nebula::apache::www_lib_vhost (
       $dir.merge( {
         custom_fragment => $cosign_public_access_off,
         require         => [],
+        allow_override  => pick($dir['allow_override'], $default_allow_override),
       })
     } + $cosign_public_access_off_php5_dirs.map |$dir| {
       $dir.merge( {
         custom_fragment => $cosign_public_access_off,
         require         => [],
+        allow_override  => pick($dir['allow_override'], $default_allow_override),
         addhandlers => [{
           extensions => ['.php'],
           handler => 'application/x-httpd-php'
