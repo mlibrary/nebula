@@ -180,6 +180,18 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_ssl_cert('/etc/ssl/certs/staff.lib.umich.edu.crt')
       end
 
+      it 'defaults to allowing .htaccess for staff.lib' do
+        directories = catalogue.resource('Apache::Vhost', 'staff.lib ssl')[:directories]
+        funds_transfer = directories.select { |x| x['path'] == '/www/staff.lib/web/funds_transfer' }
+
+        expect(funds_transfer.first['allow_override']).to contain_exactly(
+          'AuthConfig',
+          'FileInfo',
+          'Limit',
+          'Options',
+        )
+      end
+
       it do
         is_expected.to contain_apache__vhost('www.publishing-http')
       end
