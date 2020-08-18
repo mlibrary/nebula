@@ -46,9 +46,10 @@ class nebula::profile::www_lib::vhosts::publishing (
         require        => $nebula::profile::www_lib::apache::default_access
       },
       {
-        provider    => 'directory',
-        path        => "${docroot}/campus_map",
-        addhandlers => [{
+        provider       => 'directory',
+        path           => "${docroot}/campus_map",
+        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
+        addhandlers    => [{
           extensions => ['.php'],
           # TODO: Extract version or socket path to params/hiera
           handler    => 'proxy:unix:/run/php/php7.3-fpm.sock|fcgi://localhost'
