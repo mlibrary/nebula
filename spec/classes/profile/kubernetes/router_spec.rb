@@ -30,7 +30,18 @@ describe 'nebula::profile::kubernetes::router' do
       end
 
       it do
-        is_expected.to contain_firewall('002 Give external requests our public IP')
+        is_expected.to contain_firewall('002 Give internal requests our private IP')
+          .with_table('nat')
+          .with_chain('POSTROUTING')
+          .with_jump('SNAT')
+          .with_proto('all')
+          .with_source('172.28.0.0/14')
+          .with_tosource('192.168.123.234')
+          .with_destination('192.168.0.0/16')
+      end
+
+      it do
+        is_expected.to contain_firewall('003 Give external requests our public IP')
           .with_table('nat')
           .with_chain('POSTROUTING')
           .with_jump('SNAT')
@@ -48,8 +59,10 @@ describe 'nebula::profile::kubernetes::router' do
             .with_destination('10.123.234.0/24')
         end
 
+        it { is_expected.not_to contain_firewall('002 Give internal requests our private IP') }
+
         it do
-          is_expected.to contain_firewall('002 Give external requests our public IP')
+          is_expected.to contain_firewall('003 Give external requests our public IP')
             .with_source('10.123.234.0/24')
             .with_tosource('10.0.0.2')
         end

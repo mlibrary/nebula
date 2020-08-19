@@ -9,6 +9,8 @@ nebula::profile::kubernetes::bootstrap_keys:
 nebula::profile::kubernetes::clusters:
   first_cluster:
     public_address: 10.0.0.1
+    private_address: 192.168.123.234
+    private_cidr: 192.168.0.0/16
     router_address: 172.16.0.1
     etcd_address: 172.16.0.6
     kube_api_address: 172.16.0.7

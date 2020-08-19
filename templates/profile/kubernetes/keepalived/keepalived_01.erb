@@ -31,6 +31,9 @@ vrrp_instance haproxy {
     <%= @router_address %> dev ens4
     <%= @etcd_address %> dev ens4
     <%= @kube_api_address %> dev ens4
+<% unless @private_address.nil? -%>
+    <%= @private_address %> dev ens4
+<% end -%>
   }
 
   unicast_src_ip <%= @ipaddress %>

@@ -12,6 +12,7 @@ class nebula::profile::kubernetes::keepalived (
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
   $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
   $public_address = $cluster['public_address']
+  $private_address = $cluster['private_address']
   $router_address = $cluster['router_address']
   $etcd_address = $cluster['etcd_address']
   $kube_api_address = $cluster['kube_api_address']
