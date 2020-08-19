@@ -61,6 +61,7 @@ describe 'nebula::profile::kubernetes::keepalived' do
           %r{virtual_ipaddress \{[^\}]*172\.16\.0\.1 dev ens4[^\}]*\}}m,
           %r{virtual_ipaddress \{[^\}]*172\.16\.0\.6 dev ens4[^\}]*\}}m,
           %r{virtual_ipaddress \{[^\}]*172\.16\.0\.7 dev ens4[^\}]*\}}m,
+          %r{virtual_ipaddress \{[^\}]*192\.168\.123\.234 dev ens4[^\}]*\}}m,
         ].each do |content|
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(content) }
         end
