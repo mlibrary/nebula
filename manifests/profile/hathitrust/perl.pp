@@ -18,6 +18,7 @@ class nebula::profile::hathitrust::perl () {
     'libapache-session-perl',
     'libarchive-zip-perl',
     'libberkeleydb-perl',
+    'libcapture-tiny-perl',
     'libcgi-application-perl',
     'libcgi-compile-perl',
     'libcgi-emulate-psgi-perl',
