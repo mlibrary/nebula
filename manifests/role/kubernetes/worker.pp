@@ -12,6 +12,7 @@ class nebula::role::kubernetes::worker {
   include nebula::profile::kubernetes::kubeadm
   include nebula::profile::kubernetes::filesystems
   include nebula::profile::kubernetes::prometheus
+  include nebula::profile::kubernetes::destination_port::gelf_tcp
   include nebula::profile::kubernetes::destination_port::http
   include nebula::profile::kubernetes::destination_port::https
   include nebula::profile::kubernetes::destination_port::https_alt
