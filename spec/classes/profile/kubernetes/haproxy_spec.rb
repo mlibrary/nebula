@@ -52,11 +52,12 @@ describe 'nebula::profile::kubernetes::haproxy' do
         it { is_expected.to contain_file('/etc/haproxy/services.d').with_ensure('directory') }
 
         [
-          [:kube_api, 6443, 'api'],
-          [:etcd,     2379, 'etcd'],
-          [:public,   80,   'http'],
-          [:public,   443,  'https'],
-          [:private,  8443, 'https_alt'],
+          [:kube_api, 6443,  'api'],
+          [:etcd,     2379,  'etcd'],
+          [:public,   80,    'http'],
+          [:public,   443,   'https'],
+          [:private,  8443,  'https_alt'],
+          [:private,  12201, 'gelf_tcp'],
         ].each do |ip, port, service|
           describe 'the firewall' do
             case ip

@@ -34,7 +34,7 @@ class nebula::profile::kubernetes::haproxy {
     notify  => Service['haproxy'],
   }
 
-  ['api', 'etcd', 'http', 'https', 'https_alt'].each |$service| {
+  ['api', 'etcd', 'gelf_tcp', 'http', 'https', 'https_alt'].each |$service| {
     concat { "/etc/haproxy/services.d/${service}.cfg":
       notify => Service['haproxy'],
     }
@@ -77,6 +77,11 @@ class nebula::profile::kubernetes::haproxy {
   nebula::exposed_port { '200 private https_alt':
     block => 'umich::networks::datacenter',
     port  => 8443,
+  }
+
+  nebula::exposed_port { '200 private gelf_tcp':
+    block => 'umich::networks::datacenter',
+    port  => 12201,
   }
 
   file { '/etc/haproxy/haproxy.cfg':

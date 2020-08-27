@@ -11,6 +11,7 @@ require 'spec_helper'
   ['http',      30080],
   ['https',     30443],
   ['https_alt', 31443],
+  ['gelf_tcp',  32201],
 ].each do |service, port|
   describe "nebula::profile::kubernetes::destination_port::#{service}" do
     on_supported_os.each do |os, os_facts|
