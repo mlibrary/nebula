@@ -7,6 +7,7 @@ class nebula::role::kubernetes::controller {
     internal_routing => 'kubernetes_calico',
   }
 
+  include nebula::profile::ntp
   include nebula::profile::kubernetes::dns_client
   include nebula::profile::kubernetes::kubelet
   include nebula::profile::kubernetes::kubeadm

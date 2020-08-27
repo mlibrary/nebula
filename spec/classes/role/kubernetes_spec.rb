@@ -24,6 +24,8 @@ require 'spec_helper'
           )
         end
 
+        it { is_expected.to contain_class('Nebula::Profile::Ntp') }
+
         it { is_expected.to contain_service('haproxy').that_notifies('Service[keepalived]') }
       end
     end
@@ -48,6 +50,8 @@ end
             },
           )
         end
+
+        it { is_expected.to contain_class('Nebula::Profile::Ntp') }
 
         it { is_expected.not_to contain_resources('firewall').with_purge(true) }
 
