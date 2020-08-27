@@ -4,6 +4,7 @@
 
 class nebula::role::kubernetes::backup_gateway {
   include nebula::role::minimum
+  include nebula::profile::ntp
   include nebula::profile::kubernetes::dns_server
   include nebula::profile::kubernetes::kubectl
   include nebula::profile::kubernetes::haproxy
