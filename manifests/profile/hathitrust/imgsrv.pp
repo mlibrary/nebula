@@ -62,7 +62,7 @@ class nebula::profile::hathitrust::imgsrv (
   }
 
   cron { 'imgsrv responsiveness check':
-    command => '/usr/local/bin/check_imgsrv',
+    command => '/usr/local/bin/check_imgsrv > /dev/null 2>&1',
     user    => 'root',
     minute  => '*/2',
   }
