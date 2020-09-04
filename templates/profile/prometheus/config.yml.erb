@@ -27,6 +27,9 @@ scrape_configs:
 - job_name: node
   file_sd_configs:
   - files: [ nodes.yml ]
+- job_name: haproxy
+  file_sd_configs:
+  - files: [ haproxy.yml ]
 <% unless @static_wmi_nodes.empty? -%>
 - job_name: wmi
   static_configs:

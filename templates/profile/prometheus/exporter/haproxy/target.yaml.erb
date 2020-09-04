@@ -1,0 +1,5 @@
+- targets: [ '<%= @ipaddress %>:9101' ]
+  labels:
+    datacenter: '<%= @datacenter %>'
+    hostname: '<%= @hostname %>'
+    priority: '<%= @master ? 'primary' : 'backup' %>'

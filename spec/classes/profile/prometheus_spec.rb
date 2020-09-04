@@ -20,6 +20,7 @@ describe 'nebula::profile::prometheus' do
           .with_volumes(['/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml',
                          '/etc/prometheus/rules.yml:/etc/prometheus/rules.yml',
                          '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
+                         '/etc/prometheus/haproxy.yml:/etc/prometheus/haproxy.yml',
                          '/etc/prometheus/tls:/tls',
                          '/opt/prometheus:/prometheus'])
           .that_requires('File[/opt/prometheus]')
@@ -59,6 +60,12 @@ describe 'nebula::profile::prometheus' do
 
       it do
         is_expected.to contain_concat_file('/etc/prometheus/nodes.yml')
+          .that_notifies('Docker::Run[prometheus]')
+          .that_requires('File[/etc/prometheus]')
+      end
+
+      it do
+        is_expected.to contain_concat_file('/etc/prometheus/haproxy.yml')
           .that_notifies('Docker::Run[prometheus]')
           .that_requires('File[/etc/prometheus]')
       end
@@ -122,6 +129,16 @@ describe 'nebula::profile::prometheus' do
           .with_tag('mydatacenter_prometheus_node_exporter')
           .with_proto('tcp')
           .with_dport(9100)
+          .with_source(facts[:ipaddress])
+          .with_state('NEW')
+          .with_action('accept')
+      end
+
+      it 'exports a firewall so that haproxy nodes can open 9101' do
+        expect(exported_resources).to contain_firewall("010 prometheus haproxy exporter #{facts[:hostname]}")
+          .with_tag('mydatacenter_prometheus_haproxy_exporter')
+          .with_proto('tcp')
+          .with_dport(9101)
           .with_source(facts[:ipaddress])
           .with_state('NEW')
           .with_action('accept')

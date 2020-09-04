@@ -32,6 +32,7 @@ class nebula::profile::prometheus (
       '/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml',
       '/etc/prometheus/rules.yml:/etc/prometheus/rules.yml',
       '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
+      '/etc/prometheus/haproxy.yml:/etc/prometheus/haproxy.yml',
       '/etc/prometheus/tls:/tls',
       '/opt/prometheus:/prometheus',
     ],
@@ -62,6 +63,13 @@ class nebula::profile::prometheus (
   }
 
   Concat_fragment <<| tag == "${::datacenter}_prometheus_node_service_list" |>>
+
+  concat_file { '/etc/prometheus/haproxy.yml':
+    notify  => Docker::Run['prometheus'],
+    require => File['/etc/prometheus'],
+  }
+
+  Concat_fragment <<| tag == "${::datacenter}_prometheus_haproxy_service_list" |>>
 
   file { '/etc/prometheus':
     ensure => 'directory',
@@ -102,6 +110,15 @@ class nebula::profile::prometheus (
     tag    => "${::datacenter}_prometheus_node_exporter",
     proto  => 'tcp',
     dport  => 9100,
+    source => $::ipaddress,
+    state  => 'NEW',
+    action => 'accept',
+  }
+
+  @@firewall { "010 prometheus haproxy exporter ${::hostname}":
+    tag    => "${::datacenter}_prometheus_haproxy_exporter",
+    proto  => 'tcp',
+    dport  => 9101,
     source => $::ipaddress,
     state  => 'NEW',
     action => 'accept',

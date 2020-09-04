@@ -250,6 +250,10 @@ describe 'nebula::profile::haproxy' do
 
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 101}) }
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state MASTER}) }
+          it do
+            is_expected.to contain_class('Nebula::Profile::Prometheus::Exporter::Haproxy')
+              .with_master(true)
+          end
         end
 
         context 'on a backup node' do
@@ -257,6 +261,10 @@ describe 'nebula::profile::haproxy' do
 
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 100}) }
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state BACKUP}) }
+          it do
+            is_expected.to contain_class('Nebula::Profile::Prometheus::Exporter::Haproxy')
+              .with_master(false)
+          end
         end
       end
 
@@ -282,6 +290,14 @@ describe 'nebula::profile::haproxy' do
           source: my_ip,
           tag: 'haproxy',
         )
+      end
+
+      describe 'metrics' do
+        it 'defines haproxy stats file' do
+          is_expected.to contain_file('/etc/haproxy/services.d/stats.cfg')
+            .that_requires('Package[haproxy]')
+            .that_notifies('Service[haproxy]')
+        end
       end
     end
   end
