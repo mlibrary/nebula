@@ -37,7 +37,7 @@
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
-      "operatingsystemrelease": ["8", "9"]
+      "operatingsystemrelease": ["9"]
     }
   ],
   "requirements": [
