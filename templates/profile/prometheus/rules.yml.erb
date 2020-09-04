@@ -95,7 +95,7 @@ groups:
   - alert: HAProxyBackendDown
     annotations:
       summary: '{{$labels.server}} isn''t responding to HAProxy'
-    expr: 'min without(backend, hostname, instance, priority)(haproxy_server_up)'
+    expr: 'min without(backend, hostname, instance, priority)(haproxy_server_up) == 0'
     for: 5m
     labels:
       severity: page
