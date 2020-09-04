@@ -1,0 +1,32 @@
+# Managed by puppet (nebula/profile/prometheus/exporter/haproxy/defaults.sh.erb)
+<%# Set the command-line arguments to pass to the server.
+    Due to shell scaping, to pass backslashes for regexes, you need to double
+    them (\\d for \d). If running under systemd, you need to double them again
+    (\\\\d to mean \d), and escape newlines too. -%>
+ARGS="--haproxy.scrape-uri='http://localhost:8001/stats/;csv'"
+
+<%#
+usage: haproxy_exporter [<flags>]
+Flags:
+  -h, --help                 Show context-sensitive help (also try --help-long and --help-man).
+      --web.listen-address=":9101"  
+                             Address to listen on for web interface and telemetry.
+      --web.telemetry-path="/metrics"  
+                             Path under which to expose metrics.
+      --haproxy.scrape-uri="http://localhost/;csv"  
+                             URI on which to scrape HAProxy.
+      --haproxy.ssl-verify   Flag that enables SSL certificate verification for the scrape URI
+      --haproxy.server-metric-fields="2,3,4,5,6,7,8,9,13,14,15,16,17,18,21,24,30,33,35,38,39,40,41,42,43,44,49,50"  
+                             Comma-separated list of exported server metrics. See http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#9.1
+      --haproxy.server-exclude-states=""  
+                             Comma-separated list of exported server states to exclude. See https://cbonte.github.io/haproxy-dconv/1.8/management.html#9.1, field 17 statuus
+      --haproxy.timeout=5s   Timeout for trying to get stats from HAProxy.
+      --haproxy.pid-file=""  Path to HAProxy pid file.
+                               If provided, the standard process metrics get exported for the HAProxy
+                               process, prefixed with 'haproxy_process_...'. The haproxy_process exporter
+                               needs to have read access to files owned by the HAProxy process. Depends on
+                               the availability of /proc.
+                               https://prometheus.io/docs/instrumenting/writing_clientlibs/#process-metrics.
+      --log.level=info       Only log messages with the given severity or above. One of: [debug, info, warn, error]
+      --log.format=logfmt    Output format of log messages. One of: [logfmt, json]
+   -%>

@@ -1,0 +1,16 @@
+# Managed by puppet (nebula/profile/prometheus/exporter/systemd.ini.erb)
+[Unit]
+Description=Prometheus exporter for haproxy metrics
+Documentation=https://github.com/prometheus/haproxy_exporter
+
+[Service]
+Restart=always
+User=nobody
+EnvironmentFile=/etc/default/prometheus-haproxy-exporter
+ExecStart=/usr/bin/prometheus-haproxy-exporter $ARGS
+ExecReload=/bin/kill -HUP $MAINPID
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target

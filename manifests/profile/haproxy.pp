@@ -15,6 +15,9 @@ class nebula::profile::haproxy(
 ) {
   include nebula::profile::haproxy::prereqs
   include nebula::profile::networking::sysctl
+  class { 'nebula::profile::prometheus::exporter::haproxy':
+    master => $master
+  }
 
   file { '/etc/haproxy/haproxy.cfg':
     ensure  => 'present',
@@ -119,6 +122,12 @@ class nebula::profile::haproxy(
   nebula::exposed_port { '200 kubectl':
     port  => 6443,
     block => 'umich::networks::all_trusted_machines',
+  }
+
+  file { '/etc/haproxy/services.d/stats.cfg':
+    require => 'Package[haproxy]',
+    notify  => 'Service[haproxy]',
+    content => template('nebula/profile/haproxy/stats_frontend.cfg.erb'),
   }
 
 }

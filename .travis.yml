@@ -6,7 +6,6 @@ script:
 bundler_args: "--without system_tests"
 rvm:
 - 2.5
-- 2.4
 before_install:
 # This line is only required for ruby < 2.6 according to
 # https://docs.travis-ci.com/user/languages/ruby/
