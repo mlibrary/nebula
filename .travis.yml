@@ -16,6 +16,7 @@ env:
 jobs:
   fast_finish: true
   include:
+  - env: CHECK=spec
   - env: CHECK=rubocop
   - env: CHECK="syntax lint"
   - env: CHECK=metadata_lint
