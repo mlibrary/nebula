@@ -92,6 +92,13 @@ groups:
     for: 1h
     labels:
       severity: ticket
+  - alert: HAProxyBackendDown
+    annotations:
+      summary: '{{$labels.server}} isn''t responding to HAProxy'
+    expr: 'min without(backend, hostname, instance, priority)(haproxy_server_up)'
+    for: 5m
+    labels:
+      severity: page
 
   # These are legacy alerts that can be removed when RHEL5 is gone.
   - alert: DiskPressure
