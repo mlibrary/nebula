@@ -74,6 +74,10 @@ class nebula::profile::www_lib::vhosts::deepblue (
         rewrite_cond => '%{REQUEST_URI} !^((\/?|/index.html)$|/splash/|/cosign/valid)',
         rewrite_rule => '^(.*)$	http://bulleit-2.umdl.umich.edu:8080$1 [P]'
       },
+      {
+        comment      => 'Deep Blue Preservation redirect',
+        rewrite_rule => '^/static/about/deepbluepreservation.html https://www.lib.umich.edu/about-us/policies/digital-repository-services-digital-preservation-policy/registered-formats-and [R=permanent,L]'
+      },
     ],
 
     directories                   => [
