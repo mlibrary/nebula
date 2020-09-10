@@ -28,7 +28,7 @@ define nebula::apache::mirlyn_vhost (
     serveraliases  => $serveraliases,
     docroot        => $docroot,
     logging_prefix => "${prefix}mirlyn/",
-    usertrack      => false,
+    usertrack      => true,
 
     rewrites       => [
       {
@@ -49,7 +49,7 @@ define nebula::apache::mirlyn_vhost (
     ssl                         => true,
     ssl_cn                      => $ssl_cn,
     cosign                      => false,
-    usertrack                   => false,
+    usertrack                   => true,
 
     rewrites                    => [
       {
