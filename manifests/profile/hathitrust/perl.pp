@@ -65,6 +65,7 @@ class nebula::profile::hathitrust::perl () {
     'libhttp-message-perl',
     'libhttp-negotiate-perl',
     'libimage-exiftool-perl',
+    'libimage-info-perl',
     'libimage-size-perl',
     'libinline-perl',
     'libio-html-perl',
@@ -147,7 +148,6 @@ class nebula::profile::hathitrust::perl () {
     'Devel::Cycle',
     'Test::Memory::Cycle',
     'Mozilla::CA',
-    'Image::Info',
     'Noid']:
   }
 
