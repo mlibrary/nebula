@@ -100,11 +100,15 @@ groups:
     labels:
       severity: page
 
+  # We like to keep at least 2T free at all times for deep blue data,
+  # but their ingest process requires double the capacity of any files
+  # being ingested, so it is common for them to claim a lot of space
+  # only temporarily. Hence the lengthy 1d alert threshold.
   - alert: DeepBlueDataProdStoragePressure
     annotations:
-      summary: 'deepbluedata-prod ({{$labels.hostname}}:{{$labels.mountpoint}}) has less than 500G of free space'
-    expr: 'node_filesystem_avail_bytes{device="deepbluedata-prod.value.storage.umich.edu:/deepbluedata-prod"} < 500 * 1024 * 1024 * 1024'
-    for: 30m
+      summary: 'deepbluedata-prod ({{$labels.hostname}}:{{$labels.mountpoint}}) has less than 2T of free space'
+    expr: 'node_filesystem_avail_bytes{device="deepbluedata-prod.value.storage.umich.edu:/deepbluedata-prod"} < 2 * 1024 * 1024 * 1024 * 1024'
+    for: 1d
     labels:
       severity: ticket
 
