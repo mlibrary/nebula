@@ -187,3 +187,27 @@ groups:
           1 - rate(node_cpu_seconds_total{mode="idle"}[30s])
         )
       )
+  - record: datacenter_role:node_cpu_seconds:max_not_idle_mean2m
+    expr: >
+      max without(hostname, instance)(
+        avg without(cpu)(
+          sum without(mode)(
+            rate(node_cpu_seconds_total{mode!="idle"}[2m])
+          )
+        )
+      )
+  - record: backend_datacenter:haproxy_server_up:count_servers_per_backend
+    expr: >
+      count without(server)(
+        min without(hostname, instance, priority)(
+          haproxy_server_up
+        )
+      )
+
+  - record: backend_datacenter:haproxy_server_up:sum_servers_up_per_backend
+    expr: >
+      sum without(server)(
+        min without(hostname, instance, priority)(
+          haproxy_server_up
+        )
+      )
