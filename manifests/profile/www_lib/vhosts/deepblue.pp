@@ -76,7 +76,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
       },
       {
         comment      => 'Deep Blue Preservation redirect',
-        rewrite_rule => '^/static/about/deepbluepreservation.html https://www.lib.umich.edu/about-us/policies/digital-repository-services-digital-preservation-policy/registered-formats-and [R=permanent,L]'
+        rewrite_rule => '^/static/about/deepbluepreservation.html$ https://www.lib.umich.edu/about-us/policies/digital-repository-services-digital-preservation-policy/registered-formats-and [R=permanent,L]'
       },
     ],
 
