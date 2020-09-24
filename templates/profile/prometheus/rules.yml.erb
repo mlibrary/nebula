@@ -92,13 +92,6 @@ groups:
     for: 1h
     labels:
       severity: ticket
-  - alert: HAProxyBackendDown
-    annotations:
-      summary: '{{$labels.server}} isn''t responding to HAProxy'
-    expr: 'min without(backend, hostname, instance, priority)(haproxy_server_up) == 0'
-    for: 5m
-    labels:
-      severity: page
 
   # We like to keep at least 2T free at all times for deep blue data,
   # but their ingest process requires double the capacity of any files
