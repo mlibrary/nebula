@@ -16,24 +16,24 @@ class nebula::role::consul_server {
       source => $::ipaddress,
       state  => 'NEW',
       action => 'accept',
-    ;;
+    ;
 
     "Consul WAN RPC ${::hostname}":
       tag   => "${organization}_consul_wan_rpc",
       dport => 8300,
       proto => 'tcp',
-    ;;
+    ;
 
     "Consul WAN TCP gossip ${::hostname}":
       tag   => "${organization}_consul_wan_gossip",
       dport => 8302,
       proto => 'tcp',
-    ;;
+    ;
 
     "Consul WAN UDP gossip ${::hostname}":
       tag   => "${organization}_consul_wan_gossip",
       dport => 8302,
       proto => 'udp',
-    ;;
+    ;
   }
 }
