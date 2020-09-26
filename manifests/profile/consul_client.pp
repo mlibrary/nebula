@@ -18,4 +18,32 @@ class nebula::profile::consul_client (
       'source' => 'https://apt.releases.hashicorp.com/gpg',
     },
   }
+
+  Firewall <<| tag == "${::datacenter}_${organization}_consul_lan_gossip" |>>
+
+  @@firewall {
+    default:
+      source => $::ipaddress,
+      state  => 'NEW',
+      action => 'accept',
+    ;;
+
+    "Consul LAN RPC ${::hostname}":
+      tag   => "${::datacenter}_${organization}_consul_lan_rpc",
+      dport => 8300,
+      proto => 'tcp',
+    ;;
+
+    "Consul LAN TCP gossip ${::hostname}":
+      tag   => "${::datacenter}_${organization}_consul_lan_gossip",
+      dport => 8301,
+      proto => 'tcp',
+    ;;
+
+    "Consul LAN UDP gossip ${::hostname}":
+      tag   => "${::datacenter}_${organization}_consul_lan_gossip",
+      dport => 8301,
+      proto => 'udp',
+    ;;
+  }
 }
