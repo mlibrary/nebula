@@ -28,19 +28,19 @@ class nebula::profile::consul_client (
       action => 'accept',
     ;
 
-    "Consul LAN RPC ${::hostname}":
+    "020 Consul LAN RPC ${::hostname}":
       tag   => "${::datacenter}_${organization}_consul_lan_rpc",
       dport => 8300,
       proto => 'tcp',
     ;
 
-    "Consul LAN TCP gossip ${::hostname}":
+    "020 Consul LAN TCP gossip ${::hostname}":
       tag   => "${::datacenter}_${organization}_consul_lan_gossip",
       dport => 8301,
       proto => 'tcp',
     ;
 
-    "Consul LAN UDP gossip ${::hostname}":
+    "020 Consul LAN UDP gossip ${::hostname}":
       tag   => "${::datacenter}_${organization}_consul_lan_gossip",
       dport => 8301,
       proto => 'udp',
