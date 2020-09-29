@@ -57,7 +57,7 @@ end
             %w[nebula::role::chipmunk chipmunk],
             %w[nebula::role::app_host::standalone chipmunk],
             %w[nebula::role::app_host::hyrax chipmunk],
-            %w[nebula::role::clearinghouse chipmunk],
+            %w[nebula::role::clearinghouse clearinghouse],
             %w[nebula::role::deb_server deb_server],
             %w[nebula::role::deploy_host named_instances],
             %w[nebula::role::kubernetes kubernetes/first_cluster],

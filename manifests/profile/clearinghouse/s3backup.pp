@@ -10,10 +10,10 @@
 #   include nebula::profile::clearinghouse::s3backup
 
 class nebula::profile::clearinghouse::s3backup (
+  String $bucket,
   String $mail_recipient = lookup('nebula::automation_email'),
   String $clearinghouse_filesystem = '/clearinghouse',
   String $backup_path = 'clearinghouse',
-  String $bucket
 ) {
 
   ensure_packages(['awscli'])
@@ -25,7 +25,7 @@ class nebula::profile::clearinghouse::s3backup (
 
     'upload /clearinghouse to s3':
       command => "/usr/bin/aws s3 sync --delete --quiet ${clearinghouse_filesystem} ${bucket}/${backup_path}",
-      day     => 7,
+      weekday => 7,
       minute  => 21,
       hour    => 1
   }
