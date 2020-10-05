@@ -39,6 +39,17 @@ class nebula::profile::www_lib::vhosts::redirects(
     ],
   }
 
+  # Hosted by github pages. We are just redirecting there.
+  nebula::apache::redirect_vhost_https { 'heartofdarknessarchive.com':
+    target        => 'https://heartofdarknessarchive.org',
+    ssl_cn        => 'www.heartofdarknessarchive.com',
+    serveraliases => [
+      'heartofdarknessarchive.net',
+      'www.heartofdarknessarchive.com',
+      'www.heartofdarknessarchive.net'
+    ],
+  }
+
   nebula::apache::redirect_vhost_https { 'fulcrum.publishing.umich.edu':
     ssl_cn   => 'www.publishing.umich.edu',
     priority => '07',
@@ -109,13 +120,7 @@ class nebula::profile::www_lib::vhosts::redirects(
       '*.fulcrumscholar.com',
       '*.fulcrumscholar.net',
       '*.fulcrumservices.org',
-      '*.fulcrumservices.net',
-      '*.heartofdarknessarchive.com',
-      'heartofdarknessarchive.com',
-      '*.heartofdarknessarchive.org',
-      'heartofdarknessarchive.org',
-      '*.heartofdarknessarchive.net',
-      'heartofdarknessarchive.net',
+      '*.fulcrumservices.net'
     ],
   }
 
