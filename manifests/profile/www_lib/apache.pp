@@ -106,6 +106,7 @@ class nebula::profile::www_lib::apache (
       'www.press.umich.edu',
       'www.publishing.umich.edu',
       'www.theater-historiography.org',
+      'www.heartofdarknessarchive.com',
     ]:
   }
 
