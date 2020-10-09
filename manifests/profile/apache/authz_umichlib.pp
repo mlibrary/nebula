@@ -32,11 +32,12 @@
 class nebula::profile::apache::authz_umichlib (
   String $dbd_params,
   Hash[String, Array[String]] $oracle_servers,
-  String $oracle_home,
+  String $oracle_home = '/etc/oracle',
   String $oracle_sid = 'orcl',
   Integer $oracle_port = 1521,
 ) {
 
+  include apache
   include apache::mod::dbd
 
   # Note: Packages for modules must be declared in the mod stanzas and
@@ -87,7 +88,7 @@ class nebula::profile::apache::authz_umichlib (
   file {
     [
       $oracle_home,
-      "${oracle_home}/network/",
+      "${oracle_home}/network",
       "${oracle_home}/network/admin",
     ]:
     ensure => 'directory',
