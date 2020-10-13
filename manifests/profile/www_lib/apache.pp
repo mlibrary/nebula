@@ -73,7 +73,10 @@ class nebula::profile::www_lib::apache (
     php_version  => '5.6'
   }
 
-  include apache::mod::proxy
+  class { 'apache::mod::proxy':
+    proxy_timeout => '300',
+  }
+
   include apache::mod::proxy_fcgi
   include apache::mod::proxy_http
   include apache::mod::reqtimeout
