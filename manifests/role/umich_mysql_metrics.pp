@@ -2,9 +2,11 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Frobscottle
-class nebula::role::app_host::datamart {
+# Umich Role with prometheus mysql exporter
+#
+# @example
+#   include nebula::role::umich
+class nebula::role::umich_mysql_metrics {
   include nebula::role::umich
-  include nebula::profile::ruby
   include nebula::profile::prometheus::exporter::mysql
 }

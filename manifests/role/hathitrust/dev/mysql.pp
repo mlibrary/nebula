@@ -8,4 +8,5 @@
 #   include nebula::role::hathitrust::dev::mysql
 class nebula::role::hathitrust::dev::mysql {
   include nebula::role::hathitrust::dev
+  include nebula::profile::prometheus::exporter::mysql
 }
