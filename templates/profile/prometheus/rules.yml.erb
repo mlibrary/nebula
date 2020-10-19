@@ -129,7 +129,7 @@ groups:
       (
         (
           avg_over_time(
-            node_filesystem_size[1m]
+            node_filesystem_size{mountpoint!="/usr", mountpoint!="/aspace", fstype!="afs", fstype!="nfs", fstype!="tmpfs", fstype!="cifs", device!="rootfs"}[1m]
           ) - avg_over_time(
             node_filesystem_avail[1m]
           )
