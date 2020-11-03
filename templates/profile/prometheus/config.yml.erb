@@ -30,6 +30,9 @@ scrape_configs:
 - job_name: haproxy
   file_sd_configs:
   - files: [ haproxy.yml ]
+- job_name: mysql
+  file_sd_configs:
+  - files: [ mysql.yml ]
 <% unless @static_wmi_nodes.empty? -%>
 - job_name: wmi
   static_configs:

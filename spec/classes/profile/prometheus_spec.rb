@@ -21,6 +21,7 @@ describe 'nebula::profile::prometheus' do
                          '/etc/prometheus/rules.yml:/etc/prometheus/rules.yml',
                          '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
                          '/etc/prometheus/haproxy.yml:/etc/prometheus/haproxy.yml',
+                         '/etc/prometheus/mysql.yml:/etc/prometheus/mysql.yml',
                          '/etc/prometheus/tls:/tls',
                          '/opt/prometheus:/prometheus'])
           .that_requires('File[/opt/prometheus]')
@@ -66,6 +67,12 @@ describe 'nebula::profile::prometheus' do
 
       it do
         is_expected.to contain_concat_file('/etc/prometheus/haproxy.yml')
+          .that_notifies('Docker::Run[prometheus]')
+          .that_requires('File[/etc/prometheus]')
+      end
+
+      it do
+        is_expected.to contain_concat_file('/etc/prometheus/mysql.yml')
           .that_notifies('Docker::Run[prometheus]')
           .that_requires('File[/etc/prometheus]')
       end

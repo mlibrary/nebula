@@ -2,9 +2,11 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Frobscottle
-class nebula::role::app_host::datamart {
-  include nebula::role::umich
-  include nebula::profile::ruby
+# Minimal aws with prometheus mysql exporter
+#
+# @example
+#   include nebula::role::aws
+class nebula::role::aws::mysql_metrics {
+  include nebula::role::aws
   include nebula::profile::prometheus::exporter::mysql
 }
