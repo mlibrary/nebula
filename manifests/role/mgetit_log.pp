@@ -12,5 +12,4 @@ class nebula::role::mgetit_log {
   include nebula::profile::named_instances
   include nebula::profile::nodejs
   include nebula::profile::php73
-  include nebula::profile::prometheus::exporter::mysql
 }
