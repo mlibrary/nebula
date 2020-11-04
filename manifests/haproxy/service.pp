@@ -64,11 +64,11 @@ define nebula::haproxy::service(
   $nonempty_whitelists = $whitelists.filter |$whitelist,$exemptions| { $exemptions.length > 0 }
 
   if $max_requests_per_sec > 0 {
-    file { "/etc/haproxy/errors/${service}509.http":
+    file { "/etc/haproxy/errors/${service}429.http":
       ensure => 'present',
       mode   => '0644',
       notify => Service['haproxy'],
-      source => "https://${http_files}/errorfiles/${service}509.http"
+      source => "https://${http_files}/errorfiles/${service}429.http"
     }
   }
 
