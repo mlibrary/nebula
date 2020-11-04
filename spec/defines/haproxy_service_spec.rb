@@ -119,15 +119,15 @@ describe 'nebula::haproxy::service' do
                 http-request set-var(req.http_rate) src_http_req_rate(svc1-dc1-http-back)
                 http-request set-var(req.https_rate) src_http_req_rate(svc1-dc1-https-back)
                 acl http_req_rate_abuse var(req.http_rate),add(req.https_rate) gt 400
-                errorfile 403 /etc/haproxy/errors/svc1509.http
+                errorfile 403 /etc/haproxy/errors/svc1429.http
                 http-request deny deny_status 403 if http_req_rate_abuse
               EOT
             )
           end
 
           it do
-            is_expected.to contain_file('/etc/haproxy/errors/svc1509.http')
-              .with_source('https://default.http_files.invalid/errorfiles/svc1509.http')
+            is_expected.to contain_file('/etc/haproxy/errors/svc1429.http')
+              .with_source('https://default.http_files.invalid/errorfiles/svc1429.http')
           end
 
           context 'with no whitelists' do
