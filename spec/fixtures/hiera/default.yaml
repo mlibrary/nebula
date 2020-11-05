@@ -166,3 +166,8 @@ umich::networks::private_blocks:
 - 127.0.0.0/8
 - 172.16.0.0/12
 - 192.168.0.0/16
+
+nebula::profile::prometheus::exporter::node::default_datacenter: default_scraper_datacenter
+nebula::profile::prometheus::exporter::node::covered_datacenters:
+- default_scraper_datacenter
+- a_different_scraped_datacenter

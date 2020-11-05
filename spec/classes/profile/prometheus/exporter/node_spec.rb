@@ -65,7 +65,7 @@ describe 'nebula::profile::prometheus::exporter::node' do
 
       it "exports itself to the default datacenter's service discovery" do
         expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
-          .with_tag('default_prometheus_node_service_list')
+          .with_tag('default_scraper_datacenter_prometheus_node_service_list')
           .with_target('/etc/prometheus/nodes.yml')
           .with_content(%r{'#{facts[:ipaddress]}:9100'})
       end
