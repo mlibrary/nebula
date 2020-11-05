@@ -31,11 +31,24 @@ describe 'nebula::profile::prometheus::exporter::mysql' do
           .that_notifies('Service[prometheus-mysqld-exporter]')
       end
 
-      it "exports itself to the default datacenter's service discovery" do
-        expect(exported_resources).to contain_concat_fragment("prometheus mysql service #{facts[:hostname]}")
-          .with_tag('mydatacenter_prometheus_mysql_service_list')
-          .with_target('/etc/prometheus/mysql.yml')
-          .with_content(%r{'#{facts[:ipaddress]}:9104'})
+      context 'with a datacenter set to mydatacenter' do
+        let(:facts) { os_facts.merge(datacenter: 'mydatacenter') }
+
+        it "exports itself to the default datacenter's service discovery" do
+          expect(exported_resources).to contain_concat_fragment("prometheus mysql service #{facts[:hostname]}")
+            .with_tag('default_scraper_datacenter_prometheus_mysql_service_list')
+            .with_target('/etc/prometheus/mysql.yml')
+            .with_content(%r{'#{facts[:ipaddress]}:9104'})
+        end
+      end
+
+      context 'with a datacenter set to a_different_scraped_datacenter' do
+        let(:facts) { os_facts.merge(datacenter: 'a_different_scraped_datacenter') }
+
+        it "exports itself to its datacenter's scraper" do
+          expect(exported_resources).to contain_concat_fragment("prometheus mysql service #{facts[:hostname]}")
+            .with_tag('a_different_scraped_datacenter_prometheus_mysql_service_list')
+        end
       end
     end
   end
