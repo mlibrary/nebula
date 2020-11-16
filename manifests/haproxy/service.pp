@@ -32,6 +32,19 @@
 #   haproxy "acl -f" functionality; see
 #   https://cbonte.github.io/haproxy-dconv/1.7/configuration.html#7
 #
+# @param dynamic_weighting Use dynamic weighting for servers in the pool based
+# on checking the load in each member server. Weight is set to the inverse
+# proportion of the maximum load plus the smoothing factor.
+#
+# For example, if server A has a load of 5, server B has a load of 2, and the
+# smoothing factor is set to 2, then the weights would be computed as:
+#
+# server A = 1/2 * 5 + 2 = 4.5; rounded up, 5
+# server B = 1/5 * 5 + 2 = 3
+#
+# @param dynamic_weight_smoothing This value is added to the weight for each
+# backend server regardless of server load to help "smooth" the effect of the weighting
+#
 # @example
 #   nebula::haproxy::service { 'www-whatever':
 #     floating_ip          => '1.2.3.4'
@@ -54,7 +67,9 @@ define nebula::haproxy::service(
   Integer          $max_requests_per_sec = 0,
   Integer          $max_requests_burst = 0,
   Hash             $whitelists = {},
-  Boolean          $custom_503 = false
+  Boolean          $custom_503 = false,
+  Boolean          $dynamic_weighting = false,
+  Integer          $dynamic_weight_smoothing = 2
 ) {
 
   include nebula::profile::haproxy::prereqs
@@ -78,6 +93,15 @@ define nebula::haproxy::service(
       mode   => '0644',
       notify => Service['haproxy'],
       source => "https://${http_files}/errorfiles/${service}503.http"
+    }
+  }
+
+  if $dynamic_weighting {
+    cron { "dynamic weighting for ${service}":
+      command     => "ruby /usr/local/bin/set_weights.rb ${::datacenter} ${service}",
+      user        => lookup('nebula::profile::haproxy::monitoring_user')['name'],
+      minute      => '*/5',
+      environment => ["HAPROXY_SMOOTHING_FACTOR=${dynamic_weight_smoothing}"]
     }
   }
 

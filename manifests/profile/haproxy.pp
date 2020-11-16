@@ -60,6 +60,25 @@ class nebula::profile::haproxy(
     require => [Package['haproxy'], Package['haproxyctl']]
   }
 
+  file { "${monitoring_user['home']}/.ssh/id_ecdsa":
+    source => "puppet:///ssh-keys/${monitoring_user['name']}/id_ecdsa",
+    mode   => '0600',
+    owner  => $monitoring_user['name'],
+    group  => 'haproxy'
+  }
+  file { "${monitoring_user['home']}/.ssh/id_ecdsa.pub":
+    source => "puppet:///ssh-keys/${monitoring_user['name']}/id_ecdsa.pub",
+    mode   => '0644',
+    owner  => $monitoring_user['name'],
+    group  => 'haproxy'
+  }
+  $http_files = lookup('nebula::http_files')
+  file { '/usr/local/bin/set_weights.rb':
+    ensure => 'present',
+    mode   => '0755',
+    source => "https://${http_files}/ae-utils/bins/set_weights.rb"
+  }
+
   package { 'keepalived': }
   package { 'ipset': }
 

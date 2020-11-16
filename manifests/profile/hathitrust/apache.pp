@@ -12,7 +12,18 @@ class nebula::profile::hathitrust::apache (
   String $prefix = '',
   String $domain = 'hathitrust.org',
   String $sdrroot = '/htapps/babel',
+  String $monitoring_user = 'haproxyctl',
+  Optional[Hash] $monitoring_pubkey = undef
 ) {
+
+
+  if($monitoring_pubkey) {
+    nebula::authzd_user { $monitoring_user:
+      gid  => 'nogroup',
+      home => '/nonexistent',
+      key  => $monitoring_pubkey
+    }
+  }
 
   ensure_packages(['bsd-mailx'])
 

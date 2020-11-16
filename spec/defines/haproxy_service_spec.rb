@@ -227,6 +227,19 @@ describe 'nebula::haproxy::service' do
             end
           end
         end
+
+        context 'with dynamic weighting' do
+          let(:params) do
+            super().merge(dynamic_weighting: true)
+          end
+
+          it do
+            is_expected.to contain_cron('dynamic weighting for svc1')
+              .with_command('ruby /usr/local/bin/set_weights.rb dc1 svc1')
+              .with_user('haproxyctl')
+              .with_environment(['HAPROXY_SMOOTHING_FACTOR=2'])
+          end
+        end
       end
 
       describe 'http service config' do
