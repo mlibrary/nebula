@@ -299,6 +299,15 @@ describe 'nebula::profile::haproxy' do
             .that_notifies('Service[haproxy]')
         end
       end
+
+      describe 'server monitoring / dynamic weighting' do
+        it 'includes the private key' do
+          is_expected.to contain_file('/var/haproxyctl/.ssh/id_ecdsa')
+        end
+        it 'includes the monitoring script' do
+          is_expected.to contain_file('/usr/local/bin/set_weights.rb')
+        end
+      end
     end
   end
 end
