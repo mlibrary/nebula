@@ -235,7 +235,7 @@ describe 'nebula::haproxy::service' do
 
           it do
             is_expected.to contain_cron('dynamic weighting for svc1')
-              .with_command('ruby /usr/local/bin/set_weights.rb dc1 svc1')
+              .with_command('/usr/bin/ruby /usr/local/bin/set_weights.rb dc1 svc1 > /dev/null 2>&1')
               .with_user('haproxyctl')
               .with_environment(['HAPROXY_SMOOTHING_FACTOR=2'])
           end

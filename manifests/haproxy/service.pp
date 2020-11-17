@@ -98,7 +98,7 @@ define nebula::haproxy::service(
 
   if $dynamic_weighting {
     cron { "dynamic weighting for ${service}":
-      command     => "ruby /usr/local/bin/set_weights.rb ${::datacenter} ${service}",
+      command     => "/usr/bin/ruby /usr/local/bin/set_weights.rb ${::datacenter} ${service} > /dev/null 2>&1",
       user        => lookup('nebula::profile::haproxy::monitoring_user')['name'],
       minute      => '*/5',
       environment => ["HAPROXY_SMOOTHING_FACTOR=${dynamic_weight_smoothing}"]
