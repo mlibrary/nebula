@@ -105,6 +105,16 @@ groups:
     labels:
       severity: ticket
 
+  # This doesn't appear to grow fast, so an 100G threshold should give
+  # plenty of time to address any problems.
+  - alert: HTDevStoragePressure
+    annotations:
+      summary: 'htdev ({{$labels.hostname}}:{{$labels.mountpoint}}) has less than 100G of free space'
+    expr: 'node_filesystem_avail_bytes{device=~"htdev.value.storage.umich.edu:/htdev.*"} < 100 * 1024 * 1024 * 1024'
+    for: 1d
+    labels:
+      severity: ticket
+
   # These are legacy alerts that can be removed when RHEL5 is gone.
   - alert: DiskPressure
     expr: >
