@@ -57,7 +57,7 @@ groups:
         node_filesystem_avail_bytes{mountpoint!="/aspace", device!~".*/aspace", fstype!="afs", fstype!="tmpfs", device!="rootfs"}[1d],
         4 * 60 * 60 * 24
       ) < 0
-    for: 12h
+    for: 18h
     labels:
       severity: ticket
   - alert: DiskAboutToFillUp
@@ -68,7 +68,7 @@ groups:
         node_filesystem_avail_bytes{mountpoint!="/aspace", device!~".*/aspace", fstype!="afs", fstype!="tmpfs", device!="rootfs"}[1h],
         4 * 60 * 60
       ) < 0
-    for: 30m
+    for: 45m
     labels:
       severity: page
   - alert: DiskPressure
