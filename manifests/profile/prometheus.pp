@@ -23,6 +23,7 @@ class nebula::profile::prometheus (
   String $version = 'latest',
 ) {
   include nebula::profile::docker
+  $hostname = $::hostname
 
   docker::run { 'prometheus':
     image            => "prom/prometheus:${version}",

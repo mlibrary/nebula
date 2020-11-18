@@ -3,7 +3,14 @@
     Due to shell scaping, to pass backslashes for regexes, you need to double
     them (\\d for \d). If running under systemd, you need to double them again
     (\\\\d to mean \d), and escape newlines too. -%>
-ARGS="--haproxy.scrape-uri='http://localhost:8001/stats/;csv'"
+<%# This is the default list of metric fields with these additions:
+    12. Request errors
+    48. Number of http requests received
+    58. Average queue time
+    59. Average connect time
+    60. Average response time
+    61. Average total session time -%>
+ARGS="--haproxy.scrape-uri='http://localhost:8001/stats/;csv' --haproxy.server-metric-fields='2,3,4,5,6,7,8,9,12,13,14,15,16,17,18,21,24,30,33,35,38,39,40,41,42,43,44,48,49,50,58,59,60,61'"
 
 <%#
 usage: haproxy_exporter [<flags>]
