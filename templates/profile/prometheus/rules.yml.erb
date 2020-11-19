@@ -54,10 +54,15 @@ groups:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} will fill up in a few days.'
     expr: >
       predict_linear(
-        node_filesystem_avail_bytes{mountpoint!="/aspace", device!~".*/aspace", fstype!="afs", fstype!="tmpfs", device!="rootfs"}[1d],
+        node_filesystem_avail_bytes{mountpoint!="/aspace",
+                                    device!~".*/aspace",
+                                    mountpoint!="/var/lockss",
+                                    fstype!="afs",
+                                    fstype!="tmpfs",
+                                    device!="rootfs"}[1d],
         4 * 60 * 60 * 24
       ) < 0
-    for: 18h
+    for: 12h
     labels:
       severity: ticket
   - alert: DiskAboutToFillUp
@@ -65,12 +70,17 @@ groups:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is filling up fast.'
     expr: >
       predict_linear(
-        node_filesystem_avail_bytes{mountpoint!="/aspace", device!~".*/aspace", fstype!="afs", fstype!="tmpfs", device!="rootfs"}[1h],
+        node_filesystem_avail_bytes{mountpoint!="/aspace",
+                                    device!~".*/aspace",
+                                    mountpoint!="/var/lockss",
+                                    fstype!="afs",
+                                    fstype!="tmpfs",
+                                    device!="rootfs"}[1h],
         4 * 60 * 60
       ) < 0
-    for: 45m
+    for: 30m
     labels:
-      severity: page
+      severity: ticket
   - alert: DiskPressure
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
