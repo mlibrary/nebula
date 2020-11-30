@@ -135,12 +135,6 @@ stout:
       hour: 2
       minute: 8
       command: '/www/www.lib/cron/bin/readership-map-harvester'
-    'LTIG/MPortfolio':
-      user: libadm
-      environment: ['MAILTO=libwebsystems@umich.edu']
-      hour: [0, 3, 6, 9, 12, 15, 18, 21]
-      minute: 0
-      command: '/usr/bin/drush -r /www/www.mportfolio/web -l http://www.mportfolio.umich.edu cron >/dev/null 2>&1'
 # All following commands have user libadm and environment
 # ['MAILTO=libwebsystems@umich.edu'], and they are on stout. Convert the
 # given five numbers to minute/hour/day/month/weekday, and all that's
@@ -216,7 +210,6 @@ stout:
 58 3 * * * /www/www.lib/cron/bin/d8-ptf-export-database > /www/www.lib/cron/logs/d8-ptf-export-database.log 2>&1
 03 5 * * * /www/www.lib/cron/bin/d8-locations-export-database > /www/www.lib/cron/logs/d8-locations-export-database.log 2>&1
 31 7 * * * /www/www.lib/cron/bin/d7-openmich-export-database > /www/www.lib/cron/logs/d7-openmich-export-database.log 2>&1
-36 7 * * * /www/www.lib/cron/bin/d7-mportfolio-export-database > /www/www.lib/cron/logs/d7-mportfolio-export-database.log 2>&1
 
 #Cron for staff.lib/textbooks
 0 4 * * 2,4 /www/www.lib/cron/bin/update-textbooks 2 > /www/www.lib/cron/logs/textbooks-nightly.log 2>&1
