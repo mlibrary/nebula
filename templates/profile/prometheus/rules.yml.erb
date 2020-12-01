@@ -154,43 +154,6 @@ groups:
     labels:
       severity: ticket
 
-  # These are legacy alerts that can be removed when RHEL5 is gone.
-  - alert: DiskPressure
-    expr: >
-      (
-        (
-          avg_over_time(
-            node_filesystem_size{mountpoint!="/usr", mountpoint!="/aspace", fstype!="afs", fstype!="nfs", fstype!="tmpfs", fstype!="cifs", device!="rootfs"}[1m]
-          ) - avg_over_time(
-            node_filesystem_avail[1m]
-          )
-        ) / avg_over_time(
-          node_filesystem_size[1m]
-        )
-      ) > 0.95
-    for: 30m
-    labels:
-      severity: ticket
-    annotations:
-      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
-  - alert: DiskFull
-    expr: >
-      (
-        (
-          avg_over_time(
-            node_filesystem_size{mountpoint!="/usr", mountpoint!="/aspace", fstype!="afs", fstype!="nfs", fstype!="tmpfs", fstype!="cifs", device!="rootfs"}[1m]
-          ) - avg_over_time(
-            node_filesystem_avail[1m]
-          )
-        ) / avg_over_time(
-          node_filesystem_size[1m]
-        )
-      ) > 0.99
-    for: 5m
-    labels:
-      severity: page
-    annotations:
-      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
   - alert: DarkBlueFillingUp
     expr: >
       node_filesystem_avail_bytes{device="<%= @rules_variables['darkblue_device'] %>"} < (1 * 1024 * 1024 * 1024 * 1024)
