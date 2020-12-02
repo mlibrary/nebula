@@ -64,7 +64,7 @@ groups:
       ) < 0
     for: 12h
     labels:
-      severity: ticket
+      severity: info
   - alert: DiskAboutToFillUp
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is filling up fast.'
@@ -80,7 +80,7 @@ groups:
       ) < 0
     for: 30m
     labels:
-      severity: ticket
+      severity: info
   - alert: DiskPressure
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
