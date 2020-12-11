@@ -18,7 +18,7 @@ class nebula::profile::tools_lib::jdk (
 ) {
   $url = "https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk${version_major}-${version_minor}/OpenJDK8U-jdk_x64_linux_hotspot_${version_major}${version_minor}.tar.gz"
 
-  java::oracle { 'jdk8':
+  java::download { 'jdk8':
     ensure        => 'present',
     java_se       => 'jdk',
     version_major => $version_major,
@@ -39,7 +39,7 @@ class nebula::profile::tools_lib::jdk (
     ensure      => latest,
     require     => [
       File[$cert_file],
-      Java::Oracle['jdk8'],
+      Java::Download['jdk8'],
     ],
     name        => $cert_name,
     certificate => $cert_file,

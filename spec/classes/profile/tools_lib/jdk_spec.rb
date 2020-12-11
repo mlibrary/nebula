@@ -13,7 +13,7 @@ describe 'nebula::profile::tools_lib::jdk' do
 
       context 'with default attributes' do
         it 'installs from AdoptOpenJDK releases' do
-          is_expected.to contain_java__oracle('jdk8')
+          is_expected.to contain_java__download('jdk8')
             .with_url(%r{^https://github.com/AdoptOpenJDK/})
         end
       end

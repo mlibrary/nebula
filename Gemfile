@@ -12,7 +12,7 @@ group :development do
   gem "faker"
 end
 
-gem 'puppet', '~> 5.5'
+gem 'puppet', '~> 6.19'
 gem 'puppet-strings'
 gem 'semantic_puppet'
 gem 'yard', '>= 0.9.20'

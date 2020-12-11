@@ -27,7 +27,7 @@ class nebula::profile::ruby (
   String $manage_blacklist = '^jruby-(1\.7|9\.0)\.',
 ) {
 
-  package {[
+  ensure_packages([
     'autoconf',
     'build-essential',
     'bison',
@@ -39,7 +39,7 @@ class nebula::profile::ruby (
     'libncurses5-dev',
     'libffi-dev',
     'libgdbm-dev'
-  ]:}
+  ])
 
   if $::os['release']['major'] == '8' {
     package { 'libmysqlclient-dev': }
