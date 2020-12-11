@@ -1,0 +1,17 @@
+name: Run CI
+
+on:
+  push:
+    branches: [$default-branch]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run tests
+      run: |
+        docker-compose --file docker-compose.test.yml build
+        docker-compose --file docker-compose.test.yml run lint
+        docker-compose --file docker-compose.test.yml run specs

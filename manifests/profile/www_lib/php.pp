@@ -118,8 +118,41 @@ class nebula::profile::www_lib::php (
     pear         => true,  # We're using this for PEAR, so set to true
     phpunit      => true,  # Unsure whether this should be system or app-level
 
-    # Disable default 'www' pool creation; it is created below manually.
-    fpm_pools    => {},
+    # Configure FPM default pool ('www')
+    # 
+    # The 'www' pool is hard-coded in the php module so can't be created here.
+    #
+    # The php::fpm::pool class is intended to be used to create other pools only.
+    #
+    # Options to circumvent the php module design is to either:
+    #   1. Adjust the ::php { fpm_pools => {settings} } here.
+    #   2. Adjust the settings in hiera as:
+    #     - php::params::fpm_tools:
+    #         www:
+    #   3. Set fpm_pools => {} to disable default 'www' creation and then 
+    #      create it manually using php::fpm::pool class like any pool. This 
+    #      is the option we are choosing.
+    #
+    #
+    fpm_pools    => {
+      'www' => {
+        'user'                      => 'nobody',
+        'group'                     => 'nogroup',
+        'listen'                    => "/run/php/php${default_php_version}-fpm.sock",
+        'listen_owner'              => 'nobody',
+        'listen_group'              => 'nogroup',
+        'pm'                        => 'dynamic',
+        'pm_max_children'           => 10,
+        'pm_start_servers'          => 2,
+        'pm_min_spare_servers'      => 1,
+        'pm_max_spare_servers'      => 3,
+
+        # Default PHP puppet module settings from fpm_pools
+        'catch_workers_output'      => 'no',
+        'pm_max_requests'           => 0,
+        'request_terminate_timeout' => 0,
+      }
+    },
 
     # Some of these may only be needed for mirlyn, so if/when the mirlyn API is
     # removed, we should be able to remove these
@@ -151,40 +184,6 @@ class nebula::profile::www_lib::php (
       'XML_Serializer'        => { ensure => 'beta', package_prefix => '', provider => 'pear' },
       # XML_Util
     },
-  }
-
-  # Configure FPM default pool ('www')
-  # 
-  # The 'www' pool is hard-coded in the php module so can't be created here.
-  #
-  # The php::fpm::pool class is intended to be used to create other pools only.
-  #
-  # Options to circumvent the php module design is to either:
-  #   1. Adjust the ::php { fpm_pools => {settings} } here.
-  #   2. Adjust the settings in hiera as:
-  #     - php::params::fpm_tools:
-  #         www:
-  #   3. Set fpm_pools => {} to disable default 'www' creation and then 
-  #      create it manually using php::fpm::pool class like any pool. This 
-  #      is the option we are choosing.
-  #
-  #
-  php::fpm::pool { 'www':
-    user                      => 'nobody',
-    group                     => 'nogroup',
-    listen                    => "/run/php/php${default_php_version}-fpm.sock",
-    listen_owner              => 'nobody',
-    listen_group              => 'nogroup',
-    pm                        => 'dynamic',
-    pm_max_children           => 10,
-    pm_start_servers          => 2,
-    pm_min_spare_servers      => 1,
-    pm_max_spare_servers      => 3,
-
-    # Default PHP puppet module settings from fpm_pools
-    catch_workers_output      => 'no',
-    pm_max_requests           => 0,
-    request_terminate_timeout => 0,
   }
 
   # PHP 5.6 defaults to using www-data, while we need to use nobody:nogroup for sockets
