@@ -125,7 +125,7 @@ class nebula::profile::www_lib::perl () {
     'libyaml-syck-perl',
   ])
 
-  -> nebula::cpan { [
+  nebula::cpan { [
     'CGI',
     'Dancer::Template::Haml',
     'Digest::SHA1',
@@ -148,6 +148,9 @@ class nebula::profile::www_lib::perl () {
     'UNIVERSAL::isa',
     'WebService::Solr::Tiny']:
   }
+
+  # Install all software before adding any cpan modules.
+  Package <| |> -> Nebula::Cpan <| |>
 
   file { '/etc/profile.d/perl-include.sh':
     ensure  => 'file',
