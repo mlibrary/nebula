@@ -9,10 +9,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-    - name: Clone latest repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
     - name: Run tests
       run: |
         docker-compose --file docker-compose.test.yml build
