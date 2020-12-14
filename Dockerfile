@@ -20,4 +20,4 @@ RUN bundle install
 
 COPY --chown=$UID:$GID . ${APP_HOME}
 
-CMD ["bundle exec rake spec"]
+CMD ["bundle", "exec", "rake", "spec"]
