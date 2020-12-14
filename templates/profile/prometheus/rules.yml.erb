@@ -59,7 +59,7 @@ groups:
                                     mountpoint!="/var/lockss",
                                     fstype!="afs",
                                     fstype!="tmpfs",
-                                    device!="rootfs"}[1d],
+                                    device!="rootfs"}[4h],
         4 * 60 * 60 * 24
       ) < 0
     for: 12h
@@ -75,7 +75,7 @@ groups:
                                     mountpoint!="/var/lockss",
                                     fstype!="afs",
                                     fstype!="tmpfs",
-                                    device!="rootfs"}[1h],
+                                    device!="rootfs"}[10m],
         4 * 60 * 60
       ) < 0
     for: 30m
