@@ -10,7 +10,7 @@ RUN useradd -m -d $APP_HOME -u $UID -g $GID -o -s /bin/bash $UNAME
 RUN mkdir -p $GEM_HOME && chown $UID:$GID $GEM_HOME
 
 USER $UNAME
-RUN gem install 'bundler:~>1.17.3' 'bundler:~>2.0.2'
+RUN gem install 'bundler:~>1.17.3' 'bundler:~>2.1.4'
 COPY --chown=$UID:$GID Gemfile* ${APP_HOME}/
 ENV BUNDLE_GEMFILE=${APP_HOME}/Gemfile
 ENV BUNDLE_PATH=${GEM_HOME}

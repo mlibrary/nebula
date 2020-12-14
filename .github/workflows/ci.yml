@@ -9,9 +9,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Clone latest repository
+      uses: actions/checkout@v2
     - name: Run tests
       run: |
-        docker-compose --file docker-compose.test.yml build
-        docker-compose --file docker-compose.test.yml run lint
-        docker-compose --file docker-compose.test.yml run specs
+        docker run `docker build -q .` bundle exec rake rubocop
+        docker run `docker build -q .` bundle exec rake syntax lint
+        docker run `docker build -q .` bundle exec rake metadata_lint
+        docker run `docker build -q .` bundle exec rake spec
