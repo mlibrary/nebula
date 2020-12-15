@@ -13,14 +13,15 @@ class nebula::profile::hathitrust::dependencies () {
 
   ensure_packages (
     [
+      'awscli',
       'git',
+      'kakadu',
       'libjs-jquery',
       'libxerces-c-samples',
+      'netpbm-sf',
+      'rsync'
       'unzip',
       'zip',
-      'netpbm-sf',
-      'kakadu',
-      'rsync'
     ]
   )
 
