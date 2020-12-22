@@ -110,4 +110,16 @@ class nebula::profile::www_lib::vhosts::press (
       ProxyPassReverse / https://${bind}
     | EOT
   }
+
+  cron { 'check press fcgi':
+    user    => 'root',
+    command => '/usr/local/bin/check_press',
+    hour    => '*',
+    minute  => '*',
+  }
+
+  file { '/usr/local/bin/check_press':
+    mode    => '0755',
+    content => template('nebula/profile/www_lib/check_press.sh.erb'),
+  }
 }
