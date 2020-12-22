@@ -1,0 +1,233 @@
+<%# Shebang and $PUSHGATEWAY are defined by concat fragments -%>
+RUN_COMMAND=true
+PROG="$0"
+USAGE1='[-nf] -j JOB -b START_TIMESTAMP'
+USAGE2='[-nf] -j JOB -s STEP [-s STEP ...]'
+MY_INSTANCE='<%= @ipaddress %>:9100'
+MY_HOSTNAME='<%= @hostname %>'
+MY_DATACENTER='<%= @datacenter %>'
+MY_ROLE='<%= @role %>'
+JOB=''
+END_TIMESTAMP="`date '+%s'`"
+SUCCESS='true'
+START_TIMESTAMP=''
+STEPS=''
+
+errorout() {
+  echo "usage: ${PROG} -h" >&2
+  echo "  or   ${PROG} ${USAGE1}" >&2
+  echo "  or   ${PROG} ${USAGE2}" >&2
+  [ -n "$1" ] && echo "${PROG}: error: $@" >&2
+  exit 1
+}
+
+printhelp() {
+  cat <<EOF
+usage: ${PROG} $USAGE1
+  or   ${PROG} $USAGE2
+
+Push metrics to a prometheus pushgateway.
+
+The easiest way to use this is to add this line at the start of the job:
+
+    START_TIMESTAMP=\`date '+%s'\`
+
+Then, at the end, on success, run this (replace JOB_NAME):
+
+    ${PROG} -j JOB_NAME -b "\$START_TIMESTAMP"
+
+On failure, don't do anything.
+
+If you want to measure the times taken by multiple steps, it will take
+more work on your part, as you'll have to keep track of how long each
+step takes. If for example, your setup phase takes 0:03, your main phase
+takes 10:00, and your cleanup phase takes 0:20, you might finish with:
+
+    ${PROG} -j JOB_NAME \\
+        -s setup=3 \\
+        -s main=600 \\
+        -s cleanup=20
+
+The easiest way to handle failed jobs is to simply do nothing; the
+alertmanager will notice when the last_success metric hasn't been
+updated in a while. However, if you have good reason to want duration
+metrics on failed jobs, you can pass -f to mark it as a failure.
+
+required arguments:
+ -j JOB                 Name of the cronjob; will set the {job="JOB"} label
+
+optional arguments:
+ -h                     Display this help message and exit
+ -n                     Print what would be run; do not execute
+ -f                     Job failed (don't update last_success timestamp)
+ -b START_TIMESTAMP     Time the cronjob started
+ -s STEP_NAME=SECONDS   Number of seconds a step took
+EOF
+}
+
+while getopts ':hfnj:b:s:' opt; do
+  case "$opt" in
+    h)
+      printhelp
+      exit 0
+      ;;
+
+    f)
+      SUCCESS=false
+      ;;
+
+    n)
+      RUN_COMMAND=false
+      ;;
+
+    j)
+      JOB="$OPTARG"
+      ;;
+
+    b)
+      START_TIMESTAMP="$OPTARG"
+      ;;
+
+    s)
+      if [ -z "$OPTARG" ]; then
+        errorout "invalid step: \`'"
+      fi
+
+      if [ -z "$STEPS" ]; then
+        STEPS=()
+      fi
+
+      STEPS=("${STEPS[@]}" "$OPTARG")
+      ;;
+
+    ?)
+      errorout "unrecognized argument: \`-$opt'"
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+main() {
+  validate_arguments
+  set_metrics
+  set_push_url
+  push_metrics
+}
+
+validate_arguments() {
+  assert_job_is_defined
+
+  if start_timestamp_is_set; then
+    assert_no_steps_are_set
+
+  elif any_steps_are_set; then
+    validate_steps
+
+  else
+    errorout "expected -b or at least one -s"
+  fi
+}
+
+assert_job_is_defined() {
+  if [ -z "$JOB" ]; then
+    errorout "expected -j"
+  fi
+}
+
+start_timestamp_is_set() {
+  [ -n "$START_TIMESTAMP" ]
+}
+
+assert_no_steps_are_set() {
+  if any_steps_are_set; then
+    errorout "use -s XOR -b, not both"
+  fi
+}
+
+any_steps_are_set() {
+  [ -n "$STEPS" ]
+}
+
+validate_steps() {
+  for step in "${STEPS[@]}"; do
+    validate_step "$step"
+  done
+}
+
+validate_step() {
+  # Steps should be abcdefg=1234 or abcdefg=1234.5678
+  local empty="`echo "$1" | sed -e 's/^[^=]\+=\([0-9]\+\.\)\?[0-9]\+$//'`"
+  if [ -n "$empty" ]; then
+    errorout "invalid step: \`$1'"
+  fi
+}
+
+set_metrics() {
+  set_duration
+  METRICS="`print_all_metrics`"
+}
+
+set_duration() {
+  if [ -n "$START_TIMESTAMP" ]; then
+    DURATION="${JOB}_duration_seconds $((END_TIMESTAMP - START_TIMESTAMP))"
+  else
+    DURATION="`print_all_steps`"
+  fi
+}
+
+print_all_steps() {
+  for step in "${STEPS[@]}"; do
+    local step_name="`echo "$step" | sed -e 's/=.*$//'`"
+    local step_time="`echo "$step" | sed -e 's/^.*=//'`"
+    echo "${JOB}_duration_seconds{step=\"${step_name}\"} $step_time"
+  done
+}
+
+print_all_metrics() {
+  echo "# HELP ${JOB}_duration_seconds Time spent running $JOB"
+  echo "# TYPE ${JOB}_duration_seconds gauge"
+  echo "$DURATION"
+
+  if $SUCCESS; then
+    print_success_metric
+  fi
+}
+
+print_success_metric() {
+  echo "# HELP ${JOB}_last_success Last successful run of $JOB"
+  echo "# TYPE ${JOB}_last_success gauge"
+  echo "${JOB}_last_success $END_TIMESTAMP"
+}
+
+set_push_url() {
+  PUSH_URL="${PUSHGATEWAY}/metrics/job@base64/`urlsafe_base64 "$JOB"`"
+  PUSH_URL="${PUSH_URL}/instance@base64/`urlsafe_base64 "$MY_INSTANCE"`"
+  PUSH_URL="${PUSH_URL}/hostname@base64/`urlsafe_base64 "$MY_HOSTNAME"`"
+  PUSH_URL="${PUSH_URL}/datacenter@base64/`urlsafe_base64 "$MY_DATACENTER"`"
+  PUSH_URL="${PUSH_URL}/role@base64/`urlsafe_base64 "$MY_ROLE"`"
+}
+
+urlsafe_base64() {
+  # https://tools.ietf.org/html/rfc4648#section-5
+  echo -n "$1" | base64 -w 0 | tr '/+' '_-'
+}
+
+push_metrics() {
+  if $RUN_COMMAND; then
+    echo "$METRICS" | curl --data-binary @- "$PUSH_URL"
+
+  else
+    show_how_to_push_metrics
+  fi
+}
+
+show_how_to_push_metrics() {
+  echo "# If you're curious about any of these base64 values,"
+  echo "# echo SGVsbG8sIHdvcmxkIQo= | tr '_-' '/+' | base64 -d"
+  echo "cat <<EOF | curl --data-binary @- '$PUSH_URL'"
+  echo "$METRICS"
+  echo 'EOF'
+}
+
+main
