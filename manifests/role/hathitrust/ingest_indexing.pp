@@ -6,7 +6,10 @@
 #
 # @example
 #   include nebula::role::hathitrust::ingest_indexing
-class nebula::role::hathitrust::ingest_indexing (String $private_address_template = '192.168.0.%s') {
+class nebula::role::hathitrust::ingest_indexing (
+  String $dataden_target,
+  String $private_address_template = '192.168.0.%s'
+) {
   include nebula::role::hathitrust
 
   class { 'nebula::profile::networking::private':
@@ -27,7 +30,14 @@ class nebula::role::hathitrust::ingest_indexing (String $private_address_templat
 
   class { 'nebula::profile::hathitrust::mounts':
     smartconnect_mounts => ['/htapps','/htprep','/htsolr/lss','/htsolr/lss-reindex'],
-    readonly            => false
+    readonly            => false,
+    other_nfs_mounts    => {
+      '/htdataden' => {
+        'remote_target'   => $dataden_target,
+        'options'         => 'auto,hard,nfsvers=3',
+        'private_network' => false
+      }
+    }
   }
 
   include nebula::profile::hathitrust::dependencies
