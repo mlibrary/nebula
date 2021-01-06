@@ -113,7 +113,7 @@ class nebula::profile::www_lib::vhosts::press (
 
   cron { 'check press fcgi':
     user    => 'root',
-    command => '/usr/local/bin/check_press',
+    command => '/usr/local/bin/check_press &> /dev/null',
     hour    => '*',
     minute  => '*',
   }
