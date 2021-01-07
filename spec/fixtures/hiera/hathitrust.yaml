@@ -126,3 +126,5 @@ nebula::profile::hathitrust::solr_lss::timezone: Somewhere/City
 
 nebula::role::hathitrust::backup::tsm_servername: tsmserver
 nebula::role::hathitrust::backup::tsm_serveraddress: tsm.default.invalid
+
+nebula::role::hathitrust::ingest_indexing::dataden_target: dataden.default.invalid:/dataden/hathitrust
