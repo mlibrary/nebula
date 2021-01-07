@@ -19,9 +19,9 @@ class nebula::profile::hathitrust::dependencies () {
       'libjs-jquery',
       'libxerces-c-samples',
       'netpbm-sf',
-      'rsync'
+      'rsync',
       'unzip',
-      'zip',
+      'zip'
     ]
   )
 
