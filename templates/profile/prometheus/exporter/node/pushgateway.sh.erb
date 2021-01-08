@@ -3,10 +3,10 @@ RUN_COMMAND=true
 PROG="$0"
 USAGE1='[-nf] -j JOB -b START_TIMESTAMP'
 USAGE2='[-nf] -j JOB -s STEP [-s STEP ...]'
-MY_INSTANCE='<%= @ipaddress %>:9100'
-MY_HOSTNAME='<%= @hostname %>'
-MY_DATACENTER='<%= @datacenter %>'
-MY_ROLE='<%= @role %>'
+LABELS=('instance=<%= @ipaddress %>:9100'
+        'hostname=<%= @hostname %>'
+        'datacenter=<%= @datacenter %>'
+        'role=<%= @role %>')
 JOB=''
 END_TIMESTAMP="`date '+%s'`"
 SUCCESS='true'
@@ -26,32 +26,58 @@ printhelp() {
 usage: ${PROG} $USAGE1
   or   ${PROG} $USAGE2
 
-Push metrics to a prometheus pushgateway.
+Push metrics to a prometheus pushgateway. JOB_NAME must be all lowercase
+letters and underscores, and running this will push two new metrics:
 
-The easiest way to use this is to add this line at the start of the job:
+    JOB_NAME_duration_seconds
+    JOB_NAME_last_success
 
+Example simple instrumented script:
+
+    #!/usr/bin/env bash
     START_TIMESTAMP=\`date '+%s'\`
 
-Then, at the end, on success, run this (replace JOB_NAME):
+    # ...
 
-    ${PROG} -j JOB_NAME -b "\$START_TIMESTAMP"
+    if \$my_script_succeeded; then
+      ${PROG} -j JOB_NAME -b "\$START_TIMESTAMP"
+    fi
 
-On failure, don't do anything.
+The above example will only push on success, which is sufficient for
+most cases.
 
-If you want to measure the times taken by multiple steps, it will take
-more work on your part, as you'll have to keep track of how long each
-step takes. If for example, your setup phase takes 0:03, your main phase
-takes 10:00, and your cleanup phase takes 0:20, you might finish with:
+A more involved example:
 
-    ${PROG} -j JOB_NAME \\
-        -s setup=3 \\
-        -s main=600 \\
-        -s cleanup=20
+    #!/usr/bin/env bash
+    START_TIMESTAMP=\`date '+%s'\`
 
-The easiest way to handle failed jobs is to simply do nothing; the
-alertmanager will notice when the last_success metric hasn't been
-updated in a while. However, if you have good reason to want duration
-metrics on failed jobs, you can pass -f to mark it as a failure.
+    # ... (setup code)
+
+    SETUP_TIMESTAMP=\`date '+%s'\`
+
+    # ... (main code)
+
+    MAIN_JOB_TIMESTAMP=\`date '+%s'\`
+
+    # ... (teardown code)
+
+    TEARDOWN_TIMESTAMP=\`date '+%s'\`
+
+    if \$my_script_succeeded; then
+      ${PROG} -j JOB_NAME \\
+          -s setup=\$((SETUP_TIMESTAMP - START_TIMESTAMP)) \\
+          -s main=\$((MAIN_JOB_TIMESTAMP - SETUP_TIMESTAMP)) \\
+          -s teardown=\$((TEARDOWN_TIMESTAMP - MAIN_JOB_TIMESTAMP))
+    else
+      ${PROG} -f -j JOB_NAME \\
+          -s setup=\$((SETUP_TIMESTAMP - START_TIMESTAMP)) \\
+          -s main=\$((MAIN_JOB_TIMESTAMP - SETUP_TIMESTAMP)) \\
+          -s teardown=\$((TEARDOWN_TIMESTAMP - MAIN_JOB_TIMESTAMP))
+    fi
+
+The above script will report different durations for each step, and
+it'll report those durations even on failure (as long as the script
+doesn't error out prematurely).
 
 required arguments:
  -j JOB                 Name of the cronjob; will set the {job="JOB"} label
@@ -60,12 +86,13 @@ optional arguments:
  -h                     Display this help message and exit
  -n                     Print what would be run; do not execute
  -f                     Job failed (don't update last_success timestamp)
+ -l NAME=VALUE          Extra label to add to the metric
  -b START_TIMESTAMP     Time the cronjob started
  -s STEP_NAME=SECONDS   Number of seconds a step took
 EOF
 }
 
-while getopts ':hfnj:b:s:' opt; do
+while getopts ':hfnj:l:b:s:' opt; do
   case "$opt" in
     h)
       printhelp
@@ -82,6 +109,10 @@ while getopts ':hfnj:b:s:' opt; do
 
     j)
       JOB="$OPTARG"
+      ;;
+
+    l)
+      LABELS=("${LABELS[@]}" "$OPTARG")
       ;;
 
     b)
@@ -116,7 +147,8 @@ main() {
 }
 
 validate_arguments() {
-  assert_job_is_defined
+  validate_job
+  validate_labels
 
   if start_timestamp_is_set; then
     assert_no_steps_are_set
@@ -129,9 +161,21 @@ validate_arguments() {
   fi
 }
 
-assert_job_is_defined() {
-  if [ -z "$JOB" ]; then
-    errorout "expected -j"
+validate_job() {
+  if ! echo "$JOB" | grep -Eq '^[a-z_]+$'; then
+    errorout "Expected a job name made of lowercase letters and underscores: \`$JOB'"
+  fi
+}
+
+validate_labels() {
+  for label in "${LABELS[@]}"; do
+    validate_label "$label"
+  done
+}
+
+validate_label() {
+  if ! echo "$1" | grep -Eq '^[a-z_]+=.+$'; then
+    errorout "invalid label: $1"
   fi
 }
 
@@ -202,10 +246,13 @@ print_success_metric() {
 
 set_push_url() {
   PUSH_URL="${PUSHGATEWAY}/metrics/job@base64/`urlsafe_base64 "$JOB"`"
-  PUSH_URL="${PUSH_URL}/instance@base64/`urlsafe_base64 "$MY_INSTANCE"`"
-  PUSH_URL="${PUSH_URL}/hostname@base64/`urlsafe_base64 "$MY_HOSTNAME"`"
-  PUSH_URL="${PUSH_URL}/datacenter@base64/`urlsafe_base64 "$MY_DATACENTER"`"
-  PUSH_URL="${PUSH_URL}/role@base64/`urlsafe_base64 "$MY_ROLE"`"
+
+  for label in "${LABELS[@]}"; do
+    label_name="`echo "$label" | sed -e 's/=.*$//'`"
+    label_value="`echo "$label" | sed -e 's/^[^=]*=//'`"
+
+    PUSH_URL="${PUSH_URL}/${label_name}@base64/`urlsafe_base64 "$label_value"`"
+  done
 }
 
 urlsafe_base64() {
@@ -215,7 +262,7 @@ urlsafe_base64() {
 
 push_metrics() {
   if $RUN_COMMAND; then
-    echo "$METRICS" | curl --data-binary @- "$PUSH_URL"
+    echo "$METRICS" | curl -s --data-binary @- "$PUSH_URL" > /dev/null
 
   else
     show_how_to_push_metrics
@@ -224,8 +271,8 @@ push_metrics() {
 
 show_how_to_push_metrics() {
   echo "# If you're curious about any of these base64 values,"
-  echo "# echo SGVsbG8sIHdvcmxkIQo= | tr '_-' '/+' | base64 -d"
-  echo "cat <<EOF | curl --data-binary @- '$PUSH_URL'"
+  echo "# echo UkZDLTQ2NDggU2VjdGlvbiA1Cg== | tr '_-' '/+' | base64 -d"
+  echo "cat <<EOF | curl -s --data-binary @- '$PUSH_URL' > /dev/null"
   echo "$METRICS"
   echo 'EOF'
 }
