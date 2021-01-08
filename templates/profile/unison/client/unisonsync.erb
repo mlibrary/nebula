@@ -22,10 +22,16 @@ while [ $RUN -eq 1 ]; do
   #
   # sync preferences file is in /.unison
   /bin/systemd-notify WATCHDOG=1
+  START_TIMESTAMP=`date '+%s'`
   /usr/bin/unison $PREF                               >> $LOG 2>&1
+  unison_status=$?
   /bin/systemd-notify WATCHDOG=1
 
-  if [ $? -gt 0 ]; then
+  # If successful inform the scraper. If not, don't tell the scraper.
+  # Instead send an e-mail.
+  if [ $unison_status -eq 0 ]; then
+    /usr/local/bin/pushgateway -j unison -l client=$PREF -b $START_TIMESTAMP 
+  else
     echo '----------'                                 >> $LOG 2>&1
     echo 'pausing for 2 minutes; please investigate!' >> $LOG 2>&1
     echo '----------'                                 >> $LOG 2>&1
@@ -37,7 +43,7 @@ while [ $RUN -eq 1 ]; do
     PAUSE=120
   fi
 
-  # don't bother sleeping if we are exiting anyway
+  # Do not bother sleeping if we are exiting anyway
   if [ $RUN -eq 1 ]; then
     sleep $PAUSE
   fi
