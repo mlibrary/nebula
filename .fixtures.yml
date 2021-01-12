@@ -37,6 +37,9 @@ fixtures:
     inifile:
       repo: "puppetlabs/inifile"
       ref: "4.3.1"
+    keepalived:
+      repo: "puppet/keepalived"
+      ref: "2.2.0"
     lvm:
       repo: "puppetlabs/lvm"
       ref: "1.0.1"

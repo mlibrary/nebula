@@ -1,0 +1,9 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - keepalived/mycompany
+  - keepalived/default
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'

@@ -20,6 +20,7 @@
     {"name": "puppetlabs/postgresql", "version_requirement": ">= 5.2.1 < 7.0.0"},
     {"name": "puppetlabs/puppetdb", "version_requirement": ">= 6.0.2 < 8.0.0"},
     {"name": "puppetlabs/reboot", "version_requirement": ">= 2.0.0 < 4.0.0"},
+    {"name": "puppet/keepalived", "version_requirement": ">= 2.2.0 < 3.0.0"},
     {"name": "puppet/letsencrypt", "version_requirement": ">= 5.0.0 < 7.0.0"},
     {"name": "puppet/nginx", "version_requirement": ">= 1.0.0 < 3.0.0"},
     {"name": "puppet/php", "version_requirement": ">= 6.0.2 < 8.0.0"},
