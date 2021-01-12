@@ -140,6 +140,14 @@ groups:
     labels:
       severity: ticket
 
+  - alert: MysqlBackupFailed
+    annotations:
+      summary: 'Mysql Backup has Failed on node {{$labels.hostname}}.'
+    expr: 'time() - mysql_backup_last_success > 7 * 24 * 60 * 60'
+    for: 1d
+    labels:
+      severity: ticket
+
   # We like to keep at least 3T free at all times for deep blue data,
   # but their ingest process requires double the capacity of any files
   # being ingested, so it is common for them to claim a lot of space
