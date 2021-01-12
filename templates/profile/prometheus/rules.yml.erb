@@ -144,7 +144,7 @@ groups:
     annotations:
       summary: 'Mysql Backup has Failed on node {{$labels.hostname}}.'
     expr: 'time() - mysql_backup_last_success > 7 * 24 * 60 * 60'
-    for: 30m
+    for: 1d
     labels:
       severity: ticket
 
