@@ -109,8 +109,8 @@ GEM
       table_print (>= 1.0.0)
       tty-pager (~> 0.13.0)
     puppet-lint (2.4.2)
-    puppet-module-posix-default-r2.7 (1.0.1)
-    puppet-module-posix-dev-r2.7 (1.0.1)
+    puppet-module-posix-default-r2.5 (1.0.1)
+    puppet-module-posix-dev-r2.5 (1.0.1)
       bcrypt_pbkdf (~> 1.0)
       codecov (~> 0.2)
       concurrent-ruby (!= 1.1.6)
@@ -273,8 +273,8 @@ DEPENDENCIES
   faker
   fast_gettext
   puppet (~> 6.19)
-  puppet-module-posix-default-r2.7
-  puppet-module-posix-dev-r2.7
+  puppet-module-posix-default-r2.5
+  puppet-module-posix-dev-r2.5
   puppet-strings
   puppet_metadata (~> 0.3.0)
   rake (>= 12.3.3)
