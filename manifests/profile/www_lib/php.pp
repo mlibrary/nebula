@@ -58,6 +58,7 @@ class nebula::profile::www_lib::php (
       "php${default_php_version}-ldap",
       "php${default_php_version}-mbstring",
       "php${default_php_version}-mysql",
+      "php${default_php_version}-oauth",
       "php${default_php_version}-opcache",
       "php${default_php_version}-readline",
       "php${default_php_version}-sqlite3",
