@@ -76,6 +76,26 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         require        => $nebula::profile::www_lib::apache::default_access
       },
       {
+        provider       => 'directory',
+        path           => "${docroot}/canvas",
+        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
+        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
+        require        => $nebula::profile::www_lib::apache::default_access,
+        addhandlers    => [{
+          extensions => ['.php'],
+          # TODO: Extract version or socket path to params/hiera
+          handler    => 'proxy:unix:/run/php/php7.3-fpm.sock|fcgi://localhost'
+        }],
+      },
+      {
+        # Deny access to raw php sources by default
+        # To re-enable it's recommended to enable access to the files
+        # only in specific virtual host or directory
+        provider => 'filesmatch',
+        path     => '.+\.phps$',
+        require  => 'all denied'
+      },
+      {
         provider        => 'locationmatch',
         path            => '^/instruction/request',
         custom_fragment => @(EOT)
