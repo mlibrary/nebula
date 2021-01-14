@@ -1,30 +1,34 @@
-source 'https://rubygems.org'
+source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-minor_version = Gem::Version.new(RUBY_VERSION.dup).segments[0..1].join('.')
-
-gem 'rake', '>= 12.3.3'
+group :test do
+  gem 'voxpupuli-test', '~> 2.1',  :require => false
+  gem 'coveralls',                 :require => false
+  gem 'simplecov-console',         :require => false
+  gem 'faker',                     :require => false
+end
 
 group :development do
-  gem "fast_gettext",                                  require: false
-  gem "puppet-module-posix-default-r#{minor_version}", require: false, platforms: [:ruby]
-  gem "puppet-module-posix-dev-r#{minor_version}",     require: false, platforms: [:ruby]
-  gem "rspec-puppet-utils"
-  gem "faker"
+  gem 'guard-rake',               :require => false
+  gem 'overcommit', '>= 0.39.1',  :require => false
 end
 
-gem 'puppet', '~> 6.19'
-gem 'puppet-strings'
-gem 'semantic_puppet'
-gem 'yard', '>= 0.9.20'
-gem 'puppet_metadata', '~> 0.3.0'
-
-# Evaluate Gemfile.local and ~/.gemfile if they exist
-[
-  "#{__FILE__}.local",
-  File.join(Dir.home, '.gemfile'),
-].each do |gemfile|
-  if File.file?(gemfile) && File.readable?(gemfile)
-    eval(File.read(gemfile), binding)
-  end
+group :system_tests do
+  gem 'puppet_metadata', '~> 0.3.0',  :require => false
+  gem 'voxpupuli-acceptance',         :require => false
 end
 
+group :release do
+  gem 'github_changelog_generator',  :require => false, :git => 'https://github.com/voxpupuli/github-changelog-generator', :branch => 'voxpupuli_essential_fixes'
+  gem 'puppet-blacksmith',           :require => false
+  gem 'voxpupuli-release',           :require => false
+  gem 'puppet-strings', '>= 2.2',    :require => false
+end
+
+gem 'puppetlabs_spec_helper', '~> 2.0', :require => false
+gem 'rake', :require => false
+gem 'facter', ENV['FACTER_GEM_VERSION'], :require => false, :groups => [:test]
+
+puppetversion = ENV['PUPPET_VERSION'] || '~> 6.0'
+gem 'puppet', puppetversion, :require => false, :groups => [:test]
+
+# vim: syntax=ruby
