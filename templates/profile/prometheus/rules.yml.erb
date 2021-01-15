@@ -140,11 +140,22 @@ groups:
     labels:
       severity: ticket
 
+  # There are two windows here because there is one unison client that
+  # frequently takes several hours (nas-web-staff-lib). There are plans
+  # to be rid of it entirely, but until they flower, there's no reason
+  # its alert should slow down other unison alerts.
   - alert: UnisonSyncFailed
     annotations:
       summary: 'Unison sync {{$labels.client}} failed on node {{$labels.hostname}}.'
-    expr: 'time() - unison_last_success > 30 * 60'
+    expr: 'time() - unison_last_success{client="nas-web-staff-lib"} > 2 * 60 * 60'
     for: 2h
+    labels:
+      severity: ticket
+  - alert: UnisonSyncFailed
+    annotations:
+      summary: 'Unison sync {{$labels.client}} failed on node {{$labels.hostname}}.'
+    expr: 'time() - unison_last_success{client!="nas-web-staff-lib"} > 5 * 60'
+    for: 30m
     labels:
       severity: ticket
 
