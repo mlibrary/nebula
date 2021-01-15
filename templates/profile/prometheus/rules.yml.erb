@@ -142,9 +142,9 @@ groups:
 
   - alert: UnisonSyncFailed
     annotations:
-      summary: 'Unison sync failed on node {{$labels.hostname}}.'
-    expr: 'time() - unison_last_success > 300'
-    for: 30m
+      summary: 'Unison sync {{$labels.client}} failed on node {{$labels.hostname}}.'
+    expr: 'time() - unison_last_success > 30 * 60'
+    for: 2h
     labels:
       severity: ticket
 
