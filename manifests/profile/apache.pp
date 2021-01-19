@@ -46,6 +46,7 @@ class nebula::profile::apache (
     default_mods           => false,
     user                   => 'nobody',
     group                  => 'nogroup',
+    conf_enabled           => '/etc/apache2/conf-enabled',
   }
 
   class { 'apache::mod::prefork':
@@ -63,14 +64,6 @@ class nebula::profile::apache (
 
   apache::custom_config { 'badrobots':
     source => 'puppet:///apache/badrobots.conf'
-  }
-
-  file { '/etc/apache2/conf-enabled':
-    ensure  => 'directory',
-    recurse => true,
-    force   => true,
-    purge   => true,
-    require => Class['apache'],
   }
 
   file { '/etc/apache2/conf-available':
