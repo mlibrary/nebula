@@ -42,6 +42,36 @@ class nebula::profile::clearinghouse::apache (
     rewrite_rule => '^/chDocs/(.*[.]pdf)$	/chDocs/no_cache.php?file_path=$1	[passthrough]'
   }
 
+  file { '/etc/apache2/conf-enabled/charset.conf':
+    ensure => 'link',
+    target => '../conf-available/charset.conf',
+  }
+
+  file { '/etc/apache2/conf-enabled/localized-error-pages.conf':
+    ensure => 'link',
+    target => '../conf-available/localized-error-pages.conf',
+  }
+
+  file { '/etc/apache2/conf-enabled/other-vhosts-access-log.conf':
+    ensure => 'link',
+    target => '../conf-available/other-vhosts-access-log.conf',
+  }
+
+  file { '/etc/apache2/conf-enabled/php7.3-fpm.conf':
+    ensure => 'link',
+    target => '../conf-available/php7.3-fpm.conf',
+  }
+
+  file { '/etc/apache2/conf-enabled/security.conf':
+    ensure => 'link',
+    target => '../conf-available/security.conf',
+  }
+
+  file { '/etc/apache2/conf-enabled/serve-cgi-bin.conf':
+    ensure => 'link',
+    target => '../conf-available/serve-cgi-bin.conf',
+  }
+
   $ssl_params     = {
     ssl            => true,
     ssl_protocol   => 'all -SSLv2 -SSLv3',
