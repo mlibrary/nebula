@@ -56,6 +56,7 @@ class nebula::profile::tools_lib::apache (
     default_mods      => false,
     default_vhost     => false,
     default_ssl_vhost => false,
+    conf_enabled      => '/etc/apache2/conf-enabled',
   }
 
   class { 'apache::mod::proxy':

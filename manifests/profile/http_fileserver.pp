@@ -40,6 +40,7 @@ class nebula::profile::http_fileserver (
     default_ssl_key   => "/etc/ssl/private/${::fqdn}.key",
     default_vhost     => true,
     default_ssl_vhost => true,
+    conf_enabled      => '/etc/apache2/conf-enabled',
   }
 
   include nebula::profile::networking::firewall::http_datacenters
