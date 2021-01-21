@@ -39,9 +39,9 @@ class nebula::profile::tools_lib::jira (
     tomcat_max_threads        => '48', # don't exhaust db connection limit
     enable_connection_pooling => true, # add serveral required settings to dbconfig.xml
     proxy                     => {
-      scheme            => 'https',
-      proxyName         => $domain,
-      proxyPort         => '443',
+      scheme    => 'https',
+      proxyName => $domain,
+      proxyPort => '443',
     },
     contextpath               => '/jira',
     jira_config_properties    => {
