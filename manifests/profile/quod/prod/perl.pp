@@ -13,6 +13,7 @@ class nebula::profile::quod::prod::perl () {
   require nebula::profile::quod::dependencies::perl
 
   package { [
+    'libmime-base32-perl',
     'libarchive-extract-perl',
     'libcgi-fast-perl',
     'libcpan-meta-perl',
