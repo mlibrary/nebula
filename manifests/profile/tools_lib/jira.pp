@@ -42,8 +42,6 @@ class nebula::profile::tools_lib::jira (
       scheme            => 'https',
       proxyName         => $domain,
       proxyPort         => '443',
-      relaxedPathChars  => '[]|',
-      relaxedQueryChars => '[]|{}^&#x5c;&#x60;&quot;&lt;&gt;',
     },
     contextpath               => '/jira',
     jira_config_properties    => {
