@@ -78,6 +78,19 @@ describe 'nebula::haproxy::service' do
           )
         end
 
+        describe 'with frontend maxconn' do
+          let(:params) do
+            super().merge(max_frontend_sessions: 999)
+          end
+
+          it do
+            is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with(
+              target: service_config,
+              content: %r{^maxconn 999$},
+            )
+          end
+        end
+
         it do
           is_expected.not_to contain_file('/etc/haproxy/errors/svc1503.http')
         end
