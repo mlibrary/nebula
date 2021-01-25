@@ -57,12 +57,10 @@ groups:
         node_filesystem_avail_bytes{mountpoint!="/aspace",
                                     device!~".*/aspace",
                                     mountpoint!="/var/lockss",
-                                    fstype!="afs",
-                                    fstype!="tmpfs",
-                                    device!="rootfs"}[1d],
+                                    fstype=~"nfs|cifs"}[1d],
         4 * 60 * 60 * 24
       ) < 0
-    for: 12h
+    for: 1d
     labels:
       severity: info
   - alert: DiskAboutToFillUp
@@ -148,7 +146,7 @@ groups:
     annotations:
       summary: 'Unison sync {{$labels.client}} failed on node {{$labels.hostname}}.'
     expr: 'time() - unison_last_success{client="nas-web-staff-lib"} > 2 * 60 * 60'
-    for: 2h
+    for: 12h
     labels:
       severity: ticket
   - alert: UnisonSyncFailed
