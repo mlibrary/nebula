@@ -64,6 +64,7 @@ define nebula::haproxy::service(
   String           $floating_ip,
   Optional[String] $cert_source = undef,
   Optional[String] $throttle_condition = undef,
+  Optional[Integer] $max_frontend_sessions = undef,
   Integer          $max_requests_per_sec = 0,
   Integer          $max_requests_burst = 0,
   Hash             $whitelists = {},

@@ -6,6 +6,9 @@
   end
 -%>
 frontend <%= @service_prefix %>-front
+<% if @max_frontend_sessions %>
+maxconn <%= @max_frontend_sessions %>
+<% end -%>
 bind <%= @floating_ip %>:<%= @protocol_options['port'] %><%= @protocol_options['ssl'] %>
 stats uri /haproxy?stats
 <% if @protocol == "https" -%>
