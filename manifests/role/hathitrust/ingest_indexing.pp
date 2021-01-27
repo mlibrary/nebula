@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018,2021 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -42,6 +42,7 @@ class nebula::role::hathitrust::ingest_indexing (
 
   include nebula::profile::hathitrust::dependencies
   include nebula::profile::hathitrust::perl
+  include nebula::profile::hathitrust::clamav
   include nebula::profile::hathitrust::ingest_service
 
   include nebula::profile::ruby
