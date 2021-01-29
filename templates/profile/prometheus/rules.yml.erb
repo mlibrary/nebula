@@ -57,6 +57,7 @@ groups:
         node_filesystem_avail_bytes{mountpoint!="/aspace",
                                     device!~".*/aspace",
                                     mountpoint!="/var/lockss",
+                                    mountpoint!="/htdataden",
                                     fstype=~"nfs|cifs"}[1d],
         4 * 60 * 60 * 24
       ) < 0
@@ -71,6 +72,7 @@ groups:
         node_filesystem_avail_bytes{mountpoint!="/aspace",
                                     device!~".*/aspace",
                                     mountpoint!="/var/lockss",
+                                    mountpoint!="/htdataden",
                                     fstype!="afs",
                                     fstype!="tmpfs",
                                     device!="rootfs"}[10m],
@@ -115,6 +117,24 @@ groups:
     for: 5m
     labels:
       severity: page
+  - alert: HTDataDenIsFull
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+    expr: >
+      (
+        (
+          avg_over_time(
+            node_filesystem_size_bytes{mountpoint="/htdataden"}[1m]
+          ) - avg_over_time(
+            node_filesystem_avail_bytes[1m]
+          )
+        ) / avg_over_time(
+          node_filesystem_size_bytes[1m]
+        )
+      ) > 0.99
+    for: 30m
+    labels:
+      severity: ticket
   - alert: DiskRunningOutOfINodes
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is running out of inodes.'
