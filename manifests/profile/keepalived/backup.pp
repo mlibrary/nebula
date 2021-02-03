@@ -8,11 +8,13 @@ class nebula::profile::keepalived::backup {
   $scope = lookup('nebula::scope')
 
   lookup('nebula::profile::keepalived::ip_addresses', undef, undef, []).each |$index, $ip_address| {
-    keepalived::vrrp::instance { "${::datacenter} ${scope} ${ip_address}":
+    $id = $index + 50
+
+    keepalived::vrrp::instance { "${::datacenter}_${scope}_${id}":
       state             => 'BACKUP',
       priority          => 100,
       interface         => pick_network_interface_for_ip($ip_address),
-      virtual_router_id => 50 + $index,
+      virtual_router_id => $id,
       virtual_ipaddress => $ip_address,
     }
   }

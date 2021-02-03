@@ -65,7 +65,7 @@ require 'spec_helper'
           let(:hiera_config) { 'spec/fixtures/hiera/keepalived/mycompany_config.yaml' }
 
           it do
-            is_expected.to contain_keepalived__vrrp__instance('mydatacenter mycompany 10.1.2.3')
+            is_expected.to contain_keepalived__vrrp__instance('mydatacenter_mycompany_50')
               .with_interface('eth0')
               .with_state(keepalived_state)
               .with_priority(keepalived_priority)
@@ -74,14 +74,14 @@ require 'spec_helper'
           end
 
           it do
-            is_expected.to contain_keepalived__vrrp__instance('mydatacenter mycompany 192.168.1.2')
+            is_expected.to contain_keepalived__vrrp__instance('mydatacenter_mycompany_51')
               .with_interface('eth1')
               .with_virtual_router_id(51)
               .with_virtual_ipaddress('192.168.1.2')
           end
 
           it do
-            is_expected.to contain_keepalived__vrrp__instance('mydatacenter mycompany 192.168.99.1')
+            is_expected.to contain_keepalived__vrrp__instance('mydatacenter_mycompany_52')
               .with_interface('eth1:0')
               .with_virtual_router_id(52)
               .with_virtual_ipaddress('192.168.99.1')
@@ -90,9 +90,9 @@ require 'spec_helper'
           context 'and with datacenter set to abc' do
             let(:relevant_facts) { { datacenter: 'abc' } }
 
-            it { is_expected.to contain_keepalived__vrrp__instance('abc mycompany 10.1.2.3') }
-            it { is_expected.to contain_keepalived__vrrp__instance('abc mycompany 192.168.1.2') }
-            it { is_expected.to contain_keepalived__vrrp__instance('abc mycompany 192.168.99.1') }
+            it { is_expected.to contain_keepalived__vrrp__instance('abc_mycompany_50') }
+            it { is_expected.to contain_keepalived__vrrp__instance('abc_mycompany_51') }
+            it { is_expected.to contain_keepalived__vrrp__instance('abc_mycompany_52') }
           end
         end
 
@@ -100,14 +100,14 @@ require 'spec_helper'
           let(:hiera_config) { 'spec/fixtures/hiera/keepalived/ourcompany_config.yaml' }
 
           it do
-            is_expected.to contain_keepalived__vrrp__instance('mydatacenter ourcompany 10.0.0.1')
+            is_expected.to contain_keepalived__vrrp__instance('mydatacenter_ourcompany_50')
               .with_interface('eth0')
               .with_virtual_router_id(50)
               .with_virtual_ipaddress('10.0.0.1')
           end
 
           it do
-            is_expected.to contain_keepalived__vrrp__instance('mydatacenter ourcompany 192.168.50.1')
+            is_expected.to contain_keepalived__vrrp__instance('mydatacenter_ourcompany_51')
               .with_interface('eth1')
               .with_virtual_router_id(51)
               .with_virtual_ipaddress('192.168.50.1')
