@@ -24,7 +24,16 @@ class nebula::profile::consul::server {
     ;
 
     '020 Consul gRPC API':
+      port => 8502,
+    ;
+
+    '020 Consul WAN Serf (tcp)':
       port => 8302,
+    ;
+
+    '020 Consul WAN Serf (udp)':
+      port     => 8302,
+      protocol => 'udp',
     ;
 
     '020 Consul Server RPC':

@@ -13,14 +13,16 @@ describe 'nebula::profile::consul::server' do
       it { is_expected.to compile }
       it { is_expected.to contain_class('Nebula::Profile::Consul::Client') }
 
-      [[8600,          'tcp', 'DNS (tcp)'],
-       [8600,          'udp', 'DNS (udp)'],
-       [8500,          'tcp', 'HTTP API'],
-       [8302,          'tcp', 'gRPC API'],
-       [8301,          'tcp', 'LAN Serf (tcp)'],
-       [8301,          'udp', 'LAN Serf (udp)'],
-       [8300,          'tcp', 'Server RPC'],
-       ['21000-21255', 'tcp', 'Sidecar Proxy']].each do |port, protocol, service|
+      [[8600, 'tcp', 'DNS (tcp)'],
+       [8600, 'udp', 'DNS (udp)'],
+       [8500, 'tcp', 'HTTP API'],
+       #[8501, 'tcp', 'HTTPS API'],
+       [8502, 'tcp', 'gRPC API'],
+       [8301, 'tcp', 'LAN Serf (tcp)'],
+       [8301, 'udp', 'LAN Serf (udp)'],
+       [8302, 'tcp', 'WAN Serf (tcp)'],
+       [8302, 'udp', 'WAN Serf (udp)'],
+       [8300, 'tcp', 'Server RPC']].each do |port, protocol, service|
         it do
           is_expected.to contain_nebula__exposed_port("020 Consul #{service}")
             .with_block('umich::networks::private_lan')
