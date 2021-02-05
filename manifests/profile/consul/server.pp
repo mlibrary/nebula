@@ -19,8 +19,12 @@ class nebula::profile::consul::server {
       protocol => 'udp',
     ;
 
-    '020 Consul HTTP':
+    '020 Consul HTTP API':
       port => 8500,
+    ;
+
+    '020 Consul gRPC API':
+      port => 8302,
     ;
 
     '020 Consul Server RPC':

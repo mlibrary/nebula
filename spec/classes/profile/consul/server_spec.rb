@@ -15,7 +15,8 @@ describe 'nebula::profile::consul::server' do
 
       [[8600,          'tcp', 'DNS (tcp)'],
        [8600,          'udp', 'DNS (udp)'],
-       [8500,          'tcp', 'HTTP'],
+       [8500,          'tcp', 'HTTP API'],
+       [8302,          'tcp', 'gRPC API'],
        [8301,          'tcp', 'LAN Serf (tcp)'],
        [8301,          'udp', 'LAN Serf (udp)'],
        [8300,          'tcp', 'Server RPC'],
