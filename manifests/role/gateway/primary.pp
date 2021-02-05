@@ -5,6 +5,7 @@
 class nebula::role::gateway::primary {
   include nebula::role::minimum
 
+  include nebula::profile::consul::client
   include nebula::profile::nat_router
   include nebula::profile::keepalived::primary
 }
