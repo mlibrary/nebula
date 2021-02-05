@@ -9,11 +9,11 @@
 # @example
 #   include nebula::profile::hathitrust::imgsrv
 class nebula::profile::hathitrust::imgsrv (
-  Integer $num_proc,
   String $sdrroot,
   String $sdrview,
   String $sdrdataroot,
   String $bind,
+  Integer $num_proc = 10,
   String $log_root = '/var/log',
   String $logging_prefix = 'imgsrv'
 ) {
