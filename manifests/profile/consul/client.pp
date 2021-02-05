@@ -33,5 +33,9 @@ class nebula::profile::consul::client {
     '020 Consul Sidecar Proxy':
       port => '21000-21255',
     ;
+
+    '020 Consul Expose Check':
+      port => '21500-21755',
+    ;
   }
 }

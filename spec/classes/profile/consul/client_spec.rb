@@ -40,7 +40,8 @@ describe 'nebula::profile::consul::client' do
 
       [[8301,          'tcp', 'LAN Serf (tcp)'],
        [8301,          'udp', 'LAN Serf (udp)'],
-       ['21000-21255', 'tcp', 'Sidecar Proxy']].each do |port, protocol, service|
+       ['21000-21255', 'tcp', 'Sidecar Proxy'],
+       ['21500-21755', 'tcp', 'Expose Check']].each do |port, protocol, service|
         it do
           is_expected.to contain_nebula__exposed_port("020 Consul #{service}")
             .with_block('umich::networks::private_lan')
