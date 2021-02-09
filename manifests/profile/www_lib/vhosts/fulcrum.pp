@@ -42,6 +42,8 @@ class nebula::profile::www_lib::vhosts::fulcrum (
     ],
   }
 
+  $datacenter_cidrs = lookup('nebula::known_addresses::datacenter').flatten.map |String $cidr| { "ip ${cidr}" }
+
   nebula::apache::www_lib_vhost { 'fulcrum-https':
     priority        => '13',
     servername      => $servername,
@@ -82,6 +84,14 @@ class nebula::profile::www_lib::vhosts::fulcrum (
         options        => 'FollowSymlinks',
         allow_override => 'None',
         require        => $nebula::profile::www_lib::apache::default_access,
+      },
+      {
+        provider => 'location',
+        path     => '/metrics',
+        require  => {
+          enforce  => 'any',
+          requires => ['local'] + $datacenter_cidrs
+        },
       },
     ],
 
