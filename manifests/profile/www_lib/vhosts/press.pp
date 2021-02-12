@@ -24,7 +24,7 @@ class nebula::profile::www_lib::vhosts::press (
   file { $log_path:
     ensure => 'directory',
     owner  => 'nobody',
-    group  => 'nobody',
+    group  => 'nogroup',
   }
 
   logrotate::rule { 'press':
