@@ -61,8 +61,8 @@ class nebula::profile::www_lib::cron (
 
     'reload fcgi for Press site nightly':
       weekday => '1-6',
-      hour    => 2,
-      minute  => 10,
+      hour    => 3,
+      minute  => 0,
       command => '/bin/systemctl restart press',
     ;
   }
