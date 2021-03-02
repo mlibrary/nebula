@@ -20,7 +20,6 @@ class nebula::role::hathitrust (
     include nebula::profile::exim4
     include nebula::profile::grub
     include nebula::profile::ntp
-    include nebula::profile::tiger
     include nebula::profile::users
     class { 'nebula::profile::networking':
       bridge => false,
