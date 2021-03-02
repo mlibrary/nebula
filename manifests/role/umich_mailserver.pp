@@ -22,7 +22,6 @@ class nebula::role::umich_mailserver (
     include nebula::profile::postfix
     include nebula::profile::grub
     include nebula::profile::ntp
-    include nebula::profile::tiger
     class { 'nebula::profile::networking':
       bridge => $bridge_network,
     }
