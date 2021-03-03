@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018-2021 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -33,7 +33,9 @@ class nebula::profile::afs (
   String  $realm,
 ) {
 
-  include nebula::profile::networking::keytab
+  class { 'nebula::profile::krb5':
+    realm => $realm,
+  }
 
   if nebula::date_is_in_the_future($allow_auto_reboot_until) {
     reboot { 'afs':
@@ -42,9 +44,7 @@ class nebula::profile::afs (
     }
   }
 
-  package { 'krb5-user': }
   package { 'libpam-afs-session': }
-  package { 'libpam-krb5': }
   package { 'openafs-client': }
   package { 'openafs-krb5': }
   package { 'openafs-modules-dkms': }
@@ -54,11 +54,6 @@ class nebula::profile::afs (
     creates => "/lib/modules/${::kernelrelease}/updates/dkms/openafs.ko",
     timeout => 600,
     require => Package['openafs-modules-dkms'],
-  }
-
-  debconf { 'krb5-config/default_realm':
-    type  => 'string',
-    value => $realm,
   }
 
   debconf { 'openafs-client/thiscell':

@@ -13,6 +13,7 @@ nebula::profile::afs::allow_auto_reboot_until: '1970-01-01'
 nebula::profile::afs::cache_size: 50000
 nebula::profile::afs::cell: cell.default.invalid
 nebula::profile::afs::realm: REALM.DEFAULT.INVALID
+nebula::profile::krb5::realm: REALM.DEFAULT.INVALID
 nebula::profile::dns::smartconnect::master_zones:
 - localhost:        local
 - 127.in-addr.arpa: 127

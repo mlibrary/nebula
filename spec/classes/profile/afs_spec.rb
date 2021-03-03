@@ -14,9 +14,7 @@ describe 'nebula::profile::afs' do
       today = Date.today.strftime('%Y-%m-%d')
       tomorrow = (Date.today + 1).strftime('%Y-%m-%d')
 
-      it { is_expected.to contain_package('krb5-user') }
       it { is_expected.to contain_package('libpam-afs-session') }
-      it { is_expected.to contain_package('libpam-krb5') }
       it { is_expected.to contain_package('openafs-client') }
       it { is_expected.to contain_package('openafs-krb5') }
       it { is_expected.to contain_package('openafs-modules-dkms') }
@@ -49,9 +47,8 @@ describe 'nebula::profile::afs' do
       end
 
       it do
-        is_expected.to contain_debconf('krb5-config/default_realm')
-          .with_type('string')
-          .with_value('REALM.DEFAULT.INVALID')
+        is_expected.to contain_class('nebula::profile::krb5')
+          .with_realm('REALM.DEFAULT.INVALID')
       end
 
       it do
@@ -70,9 +67,8 @@ describe 'nebula::profile::afs' do
         let(:params) { { realm: 'EXAMPLE.COM' } }
 
         it do
-          is_expected.to contain_debconf('krb5-config/default_realm')
-            .with_type('string')
-            .with_value('EXAMPLE.COM')
+          is_expected.to contain_class('nebula::profile::krb5')
+            .with_realm('EXAMPLE.COM')
         end
       end
 
