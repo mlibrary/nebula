@@ -4,7 +4,7 @@
 
 # nebula::profile::afs
 #
-# Manage OpenAFS and kerberos.
+# Manage OpenAFS.
 #
 # If you're setting up a new machine, you'll need to reboot it after
 # puppet's run all this. If you'd rather take a hands-off approach, you
@@ -22,7 +22,6 @@
 #   no longer automatically reboot the machine
 # @param cache_size debconf openafs-client/cachesize
 # @param cell debconf openafs-client/thiscell
-# @param realm debconf krb5-config/default_realm
 #
 # @example
 #   include nebula::profile::afs
@@ -30,12 +29,9 @@ class nebula::profile::afs (
   String  $allow_auto_reboot_until,
   Integer $cache_size,
   String  $cell,
-  String  $realm,
 ) {
 
-  class { 'nebula::profile::krb5':
-    realm => $realm,
-  }
+  include nebula::profile::krb5
 
   if nebula::date_is_in_the_future($allow_auto_reboot_until) {
     reboot { 'afs':

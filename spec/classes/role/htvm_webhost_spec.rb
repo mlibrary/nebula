@@ -60,6 +60,7 @@ describe 'nebula::role::webhost::htvm' do
 
         it { is_expected.to contain_class('nebula::profile::networking::firewall') }
 
+        it { is_expected.to contain_class('nebula::profile::krb5') }
         it { is_expected.to contain_class('nebula::profile::afs') }
         it { is_expected.to contain_class('nebula::profile::users') }
       end

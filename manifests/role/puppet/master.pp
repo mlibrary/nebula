@@ -12,6 +12,7 @@ class nebula::role::puppet::master {
   include nebula::profile::puppet::master_with_db
 
   # FIXME because there's also a git repo
+  include nebula::profile::krb5
   include nebula::profile::afs
   include nebula::profile::users
 }

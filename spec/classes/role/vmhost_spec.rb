@@ -18,6 +18,7 @@ describe 'nebula::role::vmhost' do
         it { is_expected.to contain_sysctl.with_bridge(true) }
       end
 
+      it { is_expected.not_to contain_class('nebula::profile::krb5') }
       it { is_expected.not_to contain_class('nebula::profile::afs') }
       it { is_expected.not_to contain_class('nebula::profile::users') }
     end

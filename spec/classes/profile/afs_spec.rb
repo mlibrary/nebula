@@ -19,6 +19,8 @@ describe 'nebula::profile::afs' do
       it { is_expected.to contain_package('openafs-krb5') }
       it { is_expected.to contain_package('openafs-modules-dkms') }
 
+      it { is_expected.to contain_class('nebula::profile::krb5') }
+
       it do
         is_expected.to contain_exec('reinstall kernel to enable afs').with(
           command: '/usr/bin/apt-get -y install --reinstall linux-headers-amd64',
@@ -47,11 +49,6 @@ describe 'nebula::profile::afs' do
       end
 
       it do
-        is_expected.to contain_class('nebula::profile::krb5')
-          .with_realm('REALM.DEFAULT.INVALID')
-      end
-
-      it do
         is_expected.to contain_debconf('openafs-client/thiscell')
           .with_type('string')
           .with_value('cell.default.invalid')
@@ -61,15 +58,6 @@ describe 'nebula::profile::afs' do
         is_expected.to contain_debconf('openafs-client/cachesize')
           .with_type('string')
           .with_value('50000')
-      end
-
-      context 'given a realm of EXAMPLE.COM' do
-        let(:params) { { realm: 'EXAMPLE.COM' } }
-
-        it do
-          is_expected.to contain_class('nebula::profile::krb5')
-            .with_realm('EXAMPLE.COM')
-        end
       end
 
       context 'given a cell of example.com' do

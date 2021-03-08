@@ -11,6 +11,7 @@
 class nebula::role::app_host::dev {
   include nebula::role::umich
 
+  include nebula::profile::krb5
   include nebula::profile::afs
   include nebula::profile::users
 

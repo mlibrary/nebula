@@ -12,6 +12,7 @@ describe 'nebula::role::umich' do
 
       it { is_expected.to compile }
 
+      it { is_expected.not_to contain_profile('nebula::profile::krb5') }
       it { is_expected.not_to contain_profile('nebula::profile::afs') }
       it { is_expected.not_to contain_profile('nebula::profile::users') }
     end

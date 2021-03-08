@@ -9,6 +9,7 @@
 class nebula::role::aleph::marcedit {
   include nebula::role::umich
 
+  include nebula::profile::krb5
   include nebula::profile::afs
   include nebula::profile::users
 
