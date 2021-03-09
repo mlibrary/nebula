@@ -15,6 +15,7 @@ class nebula::role::hathitrust (
   }
 
   if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
+    include nebula::profile::krb5
     include nebula::profile::afs
     include nebula::profile::duo
     include nebula::profile::exim4

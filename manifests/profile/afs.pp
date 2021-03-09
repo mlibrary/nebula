@@ -1,10 +1,10 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018-2021 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
 # nebula::profile::afs
 #
-# Manage OpenAFS and kerberos.
+# Manage OpenAFS.
 #
 # If you're setting up a new machine, you'll need to reboot it after
 # puppet's run all this. If you'd rather take a hands-off approach, you
@@ -22,7 +22,6 @@
 #   no longer automatically reboot the machine
 # @param cache_size debconf openafs-client/cachesize
 # @param cell debconf openafs-client/thiscell
-# @param realm debconf krb5-config/default_realm
 #
 # @example
 #   include nebula::profile::afs
@@ -30,10 +29,9 @@ class nebula::profile::afs (
   String  $allow_auto_reboot_until,
   Integer $cache_size,
   String  $cell,
-  String  $realm,
 ) {
 
-  include nebula::profile::networking::keytab
+  include nebula::profile::krb5
 
   if nebula::date_is_in_the_future($allow_auto_reboot_until) {
     reboot { 'afs':
@@ -42,9 +40,7 @@ class nebula::profile::afs (
     }
   }
 
-  package { 'krb5-user': }
   package { 'libpam-afs-session': }
-  package { 'libpam-krb5': }
   package { 'openafs-client': }
   package { 'openafs-krb5': }
   package { 'openafs-modules-dkms': }
@@ -54,11 +50,6 @@ class nebula::profile::afs (
     creates => "/lib/modules/${::kernelrelease}/updates/dkms/openafs.ko",
     timeout => 600,
     require => Package['openafs-modules-dkms'],
-  }
-
-  debconf { 'krb5-config/default_realm':
-    type  => 'string',
-    value => $realm,
   }
 
   debconf { 'openafs-client/thiscell':
