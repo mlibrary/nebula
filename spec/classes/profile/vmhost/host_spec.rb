@@ -14,6 +14,10 @@ describe 'nebula::profile::vmhost::host' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
+      it do
+        is_expected.to contain_file('/etc/default/libvirt-guests')
+      end
+
       context 'when given nothing' do
         it { is_expected.not_to contain_vm('vmname') }
       end

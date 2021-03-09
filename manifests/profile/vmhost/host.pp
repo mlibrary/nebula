@@ -30,6 +30,9 @@ class nebula::profile::vmhost::host (
   String  $local_storage_size = '',
 ) {
 
+  file { '/etc/default/libvirt-guests':
+    content => template('nebula/profile/vmhost/defaults.sh.erb'),
+  }
 
   if $local_storage != '' {
     logical_volume { 'vmimages':
