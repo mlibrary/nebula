@@ -13,6 +13,13 @@ describe 'nebula::profile::scales' do
       it { is_expected.to compile }
 
       it { is_expected.to contain_nebula__usergroup('clearinghouse') }
+
+      it do
+        is_expected.to contain_nebula__exposed_port('100 SSH Umich VPN').with(
+          port: 22,
+          block: 'umich::networks::umich_vpn',
+        )
+      end
     end
   end
 end
