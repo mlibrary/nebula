@@ -78,7 +78,7 @@ groups:
                                     device!="rootfs"}[10m],
         4 * 60 * 60
       ) < 0
-    for: 30m
+    for: 60m
     labels:
       severity: info
   - alert: DiskPressure
