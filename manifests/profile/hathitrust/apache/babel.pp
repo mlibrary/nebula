@@ -17,8 +17,8 @@ class nebula::profile::hathitrust::apache::babel (
   String $prefix,
   String $domain,
   String $gwt_code,
-  String $useradmin_endpoint,
-  String $useradmin_basic_auth,
+  String $otis_endpoint,
+  String $otis_basic_auth,
   Array[String] $cache_paths = [ ],
 ) {
 
@@ -207,7 +207,7 @@ class nebula::profile::hathitrust::apache::babel (
 
       {
         # user administration ruby application
-        rewrite_rule =>  ["^(/usermanage.*)$ ${useradmin_endpoint}\$1 [P]"]
+        rewrite_rule =>  ["^(/otis.*)$ ${otis_endpoint}\$1 [P]"]
       },
 
     ],
@@ -289,11 +289,11 @@ class nebula::profile::hathitrust::apache::babel (
       },
       {
         provider              => 'location',
-        path                  => '/usermanage',
+        path                  => '/otis',
         auth_type             => 'shibboleth',
         require               => 'shibboleth',
         shib_request_settings => { 'requireSession' => '0'},
-        request_headers       => ["set Authorization \"Basic ${useradmin_basic_auth}\""],
+        request_headers       => ["set Authorization \"Basic ${otis_basic_auth}\""],
       },
 
     ],
