@@ -43,7 +43,6 @@ class nebula::profile::www_lib::php (
   #
   ensure_packages (
     [
-      "php${default_php_version}-common",
       "php${default_php_version}-geoip",
       "php${default_php_version}-igbinary",
       "php${default_php_version}-imagick",
