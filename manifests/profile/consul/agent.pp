@@ -6,6 +6,7 @@ class nebula::profile::consul::agent (
   $gossip_encryption_key = '',
   $pems = {},
   $ca = '',
+  $hostname = $::hostname,
 ) {
   package { 'consul':
     require => Apt::Source['hashicorp'],
