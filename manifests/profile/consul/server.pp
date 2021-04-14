@@ -3,7 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 
 class nebula::profile::consul::server {
-  include nebula::profile::consul::client
+  include nebula::profile::consul::agent
 
   nebula::exposed_port {
     default:

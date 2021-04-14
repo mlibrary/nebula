@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-class nebula::profile::consul::client {
+class nebula::profile::consul::agent {
   package { 'consul':
     require => Apt::Source['hashicorp'],
   }

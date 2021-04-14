@@ -5,7 +5,7 @@
 class nebula::role::gateway::backup {
   include nebula::role::minimum
 
-  include nebula::profile::consul::client
+  include nebula::profile::consul::agent
   include nebula::profile::nat_router
   include nebula::profile::keepalived::backup
 }
