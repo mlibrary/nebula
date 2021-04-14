@@ -2,9 +2,38 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-class nebula::profile::consul::agent {
+class nebula::profile::consul::agent (
+  $gossip_encryption_key = '',
+  $pems = {},
+  $ca = '',
+) {
   package { 'consul':
     require => Apt::Source['hashicorp'],
+  }
+
+  file { '/etc/consul.d':
+    ensure => 'directory',
+    owner  => 'consul',
+    group  => 'consul',
+  }
+
+  file { '/etc/consul.d/consul-agent-ca.pem':
+    content => $ca,
+    owner   => 'consul',
+    group   => 'consul',
+    mode    => '0644',
+  }
+
+  $pems.each |$filename, $content| {
+    file { "/etc/consul.d/${filename}":
+      content => $content,
+      owner   => 'consul',
+      group   => 'consul',
+      mode    => $filename ? {
+        /^.*-key\.pem$/ => '0640',
+        default         => '0644',
+      },
+    }
   }
 
   apt::source { 'hashicorp':
