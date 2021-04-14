@@ -1,5 +1,6 @@
 datacenter = "hatcher-umich"
 node_name = "hatcher-umich-<%= @hostname %>"
+retry_join = "10.255.1.10"
 bind_addr = "<%= @bind_address %>"
 data_dir = "/opt/consul"
 encrypt = "<%= @gossip_encryption_key %>"
