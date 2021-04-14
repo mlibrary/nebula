@@ -36,6 +36,13 @@ class nebula::profile::consul::agent (
     }
   }
 
+  file { '/etc/consul.d/consul.hcl':
+    content => template('nebula/profile/consul/agent.hcl.erb'),
+    owner   => 'consul',
+    group   => 'consul',
+    mode    => '0640',
+  }
+
   apt::source { 'hashicorp':
     location => 'https://apt.releases.hashicorp.com',
     release  => $facts['os']['distro']['codename'],

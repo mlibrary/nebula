@@ -5,6 +5,13 @@
 class nebula::profile::consul::server {
   include nebula::profile::consul::agent
 
+  file { '/etc/consul.d/server.hcl':
+    content => template('nebula/profile/consul/server.hcl.erb'),
+    owner   => 'consul',
+    group   => 'consul',
+    mode    => '0640',
+  }
+
   nebula::exposed_port {
     default:
       block => 'umich::networks::private_lan',
