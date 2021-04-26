@@ -100,7 +100,6 @@ class nebula::profile::www_lib::apache (
       'open.umich.edu',
       'michiganelt.org',
       'med.lib.umich.edu',
-      'mirlyn.lib.umich.edu',
       'staff.lib.umich.edu',
       'search.lib.umich.edu',
       'www.digitalculture.org',
@@ -141,14 +140,4 @@ class nebula::profile::www_lib::apache (
   include nebula::profile::www_lib::vhosts::midaily
   include nebula::profile::www_lib::vhosts::publishing
   include nebula::profile::www_lib::vhosts::med
-
-  nebula::apache::mirlyn_vhost { 'mirlyn':
-    domain  => 'lib.umich.edu',
-    app_url => 'http://app-mirlyn-api-production:30730/',
-  }
-  nebula::apache::mirlyn_vhost { 'm.mirlyn':
-    domain  => 'lib.umich.edu',
-    app_url => 'http://app-mirlyn-api-production:30730/',
-    prefix  => 'm.',
-  }
 }
