@@ -53,11 +53,6 @@ class nebula::profile::www_lib::vhosts::deepblue (
 
     rewrites                      => [
       {
-        comment      => 'Deep Blue Repositories home page is on www.lib now',
-        rewrite_cond => '%{REQUEST_URI} ^((\/?|/index.html)$|/splash/)',
-        rewrite_rule => '^(.*)$	https://www.lib.umich.edu/collections/deep-blue-repositories [R=permanent, L]'
-      },
-      {
         # XXX: Is this really still an issue?
         # Workaround critical DSpace security bug until there is a patch.
         #
@@ -75,8 +70,8 @@ class nebula::profile::www_lib::vhosts::deepblue (
         rewrite_rule => '^(/data.*)$ https://app-deepbluedata.deepblue.lib.umich.edu:30060$1 [P]',
       },
       {
-        comment      => 'Deep Blue Documents; dont proxy cosign',
-        rewrite_cond => '%{REQUEST_URI} !^(/cosign/valid)',
+        comment      => 'Deep Blue Documents; dont proxy cosign or the common splash page',
+        rewrite_cond => '%{REQUEST_URI} !^((\/?|/index.html)$|/splash/|/cosign/valid)',
         rewrite_rule => '^(.*)$	http://bulleit-2.umdl.umich.edu:8080$1 [P]'
       },
       {
