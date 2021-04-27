@@ -75,9 +75,9 @@ class nebula::profile::prometheus::exporter::node (
   }
 
   file { '/etc/cron.dail/check-reboot':
-    owner => 'root',
-    group => 'root',
-    mode  => '0755',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
     content => template('nebula/profile/prometheus/exporter/node/check_reboot.sh.erb'),
   }
 
