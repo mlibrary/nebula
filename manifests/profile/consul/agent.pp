@@ -14,9 +14,10 @@ class nebula::profile::consul::agent (
   }
 
   file { '/etc/consul.d':
-    ensure => 'directory',
-    owner  => 'consul',
-    group  => 'consul',
+    ensure  => 'directory',
+    owner   => 'consul',
+    group   => 'consul',
+    require => Package['consul'],
   }
 
   file { '/etc/consul.d/consul-agent-ca.pem':
