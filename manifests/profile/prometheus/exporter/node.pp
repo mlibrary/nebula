@@ -108,7 +108,7 @@ class nebula::profile::prometheus::exporter::node (
   realize User['prometheus']
 
   $role = lookup_role()
-  $ipaddress = public_ip()
+  $ipaddress = $::ipaddress
   $datacenter = $::datacenter
   $hostname = $::hostname
 
