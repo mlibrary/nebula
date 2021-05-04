@@ -58,29 +58,6 @@ marsala:
       command: 'bash -c "export PATH=/l/local/rbenv/bin:/l/local/rbenv/shims:\$PATH; /usr/sbin/logrotate -s /www/www.mblem/app/releases/20140228204112/log/rotate.state /www/www.mblem/app/releases/20140228204112/log/rotate.conf >> /www/www.mblem/app/releases/20140228204112/log/cron.log 2>&1"'
 porter:
   nebula::profile::www_lib::cron::extra_jobs:
-    'Pull down the latest High Level Browse extract':
-      user: 'libadm'
-      environment: ['MAILTO=timothy@umich.edu']
-      hour: 19
-      minute: 48
-      command: '/usr/bin/perl /www/vufind/hlb3/hlb3_extract.pl > /www/vufind/web/mirlyn/web/static/hlb3/hlb3.json'
-    'Generate facet values from solr for use in Advanced search (e.g. list of languages)':
-      user: 'libadm'
-      environment: ['MAILTO=timothy@umich.edu']
-      hour: 19
-      minute: 49
-      command: '/bin/bash /www/vufind/facetlists/getall.sh'
-    'Clean out expired sessions every 15mn':
-      user: 'libadm'
-      environment: ['MAILTO=timothy@umich.edu']
-      minute: [0, 15, 30, 45]
-      command: '/usr/bin/perl /www/vufind/cronjobs/clean_sessions.pl'
-    'Get the HT namespace mapping for use in display':
-      user: 'libadm'
-      environment: ['MAILTO=timothy@umich.edu']
-      hour: 3
-      minute: 8
-      command: '/usr/bin/php /www/vufind/cronjobs/getHTNamespaceMap.php > /www/vufind/facetlists/ht_namespaces.php'
     'Datamart: update valuemaps':
       user: 'libadm'
       environment: ['MAILTO=timothy@umich.edu']

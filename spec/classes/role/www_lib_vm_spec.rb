@@ -142,28 +142,6 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('vufind-http-mirlyn')
-          .with_servername('mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-https-mirlyn')
-          .with_ssl_cert('/etc/ssl/certs/mirlyn.lib.umich.edu.crt')
-          .with_servername('mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-http-m.mirlyn')
-          .with_servername('m.mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-https-m.mirlyn')
-          .with_ssl_cert('/etc/ssl/certs/mirlyn.lib.umich.edu.crt')
-          .with_servername('m.mirlyn.lib.umich.edu')
-      end
-
-      it do
         is_expected.to contain_apache__vhost('staff.lib http redirect')
           .with_servername('staff.lib.umich.edu')
       end
