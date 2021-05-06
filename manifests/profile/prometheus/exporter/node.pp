@@ -74,6 +74,13 @@ class nebula::profile::prometheus::exporter::node (
     content => template('nebula/profile/prometheus/exporter/node/node_exporter_errors.prom.erb'),
   }
 
+  file { '/etc/cron.daily/check-reboot':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/prometheus/exporter/node/check_reboot.sh.erb'),
+  }
+
   file { $log_file:
     owner   => 'root',
     group   => 'adm',
