@@ -49,6 +49,6 @@ class nebula::profile::apt_mirror (
     user    => 'apt-mirror',
     minute  => '0',
     hour    => '4',
-    weekday => 'SAT',
+    weekday => 'SUN',
   }
 }
