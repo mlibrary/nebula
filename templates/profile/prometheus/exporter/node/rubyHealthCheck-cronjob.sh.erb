@@ -1,0 +1,10 @@
+#!/bin/bash
+#Managed By Puppet
+#This file is mean to run as a cron job in /etc/cron.daily. It calls the testall.sh script
+#This script will all direct its output into a prom file for prometheus to scrape
+#
+export PATH=/l/local/rbenv/shims:/l/local/rbenv/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export RBENV_ROOT=/l/local/rbenv
+PROMFILE=/var/lib/prometheus/node-exporter/ruby_health_check.prom
+
+/usr/local/rubytests/testall.sh > $PROMFILE

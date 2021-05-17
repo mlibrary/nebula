@@ -81,6 +81,31 @@ class nebula::profile::prometheus::exporter::node (
     content => template('nebula/profile/prometheus/exporter/node/check_reboot.sh.erb'),
   }
 
+  file { '/usr/local/rubytests/':
+    ensure  => 'directory',
+  }
+
+  file { '/etc/cron.daily/ruby-health-check':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/prometheus/exporter/node/rubyHealthCheck-cronjob.sh.erb'),
+  }
+
+  file { '/usr/local/rubytests/testall.sh':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/prometheus/exporter/node/rubyHealthCheck-testall.sh.erb'),
+  }
+
+  file { '/usr/local/rubytests/testruby.sh':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/prometheus/exporter/node/rubyHealthCheck-testruby.sh.erb'),
+  }
+
   file { $log_file:
     owner   => 'root',
     group   => 'adm',
