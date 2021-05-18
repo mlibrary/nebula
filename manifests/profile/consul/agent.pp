@@ -17,6 +17,8 @@ class nebula::profile::consul::agent (
     ensure  => 'directory',
     owner   => 'consul',
     group   => 'consul',
+    recurse => true,
+    purge   => true,
     require => Package['consul'],
   }
 
