@@ -33,7 +33,6 @@ class nebula::role::webhost::www_lib_vm (
 
   class { 'nebula::profile::shibboleth':
     config_source    => 'puppet:///shibboleth-www_lib',
-    startup_timeout  => 1800,
     watchdog_minutes => '*/30',
   }
 

@@ -27,9 +27,9 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it { is_expected.to contain_apache__vhost('000-default-ssl').with(ssl: true, ssl_cert: '/etc/ssl/certs/www.lib.umich.edu.crt') }
 
-      it do
+      it 'configures shibboleth' do
         is_expected.to contain_class('nebula::profile::shibboleth')
-          .with(startup_timeout: 1800)
+          .with(startup_timeout: 900)
           .with(watchdog_minutes: '*/30')
       end
 
