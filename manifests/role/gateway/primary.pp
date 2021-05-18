@@ -9,6 +9,8 @@ class nebula::role::gateway::primary {
   include nebula::profile::nat_router
   include nebula::profile::keepalived::primary
 
+  service { 'consul': }
+
   docker::run { 'fake-service':
     image => 'nicholasjackson/fake-service:v0.7.8',
     ports => '9090:9090',
