@@ -33,7 +33,10 @@ class nebula::profile::hathitrust::solr_lss (
   String $home = "${base}/home",
   String $logs = "${base}/logs",
   String $heap = '32G',
-  Integer $port = 8983
+  Integer $port = 8983,
+  String $sudoers_group = "solr",
+  Optional[String] $authorized_keys = undef,
+  Array $networks = []
 ) {
 
   ensure_packages(['openjdk-8-jre-headless','solr','lsof'])
@@ -71,6 +74,49 @@ class nebula::profile::hathitrust::solr_lss (
       ensure  => 'directory',
       source  => 'puppet:///modules/nebula/solr_lss/lib',
       recurse => true
+  }
+
+  $networks.flatten.each |$network| {
+    firewall { "300 Solr ${network['name']}":
+      proto  => 'tcp',
+      dport  => [$port],
+      source => $network['block'],
+      state  => 'NEW',
+      action => 'accept',
+    }
+  }
+
+  # allow non-root users to control solr daemon
+  file {
+    default:
+      owner  => 'root',
+      group  => 'root';
+
+    '/etc/sudoers.d/solr':
+      mode   => '0440',
+      content => template('nebula/profile/hathitrust/solr_lss/sudoers.erb');
+
+    '/usr/local/bin/drop-cache':
+      mode   => '0755',
+      source => 'puppet:///modules/nebula/solr_lss/bin/drop-cache'
+  }
+
+  # allow ssh to solr user
+  $solr_user_home = lookup('nebula::virtual::users::all_users')['solr']['home']
+  if $authorized_keys {
+    file {
+      default:
+        owner  => 'solr',
+        group  => 'solr';
+
+      "${solr_user_home}/.ssh":
+        ensure => 'directory',
+        mode   => '0700';
+
+      "${solr_user_home}/.ssh/authorized_keys":
+        mode    => '0600',
+        content => $authorized_keys
+    }
   }
 
   $coredata.each |$core,$path| {

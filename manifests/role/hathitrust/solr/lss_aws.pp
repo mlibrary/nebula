@@ -10,4 +10,5 @@
 class nebula::role::hathitrust::solr::lss_aws {
   include nebula::role::aws
   include nebula::profile::hathitrust::solr_lss
+  include nebula::profile::node_info
 }
