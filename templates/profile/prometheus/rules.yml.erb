@@ -157,6 +157,13 @@ groups:
     for: 1h
     labels:
       severity: ticket
+  - alert: MoreThanOneDeviceClaimingOneIP
+    annotations:
+      summary: 'More than one device claiming {{$labels.instance}}.'
+    expr: 'count by (instance) (up) > 1'
+    for: 5m
+    labels:
+      severity: ticket
 
   - alert: WwwLibPressFcgiUnreachable
     annotations:
