@@ -169,3 +169,5 @@ umich::networks::private_blocks:
 - 192.168.0.0/16
 
 nebula::profile::falcon::cid: default-invalid-cid
+nebula::profile::tsm::servername: tsmserver
+nebula::profile::tsm::serveraddress: tsm.default.invalid
