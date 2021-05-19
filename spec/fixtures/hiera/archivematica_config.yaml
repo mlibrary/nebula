@@ -1,8 +1,0 @@
----
-:backends:
-  - yaml
-:hierarchy:
-  - archivematica
-  - default
-:yaml:
-  :datadir: 'spec/fixtures/hiera'

@@ -14,4 +14,5 @@ class nebula::role::hathitrust::prep_app_host {
   include nebula::profile::python
   include nebula::profile::ruby
   include nebula::profile::docker
+  include nebula::profile::tsm
 }
