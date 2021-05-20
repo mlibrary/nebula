@@ -12,7 +12,7 @@ class nebula::profile::logrotate {
   logrotate::rule {
     default:
       missingok    => true,
-      rotate_every => 'month',
+      rotate_every => 'week',
       create       => true,
       create_mode  => '0660',
       create_owner => 'root',
