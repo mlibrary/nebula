@@ -12,6 +12,8 @@ nebula::profile::hathitrust::imgsrv::bind: '127.0.0.1:31028'
 nebula::profile::hathitrust::apache::babel::gwt_code: 'somecode'
 nebula::profile::hathitrust::apache::babel::otis_endpoint: 'https://otis.default.invalid:3000'
 nebula::profile::hathitrust::apache::babel::otis_basic_auth: 'ZmFrZV91c2VyOmZha2VfcGFzc3dvcmQ='
+nebula::profile::hathitrust::apache::babel::dex_endpoint: 'https://dex.default.invalid:3000'
+nebula::profile::hathitrust::apache::babel::dex_basic_auth: 'ZmFrZV91c2VyOmZha2VfcGFzc3dvcmQ='
 
 nebula::profile::hathitrust::hosts::mysql_sdr: '10.1.2.4'
 nebula::profile::hathitrust::hosts::mysql_htdev: '2.2.2.2'
