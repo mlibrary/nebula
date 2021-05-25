@@ -1,12 +1,12 @@
 #!/bin/bash
-#Managed By Puppet
-#
+# Managed By Puppet (nebula/profile/ruby/testruby.sh.erb)
 
 VER="$1"
 if [ -z "$VER" ]; then
   echo 'Usage ./testruby.sh <version>'
   exit 1
 fi
+rm -r "$VER"
 mkdir "$VER"
 pushd "$VER"
 echo "$VER" > .ruby-version

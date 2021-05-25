@@ -1,8 +1,8 @@
 #!/bin/bash
-#Managed By Puppet
-#
+# Managed By Puppet (nebula/profile/ruby/testall.sh.erb)
+
 cd /usr/local/rubytests/
-RBENVVER="$(/l/local/rbenv/bin/rbenv version)"
+RBENVVER="$(rbenv version)"
 
 if [ $? -ne 0 ]; then
   echo "rbenv version can't run... source the profile setup before trying to test"
@@ -12,7 +12,7 @@ fi
 echo '# HELP ruby_heath_check Check Health of Ruby Version'
 echo '# TYPE ruby_health_check gauge'
 
-for VER in $(/l/local/rbenv/bin/rbenv versions | sed -e 's/..//' | cut -f 1 -d ' ')
+for VER in $(rbenv versions | sed -e 's/..//' | cut -f 1 -d ' ')
 do
   ./testruby.sh $VER > /dev/null 2>&1
   if [ $? -ne 0 ]; then
@@ -20,7 +20,4 @@ do
   else
     echo "ruby_health_check{version=\"${VER}\"} 1"
   fi
-
-  #Clean up ruby version test directories
-  rm -r $VER
 done
