@@ -219,7 +219,7 @@ class nebula::profile::hathitrust::apache::babel (
         # see explanation: https://github.com/hathitrust/ht_kubernetes/blob/master/htrc-dex/README.md
         rewrite_map  => 'unescape int:unescape',
         rewrite_cond => ['"%{QUERY_STRING}" "(.*(?:^|&))entityID=([^&]*)&?(.*)&?$"'],
-        rewrite_rule => ["\"(^/dex/auth)\" \"https://%{HTTP_HOST}/Shibboleth.sso/Login?entityID=\${unescape:%2}&target=https\\%3A\\%2F\\%2F%{HTTP_HOST}\\%2Fdex\\%2Fauth\\%3F%1%3}\" [B,NE,L,R]"],
+        rewrite_rule => ["\"(^/dex/auth)\" \"https://%{HTTP_HOST}/Shibboleth.sso/Login?entityID=\${unescape:%2}&target=https\\%3A\\%2F\\%2F%{HTTP_HOST}\\%2Fdex\\%2Fauth\\%3F%1%3\" [B,NE,L,R]"],
       },
 
     ],
