@@ -19,6 +19,8 @@ class nebula::profile::hathitrust::apache::babel (
   String $gwt_code,
   String $otis_endpoint,
   String $otis_basic_auth,
+  String $dex_endpoint,
+  String $dex_basic_auth,
   Array[String] $cache_paths = [ ],
 ) {
 
@@ -210,6 +212,16 @@ class nebula::profile::hathitrust::apache::babel (
         rewrite_rule =>  ["^(/otis.*)$ ${otis_endpoint}\$1 [P]"]
       },
 
+      {
+        # handle entityID hint for dex oidc <-> saml proxy - redirect user to
+        # /Shibboleth.sso and consume the entityID parameter on return
+        # 
+        # see explanation: https://github.com/hathitrust/ht_kubernetes/blob/master/htrc-dex/README.md
+        rewrite_map  => 'unescape int:unescape',
+        rewrite_cond => ['"%{QUERY_STRING}" "(.*(?:^|&))entityID=([^&]*)&?(.*)&?$"'],
+        rewrite_rule => ["\"(^/dex/auth)\" \"https://%{HTTP_HOST}/Shibboleth.sso/Login?entityID=\${unescape:%2}&target=https\\%3A\\%2F\\%2F%{HTTP_HOST}\\%2Fdex\\%2Fauth\\%3F%1%3}\" [B,NE,L,R]"],
+      },
+
     ],
 
     directories                 => [
@@ -295,6 +307,28 @@ class nebula::profile::hathitrust::apache::babel (
         shib_request_settings => { 'requireSession' => '0'},
         request_headers       => ["set Authorization \"Basic ${otis_basic_auth}\""],
       },
+      {
+        provider              => 'location',
+        path                  => '/dex/',
+        auth_type             => 'shibboleth',
+        require               => 'shibboleth',
+        shib_request_settings => { 'requireSession' => '0'},
+        request_headers       => ['unset X-Remote-User',
+                            "set Authorization \"Basic ${dex_basic_auth}\""],
+        proxy_pass            => [ { url =>$dex_endpoint }],
+      },
+      {
+        provider              => 'location',
+        path                  => '/dex/callback/htrc-saml-proxy',
+        auth_type             => 'shibboleth',
+        require               => 'valid-user',
+        shib_request_settings => { 'requireSession' => '1'},
+        request_headers       => [
+          'set X-Remote-User "expr=%{REMOTE_USER}',
+          "set Authorization \"Basic ${dex_basic_auth}\""
+        ],
+        proxy_pass            => [ { url =>"${dex_endpoint}callback/htrc-saml-proxy" }],
+      }
 
     ],
 
