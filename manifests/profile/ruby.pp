@@ -108,4 +108,29 @@ class nebula::profile::ruby (
       }
     }
   }
+
+  file { '/usr/local/rubytests/':
+    ensure  => 'directory',
+  }
+
+  file { '/etc/cron.daily/ruby-health-check.sh':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/ruby/ruby-health-check.sh.erb'),
+  }
+
+  file { '/usr/local/rubytests/testall.sh':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/ruby/testall.sh.erb'),
+  }
+
+  file { '/usr/local/rubytests/testruby.sh':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/ruby/testruby.sh.erb'),
+  }
 }
