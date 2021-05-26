@@ -21,7 +21,7 @@ class nebula::role::gateway::primary {
 
   file { '/etc/consul.d/connect-web.json':
     notify  => Service['consul'],
-    content => @(SERVICE_EOF)
+    content => @("SERVICE_EOF")
       {
         "service": {
           "name": "web",

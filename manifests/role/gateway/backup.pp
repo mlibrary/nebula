@@ -21,7 +21,7 @@ class nebula::role::gateway::backup {
 
   file { '/etc/consul.d/connect-api-v1.json':
     notify  => Service['consul'],
-    content => @(SERVICE_EOF)
+    content => @("SERVICE_EOF")
       {
         "service": {
           "name": "api-v1",
