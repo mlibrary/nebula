@@ -8,6 +8,7 @@ class nebula::profile::consul::agent (
   $ca = '',
   $hostname = $::hostname,
   $bind_address = $facts['networking']['interfaces']['ens4']['ip'],
+  $token = '',
 ) {
   package { 'consul':
     require => Apt::Source['hashicorp'],
