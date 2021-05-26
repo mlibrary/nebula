@@ -9,6 +9,7 @@ class nebula::profile::kubernetes::dns_server {
   $kube_api_address = $cluster['kube_api_address']
   $node_cidr = $cluster['node_cidr']
   $private_domain = $cluster['private_domain']
+  $private_zones = $cluster['private_zones']
 
   package { 'dnsmasq': }
 
@@ -51,6 +52,15 @@ class nebula::profile::kubernetes::dns_server {
       content => template('nebula/profile/kubernetes/dns/hosts_06_ipv6_debian.erb'),
       order   => '06',
     ;
+  }
+
+  if $private_zones {
+    $private_zones.each |Hash $zone| {
+      file { "/etc/dnsmasq.d/${$zone[name]}":
+        content => "server=/${$zone[domain]}/${$zone[resolver]}\n",
+        notify  => Service['dnsmasq']
+      }
+    }
   }
 
   firewall {
