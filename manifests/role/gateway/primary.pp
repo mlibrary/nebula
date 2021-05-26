@@ -9,6 +9,8 @@ class nebula::role::gateway::primary {
   include nebula::profile::nat_router
   include nebula::profile::keepalived::primary
 
+  $token = lookup('nebula::profile::consul::service_tokens')['api-v1']
+
   service { 'consul': }
 
   docker::run { 'fake-service':
@@ -24,6 +26,14 @@ class nebula::role::gateway::primary {
         "service": {
           "name": "web",
           "port": 9090,
+          "token": "${token}",
+          "check": {
+            "id": "web-check",
+            "http": "http://localhost:9090/health",
+            "method": "GET",
+            "interval": "1s",
+            "timeout": "1s"
+          },
           "connect": {
             "sidecar_service": {
               "proxy": {

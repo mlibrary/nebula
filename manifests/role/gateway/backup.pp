@@ -9,6 +9,8 @@ class nebula::role::gateway::backup {
   include nebula::profile::nat_router
   include nebula::profile::keepalived::backup
 
+  $token = lookup('nebula::profile::consul::service_tokens')['api-v1']
+
   service { 'consul': }
 
   docker::run { 'fake-service':
@@ -24,6 +26,14 @@ class nebula::role::gateway::backup {
         "service": {
           "name": "api-v1",
           "port": 9090,
+          "token": "${token}",
+          "check": {
+            "id": "api-v1-check",
+            "http": "http://localhost:9090/health",
+            "method": "GET",
+            "interval": "1s",
+            "timeout": "1s"
+          },
           "connect": {
             "sidecar_service": {}
           }
