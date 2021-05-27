@@ -3,8 +3,6 @@
 # This file is meant to run as a cron job in /etc/cron.daily. It calls the testall.sh script
 # This script will all direct its output into a prom file for prometheus to scrape
 
-export PATH=<%= @install_dir %>/shims:<%= @install_dir %>/bin:/usr/local/bin:/usr/local/sbin:$PATH
-export RBENV_ROOT=<%= @install_dir %>
 PROMFILE=/var/lib/prometheus/node-exporter/ruby_health_check.prom
 
 /usr/local/rubytests/testall.sh > $PROMFILE
