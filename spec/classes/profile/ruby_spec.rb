@@ -61,7 +61,7 @@ describe 'nebula::profile::ruby' do
       it { is_expected.to contain_rbenv__build('2.4.3').with_global(true) }
       it { is_expected.to contain_rbenv__build('2.5.0').with_global(false) }
 
-      it { is_expected.to contain_file('/etc/cron.daily/ruby-health-check.sh').with_content(%r{PATH=/opt/rbenv}) }
+      it { is_expected.to contain_file('/etc/cron.daily/ruby-health-check') }
 
       context 'when given install_dir of /usr/local/rbenv' do
         let(:params) { { install_dir: '/usr/local/rbenv' } }
@@ -73,7 +73,7 @@ describe 'nebula::profile::ruby' do
         end
 
         it { is_expected.to contain_rbenv__build('2.4.3').with_global(true) }
-        it { is_expected.to contain_file('/etc/cron.daily/ruby-health-check.sh').with_content(%r{PATH=/usr/local/rbenv}) }
+        it { is_expected.to contain_file('/etc/cron.daily/ruby-health-check') }
       end
 
       context 'when given supported_versions of [2.4.1]' do

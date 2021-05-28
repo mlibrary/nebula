@@ -2,6 +2,8 @@
 # Managed By Puppet (nebula/profile/ruby/testall.sh.erb)
 
 cd /usr/local/rubytests/
+export PATH=<%= @install_dir %>/shims:<%= @install_dir %>/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export RBENV_ROOT=<%= @install_dir %>
 RBENVVER="$(rbenv version)"
 
 if [ $? -ne 0 ]; then

@@ -113,7 +113,7 @@ class nebula::profile::ruby (
     ensure  => 'directory',
   }
 
-  file { '/etc/cron.daily/ruby-health-check.sh':
+  file { '/etc/cron.daily/ruby-health-check':
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
