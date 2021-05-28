@@ -9,7 +9,7 @@ class nebula::role::gateway::primary {
   include nebula::profile::nat_router
   include nebula::profile::keepalived::primary
 
-  $token = lookup('nebula::profile::consul::service_tokens')['api-v1']
+  $token = lookup('nebula::profile::consul::service_tokens')['web']
 
   service { 'consul': }
 
