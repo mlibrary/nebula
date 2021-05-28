@@ -15,8 +15,10 @@ class nebula::role::gateway::backup {
 
   docker::run { 'fake-service':
     image => 'nicholasjackson/fake-service:v0.7.8',
-    ports => '9090:9090',
-    env   => ['LISTEN_ADDR=0.0.0.0:9090', 'NAME=api-v1', 'MESSAGE=Response from API v1'],
+    net   => 'host',
+    env   => ['LISTEN_ADDR=127.0.0.1:9090',
+              'NAME=api-v1',
+              'MESSAGE=Response from API v1'],
   }
 
   file { '/etc/consul.d/connect-api-v1.json':

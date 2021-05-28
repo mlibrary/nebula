@@ -15,8 +15,11 @@ class nebula::role::gateway::primary {
 
   docker::run { 'fake-service':
     image => 'nicholasjackson/fake-service:v0.7.8',
-    ports => '9090:9090',
-    env   => ['LISTEN_ADDR=0.0.0.0:9090', 'NAME=web', 'MESSAGE=Hello I am a website', 'UPSTREAM_URIS=http://localhost:9091'],
+    net   => 'host',
+    env   => ['LISTEN_ADDR=0.0.0.0:9090',
+              'NAME=web',
+              'MESSAGE=Hello I am a website',
+              'UPSTREAM_URIS=http://localhost:9091'],
   }
 
   file { '/etc/consul.d/connect-web.json':
