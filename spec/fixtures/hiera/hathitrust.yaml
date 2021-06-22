@@ -130,3 +130,21 @@ nebula::role::hathitrust::backup::tsm_servername: tsmserver
 nebula::role::hathitrust::backup::tsm_serveraddress: tsm.default.invalid
 
 nebula::role::hathitrust::ingest_indexing::dataden_target: dataden.default.invalid:/dataden/hathitrust
+
+nebula::profile::hathitrust::rsync::datasets:
+  dataset1:
+    comment: "Dataset 1"
+    path: "/datasets/dataset1"
+    users:
+      - comment: "Test User 1, University of East Westtestland, testuser1@default.invalid"
+        ip: '192.0.2.102'
+      - comment: "Test User 2, University of West Easttestland, testuser2@default.invalid"
+        ip: '198.51.100.10'
+  dataset2:
+    comment: "Dataset 2"
+    path: "/datasets/dataset2"
+    users:
+      - comment: "Test User 3, University of East Westtestland, testuser3@default.invalid"
+        ip: '192.0.2.108'
+      - comment: "Test User 4, University of West Easttestland, testuser4@default.invalid"
+        ip: '198.51.100.15'

@@ -1,0 +1,23 @@
+# File managed by puppet; changes here will be lost.
+
+# Share PD data sets to partners and researchers.
+# See the iptables config or hosts.allow for comments on the allowed IPs.
+#
+# Note: we can't let rsync use chroot because of the symlinks that must be
+# followed.
+
+uid       = <%= @rsync_user %>
+list      = false
+read only = true
+
+<% @datasets.each do |name, dataset| %>
+[<%= name %>]
+  comment     = <%= dataset['comment'] %>
+  path        = <%= dataset['path'] %>
+  log file    = <%= "#{@log_path}/#{name}.log" %>
+  use chroot  = false
+  hosts allow = \
+  <% dataset['users'].each do |user| -%>
+    <%= user['ip'] %> \
+  <% end -%>
+<% end %>
