@@ -24,7 +24,7 @@ class nebula::profile::aleph::perl () {
 
   nebula::cpan { [
     'MARC::File::XML',
-    'SMS::Send::Twilio',
+    'SMS::Send::Twilio']:
   }
 
 }
