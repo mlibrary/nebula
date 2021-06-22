@@ -23,5 +23,5 @@ class nebula::role::hathitrust::datasets (
   }
 
   include nebula::profile::hathitrust::rsync
-  #  include nebula::profile::hathitrust::secure_rsync
+  include nebula::profile::hathitrust::secure_rsync
 }

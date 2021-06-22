@@ -148,3 +148,13 @@ nebula::profile::hathitrust::rsync::datasets:
         ip: '192.0.2.108'
       - comment: "Test User 4, University of West Easttestland, testuser4@default.invalid"
         ip: '198.51.100.15'
+
+nebula::profile::hathitrust::secure_rsync::allowed_networks:
+  - "%{alias('networks::one')}"
+  - name: 'secure network'
+    range: '192.0.2.1-192.0.2.4'
+
+nebula::profile::hathitrust::secure_rsync::datasets:
+  secure_dataset:
+    comment: "Secure Dataset"
+    path: "/datasets/secure_dataset"

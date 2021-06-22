@@ -1,0 +1,14 @@
+[Unit]
+Description=Secure rsync
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=<%= @rsync_home %>
+ExecStart=/usr/bin/stunnel <%= @rsync_home %>/stunnel.conf
+RemainAfterExit=no
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
