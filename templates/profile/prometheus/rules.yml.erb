@@ -38,6 +38,14 @@ groups:
     for: 2h
     labels:
       severity: ticket
+  - alert: RunningOutOfRam
+    annotations:
+      summary: 'Linux node {{$labels.hostname}} is running out of RAM'
+    # Less than 250M free
+    expr: 'node_memory_MemAvailable_bytes < 250000000'
+    for: 10m
+    labels:
+      severity: page
   - alert: LinuxInstanceDown
     annotations:
       summary: 'Linux node {{$labels.hostname}} isn''t responding to Prometheus.'
