@@ -1,0 +1,14 @@
+foreground=yes
+
+[rsync]
+accept=<%= @stunnel_port %>
+cert=<%= @rsync_home %>/server.crt
+key=<%= @rsync_home %>/server.key
+client=no
+
+sslVersion=TLSv1.2
+ciphers=ECDHE-RSA-AES256-GCM-SHA384
+exec=/usr/bin/rsync
+execArgs=rsync --daemon --config <%= @rsync_home %>/rsyncd.conf
+verify=3
+CAfile=<%= @rsync_home %>/client.crt
