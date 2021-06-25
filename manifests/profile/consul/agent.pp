@@ -11,7 +11,11 @@ class nebula::profile::consul::agent (
   $token = '',
 ) {
   package { 'consul':
-    require => Apt::Source['hashicorp'],
+    require => [Apt::Source['hashicorp'], Package['getenvoy-envoy']],
+  }
+
+  package { 'getenvoy-envoy':
+    require => Apt::Source['envoy'],
   }
 
   file { '/etc/consul.d':
@@ -57,6 +61,15 @@ class nebula::profile::consul::agent (
       'source' => 'https://apt.releases.hashicorp.com/gpg',
     },
   }
+
+  apt::source { 'envoy':
+    location => 'https://dl.bintray.com/tetrate/getenvoy-deb',
+    release  => $facts['os']['distro']['codename'],
+    repos    => 'stable',
+    key      => {
+      'id'     => '5270CEAC57F63EBD9EA9005D0253D0B26FF974DB',
+      'source' => 'https://getenvoy.io/gpg',
+    },
 
   nebula::exposed_port {
     default:
