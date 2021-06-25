@@ -70,6 +70,7 @@ class nebula::profile::consul::agent (
       'id'     => '5270CEAC57F63EBD9EA9005D0253D0B26FF974DB',
       'source' => 'https://getenvoy.io/gpg',
     },
+  }
 
   nebula::exposed_port {
     default:
