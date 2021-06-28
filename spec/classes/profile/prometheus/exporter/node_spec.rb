@@ -63,11 +63,39 @@ describe 'nebula::profile::prometheus::exporter::node' do
           .that_requires('User[prometheus]')
       end
 
+      it { is_expected.to contain_package('curl') }
+
+      it do
+        is_expected.to contain_concat_file('/usr/local/bin/pushgateway')
+          .with_mode('0755')
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('01 pushgateway shebang')
+          .with_target('/usr/local/bin/pushgateway')
+          .with_content("#!/usr/bin/env bash\n")
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('03 main pushgateway content')
+          .with_target('/usr/local/bin/pushgateway')
+      end
+
       it "exports itself to the default datacenter's service discovery" do
         expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
           .with_tag('default_prometheus_node_service_list')
           .with_target('/etc/prometheus/nodes.yml')
           .with_content(%r{'#{facts[:ipaddress]}:9100'})
+      end
+
+      it "exports itself to the default datacenter's pushgateway" do
+        expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]}")
+          .with_tag('default_pushgateway_node')
+          .with_proto('tcp')
+          .with_dport(9091)
+          .with_source(facts[:ipaddress])
+          .with_state('NEW')
+          .with_action('accept')
       end
 
       context 'when our datacenter is covered' do
@@ -76,6 +104,11 @@ describe 'nebula::profile::prometheus::exporter::node' do
         it "exports itself to its datacenter's service discovery" do
           expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
             .with_tag('mydatacenter_prometheus_node_service_list')
+        end
+
+        it "exports itself to the default datacenter's pushgateway" do
+          expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]}")
+            .with_tag('mydatacenter_pushgateway_node')
         end
       end
     end

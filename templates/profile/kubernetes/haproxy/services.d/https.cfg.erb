@@ -1,0 +1,11 @@
+# Managed by puppet (nebula/profile/kubernetes/haproxy/services.d/https.cfg.erb)
+frontend kubernetes-https-front
+  bind <%= @public_address %>:443
+  mode tcp
+  option tcplog
+  default_backend kubernetes-https-back
+
+backend kubernetes-https-back
+  mode tcp
+  option tcp-check
+  balance roundrobin

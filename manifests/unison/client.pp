@@ -9,7 +9,8 @@ define nebula::unison::client (
   Array[String] $paths,
   Array[String] $filesystems,
   String $home = '/root',
-  Integer $watchdog_sec = 7200
+  Integer $watchdog_sec = 7200,
+  Optional[Array[String]] $ignores = undef,
 ) {
 
   include nebula::profile::unison::client

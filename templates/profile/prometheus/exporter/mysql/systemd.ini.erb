@@ -1,0 +1,18 @@
+# Managed by puppet (nebula/profile/prometheus/exporter/systemd.ini.erb)
+[Unit]
+Description=Prometheus exporter for mysql metrics
+Documentation=https://github.com/prometheus/mysql_exporter
+
+[Service]
+Restart=always
+User=prometheus
+Group=prometheus
+Environment="DATA_SOURCE_NAME=prometheus:@unix(/var/run/mysqld/mysqld.sock)/"
+EnvironmentFile=/etc/default/prometheus-mysqld-exporter
+ExecStart=/usr/bin/prometheus-mysqld-exporter 
+ExecReload=/bin/kill -HUP $MAINPID
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target

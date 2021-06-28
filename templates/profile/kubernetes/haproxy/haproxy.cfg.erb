@@ -32,14 +32,3 @@ defaults
   default-server inter 20s fall 3 rise 2
   timeout check 4s
   option log-health-checks
-
-frontend kubectl-front
-  bind <%= @floating_ip %>:6443
-  mode tcp
-  option tcplog
-  default_backend kubectl-back
-
-backend kubectl-back
-  mode tcp
-  option tcp-check
-  balance roundrobin

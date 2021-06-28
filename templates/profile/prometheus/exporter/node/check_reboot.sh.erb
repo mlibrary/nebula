@@ -1,0 +1,20 @@
+#!/bin/bash
+#This script checks to see if /var/run/reboot-required exists.
+#If so, it will update prometheus that a Reboot is required.
+#
+#
+#Vars
+CHKREBOOT=0
+PROMFILE=/var/lib/prometheus/node-exporter/check_reboot.prom
+
+#Check For reboot file
+if [ -f /var/run/reboot-required ]; then
+  CHKREBOOT=1
+fi
+
+#Update prometheus file.
+echo '# HELP debian_reboot_required Check whether /var/run/reboot-required exists' > $PROMFILE
+echo '# TYPE debian_reboot_required gauge' >> $PROMFILE
+echo 'debian_reboot_required' $CHKREBOOT >> $PROMFILE
+
+  

@@ -114,3 +114,5 @@ RSpec/VerifiedDoubles:
   Enabled: false # should be able to re-enable once we remove our own function mocking code
 RSpec/NamedSubject:
   Enabled: false # would love to enable, but rspec-puppet plays by its own rules
+Style/NumericLiterals:
+  Enabled: false # all our long numbers are ports, and 8080 should not look like 8_080

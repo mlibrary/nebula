@@ -13,7 +13,7 @@ class nebula::profile::www_lib::vhosts::publishing (
 ) {
   apache::vhost { 'www.publishing-http':
     servername     => 'www.publishing.umich.edu',
-    serveraliases  => ['services.publishing.umich.edu','maps.publishing.umich.edu'],
+    serveraliases  => ['services.publishing.umich.edu','maps.publishing.umich.edu', 'publishing.umich.edu', 'publishing'],
     ssl            => false,
     port           => 80,
     docroot        => $docroot,
@@ -30,7 +30,7 @@ class nebula::profile::www_lib::vhosts::publishing (
   # URL generation, etc.
   apache::vhost { 'www.publishing-https':
     servername     => 'https://www.publishing.umich.edu',
-    serveraliases  => ['services.publishing.umich.edu','maps.publishing.umich.edu'],
+    serveraliases  => ['services.publishing.umich.edu','maps.publishing.umich.edu', 'publishing.umich.edu', 'publishing'],
     docroot        => $docroot,
     manage_docroot => false,
     ssl            => false,
@@ -46,9 +46,10 @@ class nebula::profile::www_lib::vhosts::publishing (
         require        => $nebula::profile::www_lib::apache::default_access
       },
       {
-        provider    => 'directory',
-        path        => "${docroot}/campus_map",
-        addhandlers => [{
+        provider       => 'directory',
+        path           => "${docroot}/campus_map",
+        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
+        addhandlers    => [{
           extensions => ['.php'],
           # TODO: Extract version or socket path to params/hiera
           handler    => 'proxy:unix:/run/php/php7.3-fpm.sock|fcgi://localhost'
@@ -59,9 +60,8 @@ class nebula::profile::www_lib::vhosts::publishing (
 
   # A range of other sites served under the same Wordpress installation
   apache::vhost { 'publishing-partners-http':
-    servername     => 'www.textcreationpartnership.org',
+    servername     => 'blog.press.umich.edu',
     serveraliases  => [
-      'blog.press.umich.edu',
       'www.theater-historiography.org',
       'www.digitalculture.org',
       'www.digitalrhetoriccollaborative.org',
@@ -83,9 +83,8 @@ class nebula::profile::www_lib::vhosts::publishing (
 
   # As with above, SSL is terminated at the load balancer
   apache::vhost { 'publishing-partners-https':
-    servername     => 'https://www.textcreationpartnership.org',
+    servername     => 'https://blog.press.umich.edu',
     serveraliases  => [
-      'blog.press.umich.edu',
       'www.theater-historiography.org',
       'www.digitalculture.org',
       'www.digitalrhetoriccollaborative.org',

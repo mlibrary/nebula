@@ -9,7 +9,12 @@ rule_files:
 <% unless @alert_managers.empty? -%>
 alerting:
   alertmanagers:
-  - static_configs:
+  - scheme: https
+    tls_config:
+      ca_file: /tls/ca.crt
+      cert_file: /tls/client.crt
+      key_file: /tls/client.key
+    static_configs:
     - targets:
 <% @alert_managers.each do |alert_manager| -%>
       - <%= alert_manager %>
@@ -19,9 +24,21 @@ scrape_configs:
 - job_name: prometheus
   static_configs:
   - targets: [ localhost:9090 ]
+    labels:
+      hostname: '<%= @hostname %>'
+- job_name: pushgateway
+  honor_labels: true
+  static_configs:
+  - targets: [ localhost:9091 ]
 - job_name: node
   file_sd_configs:
   - files: [ nodes.yml ]
+- job_name: haproxy
+  file_sd_configs:
+  - files: [ haproxy.yml ]
+- job_name: mysql
+  file_sd_configs:
+  - files: [ mysql.yml ]
 <% unless @static_wmi_nodes.empty? -%>
 - job_name: wmi
   static_configs:

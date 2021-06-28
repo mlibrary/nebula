@@ -13,6 +13,8 @@ class nebula::role::clearinghouse {
 
   include nebula::profile::mysql
   include nebula::profile::clearinghouse::apache
+  include nebula::profile::clearinghouse::s3backup
+  include nebula::profile::prometheus::exporter::mysql
   package { ['git',
   'clamav','clamav-daemon','clamdscan',
   'libimage-exiftool-perl',

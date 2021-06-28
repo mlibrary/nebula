@@ -55,8 +55,8 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         path     => "${www_lib_root}/cgi/l/login",
       },
       {
-        provider => 'directory',
-        path     => "${www_lib_root}/cgi/m/medsearch"
+        provider => 'location',
+        path     => '/instruction/request/login',
       },
     ],
 
@@ -74,7 +74,41 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         allow_override => ['None'],
         options        => ['None'],
         require        => $nebula::profile::www_lib::apache::default_access
-      }
+      },
+      {
+        provider       => 'directory',
+        path           => "${docroot}/canvas",
+        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
+        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
+        require        => $nebula::profile::www_lib::apache::default_access,
+        addhandlers    => [{
+          extensions => ['.php'],
+          # TODO: Extract version or socket path to params/hiera
+          handler    => 'proxy:unix:/run/php/php7.3-fpm.sock|fcgi://localhost'
+        }],
+      },
+      {
+        # Deny access to raw php sources by default
+        # To re-enable it's recommended to enable access to the files
+        # only in specific virtual host or directory
+        provider => 'filesmatch',
+        path     => '.+\.phps$',
+        require  => 'all denied'
+      },
+      {
+        provider        => 'locationmatch',
+        path            => '^/instruction/request',
+        custom_fragment => @(EOT)
+          # Set remote user header to allow app to use http header auth.
+          RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
+          #RequestHeader set X-Cosign-Factor   %{COSIGN_FACTOR}e
+          RequestHeader set X-Authzd-Coll     %{AUTHZD_COLL}e
+          RequestHeader set X-Public-Coll     %{PUBLIC_COLL}e
+          RequestHeader set X-Forwarded-Proto 'https'
+          RequestHeader unset X-Forwarded-For
+          Header set "Strict-Transport-Security" "max-age=3600"
+        | EOT
+      },
     ],
 
     # TODO: hopefully these can all be removed
@@ -103,6 +137,21 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         # 2016-08-29 skorner per nancymou
         rewrite_rule => '^/islamic	http://guides.lib.umich.edu/islamicmss/find 	[redirect=permanent,last]'
       },
-    ];
+      {
+        rewrite_cond => '%{REQUEST_URI} !^/cosign/valid',
+        rewrite_rule => '^(/instruction/request.*)$ http://app-sali-production:30789$1 [P]',
+      },
+    ],
+
+    aliases                       => [
+      {
+        scriptalias => '/cgi/',
+        path        => "${www_lib_root}/cgi/",
+      },
+    ],
+
+    custom_fragment               => @(EOT)
+      ProxyPassReverse / http://app-sali-production:30789/
+    | EOT
   }
 }

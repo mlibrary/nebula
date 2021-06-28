@@ -69,7 +69,7 @@ class nebula::profile::hathitrust::ingest_jobs(
     'daily tasks':
       command => "for script in ${feed_daily}/enabled/*.pl; do ${feed_perl} \$script; done",
       hour    => 3,
-      minute  => 0;
+      minute  => 30;
 
     # copy crms renewals from latte-1
     'crms renewals':

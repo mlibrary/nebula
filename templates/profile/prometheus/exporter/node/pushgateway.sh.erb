@@ -1,0 +1,280 @@
+<%# Shebang and $PUSHGATEWAY are defined by concat fragments -%>
+RUN_COMMAND=true
+PROG="$0"
+USAGE1='[-nf] -j JOB -b START_TIMESTAMP'
+USAGE2='[-nf] -j JOB -s STEP [-s STEP ...]'
+LABELS=('instance=<%= @ipaddress %>:9100'
+        'hostname=<%= @hostname %>'
+        'datacenter=<%= @datacenter %>'
+        'role=<%= @role %>')
+JOB=''
+END_TIMESTAMP="`date '+%s'`"
+SUCCESS='true'
+START_TIMESTAMP=''
+STEPS=''
+
+errorout() {
+  echo "usage: ${PROG} -h" >&2
+  echo "  or   ${PROG} ${USAGE1}" >&2
+  echo "  or   ${PROG} ${USAGE2}" >&2
+  [ -n "$1" ] && echo "${PROG}: error: $@" >&2
+  exit 1
+}
+
+printhelp() {
+  cat <<EOF
+usage: ${PROG} $USAGE1
+  or   ${PROG} $USAGE2
+
+Push metrics to a prometheus pushgateway. JOB_NAME must be all lowercase
+letters and underscores, and running this will push two new metrics:
+
+    JOB_NAME_duration_seconds
+    JOB_NAME_last_success
+
+Example simple instrumented script:
+
+    #!/usr/bin/env bash
+    START_TIMESTAMP=\`date '+%s'\`
+
+    # ...
+
+    if \$my_script_succeeded; then
+      ${PROG} -j JOB_NAME -b "\$START_TIMESTAMP"
+    fi
+
+The above example will only push on success, which is sufficient for
+most cases.
+
+A more involved example:
+
+    #!/usr/bin/env bash
+    START_TIMESTAMP=\`date '+%s'\`
+
+    # ... (setup code)
+
+    SETUP_TIMESTAMP=\`date '+%s'\`
+
+    # ... (main code)
+
+    MAIN_JOB_TIMESTAMP=\`date '+%s'\`
+
+    # ... (teardown code)
+
+    TEARDOWN_TIMESTAMP=\`date '+%s'\`
+
+    if \$my_script_succeeded; then
+      ${PROG} -j JOB_NAME \\
+          -s setup=\$((SETUP_TIMESTAMP - START_TIMESTAMP)) \\
+          -s main=\$((MAIN_JOB_TIMESTAMP - SETUP_TIMESTAMP)) \\
+          -s teardown=\$((TEARDOWN_TIMESTAMP - MAIN_JOB_TIMESTAMP))
+    else
+      ${PROG} -f -j JOB_NAME \\
+          -s setup=\$((SETUP_TIMESTAMP - START_TIMESTAMP)) \\
+          -s main=\$((MAIN_JOB_TIMESTAMP - SETUP_TIMESTAMP)) \\
+          -s teardown=\$((TEARDOWN_TIMESTAMP - MAIN_JOB_TIMESTAMP))
+    fi
+
+The above script will report different durations for each step, and
+it'll report those durations even on failure (as long as the script
+doesn't error out prematurely).
+
+required arguments:
+ -j JOB                 Name of the cronjob; will set the {job="JOB"} label
+
+optional arguments:
+ -h                     Display this help message and exit
+ -n                     Print what would be run; do not execute
+ -f                     Job failed (don't update last_success timestamp)
+ -l NAME=VALUE          Extra label to add to the metric
+ -b START_TIMESTAMP     Time the cronjob started
+ -s STEP_NAME=SECONDS   Number of seconds a step took
+EOF
+}
+
+while getopts ':hfnj:l:b:s:' opt; do
+  case "$opt" in
+    h)
+      printhelp
+      exit 0
+      ;;
+
+    f)
+      SUCCESS=false
+      ;;
+
+    n)
+      RUN_COMMAND=false
+      ;;
+
+    j)
+      JOB="$OPTARG"
+      ;;
+
+    l)
+      LABELS=("${LABELS[@]}" "$OPTARG")
+      ;;
+
+    b)
+      START_TIMESTAMP="$OPTARG"
+      ;;
+
+    s)
+      if [ -z "$OPTARG" ]; then
+        errorout "invalid step: \`'"
+      fi
+
+      if [ -z "$STEPS" ]; then
+        STEPS=()
+      fi
+
+      STEPS=("${STEPS[@]}" "$OPTARG")
+      ;;
+
+    ?)
+      errorout "unrecognized argument: \`-$opt'"
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+main() {
+  validate_arguments
+  set_metrics
+  set_push_url
+  push_metrics
+}
+
+validate_arguments() {
+  validate_job
+  validate_labels
+
+  if start_timestamp_is_set; then
+    assert_no_steps_are_set
+
+  elif any_steps_are_set; then
+    validate_steps
+
+  else
+    errorout "expected -b or at least one -s"
+  fi
+}
+
+validate_job() {
+  if ! echo "$JOB" | grep -Eq '^[a-z_]+$'; then
+    errorout "Expected a job name made of lowercase letters and underscores: \`$JOB'"
+  fi
+}
+
+validate_labels() {
+  for label in "${LABELS[@]}"; do
+    validate_label "$label"
+  done
+}
+
+validate_label() {
+  if ! echo "$1" | grep -Eq '^[a-z_]+=.+$'; then
+    errorout "invalid label: $1"
+  fi
+}
+
+start_timestamp_is_set() {
+  [ -n "$START_TIMESTAMP" ]
+}
+
+assert_no_steps_are_set() {
+  if any_steps_are_set; then
+    errorout "use -s XOR -b, not both"
+  fi
+}
+
+any_steps_are_set() {
+  [ -n "$STEPS" ]
+}
+
+validate_steps() {
+  for step in "${STEPS[@]}"; do
+    validate_step "$step"
+  done
+}
+
+validate_step() {
+  # Steps should be abcdefg=1234 or abcdefg=1234.5678
+  local empty="`echo "$1" | sed -e 's/^[^=]\+=\([0-9]\+\.\)\?[0-9]\+$//'`"
+  if [ -n "$empty" ]; then
+    errorout "invalid step: \`$1'"
+  fi
+}
+
+set_metrics() {
+  set_duration
+  METRICS="`print_all_metrics`"
+}
+
+set_duration() {
+  if [ -n "$START_TIMESTAMP" ]; then
+    DURATION="${JOB}_duration_seconds $((END_TIMESTAMP - START_TIMESTAMP))"
+  else
+    DURATION="`print_all_steps`"
+  fi
+}
+
+print_all_steps() {
+  for step in "${STEPS[@]}"; do
+    local step_name="`echo "$step" | sed -e 's/=.*$//'`"
+    local step_time="`echo "$step" | sed -e 's/^.*=//'`"
+    echo "${JOB}_duration_seconds{step=\"${step_name}\"} $step_time"
+  done
+}
+
+print_all_metrics() {
+  echo "# HELP ${JOB}_duration_seconds Time spent running $JOB"
+  echo "# TYPE ${JOB}_duration_seconds gauge"
+  echo "$DURATION"
+
+  if $SUCCESS; then
+    print_success_metric
+  fi
+}
+
+print_success_metric() {
+  echo "# HELP ${JOB}_last_success Last successful run of $JOB"
+  echo "# TYPE ${JOB}_last_success gauge"
+  echo "${JOB}_last_success $END_TIMESTAMP"
+}
+
+set_push_url() {
+  PUSH_URL="${PUSHGATEWAY}/metrics/job@base64/`urlsafe_base64 "$JOB"`"
+
+  for label in "${LABELS[@]}"; do
+    label_name="`echo "$label" | sed -e 's/=.*$//'`"
+    label_value="`echo "$label" | sed -e 's/^[^=]*=//'`"
+
+    PUSH_URL="${PUSH_URL}/${label_name}@base64/`urlsafe_base64 "$label_value"`"
+  done
+}
+
+urlsafe_base64() {
+  # https://tools.ietf.org/html/rfc4648#section-5
+  echo -n "$1" | base64 -w 0 | tr '/+' '_-'
+}
+
+push_metrics() {
+  if $RUN_COMMAND; then
+    echo "$METRICS" | curl -s --data-binary @- "$PUSH_URL" > /dev/null
+
+  else
+    show_how_to_push_metrics
+  fi
+}
+
+show_how_to_push_metrics() {
+  echo "# If you're curious about any of these base64 values,"
+  echo "# echo UkZDLTQ2NDggU2VjdGlvbiA1Cg== | tr '_-' '/+' | base64 -d"
+  echo "cat <<EOF | curl -s --data-binary @- '$PUSH_URL' > /dev/null"
+  echo "$METRICS"
+  echo 'EOF'
+}
+
+main

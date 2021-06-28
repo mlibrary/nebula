@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+START_TIME=`date '+%s'`
+if /bin/nc -zw10 <%= @bind.sub(':', ' ') %>; then
+  /usr/local/bin/pushgateway -j press_fcgi_check -b $START_TIME
+else
+  sleep 5
+  if ! /bin/nc -zw10 <%= @bind.sub(':', ' ') %>; then
+    sleep 5
+    if ! /bin/nc -zw10 <%= @bind.sub(':', ' ') %>; then
+      /bin/systemctl -q restart press
+    fi
+  fi
+fi

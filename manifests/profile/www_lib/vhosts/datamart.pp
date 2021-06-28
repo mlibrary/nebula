@@ -34,15 +34,23 @@ class nebula::profile::www_lib::vhosts::datamart (
   }
 
   nebula::apache::www_lib_vhost { 'datamart-https':
-    servername     => $servername,
-    docroot        => $docroot,
-    logging_prefix => 'datamart.lib/',
+    servername                    => $servername,
+    docroot                       => $docroot,
+    logging_prefix                => 'datamart.lib/',
 
-    ssl            => true,
-    ssl_cn         => $ssl_cn,
-    cosign         => true,
+    ssl                           => true,
+    ssl_cn                        => $ssl_cn,
+    cosign                        => true,
+    cosign_service                => 'datamart.lib.umich.edu',
 
-    directories    => [
+    cosign_public_access_off_dirs => [
+      {
+        provider => 'location',
+        path     => '/',
+      },
+    ],
+
+    directories                   => [
       {
         provider      => 'directory',
         path          => $docroot,
@@ -58,7 +66,7 @@ class nebula::profile::www_lib::vhosts::datamart (
       }
     ],
 
-    rewrites       => [
+    rewrites                      => [
       {
         rewrite_cond => ['%{REQUEST_URI} !^/cosign',
                         '%{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-f'],

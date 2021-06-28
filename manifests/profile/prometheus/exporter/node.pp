@@ -74,6 +74,13 @@ class nebula::profile::prometheus::exporter::node (
     content => template('nebula/profile/prometheus/exporter/node/node_exporter_errors.prom.erb'),
   }
 
+  file { '/etc/cron.daily/check-reboot':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/prometheus/exporter/node/check_reboot.sh.erb'),
+  }
+
   file { $log_file:
     owner   => 'root',
     group   => 'adm',
@@ -108,7 +115,7 @@ class nebula::profile::prometheus::exporter::node (
   realize User['prometheus']
 
   $role = lookup_role()
-  $ipaddress = public_ip()
+  $ipaddress = $::ipaddress
   $datacenter = $::datacenter
   $hostname = $::hostname
 
@@ -118,10 +125,37 @@ class nebula::profile::prometheus::exporter::node (
     $monitoring_datacenter = $default_datacenter
   }
 
+  ensure_packages(['curl'])
+
+  concat_file { '/usr/local/bin/pushgateway':
+    mode => '0755',
+  }
+
+  concat_fragment { '01 pushgateway shebang':
+    target  => '/usr/local/bin/pushgateway',
+    content => "#!/usr/bin/env bash\n",
+  }
+
+  Concat_fragment <<| title == "02 pushgateway url ${monitoring_datacenter}" |>>
+
+  concat_fragment { '03 main pushgateway content':
+    target  => '/usr/local/bin/pushgateway',
+    content => template('nebula/profile/prometheus/exporter/node/pushgateway.sh.erb'),
+  }
+
   @@concat_fragment { "prometheus node service ${hostname}":
     tag     => "${monitoring_datacenter}_prometheus_node_service_list",
     target  => '/etc/prometheus/nodes.yml',
     content => template('nebula/profile/prometheus/exporter/node/target.yaml.erb'),
+  }
+
+  @@firewall { "300 pushgateway ${::hostname}":
+    tag    => "${monitoring_datacenter}_pushgateway_node",
+    proto  => 'tcp',
+    dport  => 9091,
+    source => $::ipaddress,
+    state  => 'NEW',
+    action => 'accept',
   }
 
   if $::lsbdistcodename != 'jessie' {

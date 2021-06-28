@@ -7,12 +7,14 @@ define nebula::apache::www_lib_vhost (
   Variant[Boolean, String] $docroot,
   Array[String] $serveraliases = [],
   Boolean $ssl = false,
+  Optional[Integer] $port_override = undef,
   Boolean $cosign = false,
   Boolean $usertrack = false,
   Optional[String] $cosign_service = regsubst($servername,'\.umich\.edu$',''),
   String $ssl_cn = $servername,
   Array[Hash] $directories = [],
   Array[Hash] $cosign_public_access_off_dirs = [],
+  Array[Hash] $cosign_public_access_off_php5_dirs = [],
   Optional[Array] $rewrites = undef,
   Optional[Array] $aliases = undef,
   String $logging_prefix = '',
@@ -20,22 +22,41 @@ define nebula::apache::www_lib_vhost (
   Optional[String] $redirect_source = undef,
   Optional[String] $redirect_status = undef,
   Optional[String] $redirect_dest = undef,
-  Array $request_headers = [],
-  Array $headers = [],
+  Optional[String] $redirectmatch_regexp = undef,
+  Optional[String] $redirectmatch_status = undef,
+  Optional[String] $redirectmatch_dest = undef,
+  Optional[Array] $request_headers = undef,
+  Optional[Array] $headers = undef,
   Boolean $ssl_proxyengine = false,
   Optional[String] $ssl_proxy_check_peer_name = undef,
   Optional[String] $ssl_proxy_check_peer_expire = undef,
   Optional[Array] $setenv = undef,
   Optional[Array] $setenvifnocase = undef,
-  $priority = false
+  Optional[Array] $error_documents = undef,
+  $priority = false,
+  Array[String] $default_allow_override = ['None'],
 ) {
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
   $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
 
-  if($ssl) {
-    $port = 443
+  # @param port_override is used if you want to set the port differently
+  # such as using port 443 even with ssl set to false during a proxy.
+  if $port_override {
+    $port = $port_override
   } else {
-    $port = 80
+    if($ssl) {
+      $port = 443
+    } else {
+      $port = 80
+    }
+  }
+
+  # The perl path parameter is required to make sure scripts are found.
+  # So we make sure it is added whether the variable is set or not.
+  if $setenv {
+    $setenv_with_perl = $setenv + 'PERL_USE_UNSAFE_INC 1'
+  } else {
+    $setenv_with_perl = [ 'PERL_USE_UNSAFE_INC 1' ]
   }
 
   if($usertrack) {
@@ -46,7 +67,7 @@ define nebula::apache::www_lib_vhost (
     |EOT
     $usertrack_log = [
       {
-        file   => 'clickstream.log',
+        file   => "${logging_prefix}clickstream.log",
         format => 'usertrack'
       },
     ]
@@ -82,6 +103,11 @@ define nebula::apache::www_lib_vhost (
       },
     ]
 
+    # For www_lib, we are sure that Shibboleth is installed, and we must
+    # disable its "compatibility mode" with valid-user, or mod_cosign never
+    # gets a chance at the request. The name of the option and its docs
+    # imply the reverse, but we want Compat On.
+    # https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPApacheConfig#NativeSPApacheConfig-Server/VirtualHostOptions
     $cosign_fragment = @("EOT")
       CosignProtected  On
       CosignHostname   weblogin.umich.edu
@@ -94,12 +120,13 @@ define nebula::apache::www_lib_vhost (
       CosignService    ${cosign_service}
       CosignCrypto     ${ssl_key} ${ssl_cert} ${nebula::profile::apache::ssl_cert_dir}
       CosignAllowPublicAccess on
+      ShibCompatValidUser On
     |EOT
 
     $cosign_public_access_off = @(EOT)
-      AuthType cosign
+      CosignAllowPublicAccess Off
+      AuthType Cosign
       Require valid-user
-      CosignAllowPublicAccess off
     |EOT
 
     concat::fragment { "${title}-cosign":
@@ -112,6 +139,17 @@ define nebula::apache::www_lib_vhost (
       $dir.merge( {
         custom_fragment => $cosign_public_access_off,
         require         => [],
+        allow_override  => pick($dir['allow_override'], $default_allow_override),
+      })
+    } + $cosign_public_access_off_php5_dirs.map |$dir| {
+      $dir.merge( {
+        custom_fragment => $cosign_public_access_off,
+        require         => [],
+        allow_override  => pick($dir['allow_override'], $default_allow_override),
+        addhandlers => [{
+          extensions => ['.php'],
+          handler => 'application/x-httpd-php'
+        }],
       })
     }
   } else {
@@ -161,12 +199,18 @@ define nebula::apache::www_lib_vhost (
     redirect_source             => $redirect_source,
     redirect_status             => $redirect_status,
     redirect_dest               => $redirect_dest,
+    redirectmatch_regexp        => $redirectmatch_regexp,
+    redirectmatch_status        => $redirectmatch_status,
+    redirectmatch_dest          => $redirectmatch_dest,
+    request_headers             => $request_headers,
+    headers                     => $headers,
     serveraliases               => $serveraliases,
     aliases                     => $aliases,
     ssl_proxyengine             => $ssl_proxyengine,
     ssl_proxy_check_peer_name   => $ssl_proxy_check_peer_name,
     ssl_proxy_check_peer_expire => $ssl_proxy_check_peer_expire,
     setenvifnocase              => $setenvifnocase,
-    setenv                      => $setenv,
+    setenv                      => $setenv_with_perl,
+    error_documents             => $error_documents,
   }
 }

@@ -1,0 +1,19 @@
+# File managed by puppet; changes here will be lost.
+
+uid       = <%= @rsync_user %>
+list      = false
+read only = true
+
+<% @datasets.each do |name, dataset| %>
+[<%= name %>]
+  comment     = <%= dataset['comment'] %>
+  path        = <%= dataset['path'] %>
+  log file    = <%= "#{@log_path}/#{name}.log" %>
+  use chroot  = false
+  <% if dataset.has_key?('users') -%>
+    hosts allow = \
+    <% dataset['users'].each do |user| -%>
+      <%= user['ip'] %> \
+    <% end -%>
+  <% end -%>
+<% end %>

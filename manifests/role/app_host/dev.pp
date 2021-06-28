@@ -11,10 +11,12 @@
 class nebula::role::app_host::dev {
   include nebula::role::umich
 
+  include nebula::profile::krb5
   include nebula::profile::afs
   include nebula::profile::users
 
   include nebula::profile::ruby
   include nebula::profile::nodejs
   include nebula::profile::named_instances
+  include nebula::profile::yarn
 }

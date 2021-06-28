@@ -41,12 +41,19 @@ class nebula::profile::www_lib::vhosts::www_lib (
         path     => "${www_lib_root}/cgi/l/login",
       },
       {
-        provider => 'directory',
-        path     => "${www_lib_root}/cgi/m/medsearch"
-      }
+        provider => 'location',
+        path     => '/instruction/request/login',
+      },
     ],
 
     directories                   => [
+      {
+        provider       => 'directory',
+        path           => "${www_lib_root}/cgi",
+        allow_override => ['None'],
+        options        => ['None'],
+        require        => $nebula::profile::www_lib::apache::default_access,
+      },
       {
         provider       => 'directory',
         path           => $docroot,
@@ -55,12 +62,19 @@ class nebula::profile::www_lib::vhosts::www_lib (
         require        => $nebula::profile::www_lib::apache::default_access
       },
       {
-        provider       => 'directory',
-        path           => "${www_lib_root}/cgi",
-        allow_override => ['None'],
-        options        => ['None'],
-        require        => $nebula::profile::www_lib::apache::default_access
-      }
+        provider        => 'locationmatch',
+        path            => '^/instruction/request',
+        custom_fragment => @(EOT)
+          # Set remote user header to allow app to use http header auth.
+          RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
+          #RequestHeader set X-Cosign-Factor   %{COSIGN_FACTOR}e
+          RequestHeader set X-Authzd-Coll     %{AUTHZD_COLL}e
+          RequestHeader set X-Public-Coll     %{PUBLIC_COLL}e
+          RequestHeader set X-Forwarded-Proto 'https'
+          RequestHeader unset X-Forwarded-For
+          Header set "Strict-Transport-Security" "max-age=3600"
+        | EOT
+      },
     ],
 
     # TODO: hopefully these can all be removed
@@ -89,6 +103,21 @@ class nebula::profile::www_lib::vhosts::www_lib (
         # 2016-08-29 skorner per nancymou
         rewrite_rule => '^/islamic	http://guides.lib.umich.edu/islamicmss/find 	[redirect=permanent,last]'
       },
-    ];
+      {
+        rewrite_cond => '%{REQUEST_URI} !^/cosign/valid',
+        rewrite_rule => '^(/instruction/request.*)$ http://app-sali-production:30789$1 [P]',
+      },
+    ],
+
+    aliases                       => [
+      {
+        scriptalias => '/cgi/',
+        path        => "${www_lib_root}/cgi/",
+      },
+    ],
+
+    custom_fragment               => @(EOT)
+      ProxyPassReverse / http://app-sali-production:30789/
+    | EOT
   }
 }

@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019-2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -9,16 +9,46 @@
 # @param dbd_params The value to use for DBDParams, for example:
 #   "user=somebody,pass=whatever,server=whatever"
 #
+# @param oracle_home The value for the $ORACLE_HOME environment variable.
+#
+# @param oracle_servers The names of servers (Hash) and their relevant 
+#   aliases (String Array). Note servers should be lowercase while aliases
+#   must be uppercase.
+#
+#   e.g. 
+#     myserver:
+#       - ORCL.MYSERVER1
+#       - ORCL.MYSERVER2 
+#
+# @param oracle_sid The SID for the oracle service. Oracle default is 
+#   set as default here
+#
+# @param oracle_port The port for the oracle service. Oracle default is 
+#   set as default here
+#
 # @example
 #   include nebula::profile::apache::authz_umichlib
 
 class nebula::profile::apache::authz_umichlib (
   String $dbd_params,
+  Hash[String, Array[String]] $oracle_servers,
+  String $oracle_home,
+  String $oracle_sid = 'orcl',
+  Integer $oracle_port = 1521,
 ) {
 
   include apache::mod::dbd
 
-  package { 'libaprutil1-dbd-oracle': }
+  # Note: Packages for modules must be declared in the mod stanzas and
+  # not in ensure_packages.
+  ensure_packages (
+    [
+      'libdbd-oracle-perl',
+      'libaprutil1-dbd-oracle',
+      'oracle-instantclient12.1-basic',
+      'oracle-instantclient12.1-devel',
+    ]
+  )
 
   file { '/etc/ld.so.conf.d/oracle-instantclient.conf':
     content => "/usr/lib/oracle/12.1/client64/lib\n",
@@ -46,10 +76,34 @@ class nebula::profile::apache::authz_umichlib (
   }
 
   file_line { '/etc/apache2/envvars ORACLE_HOME':
-    ensure => 'present',
-    line   => 'export ORACLE_HOME=/etc/oracle',
-    match  => '/^export ORACLE_HOME=/',
-    path   => '/etc/apache2/envvars'
+    ensure  => 'present',
+    line    => "export ORACLE_HOME=${oracle_home}",
+    match   => '/^export ORACLE_HOME=/',
+    path    => '/etc/apache2/envvars',
+    require => Class['apache']
   }
 
+  # This is the default instant client directory for the *.ora files.
+  file {
+    [
+      $oracle_home,
+      "${oracle_home}/network/",
+      "${oracle_home}/network/admin",
+    ]:
+    ensure => 'directory',
+  }
+
+  file { 'sqlnet.ora':
+    ensure  => 'file',
+    path    => "${oracle_home}/network/admin/sqlnet.ora",
+    content => template('nebula/profile/apache/sqlnet.ora.erb'),
+    notify  => Class['apache::service'],
+  }
+
+  file { 'tnsnames.ora':
+    ensure  => 'file',
+    path    => "${oracle_home}/network/admin/tnsnames.ora",
+    content => template('nebula/profile/apache/tnsnames.ora.erb'),
+    notify  => Class['apache::service'],
+  }
 }

@@ -1,0 +1,48 @@
+<% @oracle_servers.each do | server, server_aliases | -%>
+# <%= server %>
+#
+<% server_aliases.each do | server_alias | -%>
+<%= server_alias %> =
+  (DESCRIPTION =
+    (ADDRESS =
+      (PROTOCOL = TCP)
+      (HOST = <%= server %>.umdl.umich.edu)
+      (PORT = <%= @oracle_port %>)
+    )
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = orcl.<%= server %>)
+    )
+  )
+
+<% end -%>
+
+<% end -%>
+
+ORCL.LB =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (FAILOVER = ON)
+      (LOAD_BALANCE = OFF)
+
+<% @oracle_servers.each do | server, server_aliases | -%>
+      (ADDRESS =
+        (PROTOCOL = TCP)
+        (HOST = <%= server %>.umdl.umich.edu)
+        (PORT = <%= @oracle_port %>)
+      )
+<% end -%>
+    )
+
+    (CONNECT_DATA =
+      (SID = <%= @oracle_sid %>)
+      (SERVER = SHARED)
+
+      (FAILOVER_MODE =
+        (TYPE = SELECT)
+        (METHOD = BASIC)
+      )
+    )
+  )
+
+

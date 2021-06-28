@@ -33,9 +33,10 @@ class nebula::profile::apt (
 
     # Ensure that apt repos are set up and updated before attempting to install a
     # new package. Tag some packages as 'preinstalled' to avoid dependency cycles.
-    package { ['apt-transport-https','dirmngr']:
+    ensure_packages(['apt-transport-https','dirmngr'], {
       tag => 'package-preinstalled'
-    }
+    })
+
     Apt::Source <| |> -> Package <| tag != 'package-preinstalled' |>
     Class['apt::update'] -> Package <| |>
 

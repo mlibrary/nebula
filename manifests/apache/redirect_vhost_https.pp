@@ -9,6 +9,8 @@ define nebula::apache::redirect_vhost_https (
   $priority = false,
 ) {
   nebula::apache::redirect_vhost_http { $title:
+    target        => $target,
+    priority      => $priority,
     serveraliases => $serveraliases
   }
   nebula::apache::www_lib_vhost { "${title}-redirect-https":

@@ -33,7 +33,8 @@ class nebula::profile::named_instances::apache (
     default_mods      => false,
     default_vhost     => false,
     default_ssl_vhost => false,
-    purge_vhost_dir   => false
+    purge_vhost_dir   => false,
+    conf_enabled      => '/etc/apache2/conf-enabled',
   }
 
   apache::mod { 'access_compat': }

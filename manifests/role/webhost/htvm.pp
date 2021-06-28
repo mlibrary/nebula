@@ -26,7 +26,6 @@ class nebula::role::webhost::htvm (
   include nebula::profile::hathitrust::php
 
   class { 'nebula::profile::hathitrust::imgsrv':
-    num_proc => 10,
     sdrview  => 'full'
   }
 

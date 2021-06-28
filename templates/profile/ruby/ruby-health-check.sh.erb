@@ -1,0 +1,8 @@
+#!/bin/bash
+# Managed By Puppet (nebula/profile/ruby/ruby-health-check.sh.erb)
+# This file is meant to run as a cron job in /etc/cron.daily. It calls the testall.sh script
+# This script will all direct its output into a prom file for prometheus to scrape
+
+PROMFILE=/var/lib/prometheus/node-exporter/ruby_health_check.prom
+
+/usr/local/rubytests/testall.sh > $PROMFILE

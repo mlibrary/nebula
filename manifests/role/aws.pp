@@ -23,7 +23,6 @@ class nebula::role::aws (
   if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
     include nebula::profile::exim4
     include nebula::profile::ntp
-    include nebula::profile::tiger
     class { 'nebula::profile::networking':
       bridge => false,
     }

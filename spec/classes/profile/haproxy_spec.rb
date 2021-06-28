@@ -62,7 +62,13 @@ describe 'nebula::profile::haproxy' do
           is_expected.to contain_service('haproxy').with(
             ensure: 'running',
             enable: true,
-            hasrestart: true,
+            restart: '/bin/systemctl reload haproxy',
+          )
+        end
+
+        it do
+          is_expected.to contain_exec('check haproxy config').with(
+            command: "/usr/sbin/haproxy -f #{haproxy_conf} -c -q -f /etc/haproxy/services.d",
           )
         end
 
@@ -244,6 +250,10 @@ describe 'nebula::profile::haproxy' do
 
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 101}) }
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state MASTER}) }
+          it do
+            is_expected.to contain_class('Nebula::Profile::Prometheus::Exporter::Haproxy')
+              .with_master(true)
+          end
         end
 
         context 'on a backup node' do
@@ -251,6 +261,10 @@ describe 'nebula::profile::haproxy' do
 
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 100}) }
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state BACKUP}) }
+          it do
+            is_expected.to contain_class('Nebula::Profile::Prometheus::Exporter::Haproxy')
+              .with_master(false)
+          end
         end
       end
 
@@ -276,6 +290,23 @@ describe 'nebula::profile::haproxy' do
           source: my_ip,
           tag: 'haproxy',
         )
+      end
+
+      describe 'metrics' do
+        it 'defines haproxy stats file' do
+          is_expected.to contain_file('/etc/haproxy/services.d/stats.cfg')
+            .that_requires('Package[haproxy]')
+            .that_notifies('Service[haproxy]')
+        end
+      end
+
+      describe 'server monitoring / dynamic weighting' do
+        it 'includes the private key' do
+          is_expected.to contain_file('/var/haproxyctl/.ssh/id_ecdsa')
+        end
+        it 'includes the monitoring script' do
+          is_expected.to contain_file('/usr/local/bin/set_weights.rb')
+        end
       end
     end
   end

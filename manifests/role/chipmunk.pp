@@ -14,4 +14,6 @@ class nebula::role::chipmunk {
   # should be conditionally included from named_instances::apache when the
   # vhost config is deployed on the web node
   include apache::mod::xsendfile
+
+  include nebula::profile::prometheus::exporter::mysql
 }

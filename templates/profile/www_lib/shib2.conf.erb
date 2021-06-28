@@ -1,0 +1,8 @@
+<%#
+    Note that this could be trimmed back to Shibboleth.sso or use specific paths,
+    but we have preserved the wildcard for now.
+%>
+<Files *.sso>
+  SetHandler shib-handler
+  Require all granted
+</Files>

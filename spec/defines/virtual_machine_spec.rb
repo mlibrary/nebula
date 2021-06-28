@@ -348,19 +348,19 @@ describe 'nebula::virtual_machine' do
 
         it do
           is_expected.to contain_preseed.with_content(
-            %r{^d-i netcfg/get_hostname string myhost\.mysub\.default\.invalid$},
+            %r{^d-i netcfg/get_hostname string myhost\.mysub$},
           )
         end
 
         it do
           is_expected.to contain_preseed.with_content(
-            %r{^d-i netcfg/get_domain string mysub\.default\.invalid$},
+            %r{^d-i netcfg/get_domain string mysub$},
           )
         end
 
         it do
           is_expected.to contain_preseed.with_content(
-            %r{^d-i netcfg/hostname string myhost\.mysub\.default\.invalid$},
+            %r{^d-i netcfg/hostname string myhost\.mysub$},
           )
         end
       end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018,2021 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -46,6 +46,9 @@ describe 'nebula::role::hathitrust::ingest_indexing' do
       it { is_expected.not_to contain_user('htweb') }
 
       it { is_expected.to contain_service('feedd').with_enable(true) }
+      it { is_expected.to contain_package('clamav-daemon') }
+      it { is_expected.to contain_service('clamav-daemon').with_enable(true) }
+
       it do
         is_expected.to contain_file('/etc/systemd/system/feedd.service')
           .with_content(%r{HTFEED_CONFIG=/default/feedd.yaml})

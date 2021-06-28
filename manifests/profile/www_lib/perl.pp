@@ -13,7 +13,7 @@ class nebula::profile::www_lib::perl () {
   include nebula::profile::www_lib::dependencies
   include nebula::profile::geoip
 
-  package { [
+  ensure_packages([
     'libalgorithm-c3-perl',
     'libany-moose-perl',
     'libcapture-tiny-perl',
@@ -122,10 +122,10 @@ class nebula::profile::www_lib::perl () {
     'libxml-sax-perl',
     'libxml-xpath-perl',
     'libyaml-perl',
-    'libyaml-syck-perl']:
-  }
+    'libyaml-syck-perl',
+  ])
 
-  -> nebula::cpan { [
+  nebula::cpan { [
     'CGI',
     'Dancer::Template::Haml',
     'Digest::SHA1',
@@ -135,17 +135,17 @@ class nebula::profile::www_lib::perl () {
     'Relations::Query',
     'SQL::Beautify',
     'SQL::Tokenizer',
-    'Test::Deep',
-    'Test::Exception',
-    'Test::Fatal',
-    'Test::MockObject',
-    'Test::NoWarnings',
-    'Test::Requires',
-    'Test::Simple',
-    'Test::Warn',
-    'Try::Tiny',
     'UNIVERSAL::can',
-    'UNIVERSAL::isa']:
+    'UNIVERSAL::isa',
+    'WebService::Solr::Tiny']:
+  }
+
+  # Install all software before adding any cpan modules.
+  Package <| |> -> Nebula::Cpan <| |>
+
+  file { '/etc/profile.d/perl-include.sh':
+    ensure  => 'file',
+    content => template('nebula/profile/www_lib/etc/profile.d/perl-include.sh.erb'),
   }
 
 }

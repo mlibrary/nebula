@@ -26,6 +26,7 @@ class nebula::profile::www_lib::apache (
     ]
   }
 ) {
+  include nebula::profile::logrotate
 
   ensure_packages(['bsd-mailx'])
 
@@ -72,13 +73,15 @@ class nebula::profile::www_lib::apache (
     php_version  => '5.6'
   }
 
-  include apache::mod::proxy
+  class { 'apache::mod::proxy':
+    proxy_timeout => '300',
+  }
+
   include apache::mod::proxy_fcgi
   include apache::mod::proxy_http
   include apache::mod::reqtimeout
   include apache::mod::setenvif
-  # causes apparent conflicts with cosign; to be resolved later
-  #  class { 'apache::mod::shib': }
+  class { 'apache::mod::shib': }
   include apache::mod::xsendfile
 
   include nebula::profile::apache::authz_umichlib
@@ -92,20 +95,32 @@ class nebula::profile::www_lib::apache (
       'datamart.lib.umich.edu',
       'deepblue.lib.umich.edu',
       'developingwritersbook.com',
+      'digital.bentley.umich.edu',
       'fulcrum.org',
       'open.umich.edu',
       'michiganelt.org',
-      'mirlyn.lib.umich.edu',
+      'med.lib.umich.edu',
       'staff.lib.umich.edu',
+      'search.lib.umich.edu',
       'www.digitalculture.org',
       'www.lib.umich.edu',
-      'www.mblem.umich.edu',
-      'www.mportfolio.umich.edu',
       'www.press.umich.edu',
       'www.publishing.umich.edu',
-      'www.textcreationpartnership.org',
       'www.theater-historiography.org',
+      'www.heartofdarknessarchive.com',
     ]:
+  }
+
+  file { '/etc/apache2/mods-available/shib2.conf':
+    ensure  => 'present',
+    content => template('nebula/profile/www_lib/shib2.conf.erb'),
+    require => File['/etc/apache2/mods-available'],
+  }
+
+  file { '/etc/apache2/mods-enabled/shib2.conf':
+    ensure  => 'link',
+    target  => '/etc/apache2/mods-available/shib2.conf',
+    require => File['/etc/apache2/mods-available/shib2.conf'],
   }
 
   # depends on ssl_keypairs above
@@ -113,71 +128,16 @@ class nebula::profile::www_lib::apache (
 
   $vhost_prefix = 'nebula::profile::www_lib::vhosts'
 
-  ['default','www_lib','apps_lib','staff_lib','datamart','deepblue', 'openmich', 'mportfolio', 'press'].each |$vhost| {
+  ['default','www_lib','apps_lib','staff_lib','datamart','deepblue', 'openmich', 'mgetit', 'press', 'search'].each |$vhost| {
     class { "nebula::profile::www_lib::vhosts::${vhost}":
       prefix => $prefix,
       domain => $domain,
     }
   }
 
+
+  include nebula::profile::www_lib::vhosts::fulcrum
+  include nebula::profile::www_lib::vhosts::midaily
   include nebula::profile::www_lib::vhosts::publishing
-
-  nebula::apache::mirlyn_vhost { 'mirlyn':
-    domain  => 'lib.umich.edu',
-    app_url => 'http://app-mirlyn-api-production:30730/',
-  }
-  nebula::apache::mirlyn_vhost { 'm.mirlyn':
-    domain  => 'lib.umich.edu',
-    app_url => 'http://app-mirlyn-api-production:30730/',
-    prefix  => 'm.',
-  }
-  nebula::apache::mirlyn_vhost { 'beta.mirlyn':
-    domain        => 'lib.umich.edu',
-    app_url       => 'http://app-mirlyn-api-staging:30731/',
-    prefix        => 'beta.',
-    serveraliases => ['mbeta.mirlyn', 'mbeta.mirlyn.lib', 'mbeta.mirlyn.lib.umich.edu', 'mirlyn2-beta', 'mirlyn2-beta.lib', 'mirlyn2-beta.lib.umich.edu'],
-  }
-
-  file { "${apache::params::logroot}/bmc":
-    ensure => 'directory',
-  }
-
-  apache::vhost { 'bmc.lib.umich.edu':
-    servername      => 'bmc.lib.umich.edu',
-    port            => 80,
-    docroot         => '/www/vufind/web/bmc/web',
-    manage_docroot  => false,
-    directories     => [
-      {
-        provider       => 'directory',
-        path           => '/www/vufind/web/bmc/web',
-        options        => 'FollowSymlinks',
-        allow_override => 'All',
-        require        => $nebula::profile::www_lib::apache::default_access,
-      },
-    ],
-
-    log_level       => 'warn',
-    priority        => false, # don't prepend a numeric identifier to the vhost
-    error_documents => [
-      { 'error_code' => '410', 'document' => '/static/retired.html' },
-    ],
-    rewrites        => [
-      {
-        rewrite_cond => ['%{REQUEST_URI} !^/static/retired.html'],
-        rewrite_rule => ['^.*$ - [G]'],
-      },
-    ],
-
-    error_log_file  => 'bmc/error.log',
-    access_logs     => [
-      {
-        file   => 'bmc/access.log',
-        format => 'combined'
-      },
-    ],
-    serveraliases   => ['bmc.lib'],
-    require         => File["${apache::params::logroot}/bmc"],
-  }
-
+  include nebula::profile::www_lib::vhosts::med
 }

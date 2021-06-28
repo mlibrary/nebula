@@ -24,7 +24,6 @@ class nebula::role::hathitrust::vmhost {
     include nebula::profile::exim4
     include nebula::profile::grub
     include nebula::profile::ntp
-    include nebula::profile::tiger
     class { 'nebula::profile::networking':
       bridge => true,
     }

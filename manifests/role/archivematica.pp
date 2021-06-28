@@ -9,6 +9,7 @@
 # and the firewall.
 class nebula::role::archivematica {
   include nebula::role::minimum
+  include nebula::profile::krb5
   include nebula::profile::afs
   include nebula::profile::duo
   include nebula::profile::networking

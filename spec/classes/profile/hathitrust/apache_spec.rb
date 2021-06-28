@@ -135,6 +135,24 @@ describe 'nebula::profile::hathitrust::apache' do
         is_expected.to contain_cron('purge caches')
           .with_command('/htapps/babel/mdp-misc/scripts/managecache.sh /somewhere/whatever:1:2 /elsewhere/whatever:3:4')
       end
+
+      describe 'monitoring user' do
+        it do
+          is_expected.to have_nebula__authzd_user_resource_count(0)
+        end
+
+        context 'with specified key' do
+          let(:params) do
+            {
+              monitoring_pubkey: {},
+            }
+          end
+
+          it do
+            is_expected.to contain_nebula__authzd_user('haproxyctl')
+          end
+        end
+      end
     end
   end
 end

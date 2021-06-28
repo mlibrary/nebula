@@ -10,31 +10,13 @@ class nebula::profile::www_lib::vhosts::redirects(
   }
 
   nebula::apache::redirect_vhost_https { 'michiganelt.org':
-    serveraliases => []
-  }
-
-  nebula::apache::redirect_vhost_http { 'www.michiganelt.org':
-    target => 'http://www.press.umich.edu/elt'
+    serveraliases => ['www.michiganelt.org'],
+    target        => 'https://www.press.umich.edu/elt'
   }
 
   nebula::apache::redirect_vhost_https { 'lib.umich.edu':
     ssl_cn        => 'www.lib.umich.edu',
     serveraliases => ['lib', 'library.umich.edu', 'www.library.umich.edu'],
-  }
-
-  nebula::apache::redirect_vhost_https { 'mblem.umich.edu':
-    ssl_cn        => 'www.mblem.umich.edu',
-    serveraliases => ['mblem.nslb.umdl.umich.edu'],
-  }
-
-  nebula::apache::redirect_vhost_https { 'mportfolio.umich.edu':
-    ssl_cn        => 'www.mportfolio.umich.edu',
-    serveraliases => ['mportfolio.nslb.umdl.umich.edu'],
-  }
-
-  nebula::apache::redirect_vhost_https { 'publishing.umich.edu':
-    ssl_cn        => 'www.publishing.umich.edu',
-    serveraliases => ['publishing'],
   }
 
   nebula::apache::redirect_vhost_https { 'press.umich.edu':
@@ -52,17 +34,21 @@ class nebula::profile::www_lib::vhosts::redirects(
     ],
   }
 
+  # Hosted by github pages. We are just redirecting there.
+  nebula::apache::redirect_vhost_https { 'heartofdarknessarchive.com':
+    target        => 'https://heartofdarknessarchive.org',
+    ssl_cn        => 'www.heartofdarknessarchive.com',
+    serveraliases => [
+      'heartofdarknessarchive.net',
+      'www.heartofdarknessarchive.com',
+      'www.heartofdarknessarchive.net'
+    ],
+  }
+
   nebula::apache::redirect_vhost_https { 'fulcrum.publishing.umich.edu':
     ssl_cn   => 'www.publishing.umich.edu',
     priority => '07',
     target   => 'https://tools.lib.umich.edu/confluence/display/FPS'
-  }
-
-  nebula::apache::redirect_vhost_https { 'support.fulcrumscholar.org':
-    ssl_cn        => 'fulcrum.org',
-    priority      => '08',
-    target        => 'https://tools.lib.umich.edu/confluence/display/FPS',
-    serveraliases => ['support.fulcrum.org', 'support.fulcrumservices.org'],
   }
 
   nebula::apache::redirect_vhost_https { 'northwestern.fulcrumscholar.org':
@@ -129,13 +115,7 @@ class nebula::profile::www_lib::vhosts::redirects(
       '*.fulcrumscholar.com',
       '*.fulcrumscholar.net',
       '*.fulcrumservices.org',
-      '*.fulcrumservices.net',
-      '*.heartofdarknessarchive.com',
-      'heartofdarknessarchive.com',
-      '*.heartofdarknessarchive.org',
-      'heartofdarknessarchive.org',
-      '*.heartofdarknessarchive.net',
-      'heartofdarknessarchive.net',
+      '*.fulcrumservices.net'
     ],
   }
 
@@ -150,11 +130,6 @@ class nebula::profile::www_lib::vhosts::redirects(
   }
 
   nebula::apache::redirect_vhost_http { 'lgbtheritage.org':
-  }
-
-  nebula::apache::redirect_vhost_https { 'textcreationpartnership.org':
-    ssl_cn        => 'www.textcreationpartnership.org',
-    serveraliases => ['www.textcreationpartnership.com', 'textcreationpartnership.com'],
   }
 
   nebula::apache::redirect_vhost_https { 'theater-historiography.org':
@@ -179,25 +154,6 @@ class nebula::profile::www_lib::vhosts::redirects(
 
   nebula::apache::redirect_vhost_http { 'datainfolit.org':
     serveraliases => ['www.datainformationliteracy.org', 'datainformationliteracy.org'],
-  }
-
-  nebula::apache::redirect_vhost_http { 'beta.lib.umich.edu':
-    target => 'http://www.lib.umich.edu/'
-  }
-
-  nebula::apache::redirect_vhost_http { 'medsearch.lib.umich.edu':
-    serveraliases => ['medsearch', 'medsearch.lib'],
-    target        => 'http://www.lib.umich.edu/health-sciences-libraries/medsearch/'
-  }
-
-  nebula::apache::redirect_vhost_http { 'm-update.lib.umich.edu':
-    serveraliases => ['m-update.lib'],
-    target        => 'http://m.lib.umich.edu/'
-  }
-
-  nebula::apache::redirect_vhost_http { 'www-update.lib.umich.edu':
-    serveraliases => ['www-update.lib'],
-    target        => 'http://www.lib.umich.edu/'
   }
 
   nebula::apache::redirect_vhost_http { 'pk.lib.umich.edu':

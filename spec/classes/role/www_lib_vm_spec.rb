@@ -18,6 +18,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it { is_expected.to compile }
 
+      it { is_expected.to contain_class('Nebula::Profile::Www_lib::Register_for_load_balancing') }
       it { is_expected.to contain_class('php') }
 
       it { is_expected.to contain_mount('/www') }
@@ -26,10 +27,21 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it { is_expected.to contain_apache__vhost('000-default-ssl').with(ssl: true, ssl_cert: '/etc/ssl/certs/www.lib.umich.edu.crt') }
 
-      it do
+      it 'configures shibboleth' do
         is_expected.to contain_class('nebula::profile::shibboleth')
-          .with(startup_timeout: 1800)
+          .with(startup_timeout: 900)
           .with(watchdog_minutes: '*/30')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/apache2/mods-available/shib2.conf')
+          .with_content(%r{SetHandler shib-handler})
+      end
+
+      it do
+        is_expected.to contain_file('/etc/apache2/mods-enabled/shib2.conf')
+          .with_ensure('link')
+          .with_target('/etc/apache2/mods-available/shib2.conf')
       end
 
       it do
@@ -68,12 +80,6 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it { is_expected.to contain_host('mysql-web').with_ip('10.0.0.123') }
 
       it do
-        # set via hiera
-        is_expected.to contain_file('authz_umichlib.conf')
-          .with_content(%r{DBDParams\s*user=somebody})
-      end
-
-      it do
         is_expected.to contain_apache__vhost('000-default-ssl')
           .with_aliases([{ 'scriptalias' => '/monitor',
                            'path' => '/usr/local/lib/cgi-bin/monitor' }])
@@ -98,8 +104,8 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it do
         is_expected.to contain_apache__vhost('michiganelt.org-redirect-https')
-          .with_redirect_dest('https://www.michiganelt.org/')
-          .with_serveraliases([])
+          .with_redirect_dest('https://www.press.umich.edu/elt')
+          .with_serveraliases(['www.michiganelt.org'])
       end
 
       it do
@@ -130,53 +136,9 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('mportfolio-https')
-          .with_ssl_cert('/etc/ssl/certs/www.mportfolio.umich.edu.crt')
-          .with_servername('www.mportfolio.umich.edu')
-      end
-
-      it do
         is_expected.to contain_apache__vhost('openmich-https')
           .with_ssl_cert('/etc/ssl/certs/open.umich.edu.crt')
           .with_servername('open.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-http-mirlyn')
-          .with_servername('mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-https-mirlyn')
-          .with_ssl_cert('/etc/ssl/certs/mirlyn.lib.umich.edu.crt')
-          .with_servername('mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-http-m.mirlyn')
-          .with_servername('m.mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-https-m.mirlyn')
-          .with_ssl_cert('/etc/ssl/certs/mirlyn.lib.umich.edu.crt')
-          .with_servername('m.mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-http-beta.mirlyn')
-          .with_servername('beta.mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('vufind-https-beta.mirlyn')
-          .with_ssl_cert('/etc/ssl/certs/mirlyn.lib.umich.edu.crt')
-          .with_servername('beta.mirlyn.lib.umich.edu')
-      end
-
-      it do
-        is_expected.to contain_apache__vhost('bmc.lib.umich.edu')
-          .with_servername('bmc.lib.umich.edu')
       end
 
       it do
@@ -188,6 +150,18 @@ describe 'nebula::role::webhost::www_lib_vm' do
         is_expected.to contain_apache__vhost('staff.lib ssl')
           .with_servername('staff.lib.umich.edu')
           .with_ssl_cert('/etc/ssl/certs/staff.lib.umich.edu.crt')
+      end
+
+      it 'defaults to allowing .htaccess for staff.lib' do
+        directories = catalogue.resource('Apache::Vhost', 'staff.lib ssl')[:directories]
+        funds_transfer = directories.select { |x| x['path'] == '/www/staff.lib/web/funds_transfer' }
+
+        expect(funds_transfer.first['allow_override']).to contain_exactly(
+          'AuthConfig',
+          'FileInfo',
+          'Limit',
+          'Options',
+        )
       end
 
       it do
@@ -205,9 +179,8 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it do
         # Name-based multi-site Wordpress
         is_expected.to contain_apache__vhost('publishing-partners-http')
-          .with_servername('www.textcreationpartnership.org')
+          .with_servername('blog.press.umich.edu')
           .with_serveraliases([
-                                'blog.press.umich.edu',
                                 'www.theater-historiography.org',
                                 'www.digitalculture.org',
                                 'www.digitalrhetoriccollaborative.org',
@@ -218,11 +191,10 @@ describe 'nebula::role::webhost::www_lib_vm' do
         # SSL offloading
         # Name-based multi-site Wordpress
         is_expected.to contain_apache__vhost('publishing-partners-https')
-          .with_servername('https://www.textcreationpartnership.org')
+          .with_servername('https://blog.press.umich.edu')
           .with_ssl(false)
           .with_port(443)
           .with_serveraliases([
-                                'blog.press.umich.edu',
                                 'www.theater-historiography.org',
                                 'www.digitalculture.org',
                                 'www.digitalrhetoriccollaborative.org',
@@ -238,7 +210,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
         is_expected.to contain_apache__vhost('press-https')
           .with_servername('www.press.umich.edu')
           .with_ssl_cert('/etc/ssl/certs/www.press.umich.edu.crt')
-          .with_setenv(['HTTPS on'])
+          .with_setenv(['HTTPS on', 'PERL_USE_UNSAFE_INC 1'])
       end
 
       it do
@@ -263,6 +235,35 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_error_log_file('error.log')
           .with_custom_fragment(%r{CookieName skynet})
       end
+
+      # Files
+      it { is_expected.to contain_file('sqlnet.ora') }
+
+      it 'adds custom params to file authz_umichlib.conf' do
+        is_expected.to contain_file('authz_umichlib.conf')
+          .with_content(%r{DBDParams\s*user=somebody})
+      end
+
+      it 'adds custom params to file tnsnames.ora' do
+        is_expected.to contain_file('tnsnames.ora')
+          .with_content(%r{^ORCL.MYSERVER1_ALIAS1\s+=})
+          .with_content(%r{^ORCL.MYSERVER1_ALIAS2\s+=})
+          .with_content(%r{^ORCL.MYSERVER2_ALIAS1\s+=})
+          .with_content(%r{^ORCL.MYSERVER2_ALIAS2\s+=})
+          .with_content(%r{HOST\s+=\s+myserver1.umdl.umich.edu})
+          .with_content(%r{HOST\s+=\s+myserver2.umdl.umich.edu})
+          .with_content(%r{SID\s+=\s+abcd})
+          .with_content(%r{PORT\s+=\s+1234})
+      end
+
+      it { is_expected.to contain_cron('update GeoIP database') }
+      it { is_expected.to contain_cron('purge cosign tickets') }
+      it { is_expected.to contain_cron('purge apache access logs 1/2') }
+      it { is_expected.to contain_cron('purge apache access logs 2/2') }
+      it { is_expected.to contain_cron('reload fcgi for Press site nightly') }
+      it { is_expected.to contain_cron('shibd existence check') }
+      it { is_expected.to contain_cron('staff.lib parse') }
+      it { is_expected.to contain_cron('Proactively scan the log files for suspcious activity') }
     end
   end
 end

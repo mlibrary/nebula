@@ -1,0 +1,213 @@
+# These are the cronjobs unique to marsala, porter, and stout. Where
+# they live in the future is as yet undecided, and the work of figuring
+# out which we even need is also not done. But if we were to bring lens
+# up to date with reality, this is what we'd be adding to marsala,
+# porter, and stout.
+#
+# Instructions for finishing this file are on line 144.
+#
+# This file should be deleted once everything is where it needs to be in
+# lens and in nebula.
+marsala:
+  nebula::profile::www_lib::cron::extra_jobs:
+    'update the blacklist for ezproxy':
+      user: libadm
+      environment: ['MAILTO=libwebsystems@umich.edu']
+      minute: [1, 16, 31, 46]
+      command: '/www/www.lib/cron/bin/update-ezproxy-blacklist > /www/www.lib/cron/logs/ezproxy-blacklist.log 2>&1'
+    'otherwise do the update if someone created those files in /www/sync every 5 minutes':
+      user: libadm
+      environment: ['MAILTO=libwebsystems@umich.edu']
+      minute: [6, 11, 21, 26, 36, 41, 51, 56]
+      command: '/www/www.lib/cron/bin/update-ezproxy-blacklist check-first > /www/www.lib/cron/logs/ezproxy-blacklist.log 2>&1'
+    'export ses':
+      user: libadm
+      environment: ['MAILTO=libwebsystems@umich.edu']
+      hour: 7
+      minute: 0
+      command: '/www/www.lib/cron/bin/d7-www.lib-export-ses catch > /www/www.lib/cron/logs/export-ses.log 2>&1'
+    'update locations and export':
+      user: libadm
+      environment: ['MAILTO=libwebsystems@umich.edu']
+      weekday: '1-5'
+      hour: 6
+      minute: 0
+      command: '/www/www.lib/cron/bin/staff.lib-drupal8-locations-export > /www/www.lib/cron/logs/locations-export.log 2>&1'
+    'clear staff caches 1/3':
+      user: libadm
+      environment: ['MAILTO=libwebsystems@umich.edu']
+      hour: 4
+      minute: 5
+      command: '/www/www.lib/cron/bin/d8-staff-cache-rebuild > /www/www.lib/cron/logs/d8-staff-cache-rebuild.log 2>&1'
+    'clear staff caches 2/3':
+      user: libadm
+      environment: ['MAILTO=libwebsystems@umich.edu']
+      hour: 4
+      minute: 15
+      command: '/www/www.lib/cron/bin/d8-staff.funds_transfer-cache-rebuild > /www/www.lib/cron/logs/d8-staff.funds_transfer-cache-rebuild.log 2>&1'
+    'clear staff caches 3/3':
+      user: libadm
+      environment: ['MAILTO=libwebsystems@umich.edu']
+      hour: 4
+      minute: 25
+      command: '/www/www.lib/cron/bin/d8-staff.ptf-cache-rebuild > /www/www.lib/cron/logs/d8-staff.ptf-cache-rebuild.log 2>&1'
+    'Log rotation for mblem':
+      user: botimer
+      hour: 0
+      minute: 0
+      command: 'bash -c "export PATH=/l/local/rbenv/bin:/l/local/rbenv/shims:\$PATH; /usr/sbin/logrotate -s /www/www.mblem/app/releases/20140228204112/log/rotate.state /www/www.mblem/app/releases/20140228204112/log/rotate.conf >> /www/www.mblem/app/releases/20140228204112/log/cron.log 2>&1"'
+porter:
+  nebula::profile::www_lib::cron::extra_jobs:
+    'Datamart: update valuemaps':
+      user: 'libadm'
+      environment: ['MAILTO=timothy@umich.edu']
+      hour: 8
+      minute: 5
+      command: '/www/datamart.lib/bin/generate_all.sh'
+stout:
+  nebula::profile::www_lib::cron::extra_jobs:
+    'bertrama lib compare indices':
+      user: bertrama
+      environment: ['MAILTO=bertrama@umich.edu']
+      minute: 0
+      command: '/www/www.lib/cron/bin/www.lib-compare-indices > /dev/null 2>&1'
+    'botimer mblem rotate':
+      user: botimer
+      hour: 0
+      minute: 0
+      command: 'bash -c "export PATH=/l/local/rbenv/bin:/l/local/rbenv/shims:\$PATH; /usr/sbin/logrotate -s /www/www.mblem/app/current/log/rotate.state /www/www.mblem/app/current/log/rotate.conf >> /www/www.mblem/app/current/log/cron.log 2>&1"'
+    'botimer mblem daily':
+      user: botimer
+      hour: 6
+      minute: 1
+      command: 'bash -c "export PATH=/l/local/rbenv/bin:/l/local/rbenv/shims:\$PATH; cd /www/www.mblem/app/current && bin/rails runner -e production ''NotificationProcessing.daily'' >> log/cron.log 2>&1"'
+    'botimer mblem twice daily':
+      user: botimer
+      hour: [6, 18]
+      minute: 6
+      command: 'bash -c "export PATH=/l/local/rbenv/bin:/l/local/rbenv/shims:\$PATH; cd /www/www.mblem/app/current && bin/rails runner -e production ''NotificationProcessing.twice_daily'' >> log/cron.log 2>&1"'
+    'botimer mblem hourly':
+      user: botimer
+      minute: 11
+      command: 'bash -c "export PATH=/l/local/rbenv/bin:/l/local/rbenv/shims:\$PATH; cd /www/www.mblem/app/current && bin/rails runner -e production ''NotificationProcessing.hourly'' >> log/cron.log 2>&1"'
+    'botimer mblem every five minutes':
+      user: botimer
+      minute: '*/5'
+      command: 'bash -c "export PATH=/l/local/rbenv/bin:/l/local/rbenv/shims:\$PATH; cd /www/www.mblem/app/current && bin/rails runner -e production ''NotificationProcessing.five_minutes'' >> log/cron.log 2>&1"'
+    'CORAL email alerts':
+      user: dueberb
+      environment: ['MAILTO=dueberb@umich.edu']
+      hour: 1
+      minute: 10
+      command: '/usr/bin/php /www/staff.lib/web/coral/resources/sendAlerts.php'
+    'MPub daily':
+      user: libadm
+      environment: ['MAILTO=lib.pt@umich.edu']
+      hour: 4
+      minute: 0
+      command: '(date ; /www/wordpress/cron/bin/build_mpubs_collist_cache.php 2>&1)  > /www/wordpress/cron/log/build_mpubs_collist_cache.log'
+    'MPub Readership Map':
+      user: libadm
+      environment: ['MAILTO=lib.pt@umich.edu']
+      hour: 2
+      minute: 8
+      command: '/www/www.lib/cron/bin/readership-map-harvester'
+# All following commands have user libadm and environment
+# ['MAILTO=libwebsystems@umich.edu'], and they are on stout. Convert the
+# given five numbers to minute/hour/day/month/weekday, and all that's
+# left is the command. Stars can be ignored, as above.
+#
+# For example the following should look like this:
+#
+#     # To run site search log reporting each day on <HOST> at 3:40 AM.  KJV, 1/15/2013
+#     #Ejournals update from mirlyn, and reindex in solr every morning 4:07 am - bertrama 5/21/2009
+#     'Ejournals update from mirlyn':
+#       user: libadm
+#       environment: ['MAILTO=libwebsystems@umich.edu']
+#       hour: 5
+#       minute: 7
+#       command: '/www/www.lib/cron/bin/index-ejournals > /www/www.lib/cron/logs/ejournals.log 2>&1'
+#
+# If you see things like `6,18` and `*/5`, you can look above to see
+# examples of how that syntax works in this case (it's pretty
+# straightforward).
+
+# To run site search log reporting each day on <HOST> at 3:40 AM.  KJV, 1/15/2013
+#Ejournals update from mirlyn, and reindex in solr every morning 4:07 am - bertrama 5/21/2009
+7 5 * * * /www/www.lib/cron/bin/index-ejournals > /www/www.lib/cron/logs/ejournals.log 2>&1
+
+#update newbooks database 6:23 am - bertrama 5/21/2009
+23 6 * * 0 /www/www.lib/cron/bin/newbooks > /www/www.lib/cron/logs/newbooks.log 2>&1
+
+#drupal's cron every 20 minutes for indexing changed or new content - bertrama 5/21/2009
+1,21,41 * * * * /www/www.lib/cron/bin/staff.lib-drupal8-cron > /www/www.lib/cron/logs/drupal8.log 2>&1
+3,23,43 * * * * /www/www.lib/cron/bin/staff.lib-drupal8-funds_transfer-cron > /www/www.lib/cron/logs/drupal8-funds_transfer.log 2>&1
+6,26,46 * * * * /www/www.lib/cron/bin/staff.lib-drupal8-ptf-cron > /www/www.lib/cron/logs/drupal8-ptf.log 2>&1
+42 5 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-staff-export > /www/www.lib/cron/logs/staff-export.log 2>&1
+
+#uncomment line below to avoid user issues on lib when exports fail
+#2 21 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-staff-export > /www/www.lib/cron/logs/staff-export.log 2>&1
+25 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/d7-www.lib-staff-updates > /www/www.lib/cron/logs/staff-updates.log 2>&1
+7,27,47 * * * * /www/www.lib/cron/bin/www.lib-drupal-cron > /www/www.lib/cron/logs/drupal.log 2>&1
+#0,20,40 * * * * /usr/bin/php /www/www.lib/cron/bin/d6-staff.lib-cron.php > /www/www.lib/cron/logs/staff.log 2>&1
+5,25,45 * * * * /www/www.lib/cron/bin/index-searchtools > /www/www.lib/cron/logs/searchtools-drupal-index.log 2>&1
+15,35,55 * * * * /www/www.lib/cron/bin/update-online-exhibits > /www/www.lib/cron/logs/online-exhibits.log 2>&1
+13 * * * * /www/www.lib/cron/bin/d7-www.lib-index-extra-paths > /www/www.lib/cron/logs/d7-www.lib-index-extra-paths.log 2>&1
+17 * * * * /www/www.lib/cron/bin/d7-www.lib-ensure-uid0
+
+#update drupal's users:
+30 3 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-check-dir-perms > /www/www.lib/cron/logs/staff.lib-drupal8-check-dir-perms.log 2>&1
+09 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-update-users-depts > /www/www.lib/cron/logs/drupal8-users-depts.log 2>&1
+##50 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-update-users > /www/www.lib/cron/logs/drupal8-users.log 2>&1
+17 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-staff-subsite-user-feed > /www/www.lib/cron/logs/drupal8-staff-subsite-user-feed.log 2>&1
+15 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-staff-subsite-dept-feed > /www/www.lib/cron/logs/drupal8-staff-subsite-dept-feed.log 2>&1
+21 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-orgchart-export > /www/www.lib/cron/logs/staff.lib-drupal8-orgchart-export.log 2>&1
+31 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-staff-subsite-shortcode-feed > /www/www.lib/cron/logs/drupal8-staff-subsite-shortcode-feed.log 2>&1
+22 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-update-funds-transfer-sub-site > /www/www.lib/cron/logs/staff.lib-drupal8-update-funds-transfer-sub-site.log 2>&1
+37 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-update-ptf-sub-site > /www/www.lib/cron/logs/staff.lib-drupal8-update-ptf-sub-site.log 2>&1
+
+# locations imports need to move to marsala due to deadlocks
+#04 4 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-update-locations > /www/www.lib/cron/logs/staff.lib-drupal8-update-locations.log 2>&1
+45 6 * * 1,2,3,4,5 /www/www.lib/cron/bin/staff.lib-drupal8-locations-export > /www/www.lib/cron/logs/locations-export.log 2>&1
+
+# Import the digital collections from Search Tools.
+0 2,14 * * * /www/www.lib/cron/bin/d7-www.lib-dlxs-import > /dev/null 2>&1
+
+#index drupal's users:
+57 * * * * /www/www.lib/cron/bin/index-users > /www/www.lib/cron/logs/index-users.log 2>&1
+
+# Ensure that users on staff.lib have - bertrama 2013-12-04
+7 7 * * * /www/www.lib/cron/bin/d7-www.lib-ensure-email-address > /www/www.lib/cron/logs/public-email-addresses.log 2>&1
+
+# Update the export for the database.
+6 4 * * * /www/www.lib/cron/bin/d7-www.lib-export-database > /www/www.lib/cron/logs/export-database.log 2>&1
+26 4 * * * /www/www.lib/cron/bin/d6-staff.lib-export-database > /www/www.lib/cron/logs/export-staff-database.log 2>&1
+46 3 * * * /www/www.lib/cron/bin/d8-staff.lib-export-database > /www/www.lib/cron/logs/d8-export-database.log 2>&1
+53 3 * * * /www/www.lib/cron/bin/d8-funds_transfer-export-database > /www/www.lib/cron/logs/d8-funds-export-database.log 2>&1
+58 3 * * * /www/www.lib/cron/bin/d8-ptf-export-database > /www/www.lib/cron/logs/d8-ptf-export-database.log 2>&1
+03 5 * * * /www/www.lib/cron/bin/d8-locations-export-database > /www/www.lib/cron/logs/d8-locations-export-database.log 2>&1
+31 7 * * * /www/www.lib/cron/bin/d7-openmich-export-database > /www/www.lib/cron/logs/d7-openmich-export-database.log 2>&1
+
+#Cron for staff.lib/textbooks
+0 4 * * 2,4 /www/www.lib/cron/bin/update-textbooks 2 > /www/www.lib/cron/logs/textbooks-nightly.log 2>&1
+0 4 * * 7,3 /www/www.lib/cron/bin/update-textbooks 1 >> /www/www.lib/cron/logs/textbooks-nightly.log 2>&1
+
+# For Dropbox files in Omeka instances
+3 * * * * /usr/bin/find /mnt/exhibits/auto -type f -exec /bin/mv {} /www/www.lib/web/online-exhibits/plugins/Dropbox/files \; > /dev/null 2>&1
+5 * * * * /usr/bin/find /mnt/exhibits/auto -type f -exec /bin/mv {} /www/www.lib/web/upstart200/plugins/Dropbox/files \; > /dev/null 2>&1
+
+# To generate search graphs for search dashboard nightly, after log files are updated. Only runs on one server. At 4:30 AM.  KJV, 01/08/2013
+# 27 15 * * * /usr/bin/php /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/google-chart.php > /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/logs/google-chart.log 2>&1
+30 4 * * * /usr/bin/php /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/google-chart.php > /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/logs/google-chart.log 2>&1
+
+# To run site search log reporting each day on tripel at 3:20 AM.  KJV, 5/26/2010
+45 3 * * * /usr/bin/perl /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/favorite-unique-users.pl > /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/logs/favorite-unique-users.log 2>&1
+
+linkscan=linkscan
+#Linkscan (currently keyed to <HOST>)
+0 3 * * 1,3,4,5 /www/www.lib/cron/bin/linkscan.daily getfiles   > /www/www.lib/cron/logs/linkscan-daily.log 2>&1
+0 4 * * 0   /www/www.lib/cron/bin/linkscan.weekly getfiles  > /www/www.lib/cron/logs/linkscan-weekly.log 2>&1
+0 3 * * 6   /www/www.lib/cron/bin/linkscan-run-libguides.weekly getfiles > /www/www.lib/cron/logs/linkscan-run-libguides-weekly.log 2>&1
+
+#Wordpress's native cron functions.
+1,21,41 * * * * /www/wordpress/cron/bin/wordpress-run-cron > /www/wordpress/cron/log/wordpress-cron.log 2>&1

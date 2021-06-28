@@ -1,0 +1,11 @@
+# Managed by puppet (nebula/profile/kubernetes/haproxy/services.d/gelf_tcp.cfg.erb)
+frontend kubernetes-gelf-tcp-front
+  bind <%= @public_address %>:12201
+  mode tcp
+  option tcplog
+  default_backend kubernetes-gelf-tcp-back
+
+backend kubernetes-gelf-tcp-back
+  mode tcp
+  option tcp-check
+  balance roundrobin

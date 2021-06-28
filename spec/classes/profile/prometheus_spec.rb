@@ -20,6 +20,9 @@ describe 'nebula::profile::prometheus' do
           .with_volumes(['/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml',
                          '/etc/prometheus/rules.yml:/etc/prometheus/rules.yml',
                          '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
+                         '/etc/prometheus/haproxy.yml:/etc/prometheus/haproxy.yml',
+                         '/etc/prometheus/mysql.yml:/etc/prometheus/mysql.yml',
+                         '/etc/prometheus/tls:/tls',
                          '/opt/prometheus:/prometheus'])
           .that_requires('File[/opt/prometheus]')
       end
@@ -30,6 +33,22 @@ describe 'nebula::profile::prometheus' do
         it do
           is_expected.to contain_docker__run('prometheus')
             .with_image('prom/prometheus:v2.11.1')
+        end
+      end
+
+      it do
+        is_expected.to contain_docker__run('pushgateway')
+          .with_image('prom/pushgateway:latest')
+          .with_net('host')
+          .with_extra_parameters(%w[--restart=always])
+      end
+
+      context 'with pushgateway_version set to v2.11.1' do
+        let(:params) { { pushgateway_version: 'v2.11.1' } }
+
+        it do
+          is_expected.to contain_docker__run('pushgateway')
+            .with_image('prom/pushgateway:v2.11.1')
         end
       end
 
@@ -63,8 +82,51 @@ describe 'nebula::profile::prometheus' do
       end
 
       it do
+        is_expected.to contain_concat_file('/etc/prometheus/haproxy.yml')
+          .that_notifies('Docker::Run[prometheus]')
+          .that_requires('File[/etc/prometheus]')
+      end
+
+      it do
+        is_expected.to contain_concat_file('/etc/prometheus/mysql.yml')
+          .that_notifies('Docker::Run[prometheus]')
+          .that_requires('File[/etc/prometheus]')
+      end
+
+      it do
         is_expected.to contain_file('/etc/prometheus')
           .with_ensure('directory')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/prometheus/tls')
+          .with_ensure('directory')
+          .that_requires('File[/etc/prometheus]')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/prometheus/tls/ca.crt')
+          .with_source('puppet:///ssl-certs/prometheus-pki/ca.crt')
+          .that_requires('File[/etc/prometheus/tls]')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/prometheus/tls/client.crt')
+          .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:fqdn]}.crt")
+          .that_requires('File[/etc/prometheus/tls]')
+      end
+
+      it do
+        is_expected.to contain_file('/etc/prometheus/tls/client.key')
+          .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:fqdn]}.key")
+          .that_requires('File[/etc/prometheus/tls]')
+      end
+
+      %w[ca.crt client.crt client.key].each do |filename|
+        it do
+          is_expected.to contain_docker__run('prometheus')
+            .that_requires("File[/etc/prometheus/tls/#{filename}]")
+        end
       end
 
       it do
@@ -93,6 +155,22 @@ describe 'nebula::profile::prometheus' do
           .with_source(facts[:ipaddress])
           .with_state('NEW')
           .with_action('accept')
+      end
+
+      it 'exports a firewall so that haproxy nodes can open 9101' do
+        expect(exported_resources).to contain_firewall("010 prometheus haproxy exporter #{facts[:hostname]}")
+          .with_tag('mydatacenter_prometheus_haproxy_exporter')
+          .with_proto('tcp')
+          .with_dport(9101)
+          .with_source(facts[:ipaddress])
+          .with_state('NEW')
+          .with_action('accept')
+      end
+
+      it do
+        expect(exported_resources).to contain_concat_fragment('02 pushgateway url mydatacenter')
+          .with_target('/usr/local/bin/pushgateway')
+          .with_content("PUSHGATEWAY='http://#{facts[:fqdn]}:9091'\n")
       end
 
       context 'with some static nodes set' do

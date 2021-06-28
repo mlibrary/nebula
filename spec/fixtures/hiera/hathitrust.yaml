@@ -10,7 +10,10 @@ nebula::profile::hathitrust::imgsrv::sdrview: 'sdrview'
 nebula::profile::hathitrust::imgsrv::sdrdataroot: '/sdrdataroot'
 nebula::profile::hathitrust::imgsrv::bind: '127.0.0.1:31028'
 nebula::profile::hathitrust::apache::babel::gwt_code: 'somecode'
-nebula::profile::hathitrust::apache::babel::useradmin_endpoint: 'https://useradmin.default.invalid:3000'
+nebula::profile::hathitrust::apache::babel::otis_endpoint: 'https://otis.default.invalid:3000'
+nebula::profile::hathitrust::apache::babel::otis_basic_auth: 'ZmFrZV91c2VyOmZha2VfcGFzc3dvcmQ='
+nebula::profile::hathitrust::apache::babel::dex_endpoint: 'https://dex.default.invalid:3000'
+nebula::profile::hathitrust::apache::babel::dex_basic_auth: 'ZmFrZV91c2VyOmZha2VfcGFzc3dvcmQ='
 
 nebula::profile::hathitrust::hosts::mysql_sdr: '10.1.2.4'
 nebula::profile::hathitrust::hosts::mysql_htdev: '2.2.2.2'
@@ -125,3 +128,33 @@ nebula::profile::hathitrust::solr_lss::timezone: Somewhere/City
 
 nebula::role::hathitrust::backup::tsm_servername: tsmserver
 nebula::role::hathitrust::backup::tsm_serveraddress: tsm.default.invalid
+
+nebula::role::hathitrust::ingest_indexing::dataden_target: dataden.default.invalid:/dataden/hathitrust
+
+nebula::profile::hathitrust::rsync::datasets:
+  dataset1:
+    comment: "Dataset 1"
+    path: "/datasets/dataset1"
+    users:
+      - comment: "Test User 1, University of East Westtestland, testuser1@default.invalid"
+        ip: '192.0.2.102'
+      - comment: "Test User 2, University of West Easttestland, testuser2@default.invalid"
+        ip: '198.51.100.10'
+  dataset2:
+    comment: "Dataset 2"
+    path: "/datasets/dataset2"
+    users:
+      - comment: "Test User 3, University of East Westtestland, testuser3@default.invalid"
+        ip: '192.0.2.108'
+      - comment: "Test User 4, University of West Easttestland, testuser4@default.invalid"
+        ip: '198.51.100.15'
+
+nebula::profile::hathitrust::secure_rsync::allowed_networks:
+  - "%{alias('networks::one')}"
+  - name: 'secure network'
+    range: '192.0.2.1-192.0.2.4'
+
+nebula::profile::hathitrust::secure_rsync::datasets:
+  secure_dataset:
+    comment: "Secure Dataset"
+    path: "/datasets/secure_dataset"

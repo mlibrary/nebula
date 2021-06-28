@@ -15,6 +15,9 @@ class nebula::profile::haproxy(
 ) {
   include nebula::profile::haproxy::prereqs
   include nebula::profile::networking::sysctl
+  class { 'nebula::profile::prometheus::exporter::haproxy':
+    master => $master
+  }
 
   file { '/etc/haproxy/haproxy.cfg':
     ensure  => 'present',
@@ -55,6 +58,25 @@ class nebula::profile::haproxy(
     home    => $monitoring_user['home'],
     key     => $monitoring_user['key'],
     require => [Package['haproxy'], Package['haproxyctl']]
+  }
+
+  file { "${monitoring_user['home']}/.ssh/id_ecdsa":
+    source => "puppet:///ssh-keys/${monitoring_user['name']}/id_ecdsa",
+    mode   => '0600',
+    owner  => $monitoring_user['name'],
+    group  => 'haproxy'
+  }
+  file { "${monitoring_user['home']}/.ssh/id_ecdsa.pub":
+    source => "puppet:///ssh-keys/${monitoring_user['name']}/id_ecdsa.pub",
+    mode   => '0644',
+    owner  => $monitoring_user['name'],
+    group  => 'haproxy'
+  }
+  $http_files = lookup('nebula::http_files')
+  file { '/usr/local/bin/set_weights.rb':
+    ensure => 'present',
+    mode   => '0755',
+    source => "https://${http_files}/ae-utils/bins/set_weights.rb"
   }
 
   package { 'keepalived': }
@@ -119,6 +141,12 @@ class nebula::profile::haproxy(
   nebula::exposed_port { '200 kubectl':
     port  => 6443,
     block => 'umich::networks::all_trusted_machines',
+  }
+
+  file { '/etc/haproxy/services.d/stats.cfg':
+    require => 'Package[haproxy]',
+    notify  => 'Service[haproxy]',
+    content => template('nebula/profile/haproxy/stats_frontend.cfg.erb'),
   }
 
 }

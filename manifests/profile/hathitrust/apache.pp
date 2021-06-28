@@ -12,7 +12,18 @@ class nebula::profile::hathitrust::apache (
   String $prefix = '',
   String $domain = 'hathitrust.org',
   String $sdrroot = '/htapps/babel',
+  String $monitoring_user = 'haproxyctl',
+  Optional[Hash] $monitoring_pubkey = undef
 ) {
+
+
+  if($monitoring_pubkey) {
+    nebula::authzd_user { $monitoring_user:
+      gid  => 'nogroup',
+      home => '/nonexistent',
+      key  => $monitoring_pubkey
+    }
+  }
 
   ensure_packages(['bsd-mailx'])
 
@@ -52,6 +63,7 @@ class nebula::profile::hathitrust::apache (
     default_mods           => false,
     user                   => 'nobody',
     group                  => 'nogroup',
+    conf_enabled           => '/etc/apache2/conf-enabled',
   }
 
   class { 'apache::mod::prefork':
@@ -102,13 +114,6 @@ class nebula::profile::hathitrust::apache (
 
   apache::custom_config { 'badrobots':
     source => 'puppet:///apache/badrobots.conf'
-  }
-
-  file { '/etc/apache2/conf-enabled':
-    ensure  => 'directory',
-    recurse => true,
-    force   => true,
-    purge   => true
   }
 
   file { '/etc/apache2/conf-available':

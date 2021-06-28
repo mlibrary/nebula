@@ -56,6 +56,7 @@ class nebula::profile::tools_lib::apache (
     default_mods      => false,
     default_vhost     => false,
     default_ssl_vhost => false,
+    conf_enabled      => '/etc/apache2/conf-enabled',
   }
 
   class { 'apache::mod::proxy':
@@ -148,6 +149,32 @@ class nebula::profile::tools_lib::apache (
     dport  => [80, 443],
     state  => 'NEW',
     action => 'accept',
+  }
+
+  file {
+    default:
+      ensure => 'link',
+    ;
+
+    '/etc/apache2/conf-enabled/charset.conf':
+      target => '../conf-available/charset.conf',
+    ;
+
+    '/etc/apache2/conf-enabled/localized-error-pages.conf':
+      target => '../conf-available/localized-error-pages.conf',
+    ;
+
+    '/etc/apache2/conf-enabled/other-vhosts-access-log.conf':
+      target => '../conf-available/other-vhosts-access-log.conf',
+    ;
+
+    '/etc/apache2/conf-enabled/security.conf':
+      target => '../conf-available/security.conf',
+    ;
+
+    '/etc/apache2/conf-enabled/serve-cgi-bin.conf':
+      target => '../conf-available/serve-cgi-bin.conf',
+    ;
   }
 
 }

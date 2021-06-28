@@ -21,8 +21,10 @@ class nebula::profile::prometheus (
   Array $static_wmi_nodes = [],
   Hash $rules_variables = {},
   String $version = 'latest',
+  String $pushgateway_version = 'latest',
 ) {
   include nebula::profile::docker
+  $hostname = $::hostname
 
   docker::run { 'prometheus':
     image            => "prom/prometheus:${version}",
@@ -32,9 +34,18 @@ class nebula::profile::prometheus (
       '/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml',
       '/etc/prometheus/rules.yml:/etc/prometheus/rules.yml',
       '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
+      '/etc/prometheus/haproxy.yml:/etc/prometheus/haproxy.yml',
+      '/etc/prometheus/mysql.yml:/etc/prometheus/mysql.yml',
+      '/etc/prometheus/tls:/tls',
       '/opt/prometheus:/prometheus',
     ],
-    require          => File['/opt/prometheus'],
+    require          => File['/opt/prometheus', '/etc/prometheus/tls/ca.crt', '/etc/prometheus/tls/client.crt', '/etc/prometheus/tls/client.key'],
+  }
+
+  docker::run { 'pushgateway':
+    image            => "prom/pushgateway:${pushgateway_version}",
+    net              => 'host',
+    extra_parameters => ['--restart=always'],
   }
 
   file { '/etc/prometheus/prometheus.yml':
@@ -62,8 +73,38 @@ class nebula::profile::prometheus (
 
   Concat_fragment <<| tag == "${::datacenter}_prometheus_node_service_list" |>>
 
+  concat_file { '/etc/prometheus/haproxy.yml':
+    notify  => Docker::Run['prometheus'],
+    require => File['/etc/prometheus'],
+  }
+
+  Concat_fragment <<| tag == "${::datacenter}_prometheus_haproxy_service_list" |>>
+
+  concat_file { '/etc/prometheus/mysql.yml':
+    notify  => Docker::Run['prometheus'],
+    require => File['/etc/prometheus'],
+  }
+
+  Concat_fragment <<| tag == "${::datacenter}_prometheus_mysql_service_list" |>>
+
   file { '/etc/prometheus':
     ensure => 'directory',
+  }
+
+  file { '/etc/prometheus/tls':
+    ensure => 'directory',
+  }
+
+  file { '/etc/prometheus/tls/ca.crt':
+    source => 'puppet:///ssl-certs/prometheus-pki/ca.crt',
+  }
+
+  file { '/etc/prometheus/tls/client.crt':
+    source => "puppet:///ssl-certs/prometheus-pki/${::fqdn}.crt",
+  }
+
+  file { '/etc/prometheus/tls/client.key':
+    source => "puppet:///ssl-certs/prometheus-pki/${::fqdn}.key",
   }
 
   file { '/opt/prometheus':
@@ -81,6 +122,11 @@ class nebula::profile::prometheus (
     block => 'umich::networks::all_trusted_machines',
   }
 
+  @@concat_fragment { "02 pushgateway url ${::datacenter}":
+    target  => '/usr/local/bin/pushgateway',
+    content => "PUSHGATEWAY='http://${::fqdn}:9091'\n",
+  }
+
   @@firewall { "010 prometheus node exporter ${::hostname}":
     tag    => "${::datacenter}_prometheus_node_exporter",
     proto  => 'tcp',
@@ -89,4 +135,24 @@ class nebula::profile::prometheus (
     state  => 'NEW',
     action => 'accept',
   }
+
+  @@firewall { "010 prometheus haproxy exporter ${::hostname}":
+    tag    => "${::datacenter}_prometheus_haproxy_exporter",
+    proto  => 'tcp',
+    dport  => 9101,
+    source => $::ipaddress,
+    state  => 'NEW',
+    action => 'accept',
+  }
+
+  @@firewall { "010 prometheus mysql exporter ${::hostname}":
+    tag    => "${::datacenter}_prometheus_mysql_exporter",
+    proto  => 'tcp',
+    dport  => 9104,
+    source => $::ipaddress,
+    state  => 'NEW',
+    action => 'accept',
+  }
+
+  Firewall <<| tag == "${::datacenter}_pushgateway_node" |>>
 }

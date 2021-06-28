@@ -2,9 +2,17 @@
 groups:
 - name: hardware
   rules:
+  - alert: PrometheusNotRunning
+    annotations:
+      summary: 'Prometheus server {{$labels.hostname}} isn''t collecting metrics.'
+    expr: 'absent(up{job="prometheus"})'
+    for: 5m
+    labels:
+      severity: page
   - alert: PuppetBehind
     annotations:
       summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} hasn''t recently synced with puppet.'
+      dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
     expr: 'puppet_report{environment="production",host!="ht-web-preview.umdl.umich.edu"} < (time() - (30 * 60))'
     for: 30m
     labels:
@@ -12,6 +20,7 @@ groups:
   - alert: PuppetResourcesFailing
     annotations:
       summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} has failing puppet resources.'
+      dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
     expr: >
       sum without(name)(
         puppet_report_events{environment="production", name="Failure"}
@@ -24,10 +33,19 @@ groups:
   - alert: PuppetZeroResources
     annotations:
       summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} has zero puppet resources.'
+      dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
     expr: 'puppet_report_resources{environment="production", name="Total"} == 0'
     for: 2h
     labels:
       severity: ticket
+  - alert: RunningOutOfRam
+    annotations:
+      summary: 'Linux node {{$labels.hostname}} is running out of RAM'
+    # Less than 250M free
+    expr: 'node_memory_MemAvailable_bytes < 250000000'
+    for: 10m
+    labels:
+      severity: page
   - alert: LinuxInstanceDown
     annotations:
       summary: 'Linux node {{$labels.hostname}} isn''t responding to Prometheus.'
@@ -42,6 +60,38 @@ groups:
     for: 30m
     labels:
       severity: page
+  - alert: DiskSlowlyFillingUp
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} will fill up in a few days.'
+    expr: >
+      predict_linear(
+        node_filesystem_avail_bytes{mountpoint!="/aspace",
+                                    device!~".*/aspace",
+                                    mountpoint!="/var/lockss",
+                                    mountpoint!="/htdataden",
+                                    fstype=~"nfs|cifs"}[1d],
+        4 * 60 * 60 * 24
+      ) < 0
+    for: 1d
+    labels:
+      severity: info
+  - alert: DiskAboutToFillUp
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is filling up fast.'
+    expr: >
+      predict_linear(
+        node_filesystem_avail_bytes{mountpoint!="/aspace",
+                                    device!~".*/aspace",
+                                    mountpoint!="/var/lockss",
+                                    mountpoint!="/htdataden",
+                                    fstype!="afs",
+                                    fstype!="tmpfs",
+                                    device!="rootfs"}[10m],
+        4 * 60 * 60
+      ) < 0
+    for: 60m
+    labels:
+      severity: info
   - alert: DiskPressure
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
@@ -78,58 +128,100 @@ groups:
     for: 5m
     labels:
       severity: page
+  - alert: HTDataDenIsFull
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+    expr: >
+      (
+        (
+          avg_over_time(
+            node_filesystem_size_bytes{mountpoint="/htdataden"}[1m]
+          ) - avg_over_time(
+            node_filesystem_avail_bytes[1m]
+          )
+        ) / avg_over_time(
+          node_filesystem_size_bytes[1m]
+        )
+      ) > 0.99
+    for: 30m
+    labels:
+      severity: ticket
   - alert: DiskRunningOutOfINodes
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is running out of inodes.'
-    expr: 'node_filesystem_files_free{fstype!="cifs",fstype!="vfat",fstype!="fuse.lxcfs",fstype!="rpc_pipefs"} < 10000'
+    expr: >
+      node_filesystem_files_free{fstype!="cifs",
+                                 fstype!="vfat",
+                                 fstype!="fuse.lxcfs",
+                                 fstype!="fuse.s3fs",
+                                 fstype!="rpc_pipefs"} < 10000
     for: 30m
     labels:
       severity: page
   - alert: WindowsUpdateBehind
     annotations:
-      summary: 'Node {{$labels.hostname}} has not updated in 30+ days.'
-    expr: 'time() - windows_update > 30*24*3600'
+      summary: 'Node {{$labels.hostname}} has not updated in 40+ days.'
+    expr: 'time() - windows_update > 40*24*3600'
     for: 1h
     labels:
       severity: ticket
+  - alert: MoreThanOneDeviceClaimingOneIP
+    annotations:
+      summary: 'More than one device claiming {{$labels.instance}}.'
+    expr: 'count by (instance) (up) > 1'
+    for: 5m
+    labels:
+      severity: ticket
 
-  # These are legacy alerts that can be removed when RHEL5 is gone.
-  - alert: DiskPressure
-    expr: >
-      (
-        (
-          avg_over_time(
-            node_filesystem_size[1m]
-          ) - avg_over_time(
-            node_filesystem_avail[1m]
-          )
-        ) / avg_over_time(
-          node_filesystem_size[1m]
-        )
-      ) > 0.95
+  - alert: WwwLibPressFcgiUnreachable
+    annotations:
+      summary: 'Cannot reach press on node {{$labels.hostname}}.'
+    expr: 'time() - press_fcgi_check_last_success > 300'
     for: 30m
     labels:
       severity: ticket
+
+  # The staff-lib unison job is exempt because it routinely takes days
+  # sometimes. The htapps-cache one also takes forever as a matter of
+  # routine.
+  - alert: UnisonSyncFailed
     annotations:
-      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
-  - alert: DiskFull
-    expr: >
-      (
-        (
-          avg_over_time(
-            node_filesystem_size[1m]
-          ) - avg_over_time(
-            node_filesystem_avail[1m]
-          )
-        ) / avg_over_time(
-          node_filesystem_size[1m]
-        )
-      ) > 0.99
-    for: 5m
+      summary: 'Unison sync {{$labels.client}} failed on node {{$labels.hostname}}.'
+    expr: 'time() - unison_last_success{client!="htapps-cache",client!="nas-web-staff-lib"} > 5 * 60'
+    for: 30m
     labels:
-      severity: page
+      severity: ticket
+
+  - alert: MysqlBackupFailed
     annotations:
-      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+      summary: 'Mysql Backup has Failed on node {{$labels.hostname}}.'
+    expr: 'time() - mysql_backup_last_success > 7 * 24 * 60 * 60'
+    for: 1d
+    labels:
+      severity: ticket
+
+  # We like to keep at least 3T free at all times for deep blue data,
+  # but their ingest process requires double the capacity of any files
+  # being ingested, so it is common for them to claim a lot of space
+  # only temporarily. Hence the lengthy 1d alert threshold.
+  - alert: DeepBlueDataProdStoragePressure
+    annotations:
+      summary: 'deepbluedata-prod ({{$labels.hostname}}:{{$labels.mountpoint}}) has less than 3T of free space'
+    expr: 'node_filesystem_avail_bytes{device="deepbluedata-prod.value.storage.umich.edu:/deepbluedata-prod"} < 3 * 1024 * 1024 * 1024 * 1024'
+    for: 1d
+    labels:
+      severity: ticket
+
+  # This doesn't appear to grow fast, so an 100G threshold should give
+  # plenty of time to address any problems.
+  - alert: HTDevStoragePressure
+    annotations:
+      summary: 'htdev ({{$labels.hostname}}:{{$labels.mountpoint}}) has less than 100G of free space'
+    expr: 'node_filesystem_avail_bytes{device=~"htdev.value.storage.umich.edu:/htdev.*"} < 100 * 1024 * 1024 * 1024'
+    for: 1d
+    labels:
+      severity: ticket
+
   - alert: DarkBlueFillingUp
     expr: >
       node_filesystem_avail_bytes{device="<%= @rules_variables['darkblue_device'] %>"} < (1 * 1024 * 1024 * 1024 * 1024)
@@ -148,6 +240,33 @@ groups:
     annotations:
       summary: 'Dark Blue repository storage, {{$labels.device}} is out of available space.'
       description: '{{$labels.device}} has had less than 100GB of available space for more than 5 minutes.'
+  - alert: MysqlDown
+    expr: >
+      mysql_up == 0
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: 'MySQL is DOWN on {{$labels.hostname}}'
+      description: 'MySQL is DOWN'
+  - alert: MysqlSlaveSqlDown
+    expr: >
+      mysql_slave_status_slave_sql_running  == 0
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: 'MySQL Slave SQL is Not Running on {{$labels.hostname}}'
+      description: 'MySQL Slave SQL is not Running'
+  - alert: MysqlMaxPreparedStatment
+    expr: >
+      mysql_global_status_prepared_stmt_count / mysql_global_variables_max_prepared_stmt_count > 0.75
+    for: 30m
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'MySQL Prepared Statement Count is approaching MAX on {{$labels.hostname}}'
+      description: 'MySQL Prepared Statement Count is approaching MAX'
 
   # These are aggregate rules for federated collection across our full
   # system. By putting them here, we essentially precompile them.
@@ -166,5 +285,29 @@ groups:
       max without(hostname, instance)(
         avg without(cpu, mode)(
           1 - rate(node_cpu_seconds_total{mode="idle"}[30s])
+        )
+      )
+  - record: datacenter_role:node_cpu_seconds:max_not_idle_mean2m
+    expr: >
+      max without(hostname, instance)(
+        avg without(cpu)(
+          sum without(mode)(
+            rate(node_cpu_seconds_total{mode!="idle"}[2m])
+          )
+        )
+      )
+  - record: backend_datacenter:haproxy_server_up:count_servers_per_backend
+    expr: >
+      count without(server)(
+        min without(hostname, instance, priority)(
+          haproxy_server_up
+        )
+      )
+
+  - record: backend_datacenter:haproxy_server_up:sum_servers_up_per_backend
+    expr: >
+      sum without(server)(
+        min without(hostname, instance, priority)(
+          haproxy_server_up
         )
       )

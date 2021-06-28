@@ -15,12 +15,12 @@ class nebula::role::hathitrust (
   }
 
   if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
+    include nebula::profile::krb5
     include nebula::profile::afs
     include nebula::profile::duo
     include nebula::profile::exim4
     include nebula::profile::grub
     include nebula::profile::ntp
-    include nebula::profile::tiger
     include nebula::profile::users
     class { 'nebula::profile::networking':
       bridge => false,

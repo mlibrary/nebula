@@ -14,12 +14,12 @@ describe 'nebula::profile::afs' do
       today = Date.today.strftime('%Y-%m-%d')
       tomorrow = (Date.today + 1).strftime('%Y-%m-%d')
 
-      it { is_expected.to contain_package('krb5-user') }
       it { is_expected.to contain_package('libpam-afs-session') }
-      it { is_expected.to contain_package('libpam-krb5') }
       it { is_expected.to contain_package('openafs-client') }
       it { is_expected.to contain_package('openafs-krb5') }
       it { is_expected.to contain_package('openafs-modules-dkms') }
+
+      it { is_expected.to contain_class('nebula::profile::krb5') }
 
       it do
         is_expected.to contain_exec('reinstall kernel to enable afs').with(
@@ -49,12 +49,6 @@ describe 'nebula::profile::afs' do
       end
 
       it do
-        is_expected.to contain_debconf('krb5-config/default_realm')
-          .with_type('string')
-          .with_value('REALM.DEFAULT.INVALID')
-      end
-
-      it do
         is_expected.to contain_debconf('openafs-client/thiscell')
           .with_type('string')
           .with_value('cell.default.invalid')
@@ -64,16 +58,6 @@ describe 'nebula::profile::afs' do
         is_expected.to contain_debconf('openafs-client/cachesize')
           .with_type('string')
           .with_value('50000')
-      end
-
-      context 'given a realm of EXAMPLE.COM' do
-        let(:params) { { realm: 'EXAMPLE.COM' } }
-
-        it do
-          is_expected.to contain_debconf('krb5-config/default_realm')
-            .with_type('string')
-            .with_value('EXAMPLE.COM')
-        end
       end
 
       context 'given a cell of example.com' do

@@ -78,6 +78,19 @@ describe 'nebula::haproxy::service' do
           )
         end
 
+        describe 'with frontend maxconn' do
+          let(:params) do
+            super().merge(max_frontend_sessions: 999)
+          end
+
+          it do
+            is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with(
+              target: service_config,
+              content: %r{^maxconn 999$},
+            )
+          end
+        end
+
         it do
           is_expected.not_to contain_file('/etc/haproxy/errors/svc1503.http')
         end
@@ -119,15 +132,15 @@ describe 'nebula::haproxy::service' do
                 http-request set-var(req.http_rate) src_http_req_rate(svc1-dc1-http-back)
                 http-request set-var(req.https_rate) src_http_req_rate(svc1-dc1-https-back)
                 acl http_req_rate_abuse var(req.http_rate),add(req.https_rate) gt 400
-                errorfile 403 /etc/haproxy/errors/svc1509.http
+                errorfile 403 /etc/haproxy/errors/svc1429.http
                 http-request deny deny_status 403 if http_req_rate_abuse
               EOT
             )
           end
 
           it do
-            is_expected.to contain_file('/etc/haproxy/errors/svc1509.http')
-              .with_source('https://default.http_files.invalid/errorfiles/svc1509.http')
+            is_expected.to contain_file('/etc/haproxy/errors/svc1429.http')
+              .with_source('https://default.http_files.invalid/errorfiles/svc1429.http')
           end
 
           context 'with no whitelists' do
@@ -225,6 +238,19 @@ describe 'nebula::haproxy::service' do
               is_expected.to contain_concat_fragment('svc1-dc1-https soda exempt binding')
                 .with_content("server soda 222.222.222.234:443 track svc1-dc1-https-back/soda cookie s234\n")
             end
+          end
+        end
+
+        context 'with dynamic weighting' do
+          let(:params) do
+            super().merge(dynamic_weighting: true)
+          end
+
+          it do
+            is_expected.to contain_cron('dynamic weighting for svc1')
+              .with_command('/usr/bin/ruby /usr/local/bin/set_weights.rb dc1 svc1 > /dev/null 2>&1')
+              .with_user('haproxyctl')
+              .with_environment(['HAPROXY_SMOOTHING_FACTOR=2'])
           end
         end
       end

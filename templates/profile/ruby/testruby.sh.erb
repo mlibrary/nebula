@@ -1,0 +1,18 @@
+#!/bin/bash
+# Managed By Puppet (nebula/profile/ruby/testruby.sh.erb)
+
+VER="$1"
+if [ -z "$VER" ]; then
+  echo 'Usage ./testruby.sh <version>'
+  exit 1
+fi
+rm -r "$VER"
+mkdir "$VER"
+pushd "$VER"
+echo "$VER" > .ruby-version
+curl ae-files/ruby-check.tar | tar -x --strip-components=1
+./run.sh
+
+exit_status=$?
+popd
+exit $exit_status

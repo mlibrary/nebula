@@ -20,7 +20,7 @@ class nebula::profile::deb_signing (
   String $sign_script
 ) {
 
-  package { ['gnupg', 'dpkg-dev', 'pinentry-curses', 'apt-utils']: }
+  ensure_packages(['gnupg', 'dpkg-dev', 'pinentry-curses', 'apt-utils'])
 
   file { '/var/local/deb-signing.key':
     ensure => 'file',

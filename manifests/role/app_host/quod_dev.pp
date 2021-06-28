@@ -10,6 +10,7 @@
 #   include nebula::role::app_host::quod_dev
 class nebula::role::app_host::quod_dev {
   include nebula::role::umich
+  include nebula::profile::krb5
   include nebula::profile::afs
   include nebula::profile::users
   include nebula::profile::ruby
@@ -17,4 +18,5 @@ class nebula::role::app_host::quod_dev {
   include nebula::profile::named_instances
   include nebula::profile::tsm
   include nebula::profile::quod::dev::perl
+  include nebula::profile::prometheus::exporter::mysql
 }

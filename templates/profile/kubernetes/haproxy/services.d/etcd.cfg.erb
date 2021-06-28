@@ -1,0 +1,11 @@
+# Managed by puppet (nebula/profile/kubernetes/haproxy/services.d/etcd.cfg.erb)
+frontend kubernetes-etcd-front
+  bind <%= @etcd_address %>:2379
+  mode tcp
+  option tcplog
+  default_backend kubernetes-etcd-back
+
+backend kubernetes-etcd-back
+  mode tcp
+  option tcp-check
+  balance roundrobin

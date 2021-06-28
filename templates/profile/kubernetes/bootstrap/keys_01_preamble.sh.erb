@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+CA_TTL=3652  # 10 years
+CERT_TTL=365 # 1 year
+KUBE_CN='<%= @cluster_name %>'
+DOMAIN='<%= @private_domain %>'
+CONTROL_DNS='<%= @control_dns %>'
+PUBLIC_ADDRESS='<%= @public_address %>'
+ETCD_IPADDRESS='<%= @etcd_address %>'
+ETCD_ENDPOINT='etcd'
+KUBE_IPADDRESS='<%= @kube_api_address %>'
+KUBE_ENDPOINT='kube-api'
+KUBE_INTERNAL_IP='<%= @kube_internal_ip %>'
+ETCD_NODES=()
+KUBE_CONTROLLERS=()
+KUBE_WORKERS=()

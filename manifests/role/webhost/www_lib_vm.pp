@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019-2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -12,14 +12,7 @@ class nebula::role::webhost::www_lib_vm (
 ) {
   include nebula::role::umich
   include nebula::profile::elastic::filebeat::prospectors::clickstream
-
-  @@nebula::haproxy::binding { "${::hostname} www-lib-testing":
-      service       => 'www-lib-testing',
-      https_offload => false,
-      datacenter    => $::datacenter,
-      hostname      => $::hostname,
-      ipaddress     => $::ipaddress
-  }
+  include nebula::profile::www_lib::register_for_load_balancing
 
   class { 'nebula::profile::networking::private':
     address_template => $private_address_template
@@ -31,18 +24,19 @@ class nebula::role::webhost::www_lib_vm (
   create_resources('host',$hosts)
 
   include nebula::profile::geoip
-  include nebula::profile::php73
+  #include nebula::profile::www_lib::php73
   include nebula::profile::www_lib::dependencies
   include nebula::profile::www_lib::perl
   include nebula::profile::www_lib::php
   include nebula::profile::www_lib::apache
-  include nebula::profile::unison
+  include nebula::profile::www_lib::cron
 
   class { 'nebula::profile::shibboleth':
     config_source    => 'puppet:///shibboleth-www_lib',
-    startup_timeout  => 1800,
     watchdog_minutes => '*/30',
   }
 
-  # nebula::usergroup { user groups for www-lib: }
+  include nebula::profile::krb5
+  include nebula::profile::afs
+  include nebula::profile::www_lib::users
 }

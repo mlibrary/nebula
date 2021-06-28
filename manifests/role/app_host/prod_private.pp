@@ -13,4 +13,9 @@
 class nebula::role::app_host::prod_private {
   include nebula::role::app_host::prod
   include nebula::profile::networking::private
+
+  class { 'nebula::profile::www_lib::mounts':
+    nfs_mounts  => {},
+    cifs_mounts => {},
+  }
 }

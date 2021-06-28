@@ -24,6 +24,7 @@ class nebula::role::deploy_host {
     include nebula::profile::ruby
     include nebula::profile::nodejs
     include nebula::profile::moku
+    include nebula::profile::krb5
     include nebula::profile::afs
     include nebula::profile::users
     include nebula::profile::docker

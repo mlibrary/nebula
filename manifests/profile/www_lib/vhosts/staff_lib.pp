@@ -17,23 +17,6 @@ class nebula::profile::www_lib::vhosts::staff_lib (
   String $docroot = "${vhost_root}/web"
 ) {
 
-  # These directories are all served by PHP5 using mod_php and require Cosign
-  $php5_dirs = [
-    'coral',
-    'ptf',
-    'sites/staff.lib.umich.edu/local',
-  ].map |$dir| {
-    {
-      provider => 'directory',
-      path => "${docroot}/${dir}",
-      addhandlers => [{
-        extensions => ['.php'],
-        handler => 'application/x-httpd-php'
-      }],
-      custom_fragment => 'CosignAllowPublicAccess off'
-    }
-  }
-
   nebula::apache::www_lib_vhost { 'staff.lib http redirect':
     servername      => "${prefix}staff.${domain}",
     ssl             => false,
@@ -44,18 +27,20 @@ class nebula::profile::www_lib::vhosts::staff_lib (
   }
 
   nebula::apache::www_lib_vhost { 'staff.lib ssl':
-    servername                    => "${prefix}staff.${domain}",
-    ssl                           => true,
-    usertrack                     => true,
-    cosign                        => true,
-    docroot                       => $docroot,
-    setenvifnocase                => ['^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1'],
+    servername                         => "${prefix}staff.${domain}",
+    ssl                                => true,
+    usertrack                          => true,
+    cosign                             => true,
+    cosign_service                     => 'staff.lib.umich.edu',
+    docroot                            => $docroot,
+    setenvifnocase                     => ['^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1'],
+    default_allow_override             => ['AuthConfig','FileInfo','Limit','Options'],
 
-    aliases                       => [
+    aliases                            => [
       { scriptalias => '/cgi', path => "${vhost_root}/cgi" }
     ],
 
-    directories                   => [
+    directories                        => [
       {
         provider       => 'directory',
         path           => $docroot,
@@ -96,10 +81,10 @@ class nebula::profile::www_lib::vhosts::staff_lib (
         path     => '^\.ph(ar|p|ps|tml)$',
         require  => 'all denied'
       },
-    ] + $php5_dirs,
+    ],
 
     # Don't allow passive auth for directories still protected by auth system
-    cosign_public_access_off_dirs => [
+    cosign_public_access_off_dirs      => [
       # results in odd looping behavior
       # {
       #   provider => 'location',
@@ -135,7 +120,22 @@ class nebula::profile::www_lib::vhosts::staff_lib (
       },
     ],
 
-    request_headers               => [
+    cosign_public_access_off_php5_dirs => [
+      {
+        provider => 'directory',
+        path     => "${docroot}/coral",
+      },
+      {
+        provider => 'directory',
+        path     => "${docroot}/ptf",
+      },
+      {
+        provider => 'directory',
+        path     => "${docroot}/sites/staff.lib.umich.edu/local",
+      },
+    ],
+
+    request_headers                    => [
       # Setting remote user for 2.4
       'set X-Remote-User "expr=%{REMOTE_USER}"',
       # Fix redirects being sent to non ssl url (https -> http)
@@ -144,7 +144,7 @@ class nebula::profile::www_lib::vhosts::staff_lib (
       'unset X-Forwarded-For',
     ],
 
-    rewrites                      => [
+    rewrites                           => [
       {
         comment      => 'Serve static assets, retire June 2021',
         rewrite_cond => '/www/staff.lib/alida-tmp/app/current/public/$1 -f',
@@ -155,7 +155,7 @@ class nebula::profile::www_lib::vhosts::staff_lib (
       },
     ],
 
-    custom_fragment               => @(EOT)
+    custom_fragment                    => @(EOT)
       ProxyPassReverse /alida http://app-alida:40160/
     | EOT
   }

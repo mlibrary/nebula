@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019-2021 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -9,6 +9,7 @@
 class nebula::role::webhost::htvm::site_primary {
   include nebula::role::webhost::htvm::prod
   include nebula::profile::hathitrust::cron::mdp_misc
+  include nebula::profile::hathitrust::slip
 
   # for HathiTrust deployment scripts
   package { 'rdist': }
