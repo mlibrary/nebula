@@ -38,14 +38,20 @@ groups:
     for: 2h
     labels:
       severity: ticket
-  - alert: RunningOutOfRam
+  - alert: HostOomKillDetected
     annotations:
-      summary: 'Linux node {{$labels.hostname}} is running out of RAM'
-    # Less than 250M free
-    expr: 'node_memory_MemAvailable_bytes < 250000000'
-    for: 10m
+      summary: 'Linux node {{$labels.hostname}} OOM-killed a process'
+    expr: 'increase(node_vmstat_oom_kill[5m]) > 0'
+    for: 0m
     labels:
       severity: page
+  - alert: HostUnderMemoryPressure
+    annotations:
+      summary: 'Linux node {{$labels.hostname}} is under memory pressure'
+    expr: 'rate(node_vmstat_pgmajfault[1m]) > 1000'
+    for: 2m
+    labels:
+      severity: info
   - alert: LinuxInstanceDown
     annotations:
       summary: 'Linux node {{$labels.hostname}} isn''t responding to Prometheus.'
