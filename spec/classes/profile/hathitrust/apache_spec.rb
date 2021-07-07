@@ -78,6 +78,24 @@ describe 'nebula::profile::hathitrust::apache' do
         end
       end
 
+      context 'with default access specified' do
+        let(:params) do
+          {
+            'default_access' => {
+              'enforce' => 'any',
+              'requires' => [
+                'ip 127.0.0.1',
+              ],
+            },
+          }
+        end
+
+        it 'has a directory with the given default access' do
+          expect(catalogue.resource('Apache::Vhost', 'babel.hathitrust.org ssl')[:directories])
+            .to(satisfy { |dirs| dirs.find { |d| d['require'] == params['default_access'] } })
+        end
+      end
+
       context 'with a domain and prefix specified' do
         let(:params) do
           {

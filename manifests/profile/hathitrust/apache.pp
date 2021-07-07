@@ -13,7 +13,15 @@ class nebula::profile::hathitrust::apache (
   String $domain = 'hathitrust.org',
   String $sdrroot = '/htapps/babel',
   String $monitoring_user = 'haproxyctl',
-  Optional[Hash] $monitoring_pubkey = undef
+  Optional[Hash] $monitoring_pubkey = undef,
+  Hash $default_access = {
+    enforce  => 'all',
+    requires => [
+      'not env badrobot',
+      'not env loadbalancer',
+      'all granted'
+    ]
+  }
 ) {
 
 
@@ -27,14 +35,6 @@ class nebula::profile::hathitrust::apache (
 
   ensure_packages(['bsd-mailx'])
 
-  $default_access = {
-    enforce  => 'all',
-    requires => [
-      'not env badrobot',
-      'not env loadbalancer',
-      'all granted'
-    ]
-  }
 
   $haproxy_ips = nodes_for_class('nebula::profile::haproxy').map |String $nodename| {
     fact_for($nodename, 'networking')['ip']
