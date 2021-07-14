@@ -44,12 +44,12 @@ class nebula::profile::hathitrust::secure_rsync (
     "${rsync_home}/rsyncd.conf":
       content => template('nebula/profile/hathitrust/rsync/rsyncd.conf.erb');
     "${rsync_home}/server.key":
-      source => 'puppet:///ssl-certs/secure-rsync/server.key',
+      source => 'puppet:///ssl-certs/self-signed/secure-rsync-server.key',
       mode   => '0600';
     "${rsync_home}/server.crt":
-      source => 'puppet:///ssl-certs/secure-rsync/server.crt';
+      source => 'puppet:///ssl-certs/self-signed/secure-rsync-server.crt';
     "${rsync_home}/client.crt":
-      source => 'puppet:///ssl-certs/secure-rsync/client.crt';
+      source => 'puppet:///ssl-certs/self-signed/secure-rsync-client.crt';
   }
 
   service { 'secure-rsync':
