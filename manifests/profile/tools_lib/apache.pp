@@ -62,6 +62,7 @@ class nebula::profile::tools_lib::apache (
   class { 'apache::mod::proxy':
     proxy_requests => 'Off',
     proxy_via      => 'Block',
+    proxy_timeout  => 300,
   }
 
   class { 'apache::mod::dir':
