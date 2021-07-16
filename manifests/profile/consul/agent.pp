@@ -27,6 +27,13 @@ class nebula::profile::consul::agent (
     require => Package['consul'],
   }
 
+  file { '/etc/consul.d/consul.env':
+    content => '',
+    owner   => 'consul',
+    group   => 'consul',
+    mode    => '0644',
+  }
+
   file { '/etc/consul.d/consul-agent-ca.pem':
     content => $ca,
     owner   => 'consul',
