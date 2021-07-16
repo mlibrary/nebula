@@ -154,7 +154,6 @@ class nebula::profile::www_lib::vhosts::apps_lib (
       { rewrite_rule => '^/my-account/special-collections-requests https://account.lib.umich.edu/pending-requests/special-collections [redirect=permanent,last]' },
       { rewrite_rule => '^/my-account/profile                      https://account.lib.umich.edu/settings                             [redirect=permanent,last]' },
       { rewrite_rule => '^/my-account                              https://account.lib.umich.edu/                                     [redirect=permanent,last]' },
-      { rewrite_rule => '^/admin/content/human-resources           https://www.lib.umich.edu/about-us/work-us                         [redirect=permanent,last]' },
       { rewrite_rule => '^/user/.*/checkouts                       https://account.lib.umich.edu/current-checkouts                    [redirect=permanent,last]' },
       { rewrite_rule => '^/user/.*/history                         https://account.lib.umich.edu/past-activity/u-m-library            [redirect=permanent,last]' },
       { rewrite_rule => '^/user/.*/notifications                   https://account.lib.umich.edu/settings                             [redirect=permanent,last]' },
