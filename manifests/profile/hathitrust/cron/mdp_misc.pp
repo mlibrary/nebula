@@ -15,6 +15,7 @@ class nebula::profile::hathitrust::cron::mdp_misc (
   String $sdr_root = '/htapps/babel',
   String $sdr_data_root = '/sdr1',
   String $home = '/htapps/babel/mdp-misc',
+  String $catalog_home = '/htapps/catalog/web',
   Integer $mdp_sessions_minute = 5
 ) {
 
@@ -49,6 +50,14 @@ class nebula::profile::hathitrust::cron::mdp_misc (
       minute  => 01,
       hour    => 00,
       command => "${sdr_root}/pt/scripts/harvest_proxy_downloads.pl 2>&1 | /usr/bin/mail -s '${::hostname} harvest_proxy_downloads output' ${mail_recipient}";
+
+    # Build up translation maps. Collection codes are pulled from the HT
+    # database, and lists of languages and formats are pulled right out of the the solr data.
+
+    'translation maps':
+      minute  => '58',
+      hour    => '15',
+      command => "${catalog_home}/derived_data/getall.sh ${catalog_home}/derived_data"
 
   }
 
