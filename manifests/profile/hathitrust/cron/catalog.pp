@@ -30,14 +30,6 @@ class nebula::profile::hathitrust::cron::catalog (
     'clean sessions':
       minute  => [0,15,30,45],
       command => "/usr/bin/perl ${catalog_home}/derived_data/clean_sessions.pl";
-
-    # Build up translation maps. Collection codes are pulled from the HT
-    # database, and lists of languages and formats are pulled right out of the the solr data.
-
-    'translation maps':
-      minute  => '58',
-      hour    => '15',
-      command => "${catalog_home}/derived_data/getall.sh ${catalog_home}/derived_data"
   }
 
 }
