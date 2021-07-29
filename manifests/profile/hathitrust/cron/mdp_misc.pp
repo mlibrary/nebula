@@ -57,7 +57,11 @@ class nebula::profile::hathitrust::cron::mdp_misc (
     'translation maps':
       minute  => '58',
       hour    => '15',
-      command => "${catalog_home}/derived_data/getall.sh ${catalog_home}/derived_data"
+      command => "${catalog_home}/derived_data/getall.sh ${catalog_home}/derived_data";
+
+    'merge application logs':
+      minute  => 05,
+      command => "${home}/mdp-misc/scripts/merge_application_logs.pl";
 
   }
 
