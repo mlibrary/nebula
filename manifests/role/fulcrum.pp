@@ -9,8 +9,9 @@
 class nebula::role::fulcrum {
   include nebula::role::minimum
 
-  include nebula::role::redis
-  include nebula::role::mysql
-  include nebula::role::solr
+  include nebula::profile::redis
+  include nebula::profile::mysql
+  include nebula::profile::solr
+  include nebula::profile::ruby
 
 }
