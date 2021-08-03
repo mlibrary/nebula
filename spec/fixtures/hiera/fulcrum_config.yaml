@@ -1,0 +1,8 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - fulcrum
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'
