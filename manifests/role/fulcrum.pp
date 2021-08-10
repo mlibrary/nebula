@@ -7,6 +7,7 @@
 # This is desiged to manage a Debian Server that hosts the Fulcrum project. 
 
 class nebula::role::fulcrum {
+  include nebula::role::minimum
   include nebula::profile::redis
   include nebula::profile::mysql
   include nebula::profile::solr
