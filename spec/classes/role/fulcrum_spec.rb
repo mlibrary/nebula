@@ -12,7 +12,6 @@ describe 'nebula::role::fulcrum' do
       let(:facts) { os_facts }
       let(:hiera_config) { 'spec/fixtures/hiera/fulcrum_config.yaml' }
 
-    
       it { is_expected.to compile }
     end
   end
