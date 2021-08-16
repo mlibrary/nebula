@@ -6,5 +6,14 @@
 require 'spec_helper'
 
 describe 'nebula::role::fulcrum' do
-  it { is_expected.to compile }
+  on_supported_os.each do |os, os_facts|
+    context "on #{os}" do
+
+      let(:facts) { os_facts }
+      let(:hiera_config) { 'spec/fixtures/hiera/fulcrum_config.yaml' }
+
+    
+      it { is_expected.to compile }
+    end
+  end
 end
