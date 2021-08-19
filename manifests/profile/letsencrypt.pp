@@ -11,7 +11,7 @@
 # @param $overrides [Hash] Additional attributes to pass to the letsencrypt class
 class nebula::profile::letsencrypt (
   String $email = lookup('nebula::profile::base::contact_email'),
-  String $overrides = {},
+  Hash $overrides = {},
 ) {
   class { 'letsencrypt':
     email => $email,
