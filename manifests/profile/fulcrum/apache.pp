@@ -27,7 +27,9 @@ class nebula::profile::fulcrum::apache (
   }
 
   apache::vhost { "HTTP ACME: ${servername}":
-    docroot => '/var/www/acme',
+    servername => $servername,
+    port       => '80',
+    docroot    => '/var/www/acme',
   }
 
   letsencrypt::certonly { "Certificate: ${servername}":
