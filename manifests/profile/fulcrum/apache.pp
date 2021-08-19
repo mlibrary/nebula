@@ -33,7 +33,7 @@ class nebula::profile::fulcrum::apache (
   letsencrypt::certonly { "Certificate: ${servername}":
     domains       => [$servername],
     plugin        => 'webroot',
-    webroot_paths => '/var/www/acme',
+    webroot_paths => ['/var/www/acme'],
   }
 
   include nebula::profile::networking::firewall::http_datacenters
