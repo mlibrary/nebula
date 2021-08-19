@@ -14,6 +14,10 @@
 class nebula::profile::fulcrum::apache (
   String $servername = $::fqdn
 ) {
+  ensure_packages([
+    'python3-certbot-apache',
+  ])
+
   include nebula::profile::letsencrypt
   class { 'apache': }
 
