@@ -19,11 +19,13 @@ class nebula::profile::fulcrum::apache (
   ])
 
   include nebula::profile::letsencrypt
-  class { 'apache': }
+  class { 'apache':
+    default_vhost => false,
+  }
 
   letsencrypt::certonly { "Certificate: ${servername}":
     domains => [$servername],
-    plugin  => 'apache',
+    plugin  => 'standalone',
   }
 
   include nebula::profile::networking::firewall::http_datacenters
