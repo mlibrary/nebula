@@ -14,25 +14,27 @@
 class nebula::profile::fulcrum::apache (
   String $servername = $::fqdn
 ) {
-  ensure_packages([
-    'python3-certbot-apache',
-  ])
+  class { 'nebula::profile::letsencrypt':
+    overrides => {
+      config => {
+        'server' => 'https://acme-staging-v02.api.letsencrypt.org/directory',
+      }
+    }
+  }
 
-  include nebula::profile::letsencrypt
   class { 'apache':
     default_vhost => false,
   }
 
+  apache::vhost { "HTTP ACME: ${servername}":
+    docroot => '/var/www/acme',
+  }
+
   letsencrypt::certonly { "Certificate: ${servername}":
-    domains => [$servername],
-    plugin  => 'standalone',
+    domains       => [$servername],
+    plugin        => 'webroot',
+    webroot_paths => '/var/www/acme',
   }
 
   include nebula::profile::networking::firewall::http_datacenters
-  firewall { '200 HTTP: ACME Challenges':
-    proto  => 'tcp',
-    dport  => '80',
-    state  => 'NEW',
-    action => 'accept',
-  }
 }
