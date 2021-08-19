@@ -25,4 +25,12 @@ class nebula::profile::fulcrum::apache (
     domains => [$servername],
     plugin  => 'apache',
   }
+
+  include nebula::profile::networking::firewall::http_datacenters
+  firewall { '200 HTTP: ACME Challenges':
+    proto  => 'tcp',
+    dport  => '80',
+    state  => 'NEW',
+    action => 'accept',
+  }
 }
