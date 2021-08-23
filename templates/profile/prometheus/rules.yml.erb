@@ -218,6 +218,14 @@ groups:
     labels:
       severity: ticket
 
+  - alert: DeepBlueDataProdFedoraDown
+    annotations:
+      summary: 'Fedora is unresponsive on node {{$labels.hostname}}.'
+    expr: 'time() - dbd_fedora_check_last_success > 65'
+    for: 15m
+    labels:
+      severity: page
+
   # This doesn't appear to grow fast, so an 100G threshold should give
   # plenty of time to address any problems.
   - alert: HTDevStoragePressure
