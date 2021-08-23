@@ -22,6 +22,7 @@ class nebula::profile::hathitrust::apache::babel (
   String $dex_endpoint,
   String $dex_basic_auth,
   String $ptsearch_solr,
+  String $ptsearch_solr_basic_auth,
   Array[String] $cache_paths = [ ],
 ) {
 
@@ -109,7 +110,8 @@ class nebula::profile::hathitrust::apache::babel (
       "SDRROOT ${sdrroot}",
       'SDRDATAROOT /sdr1',
       "ASSERTION_EMAIL ${sdremail}",
-      "PTSEARCH_SOLR ${ptsearch_solr}"
+      "PTSEARCH_SOLR ${ptsearch_solr}",
+      "PTSEARCH_SOLR_BASIC_AUTH ${ptsearch_solr_basic_auth}"
     ],
 
     setenvifnocase              => [
