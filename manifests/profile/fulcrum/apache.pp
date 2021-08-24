@@ -24,7 +24,11 @@ class nebula::profile::fulcrum::apache (
     docroot    => '/var/www/acme',
   }
 
-  include nebula::profile::letsencrypt
+  class { 'nebula::profile::letsencrypt':
+    overrides => {
+      'renew_cron_ensure' => 'present',
+    }
+  }
 
   letsencrypt::certonly { $servername:
     domains       => [$servername],
