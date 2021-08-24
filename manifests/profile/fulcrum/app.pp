@@ -26,11 +26,18 @@ class nebula::profile::fulcrum::app (
     require    => Group['fulcrum'],
   }
 
-  file { '/var/local/fulcrum/repo':
+  file { '/var/local/fulcrum':
     ensure  => directory,
     owner   => 'fulcrum',
     group   => 'fulcrum',
     require => User['fulcrum'],
+  }
+
+  file { '/var/local/fulcrum/repo':
+    ensure  => directory,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    require => File['/var/local/fulcrum'],
   }
 
   exec { '/usr/bin/tomcat8-instance-create fedora':
@@ -50,6 +57,7 @@ class nebula::profile::fulcrum::app (
     source        => 'https://github.com/fcrepo/fcrepo/releases/download/fcrepo-4.7.4/fcrepo-webapp-4.7.4.war',
     checksum      => '11e06c843f40cf2b9f26bda94ddfe6d85d69a591',
     checksum_type => 'sha1',
+    cleanup       => false,
     user          => 'fulcrum',
     group         => 'fulcrum',
     notify        => Service['fedora'],
