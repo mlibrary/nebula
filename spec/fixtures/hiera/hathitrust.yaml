@@ -112,9 +112,6 @@ nebula::profile::hathitrust::ingest_jobs::feed_home: '/htfeed'
 nebula::profile::hathitrust::ingest_jobs::stats_home: '/somewhere/stats'
 nebula::profile::hathitrust::ingest_jobs::recipient: 'nobody@default.invalid'
 
-nebula::profile::hathitrust::ingest_jobs::crms_renewals_source: somebody@somewhere:/wherever/file
-nebula::profile::hathitrust::ingest_jobs::crms_renewals_dest: /somewhere/files/
-
 nebula::profile::hathitrust::apache::babel::cache_paths:
   - /somewhere/whatever:1:2
   - /elsewhere/whatever:3:4
