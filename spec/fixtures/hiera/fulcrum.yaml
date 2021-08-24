@@ -1,2 +1,4 @@
 nebula::profile::mysql::password: changeme
+nebula::profile::fulcrum::mysql::fedora_password: changeme
+nebula::profile::fulcrum::mysql::fulcrum_password: changeme
 nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt

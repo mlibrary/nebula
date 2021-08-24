@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Tomcat running Fedora Repository
+
+[Service]
+User=fulcrum
+Group=fulcrum
+EnvironmentFile=-/etc/default/fedora
+ExecStart=/usr/share/tomcat8/bin/catalina.sh run
+
+[Install]
+WantedBy=multi-user.target
