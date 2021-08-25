@@ -22,6 +22,7 @@ class nebula::profile::fulcrum::app (
     uid        => 717,
     gid        => 717,
     home       => '/home/fulcrum',
+    shell      => '/bin/bash',
     managehome => true,
     require    => Group['fulcrum'],
   }
@@ -75,6 +76,13 @@ class nebula::profile::fulcrum::app (
     notify  => Service['fedora'],
   }
 
+  # Mask the implicit tomcat8 service from the init.d file
+  file { '/etc/systemd/system/tomcat8.service':
+    ensure => 'symlink',
+    target => '/dev/null',
+    before => File['/etc/systemd/system/fedora.service'],
+  }
+
   file { '/etc/systemd/system/fedora.service':
     content => template('nebula/profile/fulcrum/fedora.service.erb'),
     notify  => Service['fedora'],
@@ -91,4 +99,3 @@ class nebula::profile::fulcrum::app (
     ],
   }
 }
-
