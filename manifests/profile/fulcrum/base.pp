@@ -7,7 +7,7 @@
 class nebula::profile::fulcrum::base {
   host { 'localhost':
     host_aliases => ['fedora', 'mysql', 'redis', 'solr'],
-    ip => '127.0.0.1',
+    ip           => '127.0.0.1',
   }
 
   host { $::hostname:
