@@ -7,6 +7,7 @@
 class nebula::profile::fulcrum::mysql (
   String $fedora_password,
   String $fulcrum_password,
+  String $checkpoint_password,
 ) {
   include nebula::profile::mysql
 
