@@ -21,4 +21,10 @@ class nebula::profile::fulcrum::mysql (
     password => $fulcrum_password,
     host     => 'localhost',
   }
+
+  mysql::db { 'checkpoint':
+    user     => 'checkpoint',
+    password => $checkpoint_password,
+    host     => 'localhost',
+  }
 }

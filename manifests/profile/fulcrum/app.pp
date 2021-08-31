@@ -41,6 +41,34 @@ class nebula::profile::fulcrum::app (
     require => File['/var/local/fulcrum'],
   }
 
+  file { '/var/local/fulcrum/data':
+    ensure  => directory,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    require => File['/var/local/fulcrum'],
+  }
+
+  file { '/home/fulcrum/app':
+    ensure  => directory,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    require => User['fulcrum'],
+  }
+
+  file { '/home/fulcrum/app/releases':
+    ensure  => directory,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    require => File['/home/fulcrum/app'],
+  }
+
+  file { '/home/fulcrum/app/shared':
+    ensure  => directory,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    require => File['/home/fulcrum/app'],
+  }
+
   exec { '/usr/bin/tomcat8-instance-create fedora':
     cwd     => '/home/fulcrum',
     user    => 'fulcrum',

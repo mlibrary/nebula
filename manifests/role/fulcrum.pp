@@ -11,6 +11,7 @@ class nebula::role::fulcrum {
   include nebula::profile::redis
   include nebula::profile::solr
   include nebula::profile::ruby
+  include nebula::profile::fulcrum::base
   include nebula::profile::fulcrum::app
   include nebula::profile::fulcrum::apache
   include nebula::profile::fulcrum::mysql
