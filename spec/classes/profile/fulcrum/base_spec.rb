@@ -12,7 +12,7 @@ describe 'nebula::profile::fulcrum::base' do
 
       it { is_expected.to compile }
 
-      it { is_expected.to contain_host('localhost').with_host_aliases(['fedora', 'mysql', 'redis', 'solr']) }
+      it { is_expected.to contain_host('localhost').with_host_aliases(%w[fedora mysql redis solr]) }
     end
   end
 end
