@@ -12,16 +12,32 @@
 # ssl_keypair profile because of this.
 
 class nebula::profile::fulcrum::apache (
-  String $servername = $::fqdn
+  String $servername = $::fqdn,
+  Array $serveraliases = [],
+  Array $metrics_cidrs = [],
 ) {
   class { 'apache':
     default_vhost => false,
+  }
+
+  apache::custom_config { 'badrobots':
+    source => 'puppet:///apache/badrobots.conf'
   }
 
   apache::vhost { "${servername}-http-acme":
     servername => $servername,
     port       => '80',
     docroot    => '/var/www/acme',
+  }
+
+  file { '/var/log/apache2/fulcrum':
+    ensure => 'directory'
+  }
+
+  file { '/etc/apache2/sites-available/fulcrum-https.conf':
+    ensure  => 'present',
+    content => template('nebula/profile/fulcrum/vhost.conf.erb'),
+    notify  => Class['apache::service'],
   }
 
   class { 'nebula::profile::letsencrypt':
