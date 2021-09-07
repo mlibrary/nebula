@@ -137,7 +137,7 @@ class nebula::profile::fulcrum::app (
 
   archive { '/tmp/fits.sh':
     ensure        => present,
-    extract       => true, 
+    extract       => true,
     extract_path  => '/home/fulcrum/fits',
     source        => 'https://projects.iq.harvard.edu/files/fits/files/fits-1.3.0.zip ',
     checksum      => '9c1b020afdd2e9a65a62128fa5ec6a6f86f77de9',
@@ -145,10 +145,10 @@ class nebula::profile::fulcrum::app (
     cleanup       => false,
     user          => 'fulcrum',
     group         => 'fulcrum',
-  } 
+  }
 
   file { '/home/fulcrum/fits/fits.sh':
     ensure => 'symlink',
-    target => '/usr/local/bin/fits.sh', 
+    target => '/usr/local/bin/fits.sh',
   }
 }
