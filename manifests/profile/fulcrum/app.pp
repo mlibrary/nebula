@@ -12,6 +12,8 @@ class nebula::profile::fulcrum::app (
   ensure_packages([
     'tomcat8',
     'tomcat8-user',
+    'unzip',
+    'zip',
   ])
 
   group { 'fulcrum':
@@ -33,6 +35,10 @@ class nebula::profile::fulcrum::app (
     secret => true,
     owner  => 'fulcrum',
     group  => 'fulcrum',
+  }
+
+  file { '/etc/sudoers.d/fulcrum':
+    content => template('nebula/profile/fulcrum/sudoers.erb'),
   }
 
   file { '/var/local/fulcrum':
@@ -75,6 +81,14 @@ class nebula::profile::fulcrum::app (
     owner   => 'fulcrum',
     group   => 'fulcrum',
     require => File['/home/fulcrum/app'],
+  }
+
+  file { '/home/fulcrum/app/shared/tmp':
+    ensure  => symlink,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    target  => '/var/local/fulcrum/tmp',
+    require => File['/home/fulcrum/app/shared'],
   }
 
   exec { '/usr/bin/tomcat8-instance-create fedora':
@@ -131,7 +145,7 @@ class nebula::profile::fulcrum::app (
       File['/etc/systemd/system/fedora.service'],
       File['/var/local/fulcrum/repo'],
       Archive['/home/fulcrum/fedora/webapps/fedora.war'],
-      Mysql::Db['fulcrum'],
+      Mysql::Db['fedora'],
     ],
   }
 
@@ -144,7 +158,7 @@ class nebula::profile::fulcrum::app (
     checksum      => '9c1b020afdd2e9a65a62128fa5ec6a6f86f77de9',
     checksum_type => 'sha1',
     cleanup       => true,
-    require       => File ['/usr/local/fits'],
+    require       => File['/usr/local/fits'],
   }
 
   file { '/usr/local/fits':
@@ -154,5 +168,38 @@ class nebula::profile::fulcrum::app (
   file { '/usr/local/bin/fits.sh':
     ensure => 'symlink',
     target => '/usr/local/fits/fits.sh',
+  }
+
+  file { '/etc/systemd/system/fulcrum.target':
+    content => template('nebula/profile/fulcrum/fulcrum.target.erb'),
+    notify  => Service['fulcrum'],
+    require => [
+      File['/etc/systemd/system/fulcrum-rails.service'],
+      File['/etc/systemd/system/fulcrum-resque.service'],
+    ]
+  }
+
+  file { '/etc/systemd/system/fulcrum-rails.service':
+    content => template('nebula/profile/fulcrum/fulcrum-rails.service.erb'),
+    notify  => Service['fulcrum'],
+  }
+
+  file { '/etc/systemd/system/fulcrum-resque.service':
+    content => template('nebula/profile/fulcrum/fulcrum-resque.service.erb'),
+    notify  => Service['fulcrum'],
+  }
+
+  file { '/etc/default/fulcrum':
+    content => template('nebula/profile/fulcrum/fulcrum.env.erb'),
+    notify  => Service['fulcrum'],
+  }
+
+  service { 'fulcrum':
+    ensure  => 'running',
+    enable  => true,
+    require => [
+      File['/etc/systemd/system/fulcrum.target'],
+      Mysql::Db['fulcrum'],
+    ],
   }
 }

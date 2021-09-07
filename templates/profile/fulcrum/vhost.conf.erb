@@ -1,0 +1,107 @@
+<VirtualHost *:443>
+  ServerName <%= @servername %>
+
+  ## Vhost docroot
+  DocumentRoot "/home/fulcrum/app/current/public"
+
+  <Directory "/">
+    Options FollowSymLinks
+    AllowOverride None
+    Require all denied
+  </Directory>
+
+  <Location "/">
+    <RequireAll>
+      Require not env badrobot
+      Require all granted
+    </RequireAll>
+  </Location>
+
+  <Directory "/home/fulcrum/app/current/public">
+    Options FollowSymlinks
+    AllowOverride None
+    <RequireAll>
+      Require not env badrobot
+      Require all granted
+    </RequireAll>
+  </Directory>
+
+  # Temporary -- will be outside, in standalone puma/firewall rules
+  <Location "/metrics">
+    <RequireAny>
+      Require local
+      <%- @metrics_cidrs.each do |metrics_cidr| -%>
+        Require ip <%= metrics_cidr %>
+      <%- end -%>
+    </RequireAny>
+  </Location>
+
+  ## Logging
+  ErrorLog "/var/log/apache2/fulcrum/error.log"
+  LogLevel warn
+  ServerSignature Off
+  CustomLog "/var/log/apache2/fulcrum/access.log" "combined"
+  ErrorDocument 404 /404.html
+  ErrorDocument 503 /503.html
+
+  ## Header rules
+  ## as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#header
+  Header set "Strict-Transport-Security" "max-age=3600"
+
+  ## Request header rules
+  ## as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#requestheader
+  RequestHeader set X-Shib-Persistent-ID %{persistent-id}e
+  RequestHeader set X-Shib-eduPersonPrincipalName %{eppn}e
+  RequestHeader set X-Shib-displayName %{displayName}e
+  RequestHeader set X-Shib-mail %{email}e
+  RequestHeader set X-Shib-eduPersonScopedAffiliation %{affiliation}e
+  RequestHeader set X-Shib-Authentication-Method %{Shib-Authentication-Method}e
+  RequestHeader set X-Shib-AuthnContext-Class %{Shib-AuthnContext-Class}e
+  RequestHeader set X-Shib-Identity-Provider %{Shib-Identity-Provider}e
+  RequestHeader set X-Remote-User "expr=%{REMOTE_USER}"
+  RequestHeader set X-Forwarded-Proto "https"
+  RequestHeader unset X-Forwarded-For
+  RequestHeader Set X-Sendfile-Type X-Sendfile
+  ## Rewrite rules
+  RewriteEngine On
+
+  #Serve static assets through apache
+  RewriteCond /home/fulcrum/app/current/public/$1 -d [OR]
+  RewriteCond /home/fulcrum/app/current/public/$1 -f
+  RewriteRule ^/(.*)$  /home/fulcrum/app/current/public/$1 [L]
+
+  #Reverse proxy application to app hostname and port
+  RewriteCond %{REQUEST_URI} !^/cosign/valid
+  RewriteCond %{REQUEST_URI} !^/Shibboleth.sso
+  RewriteRule ^(/.*)$ http://localhost:3000$1 [P]
+
+  ## Server aliases
+  <%- @serveraliases.each do |serveralias| -%>
+  ServerAlias <%= serveralias %>
+  <%- end -%>
+
+  ## SSL directives
+  SSLEngine on
+  SSLCertificateFile      "/etc/letsencrypt/live/<%= @servername %>/fullchain.pem"
+  SSLCertificateKeyFile   "/etc/letsencrypt/live/<%= @servername %>/privkey.pem"
+  SSLProtocol             +TLSv1.2
+  SSLCipherSuite          ECDHE-RSA-AES256-GCM-SHA384
+
+  ## Custom fragment
+
+  # Reverse proxy application to app hostname and port
+  ProxyPassReverse / http://localhost:3000/
+  # XSendFile settings
+  XSendFile on
+  XSendFilePath /var/local/fulcrum/data/derivatives
+  # Configure Shibboleth for authentication via InCommon partner login
+  ####### Disabled until we need Shibboleth
+  #<Location "/">
+  #  AuthType shibboleth
+  #  ShibRequestSetting requireSession 0
+  #  Require shibboleth
+  #</Location>
+
+
+  ## Shibboleth
+</VirtualHost>

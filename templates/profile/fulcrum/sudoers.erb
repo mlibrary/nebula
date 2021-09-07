@@ -1,0 +1,17 @@
+# Managed by puppet (nebula/profile/fulcrum/sudoers.erb)
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl stop fulcrum.target
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl start fulcrum.target
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl restart fulcrum.target
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl status fulcrum.target
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl enable fulcrum.target
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl stop fulcrum-rails.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl start fulcrum-rails.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl restart fulcrum-rails.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl status fulcrum-rails.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl enable fulcrum-rails.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl stop fulcrum-resque.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl start fulcrum-resque.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl restart fulcrum-resque.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl status fulcrum-resque.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl enable fulcrum-resque.service
+%fulcrum ALL=(root) NOPASSWD: /bin/journalctl
