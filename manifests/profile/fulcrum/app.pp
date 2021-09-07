@@ -81,6 +81,14 @@ class nebula::profile::fulcrum::app (
     require => File['/home/fulcrum/app'],
   }
 
+  file { '/home/fulcrum/app/shared/tmp':
+    ensure  => symlink,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    target  => '/var/local/fulcrum/tmp',
+    require => File['/home/fulcrum/app/shared'],
+  }
+
   exec { '/usr/bin/tomcat8-instance-create fedora':
     cwd     => '/home/fulcrum',
     user    => 'fulcrum',
