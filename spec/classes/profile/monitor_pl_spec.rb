@@ -18,19 +18,19 @@ describe 'nebula::profile::monitor_pl' do
       context 'with default parameters' do
         it {
           is_expected.to contain_concat_fragment('monitor nfs mounts')
-            .with(tag: 'monitor_config', content: "---\nnfs: []\n")
+            .with(tag: 'monitor_config', content: %r{nfs: \[\]})
         }
         it {
           is_expected.to contain_concat_fragment('monitor solr cores')
-            .with(tag: 'monitor_config', content: "---\nsolr: []\n")
+            .with(tag: 'monitor_config', content: %r{solr: \[\]})
         }
         it {
           is_expected.to contain_concat_fragment('monitor mysql')
-            .with(tag: 'monitor_config', content: "---\nmysql: \n")
+            .with(tag: 'monitor_config', content: %r{mysql:})
         }
         it {
           is_expected.to contain_concat_fragment('monitor shibboleth')
-            .with(tag: 'monitor_config', content: "---\nshibd: false\n")
+            .with(tag: 'monitor_config', content: %r{shibd: false})
         }
       end
 
