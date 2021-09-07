@@ -36,7 +36,7 @@ class nebula::profile::fulcrum::app (
   }
 
   file { '/etc/sudoers.d/fulcrum':
-    content => template('nebula/fulcrum/sudoers.erb'),
+    content => template('nebula/profile/fulcrum/sudoers.erb'),
   }
 
   file { '/var/local/fulcrum':
