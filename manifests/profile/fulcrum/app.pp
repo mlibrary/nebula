@@ -35,6 +35,10 @@ class nebula::profile::fulcrum::app (
     group  => 'fulcrum',
   }
 
+  file { '/etc/sudoers.d/fulcrum':
+    content => template('nebula/fulcrum/sudoers.erb'),
+  }
+
   file { '/var/local/fulcrum':
     ensure  => directory,
     owner   => 'fulcrum',
