@@ -7,6 +7,7 @@
 class nebula::profile::fulcrum::app (
   String $fedora_username = 'fedora',
   String $fedora_password = lookup('nebula::profile::fulcrum::mysql::fedora_password'),
+  Array $authorized_keys = [],
 ) {
   ensure_packages([
     'tomcat8',
@@ -25,6 +26,13 @@ class nebula::profile::fulcrum::app (
     shell      => '/bin/bash',
     managehome => true,
     require    => Group['fulcrum'],
+  }
+
+  nebula::file::ssh_keys { '/home/fulcrum/.ssh/authorized_keys':
+    keys   => $authorized_keys,
+    secret => true,
+    owner  => 'fulcrum',
+    group  => 'fulcrum',
   }
 
   file { '/var/local/fulcrum':
