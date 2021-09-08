@@ -147,12 +147,12 @@ class nebula::profile::fulcrum::app (
     ],
   }
 
-  archive { '/tmp/fits.sh':
+  archive { '/tmp/fits.zip':
     ensure        => present,
     extract       => true,
     creates       => '/usr/local/fits/fits.sh',
     extract_path  => '/usr/local/fits',
-    source        => 'https://projects.iq.harvard.edu/files/fits/files/fits-1.3.0.zip ',
+    source        => 'https://projects.iq.harvard.edu/files/fits/files/fits-1.3.0.zip',
     checksum      => '9c1b020afdd2e9a65a62128fa5ec6a6f86f77de9',
     checksum_type => 'sha1',
     cleanup       => true,
