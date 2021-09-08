@@ -20,9 +20,13 @@ class nebula::profile::https_to_port (
 ) {
   include nginx
 
+  # This fact is set by the letsencrypt module. If letsencrypt has
+  # created a cert, then this will be set to the directory that cert
+  # exists in. If the cert doesn't exist yet, this will be null.
   $letsencrypt_directory = $::letsencrypt_directory[$server_name]
 
   if $letsencrypt_directory {
+    # Only serve the HTTPS site if the cert aleady exists.
     nginx::resource::server { 'https-forwarder':
       server_name => [$server_name],
       listen_port => 443,
@@ -34,11 +38,15 @@ class nebula::profile::https_to_port (
     }
   }
 
+  # Create and manage the cert for this server name. This assumes that
+  # we're serving HTTP requests to the $webroot directory, which is
+  # served by nginx below.
   nebula::cert { $server_name:
     webroot => $webroot,
     require => Nginx::Resource::Server['letsencrypt-webroot'],
   }
 
+  # Serve HTTP requests to the webroot directory.
   nginx::resource::server { 'letsencrypt-webroot':
     server_name => [$server_name],
     listen_port => 80,
@@ -46,6 +54,7 @@ class nebula::profile::https_to_port (
     require     => File[$webroot],
   }
 
+  # Ensure that the webroot directory exists.
   file { $webroot:
     ensure => 'directory',
   }
