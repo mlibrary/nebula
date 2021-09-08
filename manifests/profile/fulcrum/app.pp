@@ -156,6 +156,11 @@ class nebula::profile::fulcrum::app (
     checksum      => '9c1b020afdd2e9a65a62128fa5ec6a6f86f77de9',
     checksum_type => 'sha1',
     cleanup       => true,
+    require       => File ['/usr/local/fits'],
+  }
+
+  file { '/usr/local/fits':
+    ensure => directory,
   }
 
   file { '/usr/local/bin/fits.sh':
