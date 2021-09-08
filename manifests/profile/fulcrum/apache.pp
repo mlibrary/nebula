@@ -20,6 +20,10 @@ class nebula::profile::fulcrum::apache (
     default_vhost => false,
   }
 
+  include apache::mod::proxy
+  include apache::mod::proxy_http
+  include apache::mod::ssl
+
   apache::custom_config { 'badrobots':
     source => 'puppet:///apache/badrobots.conf'
   }
