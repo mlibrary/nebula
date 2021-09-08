@@ -12,6 +12,8 @@ class nebula::profile::fulcrum::app (
   ensure_packages([
     'tomcat8',
     'tomcat8-user',
+    'unzip',
+    'zip',
   ])
 
   group { 'fulcrum':
