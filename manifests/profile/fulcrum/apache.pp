@@ -24,6 +24,12 @@ class nebula::profile::fulcrum::apache (
     source => 'puppet:///apache/badrobots.conf'
   }
 
+  apache::custom_config { 'listen-https':
+    content => @(EOT)
+      Listen 443
+      | EOT
+  }
+
   apache::vhost { "${servername}-http-acme":
     servername => $servername,
     port       => '80',
