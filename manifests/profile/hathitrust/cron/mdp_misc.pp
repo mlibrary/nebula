@@ -16,16 +16,18 @@ class nebula::profile::hathitrust::cron::mdp_misc (
   String $sdr_data_root = '/sdr1',
   String $home = '/htapps/babel/mdp-misc',
   String $catalog_home = '/htapps/catalog/web',
-  Integer $mdp_sessions_minute = 5
+  Integer $mdp_sessions_minute = 5,
+  $sdr_environment = [
+    "SDRROOT=${sdr_root}",
+    "SDRDATAROOT=${sdr_data_root}",
+    "HOME=${home}"
+  ]
 ) {
 
   cron {
     default:
       user        => $user,
-      environment => ["MAILTO=${mail_recipient}",
-      "SDRROOT=${sdr_root}",
-      "SDRDATAROOT=${sdr_data_root}",
-      "HOME=${home}"];
+      environment => $sdr_environment + ["MAILTO=${mail_recipient}"];
 
     # Mail /htapps/babel/logs/assert/hathitrust=email-digest-current at 15 minute intervals
 
@@ -34,22 +36,25 @@ class nebula::profile::hathitrust::cron::mdp_misc (
       command => "eval ${sdr_root}/mdp-misc/scripts/email-monitor.pl";
 
     'data api log monitor':
-      minute  => 59,
-      hour    => 23,
-      command => "${sdr_root}/htd/scripts/htdmonitor 2>&1 | /usr/bin/mail -s '${::hostname} htdmonitor output' ${mail_recipient}";
+      minute      => 59,
+      hour        => 23,
+      environment => $sdr_environment + ["MAILTO=''"],
+      command     => "${sdr_root}/htd/scripts/htdmonitor 2>&1 || /usr/bin/mail -s '${::hostname} htdmonitor problems' ${mail_recipient}";
 
     'manage mbook sessions':
-      minute  => $mdp_sessions_minute,
-      command => "${home}/scripts/managembookssessions.pl -m clean -a 120 2>&1 | /usr/bin/mail -s '${::hostname} managembooksessions output' ${mail_recipient}";
+      minute      => $mdp_sessions_minute,
+      environment => $sdr_environment + ["MAILTO=''"],
+      command     => "${home}/scripts/managembookssessions.pl -m clean -a 120 2>&1 || /usr/bin/mail -s '${::hostname} managembooksessions error' ${mail_recipient}";
 
     'manage exclusivity expiration':
       minute  => $mdp_sessions_minute,
       command => "${sdr_root}/pt/scripts/manage_exclusivity.pl";
 
     'harvest proxy downloads':
-      minute  => 01,
-      hour    => 00,
-      command => "${sdr_root}/pt/scripts/harvest_proxy_downloads.pl 2>&1 | /usr/bin/mail -s '${::hostname} harvest_proxy_downloads output' ${mail_recipient}";
+      minute      => 01,
+      hour        => 00,
+      environment => $sdr_environment + ["MAILTO=''"],
+      command     => "${sdr_root}/pt/scripts/harvest_proxy_downloads.pl 2>&1 || /usr/bin/mail -s '${::hostname} harvest_proxy_downloads problems' ${mail_recipient}";
 
     # Build up translation maps. Collection codes are pulled from the HT
     # database, and lists of languages and formats are pulled right out of the the solr data.

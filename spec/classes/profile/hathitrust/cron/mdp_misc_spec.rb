@@ -23,10 +23,12 @@ describe 'nebula::profile::hathitrust::cron::mdp_misc' do
             .with(command: %r{/htapps/babel/mdp-misc/scripts/managembookssessions\.pl.*mail.*nobody@default\.invalid},
 
                   user: 'libadm',
-                  environment: ['MAILTO=nobody@default.invalid',
-                                'SDRROOT=/htapps/babel',
-                                'SDRDATAROOT=/sdr1',
-                                'HOME=/htapps/babel/mdp-misc'],
+                  environment: [
+                    'SDRROOT=/htapps/babel',
+                    'SDRDATAROOT=/sdr1',
+                    'HOME=/htapps/babel/mdp-misc',
+                    "MAILTO=''",
+                  ],
                   minute: 5)
         end
       end
@@ -47,10 +49,12 @@ describe 'nebula::profile::hathitrust::cron::mdp_misc' do
           is_expected.to contain_cron('manage mbook sessions')
             .with(command: %r{.*/homewhere/scripts/managembookssessions\.pl.*mail.*somebody@default\.invalid},
                   user: 'cronuser',
-                  environment: ['MAILTO=somebody@default.invalid',
-                                'SDRROOT=/somewhere',
-                                'SDRDATAROOT=/elsewhere',
-                                'HOME=/homewhere'],
+                  environment: [
+                    'SDRROOT=/somewhere',
+                    'SDRDATAROOT=/elsewhere',
+                    'HOME=/homewhere',
+                    "MAILTO=''",
+                  ],
                   minute: 30)
         end
       end
