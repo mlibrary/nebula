@@ -34,7 +34,8 @@ class nebula::profile::fulcrum::fixme (
       locations          => {
         'fulcrum-static' => {
           'location' => '/',
-          'try_files' => ['/home/fulcrum/app/current/public']
+          'try_files' => ['/home/fulcrum/app/current/public'],
+          'www_root' => undef
         },
         'fulcrum-app' => {
           'proxy' => "http://localhost:${port}",
