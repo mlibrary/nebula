@@ -58,4 +58,6 @@ class nebula::profile::fulcrum::fixme (
     minute  => fqdn_rand(60),
     command => '/bin/systemctl restart nginx',
   }
+
+  include nebula::profile::networking::firewall::http_datacenters
 }
