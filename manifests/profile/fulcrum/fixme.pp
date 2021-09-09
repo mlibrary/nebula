@@ -27,6 +27,7 @@ class nebula::profile::fulcrum::fixme (
       server_name => [$server_name],
       listen_port => 443,
       proxy       => "http://localhost:${port}",
+      www_root    => '/home/fulcrum/app/current/public',
       ssl         => true,
       ssl_cert    => "${letsencrypt_directory}/fullchain.pem",
       ssl_key     => "${letsencrypt_directory}/privkey.pem",
