@@ -9,8 +9,8 @@ class nebula::profile::fulcrum::solr {
 
   file { '/home/fulcrum/solr':
     ensure => directory,
-    owner  => 'fulcrum',
-    group  => 'fulcrum',
+    owner  => 'solr',
+    group  => 'solr',
   }
 
   file { '/home/fulcrum/solr/conf':
@@ -20,8 +20,10 @@ class nebula::profile::fulcrum::solr {
     group  => 'fulcrum',
   }
 
-  file { '/var/local/fulcrum/solrdata':
-    ensure  => directory,
+  file { '/var/local/solrdata':
+    ensure => directory,
+    owner  => 'solr',
+    group  => 'solr',
   }
 
 }
