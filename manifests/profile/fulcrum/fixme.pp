@@ -37,6 +37,7 @@ class nebula::profile::fulcrum::fixme (
     nginx::resource::location { 'fulcrum-static':
       server    => 'fulcrum',
       ssl       => true,
+      ssl_only  => true,
       location  => '/',
       try_files => ['$uri', '$uri/', '@proxy'],
       priority  => 450,
@@ -45,6 +46,7 @@ class nebula::profile::fulcrum::fixme (
     nginx::resource::location { 'fulcrum-proxy':
       server   => 'fulcrum',
       ssl      => true,
+      ssl_only => true,
       location => '@proxy',
       proxy    => "http://localhost:${port}",
       priority => 451,
