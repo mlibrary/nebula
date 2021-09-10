@@ -46,6 +46,7 @@ class nebula::profile::fulcrum::fixme (
       server   => 'fulcrum',
       ssl      => true,
       location => '@proxy',
+      proxy    => "http://localhost:${port}",
       priority => 451,
     }
   }
