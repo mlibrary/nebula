@@ -34,11 +34,11 @@ class nebula::profile::fulcrum::fixme (
         '/' => {
           'www_root' => '/home/fulcrum/app/current/public',
           'try_files' => ['$uri', '$uri/', '@proxy'],
-          'priority' => 451,
+          'priority' => 450,
         },
         '@proxy' => {
           'proxy' => "http://localhost:${port}",
-          'priority' => 450,
+          'priority' => 451,
         },
       }
     }
