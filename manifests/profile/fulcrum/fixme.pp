@@ -31,13 +31,12 @@ class nebula::profile::fulcrum::fixme (
       ssl_key     => "${letsencrypt_directory}/privkey.pem",
       require     => Nebula::Cert[$server_name],
       locations   => {
-        'fulcrum-static' => {
-          'location' => '/',
-          'try_files' => ['/home/fulcrum/app/current/public'],
+        '/' => {
           'www_root' => '/home/fulcrum/app/current/public',
+          'try_files' => ['$uri', '$uri/', '@proxy'],
           'priority' => 451,
         },
-        'fulcrum-app' => {
+        '@proxy' => {
           'proxy' => "http://localhost:${port}",
           'priority' => 450,
         },
