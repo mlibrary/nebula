@@ -24,22 +24,22 @@ class nebula::profile::fulcrum::fixme (
 
   if $letsencrypt_directory {
     nginx::resource::server { 'fulcrum':
-      server_name        => [$server_name],
-      listen_port        => 443,
-      www_root           => '/home/fulcrum/app/current/public',
-      ssl                => true,
-      ssl_cert           => "${letsencrypt_directory}/fullchain.pem",
-      ssl_key            => "${letsencrypt_directory}/privkey.pem",
-      require            => Nebula::Cert[$server_name],
-      locations          => {
+      server_name => [$server_name],
+      listen_port => 443,
+      ssl         => true,
+      ssl_cert    => "${letsencrypt_directory}/fullchain.pem",
+      ssl_key     => "${letsencrypt_directory}/privkey.pem",
+      require     => Nebula::Cert[$server_name],
+      locations   => {
         'fulcrum-static' => {
           'location' => '/',
           'try_files' => ['/home/fulcrum/app/current/public'],
-          'www_root' => undef
+          'www_root' => '/home/fulcrum/app/current/public',
+          'priority' => 451,
         },
         'fulcrum-app' => {
           'proxy' => "http://localhost:${port}",
-          'www_root' => undef
+          'priority' => 450,
         },
       }
     }
