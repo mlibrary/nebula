@@ -9,7 +9,7 @@ User=fulcrum
 Group=fulcrum
 EnvironmentFile=-/etc/default/fulcrum
 WorkingDirectory=/home/fulcrum/app/current
-ExecStart=bundle exec bin/resque-pool
+ExecStart=/usr/local/rbenv/shims/bundle exec bin/resque-pool
 
 [Install]
 WantedBy=fulcrum.target
