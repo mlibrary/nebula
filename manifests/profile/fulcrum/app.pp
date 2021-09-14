@@ -12,6 +12,17 @@ class nebula::profile::fulcrum::app (
   include nebula::profile::networking::private
 
   ensure_packages([
+    'clamav',
+    'clamav-daemon',
+    'clamav-freshclam',
+    'libclamav-dev',
+    'imagemagick',
+    'ffmpeg',
+    'ghostscript',
+    'libreoffice',
+    'netpbm',
+    'pdftk',
+    'qpdf',
     'shared-mime-info',
     'tomcat8',
     'tomcat8-user',
@@ -21,6 +32,12 @@ class nebula::profile::fulcrum::app (
 
   class { 'nebula::profile::nodejs':
     version => '14',
+  }
+
+  exec { 'npm install -g yarn':
+    path    => '/bin:/usr/bin',
+    creates => '/usr/bin/yarn',
+    require => Package['nodejs'],
   }
 
   group { 'fulcrum':
