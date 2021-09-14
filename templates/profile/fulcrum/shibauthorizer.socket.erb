@@ -1,0 +1,12 @@
+[Unit]
+Description=Shibboleth Authorizer socket
+After=network.target
+
+[Socket]
+ListenStream=/var/run/shibauthorizer.sock
+SocketUser=_shibd
+SocketGroup=_shibd
+SocketMode=0666
+
+[Install]
+WantedBy=sockets.target

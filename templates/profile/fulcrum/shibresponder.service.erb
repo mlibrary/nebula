@@ -1,0 +1,12 @@
+[Unit]
+Description=Shibboleth Responder
+After=network.target
+
+[Service]
+Type=simple
+User=_shibd
+ExecStart=/usr/lib/x86_64-linux-gnu/shibboleth/shibresponder
+StandardInput=socket
+
+[Install]
+WantedBy=multi-user.target

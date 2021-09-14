@@ -9,12 +9,19 @@ class nebula::profile::fulcrum::app (
   String $fedora_password = lookup('nebula::profile::fulcrum::mysql::fedora_password'),
   Array $authorized_keys = [],
 ) {
+  include nebula::profile::networking::private
+
   ensure_packages([
+    'shared-mime-info',
     'tomcat8',
     'tomcat8-user',
     'unzip',
     'zip',
   ])
+
+  class { 'nebula::profile::nodejs':
+    version => '14',
+  }
 
   group { 'fulcrum':
     gid => 717,
