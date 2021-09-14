@@ -9,6 +9,8 @@ class nebula::profile::fulcrum::app (
   String $fedora_password = lookup('nebula::profile::fulcrum::mysql::fedora_password'),
   Array $authorized_keys = [],
 ) {
+  include nebula::profile::networking::private
+
   ensure_packages([
     'shared-mime-info',
     'tomcat8',
