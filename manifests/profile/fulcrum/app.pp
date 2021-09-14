@@ -21,6 +21,12 @@ class nebula::profile::fulcrum::app (
     version => '14',
   }
 
+  exec { 'npm install -g yarn':
+    path    => '/usr/bin',
+    unless  => 'yarn -v',
+    require => Package['nodejs'],
+  }
+
   group { 'fulcrum':
     gid => 717,
   }
