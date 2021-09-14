@@ -10,11 +10,16 @@ class nebula::profile::fulcrum::app (
   Array $authorized_keys = [],
 ) {
   ensure_packages([
+    'shared-mime-info',
     'tomcat8',
     'tomcat8-user',
     'unzip',
     'zip',
   ])
+
+  class { 'nebula::profile::nodejs':
+    version => '14',
+  }
 
   group { 'fulcrum':
     gid => 717,
