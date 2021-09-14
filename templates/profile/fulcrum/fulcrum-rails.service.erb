@@ -9,7 +9,7 @@ User=fulcrum
 Group=fulcrum
 EnvironmentFile=-/etc/default/fulcrum
 WorkingDirectory=/home/fulcrum/app/current
-ExecStart=/usr/local/rbenv/bin/rbenv exec bundle exec puma -c config/puma.rb
+ExecStart=/usr/local/rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb
 
 [Install]
 WantedBy=fulcrum.target
