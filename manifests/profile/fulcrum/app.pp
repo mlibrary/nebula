@@ -22,7 +22,7 @@ class nebula::profile::fulcrum::app (
   }
 
   exec { 'npm install -g yarn':
-    path    => '/usr/bin',
+    path    => '/bin:/usr/bin',
     creates => '/usr/bin/yarn',
     require => Package['nodejs'],
   }
