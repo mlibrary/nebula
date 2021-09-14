@@ -1,19 +1,10 @@
-# Copyright (c) 2020 The Regents of the University of Michigan.
+# Copyright (c) 2021 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Forward HTTPS to a local port
-#
-# This allows us to expose what would be an HTTP port as HTTPS instead.
-# It also creates a simple webroot to use with actual HTTP connections
-# so that cert verification can be automatic.
-#
-# @param port The local HTTP port to forward HTTPS connections to
-# @param server_name The domain we expect connections to (defaults to
-#   the fqdn fact)
-# @param webroot The path to where we want HTTP connections over port 80
-#   to land (defaults to `/var/www`)
-class nebula::profile::fulcrum::fixme (
+# Set up NGINX as the web server and reverse proxy for Fulcrum. Also manages
+# SSL certificates with Let's Encrypt.
+class nebula::profile::fulcrum::nginx (
   Integer $port = 3000,
   String $server_name = $::fqdn,
   String $webroot = '/var/www/acme',
@@ -43,13 +34,28 @@ class nebula::profile::fulcrum::fixme (
       priority  => 450,
     }
 
+    # Set up derivatives for offloading (with the 'internal' flag)
+    nginx::resource::location { 'fulcrum-derivatives':
+      server         => 'fulcrum',
+      ssl            => true,
+      ssl_only       => true,
+      location       => '/derivatives',
+      location_alias => '/var/local/fulcrum/data/derivatives',
+      internal       => true,
+      priority       => 451,
+    }
+
     nginx::resource::location { 'fulcrum-proxy':
-      server   => 'fulcrum',
-      ssl      => true,
-      ssl_only => true,
-      location => '@proxy',
-      proxy    => "http://localhost:${port}",
-      priority => 451,
+      server           => 'fulcrum',
+      ssl              => true,
+      ssl_only         => true,
+      location         => '@proxy',
+      proxy            => "http://localhost:${port}",
+      proxy_set_header => [
+        'X-Sendfile-Type X-Accel-Redirect',
+        'X-Accel-Mapping /var/local/fulcrum/data/derivatives=/derivatives',
+      ],
+      priority         => 452,
     }
   }
 

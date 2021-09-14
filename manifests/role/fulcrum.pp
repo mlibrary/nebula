@@ -12,7 +12,7 @@ class nebula::role::fulcrum {
   include nebula::profile::ruby
   include nebula::profile::fulcrum::base
   include nebula::profile::fulcrum::app
-  include nebula::profile::fulcrum::fixme
   include nebula::profile::fulcrum::mysql
+  include nebula::profile::fulcrum::nginx
   include nebula::profile::fulcrum::solr
 }
