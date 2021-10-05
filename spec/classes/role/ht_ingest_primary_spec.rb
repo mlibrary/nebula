@@ -16,17 +16,11 @@ describe 'nebula::role::hathitrust::ingest_indexing::primary' do
 
       it do
         is_expected.to contain_cron('mail rights load summary')
-          .with_command('/usr/bin/mail -s "Rights load summary" nobody@default.invalid < /tmp/populate_rights.log; mv /tmp/populate_rights.log /htfeed/var/log/populate_rights_`date +"\%Y\%m\%d"`.log')
+          .with_ensure('absent')
       end
 
       it do
-        is_expected.to contain_cron('daily tasks').with_environment(
-          [
-            'MAILTO=nobody@default.invalid',
-            'FEED_HOME=/htfeed',
-            'HTFEED_CONFIG=/default/feedd.yaml',
-          ],
-        )
+        is_expected.to contain_cron('daily tasks').with_ensure('absent')
       end
     end
   end
