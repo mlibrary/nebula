@@ -9,6 +9,13 @@ Puppet Nebula
 # Development
 
 1. git clone
-2. bundle
-3. `(bundle exec) rake spec_prep`
-4. `(bundle exec) rspec # or rake spec_standalone`
+2. `docker-compose build`
+3. `docker-compose run spec_prep`
+4. `docker-compose run specs`
+
+or:
+
+```bash
+docker-compose run specs bundle exec rspec specs/path/to/a_spec.rb
+docker-compose run specs bundle exec rake spec_standalone
+```
