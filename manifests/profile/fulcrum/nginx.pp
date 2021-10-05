@@ -9,7 +9,10 @@ class nebula::profile::fulcrum::nginx (
   String $server_name = $::fqdn,
   String $webroot = '/var/www/acme',
 ) {
-  include nginx
+  class { 'nginx':
+    manage_repo    => true,
+    package_source => 'nginx-stable',
+  }
 
   $letsencrypt_directory = $::letsencrypt_directory[$server_name]
 
