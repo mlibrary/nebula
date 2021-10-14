@@ -21,6 +21,9 @@ class nebula::profile::fulcrum::nginx (
 
   $letsencrypt_directory = $::letsencrypt_directory[$server_name]
 
+  $networks = lookup('nebula::profile::networking::firewall::http_datacenters::networks')
+  $allow = $networks.flatten.map |$network| { $network['block'] }
+
   if $letsencrypt_directory {
     nginx::resource::server { 'fulcrum':
       server_name          => [$server_name],
@@ -34,13 +37,15 @@ class nebula::profile::fulcrum::nginx (
     }
 
     nginx::resource::location { 'fulcrum-root':
-      server    => 'fulcrum',
-      ssl       => true,
-      ssl_only  => true,
-      location  => '/',
+      server         => 'fulcrum',
+      ssl            => true,
+      ssl_only       => true,
+      location       => '/',
+      location_allow => $allow,
+      location_deny  => ['all'],
       # Check for static file under public/ before proxying everything else
-      try_files => ['$uri', '$uri/', '@proxy'],
-      priority  => 450,
+      try_files      => ['$uri', '$uri/', '@proxy'],
+      priority       => 450,
     }
 
     # Set up derivatives for offloading (with the 'internal' flag)
@@ -102,6 +107,8 @@ class nebula::profile::fulcrum::nginx (
       ssl                 => true,
       ssl_only            => true,
       location            => '/shib_session',
+      location_allow      => $allow,
+      location_deny       => ['all'],
       include             => ['shib_clear_headers', 'shib_fastcgi_params'],
       # The try_files + /dev/null hack is apparently conventional for reusing a named location
       try_files           => ['/dev/null', '@proxy'],
@@ -152,4 +159,11 @@ class nebula::profile::fulcrum::nginx (
   }
 
   include nebula::profile::networking::firewall::http_datacenters
+
+  firewall { "200 HTTPS: public":
+    proto  => 'tcp',
+    dport  => 443,
+    state  => 'NEW',
+    action => 'accept',
+  }
 }
