@@ -14,5 +14,6 @@ class nebula::role::fulcrum {
   include nebula::profile::fulcrum::app
   include nebula::profile::fulcrum::mysql
   include nebula::profile::fulcrum::nginx
+  include nebula::profile::fulcrum::shibboleth
   include nebula::profile::fulcrum::solr
 }

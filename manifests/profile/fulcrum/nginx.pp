@@ -14,6 +14,11 @@ class nebula::profile::fulcrum::nginx (
     package_source => 'nginx-stable',
   }
 
+  ensure_packages([
+    'nginx-module-shibboleth',
+    'nginx-module-headersmore',
+  ])
+
   $letsencrypt_directory = $::letsencrypt_directory[$server_name]
 
   if $letsencrypt_directory {
@@ -122,11 +127,19 @@ class nebula::profile::fulcrum::nginx (
   }
 
   file { '/etc/nginx/snippets/shib_clear_headers':
-    source  => 'puppet:///modules/nebula/nginx-shibboleth/shib_clear_headers',
+    source => 'puppet:///modules/nebula/nginx-shibboleth/shib_clear_headers',
   }
 
   file { '/etc/nginx/snippets/shib_fastcgi_params':
-    source  => 'puppet:///modules/nebula/nginx-shibboleth/shib_fastcgi_params',
+    source => 'puppet:///modules/nebula/nginx-shibboleth/shib_fastcgi_params',
+  }
+
+  file { '/etc/nginx/modules-enabled/shibboleth.conf':
+    content => template('nebula/profile/fulcrum/nginx-shibboleth.conf.erb'),
+  }
+
+  file { '/etc/nginx/modules-enabled/headersmore.conf':
+    content => template('nebula/profile/fulcrum/nginx-headersmore.conf.erb'),
   }
 
   cron { 'restart nginx weekly to keep SSL keys up to date':
