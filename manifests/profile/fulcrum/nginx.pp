@@ -126,11 +126,11 @@ class nebula::profile::fulcrum::nginx (
     ensure => 'directory',
   }
 
-  file { '/etc/nginx/snippets/shib_clear_headers':
+  file { '/etc/nginx/shib_clear_headers':
     source => 'puppet:///modules/nebula/nginx-shibboleth/shib_clear_headers',
   }
 
-  file { '/etc/nginx/snippets/shib_fastcgi_params':
+  file { '/etc/nginx/shib_fastcgi_params':
     source => 'puppet:///modules/nebula/nginx-shibboleth/shib_fastcgi_params',
   }
 
