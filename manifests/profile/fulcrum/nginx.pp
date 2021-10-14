@@ -97,7 +97,7 @@ class nebula::profile::fulcrum::nginx (
       ssl                 => true,
       ssl_only            => true,
       location            => '/shib_session',
-      include             => ['shib_clear_headers'],
+      include             => ['shib_clear_headers', 'shib_fastcgi_params'],
       # The try_files + /dev/null hack is apparently conventional for reusing a named location
       try_files           => ['/dev/null', '@proxy'],
       location_cfg_append => $shib_config,
@@ -119,6 +119,14 @@ class nebula::profile::fulcrum::nginx (
 
   file { $webroot:
     ensure => 'directory',
+  }
+
+  file { '/etc/nginx/snippets/shib_clear_headers':
+    source  => 'puppet:///modules/nebula/nginx-shibboleth/shib_clear_headers',
+  }
+
+  file { '/etc/nginx/snippets/shib_fastcgi_params':
+    source  => 'puppet:///modules/nebula/nginx-shibboleth/shib_fastcgi_params',
   }
 
   cron { 'restart nginx weekly to keep SSL keys up to date':
