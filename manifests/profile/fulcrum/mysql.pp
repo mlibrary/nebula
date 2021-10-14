@@ -8,6 +8,7 @@ class nebula::profile::fulcrum::mysql (
   String $fedora_password,
   String $fulcrum_password,
   String $checkpoint_password,
+  String $shibd_password,
 ) {
   include nebula::profile::mysql
 
@@ -26,6 +27,12 @@ class nebula::profile::fulcrum::mysql (
   mysql::db { 'checkpoint':
     user     => 'checkpoint',
     password => $checkpoint_password,
+    host     => 'localhost',
+  }
+
+  mysql::db { 'shibd':
+    user     => 'shibd',
+    password => $shibd_password,
     host     => 'localhost',
   }
 }

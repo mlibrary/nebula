@@ -28,11 +28,12 @@ class nebula::profile::fulcrum::nginx (
       require              => Nebula::Cert[$server_name],
     }
 
-    nginx::resource::location { 'fulcrum-static':
+    nginx::resource::location { 'fulcrum-root':
       server    => 'fulcrum',
       ssl       => true,
       ssl_only  => true,
       location  => '/',
+      # Check for static file under public/ before proxying everything else
       try_files => ['$uri', '$uri/', '@proxy'],
       priority  => 450,
     }
@@ -59,6 +60,48 @@ class nebula::profile::fulcrum::nginx (
         'X-Accel-Mapping /var/local/fulcrum/data/derivatives=/derivatives',
       ],
       priority         => 452,
+    }
+
+    # The authorizer is the back-channel for authenticating with the SP
+    nginx::resource::location { 'fulcrum-shibauthorizer':
+      server   => 'fulcrum',
+      ssl      => true,
+      ssl_only => true,
+      location => '/shibauthorizer',
+      internal => true,
+      include  => ['fastcgi_params'],
+      fastcgi  => 'localhost:9002',
+      priority => 460,
+    }
+
+    # The responder is the public interface to the SP
+    nginx::resource::location { 'fulcrum-shibresponder':
+      server   => 'fulcrum',
+      ssl      => true,
+      ssl_only => true,
+      location => '/Shibboleth.sso',
+      include  => ['fastcgi_params'],
+      fastcgi  => 'localhost:9003',
+      priority => 470,
+    }
+
+    $shib_config = {
+      'more_clear_input_headers' => "'displayName' 'mail' 'persistent-id'",
+      'shib_request'             => '/shibauthorizer',
+      'shib_request_use_headers' => 'on',
+    }
+
+    # Fulcrum checks Shibboleth headers and establishes an app session at /shib_session
+    nginx::resource::location { 'fulcrum-shib-session':
+      server              => 'fulcrum',
+      ssl                 => true,
+      ssl_only            => true,
+      location            => '/shib_session',
+      include             => ['shib_clear_headers'],
+      # The try_files + /dev/null hack is apparently conventional for reusing a named location
+      try_files           => ['/dev/null', '@proxy'],
+      location_cfg_append => $shib_config,
+      priority            => 480,
     }
   }
 
