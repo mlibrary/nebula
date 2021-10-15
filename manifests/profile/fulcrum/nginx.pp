@@ -68,6 +68,8 @@ class nebula::profile::fulcrum::nginx (
       proxy_set_header => [
         'X-Sendfile-Type X-Accel-Redirect',
         'X-Accel-Mapping /var/local/fulcrum/data/derivatives=/derivatives',
+        'X-Forwarded-Host $host',
+        'X-Forwarded-Proto $scheme',
       ],
       priority         => 452,
     }

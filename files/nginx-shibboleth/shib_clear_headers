@@ -9,6 +9,8 @@
 # Shib-* doesn't currently work because * isn't (yet) supported
 more_clear_input_headers
     Auth-Type
+    Remote-User
+    X-Forwarded-For
     X-Shib-Application-Id
     X-Shib-Authentication-Instant
     X-Shib-Authentication-Method
@@ -16,7 +18,6 @@ more_clear_input_headers
     X-Shib-Identity-Provider
     X-Shib-Session-Id
     X-Shib-Session-Index
-    Remote-User
     X-Remote-User
     X-Shib-Persistent-Id
     X-Shib-eduPersonPrincipalName
