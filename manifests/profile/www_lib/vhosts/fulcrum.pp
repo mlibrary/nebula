@@ -12,7 +12,6 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   String $docroot = '/hydra/heliotrope-production/current/public'
 ) {
   $servername = 'www.fulcrum.org'
-  $serveraliases = ['fulcrum.www.lib.umich.edu', 'fulcrum.lib.umich.edu']
   $logging_prefix = 'heliotrope-production'
 
   file { "${apache::params::logroot}/${logging_prefix}":
@@ -22,7 +21,6 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   nebula::apache::www_lib_vhost { 'fulcrum-http':
     priority       => '13',
     servername     => $servername,
-    serveraliases  => $serveraliases,
     docroot        => false,
     logging_prefix => "${logging_prefix}/",
     usertrack      => true,
@@ -47,7 +45,6 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   nebula::apache::www_lib_vhost { 'fulcrum-https':
     priority        => '13',
     servername      => $servername,
-    serveraliases   => $serveraliases,
     docroot         => $docroot,
     logging_prefix  => "${logging_prefix}/",
 
