@@ -52,5 +52,5 @@ fastcgi_param X-Shib-displayName $shib_displayname;
 shib_request_set $shib_email $upstream_http_variable_email;
 fastcgi_param X-Shib-mail $shib_email;
 
-shib_request_set $shib_affliation $upstream_http_variable_affiliation;
+shib_request_set $shib_affiliation $upstream_http_variable_affiliation;
 fastcgi_param X-Shib-eduPersonScopedAffiliation $shib_affiliation;
