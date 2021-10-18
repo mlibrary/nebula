@@ -8,49 +8,49 @@
 # "Stock" attributes from the SP
 
 shib_request_set $shib_auth_type $upstream_http_variable_auth_type;
-fastcgi_param Auth-Type $shib_auth_type;
+proxy_set_header Auth-Type $shib_auth_type;
 
 shib_request_set $shib_shib_application_id $upstream_http_variable_shib_application_id;
-fastcgi_param X-Shib-Application-ID $shib_shib_application_id;
+proxy_set_header X-Shib-Application-ID $shib_shib_application_id;
 
 shib_request_set $shib_shib_authentication_instant $upstream_http_variable_shib_authentication_instant;
-fastcgi_param X-Shib-Authentication-Instant $shib_shib_authentication_instant;
+proxy_set_header X-Shib-Authentication-Instant $shib_shib_authentication_instant;
 
 shib_request_set $shib_shib_authentication_method $upstream_http_variable_shib_authentication_method;
-fastcgi_param X-Shib-Authentication-Method $shib_shib_authentication_method;
+proxy_set_header X-Shib-Authentication-Method $shib_shib_authentication_method;
 
 shib_request_set $shib_shib_authncontext_class $upstream_http_variable_shib_authncontext_class;
-fastcgi_param X-Shib-AuthnContext-Class $shib_shib_authncontext_class;
+proxy_set_header X-Shib-AuthnContext-Class $shib_shib_authncontext_class;
 
 shib_request_set $shib_shib_authncontext_decl $upstream_http_variable_shib_authncontext_decl;
-fastcgi_param X-Shib-AuthnContext-Decl $shib_shib_authncontext_decl;
+proxy_set_header X-Shib-AuthnContext-Decl $shib_shib_authncontext_decl;
 
 shib_request_set $shib_shib_identity_provider $upstream_http_variable_shib_identity_provider;
-fastcgi_param X-Shib-Identity-Provider $shib_shib_identity_provider;
+proxy_set_header X-Shib-Identity-Provider $shib_shib_identity_provider;
 
 shib_request_set $shib_shib_session_id $upstream_http_variable_shib_session_id;
-fastcgi_param X-Shib-Session-ID $shib_shib_session_id;
+proxy_set_header X-Shib-Session-ID $shib_shib_session_id;
 
 shib_request_set $shib_shib_session_index $upstream_http_variable_shib_session_index;
-fastcgi_param X-Shib-Session-Index $shib_shib_session_index;
+proxy_set_header X-Shib-Session-Index $shib_shib_session_index;
 
 shib_request_set $shib_remote_user $upstream_http_variable_remote_user;
-fastcgi_param X-Remote-User $shib_remote_user;
+proxy_set_header X-Remote-User $shib_remote_user;
 
 
 # Custom attributes from attribute-map.xml
 
 shib_request_set $shib_persistent_id $upstream_http_variable_persistent_id;
-fastcgi_param X-Shib-Persistent-Id $shib_persistent_id;
+proxy_set_header X-Shib-Persistent-Id $shib_persistent_id;
 
 shib_request_set $shib_eppn $upstream_http_variable_eppn;
-fastcgi_param X-Shib-eduPersonPrincipalName $shib_eppn;
+proxy_set_header X-Shib-eduPersonPrincipalName $shib_eppn;
 
 shib_request_set $shib_displayname $upstream_http_variable_displayname;
-fastcgi_param X-Shib-displayName $shib_displayname;
+proxy_set_header X-Shib-displayName $shib_displayname;
 
 shib_request_set $shib_email $upstream_http_variable_email;
-fastcgi_param X-Shib-mail $shib_email;
+proxy_set_header X-Shib-mail $shib_email;
 
 shib_request_set $shib_affiliation $upstream_http_variable_affiliation;
-fastcgi_param X-Shib-eduPersonScopedAffiliation $shib_affiliation;
+proxy_set_header X-Shib-eduPersonScopedAffiliation $shib_affiliation;

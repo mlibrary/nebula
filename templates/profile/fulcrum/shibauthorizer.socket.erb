@@ -3,8 +3,10 @@ Description=Shibboleth Authorizer socket
 After=network.target
 
 [Socket]
-ListenStream=127.0.0.1:9002
-Accept=yes
+ListenStream=/var/run/shibauthorizer.sock
+SocketUser=_shibd
+SocketGroup=_shibd
+SocketMode=0666
 
 [Install]
 WantedBy=sockets.target

@@ -36,16 +36,16 @@ class nebula::profile::fulcrum::shibboleth {
     content => template('nebula/profile/fulcrum/shibresponder.socket.erb'),
   }
 
-  file { '/etc/systemd/system/shibresponder@.service':
-    content => template('nebula/profile/fulcrum/shibresponder@.service.erb'),
+  file { '/etc/systemd/system/shibresponder.service':
+    content => template('nebula/profile/fulcrum/shibresponder.service.erb'),
   }
 
   file { '/etc/systemd/system/shibauthorizer.socket':
     content => template('nebula/profile/fulcrum/shibauthorizer.socket.erb'),
   }
 
-  file { '/etc/systemd/system/shibauthorizer@.service':
-    content => template('nebula/profile/fulcrum/shibauthorizer@.service.erb'),
+  file { '/etc/systemd/system/shibauthorizer.service':
+    content => template('nebula/profile/fulcrum/shibauthorizer.service.erb'),
   }
 
   service { 'shibd':
@@ -54,4 +54,25 @@ class nebula::profile::fulcrum::shibboleth {
     hasrestart => true,
     require    => [Package['shibboleth-sp2-utils'], Package['mariadb-unixodbc']]
   }
+
+  service { 'shibauthorizer.socket':
+    enable => true,
+    require => Service['shibd'],
+  }
+
+  service { 'shibauthorizer.service':
+    enable => true,
+    require => Service['shibd'],
+  }
+
+  service { 'shibresponder.socket':
+    enable => true,
+    require => Service['shibd'],
+  }
+
+  service { 'shibresponder.service':
+    enable => true,
+    require => Service['shibd'],
+  }
+
 }

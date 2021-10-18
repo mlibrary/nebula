@@ -82,7 +82,7 @@ class nebula::profile::fulcrum::nginx (
       location => '/shibauthorizer',
       internal => true,
       include  => ['fastcgi_params'],
-      fastcgi  => 'localhost:9002',
+      fastcgi  => 'unix:/var/run/shibauthorizer.sock',
       priority => 460,
     }
 
@@ -93,14 +93,11 @@ class nebula::profile::fulcrum::nginx (
       ssl_only => true,
       location => '/Shibboleth.sso',
       include  => ['fastcgi_params'],
-      fastcgi  => 'localhost:9003',
+      fastcgi  => 'unix:/var/run/shibresponder.sock',
       priority => 470,
     }
 
     $shib_config = {
-      'more_clear_input_headers' => "'displayName' 'mail' 'persistent-id'",
-      'shib_request'             => '/shibauthorizer',
-      'shib_request_use_headers' => 'on',
     }
 
     # Fulcrum checks Shibboleth headers and establishes an app session at /shib_session
@@ -111,10 +108,16 @@ class nebula::profile::fulcrum::nginx (
       location            => '/shib_session',
       location_allow      => $allow,
       location_deny       => ['all'],
-      include             => ['shib_clear_headers', 'shib_fastcgi_params'],
-      # The try_files + /dev/null hack is apparently conventional for reusing a named location
-      try_files           => ['/dev/null', '@proxy'],
-      location_cfg_append => $shib_config,
+      include             => ['shib_clear_headers', 'shib_proxy_headers'],
+      location_cfg_append => {
+        'more_clear_input_headers' => "'displayName' 'mail' 'persistent-id'",
+        'shib_request'             => '/shibauthorizer',
+      },
+      proxy               => "http://localhost:${port}",
+      proxy_set_header    => [
+        'X-Forwarded-Host $host',
+        'X-Forwarded-Proto $scheme',
+      ],
       priority            => 480,
     }
   }
@@ -139,8 +142,8 @@ class nebula::profile::fulcrum::nginx (
     source => 'puppet:///modules/nebula/nginx-shibboleth/shib_clear_headers',
   }
 
-  file { '/etc/nginx/shib_fastcgi_params':
-    source => 'puppet:///modules/nebula/nginx-shibboleth/shib_fastcgi_params',
+  file { '/etc/nginx/shib_proxy_headers':
+    source => 'puppet:///modules/nebula/nginx-shibboleth/shib_proxy_headers',
   }
 
   file { '/etc/nginx/modules-enabled/shibboleth.conf':
