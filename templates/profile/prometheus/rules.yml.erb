@@ -11,7 +11,7 @@ groups:
       severity: page
   - alert: PuppetBehind
     annotations:
-      summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} hasn''t recently synced with puppet.'
+      summary: 'Node {{$labels.host | reReplaceAll "\\.umdl\\.umich\\.edu" ""}} hasn''t recently synced with puppet.'
       dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
     expr: 'puppet_report{environment="production",host!="ht-web-preview.umdl.umich.edu"} < (time() - (30 * 60))'
     for: 30m
@@ -19,7 +19,7 @@ groups:
       severity: ticket
   - alert: PuppetResourcesFailing
     annotations:
-      summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} has failing puppet resources.'
+      summary: 'Node {{$labels.host | reReplaceAll "\\.umdl\\.umich\\.edu" ""}} has failing puppet resources.'
       dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
     expr: >
       sum without(name)(
@@ -32,7 +32,7 @@ groups:
       severity: ticket
   - alert: PuppetZeroResources
     annotations:
-      summary: 'Node {{$labels.host | reReplaceAll "\\..*" ""}} has zero puppet resources.'
+      summary: 'Node {{$labels.host | reReplaceAll "\\.umdl\\.umich\\.edu" ""}} has zero puppet resources.'
       dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
     expr: 'puppet_report_resources{environment="production", name="Total"} == 0'
     for: 2h
