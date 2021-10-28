@@ -56,7 +56,7 @@ class nebula::profile::fulcrum::nginx (
       location       => '/derivatives',
       location_alias => '/var/local/fulcrum/data/derivatives',
       internal       => true,
-      priority       => 451,
+      priority       => 460,
     }
 
     nginx::resource::location { 'fulcrum-proxy':
@@ -71,7 +71,18 @@ class nebula::profile::fulcrum::nginx (
         'X-Forwarded-Host $host',
         'X-Forwarded-Proto $scheme',
       ],
-      priority         => 452,
+      priority         => 470,
+    }
+
+    # Metrics are exported on a separate port by yabeda-prometheus
+    # TODO: The port should be exposed directly to Prometheus or require auth
+    nginx::resource::location { 'fulcrum-metrics':
+      server         => 'fulcrum',
+      ssl            => true,
+      ssl_only       => true,
+      location       => '/metrics',
+      proxy          => 'http://localhost:9394/metrics',
+      priority       => 480,
     }
 
     # The authorizer is the back-channel for authenticating with the SP
@@ -83,7 +94,7 @@ class nebula::profile::fulcrum::nginx (
       internal => true,
       include  => ['fastcgi_params'],
       fastcgi  => 'unix:/var/run/shibauthorizer.sock',
-      priority => 460,
+      priority => 490,
     }
 
     # The responder is the public interface to the SP
@@ -94,7 +105,7 @@ class nebula::profile::fulcrum::nginx (
       location => '/Shibboleth.sso',
       include  => ['fastcgi_params'],
       fastcgi  => 'unix:/var/run/shibresponder.sock',
-      priority => 470,
+      priority => 500,
     }
 
     $shib_config = {
@@ -118,7 +129,7 @@ class nebula::profile::fulcrum::nginx (
         'X-Forwarded-Host $host',
         'X-Forwarded-Proto $scheme',
       ],
-      priority            => 480,
+      priority            => 510,
     }
   }
 
