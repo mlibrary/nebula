@@ -12,6 +12,10 @@ class nebula::profile::fulcrum::app (
   include nebula::profile::networking::private
 
   ensure_packages([
+    'clamav',
+    'clamav-daemon',
+    'clamav-freshclam',
+    'libclamav-dev',
     'shared-mime-info',
     'tomcat8',
     'tomcat8-user',
