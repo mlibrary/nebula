@@ -64,7 +64,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       },
       {
         comment      => 'Proxy metrics requests to Yabeda/Prometheus exporter',
-        rewrite_rule => '^/metrics$ http://localhost:9394/metrics [P]',
+        rewrite_rule => '^/metrics$ http://app-heliotrope-production:9394/metrics [P]',
       },
       {
         comment      => 'Reverse proxy application to app hostname and port',
