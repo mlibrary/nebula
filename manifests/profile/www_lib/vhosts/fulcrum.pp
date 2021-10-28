@@ -63,6 +63,10 @@ class nebula::profile::www_lib::vhosts::fulcrum (
         rewrite_rule => '^/(.*)$  /hydra/heliotrope-production/current/public/$1 [L]',
       },
       {
+        comment      => 'Proxy metrics requests to Yabeda/Prometheus exporter',
+        rewrite_rule => '^/metrics$ http://localhost:9394/metrics [P]',
+      },
+      {
         comment      => 'Reverse proxy application to app hostname and port',
         rewrite_cond => ['%{REQUEST_URI} !^/cosign/valid', '%{REQUEST_URI} !^/Shibboleth.sso'],
         rewrite_rule => '^(/.*)$ http://app-heliotrope-production:30399$1 [P]',
