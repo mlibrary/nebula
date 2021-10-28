@@ -56,22 +56,22 @@ class nebula::profile::fulcrum::shibboleth {
   }
 
   service { 'shibauthorizer.socket':
-    enable => true,
+    enable  => true,
     require => Service['shibd'],
   }
 
   service { 'shibauthorizer.service':
-    enable => true,
+    enable  => true,
     require => Service['shibd'],
   }
 
   service { 'shibresponder.socket':
-    enable => true,
+    enable  => true,
     require => Service['shibd'],
   }
 
   service { 'shibresponder.service':
-    enable => true,
+    enable  => true,
     require => Service['shibd'],
   }
 

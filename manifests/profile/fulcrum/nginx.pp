@@ -77,12 +77,12 @@ class nebula::profile::fulcrum::nginx (
     # Metrics are exported on a separate port by yabeda-prometheus
     # TODO: The port should be exposed directly to Prometheus or require auth
     nginx::resource::location { 'fulcrum-metrics':
-      server         => 'fulcrum',
-      ssl            => true,
-      ssl_only       => true,
-      location       => '/metrics',
-      proxy          => 'http://localhost:9394/metrics',
-      priority       => 480,
+      server   => 'fulcrum',
+      ssl      => true,
+      ssl_only => true,
+      location => '/metrics',
+      proxy    => 'http://localhost:9394/metrics',
+      priority => 480,
     }
 
     # The authorizer is the back-channel for authenticating with the SP
@@ -176,7 +176,7 @@ class nebula::profile::fulcrum::nginx (
 
   include nebula::profile::networking::firewall::http_datacenters
 
-  firewall { "200 HTTPS: public":
+  firewall { '200 HTTPS: public':
     proto  => 'tcp',
     dport  => 443,
     state  => 'NEW',
