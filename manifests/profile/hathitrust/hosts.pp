@@ -14,7 +14,6 @@ class nebula::profile::hathitrust::hosts(
   String $apps_ht,
   Array[String] $solr_search,
   String $solr_catalog,
-  String $solr_ptsearch,
   String $solr_usfeddocs,
   String $solr_vufind_primary,
   String $solr_vufind_failover
@@ -66,11 +65,6 @@ class nebula::profile::hathitrust::hosts(
   host { 'solr-sdr-catalog':
     comment => 'solr (ht catalog)',
     ip      => $solr_catalog
-  }
-
-  host { 'solr-sdr-ptsearch':
-    comment => 'solr (ht PT search)',
-    ip      => $solr_ptsearch
   }
 
   host { 'solr-sdr-usfeddocs':
