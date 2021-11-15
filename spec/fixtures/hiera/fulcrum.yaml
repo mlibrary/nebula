@@ -4,3 +4,10 @@ nebula::profile::fulcrum::mysql::fulcrum_password: changeme
 nebula::profile::fulcrum::mysql::checkpoint_password: changeme
 nebula::profile::fulcrum::mysql::shibd_password: changeme
 nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt
+nebula::profile::networking::firewall::http_datacenters::networks:
+  - name: 'Datacenter One'
+    block: '10.1.1.0/24'
+    datacenter: one
+  - name: 'Datacenter Two'
+    block: '10.1.2.0/24'
+    datacenter: two
