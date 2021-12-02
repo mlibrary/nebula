@@ -176,7 +176,7 @@ class nebula::profile::www_lib::vhosts::staff_lib (
     ssl                                => true,
     usertrack                          => true,
     cosign                             => true,
-    cosign_service                     => 'staff.lib.umich.edu',
+    cosign_service                     => 'apps.staff.lib.umich.edu',
     docroot                            => $docroot,
     setenvifnocase                     => ['^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1'],
     default_allow_override             => ['AuthConfig','FileInfo','Limit','Options'],
