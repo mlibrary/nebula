@@ -37,6 +37,7 @@ class nebula::profile::www_lib::vhosts::staff_lib (
 
   nebula::apache::www_lib_vhost { 'staff.lib ssl':
     servername                         => "${prefix}staff.${domain}",
+    ssl_cn                             => 'staff.lib.umich.edu',
     ssl                                => true,
     usertrack                          => true,
     cosign                             => true,
@@ -171,6 +172,7 @@ class nebula::profile::www_lib::vhosts::staff_lib (
 
   nebula::apache::www_lib_vhost { 'apps.staff.lib ssl':
     servername                         => "${prefix}apps.staff.${domain}",
+    ssl_cn                             => 'staff.lib.umich.edu',
     ssl                                => true,
     usertrack                          => true,
     cosign                             => true,
