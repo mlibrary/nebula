@@ -110,6 +110,10 @@ class nebula::profile::apt (
     apt::source { 'puppet':
       location => 'http://apt.puppetlabs.com',
       repos    => $puppet_repo,
+      key      => {
+        'id'     => 'D6811ED3ADEEB8441AF5AA8F4528B6CD9E61EF26',
+        'source' => 'https://apt.puppetlabs.com/DEB-GPG-KEY-puppet-20250406'
+      }
     }
 
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
