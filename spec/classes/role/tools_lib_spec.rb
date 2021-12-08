@@ -16,9 +16,7 @@ describe 'nebula::role::tools_lib' do
       it { is_expected.to contain_package('fonts-dejavu-core') }
       it { is_expected.to contain_package('fontconfig') }
       it { is_expected.to contain_class('jira').with(version: '7.13.1') }
-      it { is_expected.to contain_class('confluence').with(version: '6.14.1') }
       it { is_expected.to contain_class('nebula::profile::tools_lib::jira').with(mail_recipient: 'nobody@default.invalid') }
-      it { is_expected.to contain_class('nebula::profile::tools_lib::confluence').with(mail_recipient: 'nobody@default.invalid') }
     end
   end
 end
