@@ -83,11 +83,26 @@ class nebula::profile::hathitrust::apache (
   class { 'apache::mod::dir':
     indexes => ['index.html']
   }
+  class { 'apache::mod::deflate':
+    types => [
+      'text/html',
+      'text/plain',
+      'text/xml',
+      'text/css',
+      'application/javascript',
+      'application/xml',
+      'application/xhtml+xml',
+      'application/json',
+      'image/svg+xml'
+    ],
+  }
   class { 'apache::mod::expires':
+    expires_active  =>  'true',
     expires_by_type => [
       { 'application/javascript' => 'access plus 6 hours' },
       { 'text/css' => 'access plus 6 hours' }
-    ]
+    ],
+    expires_default => 'modification plus 2 hours'
   }
   class { 'apache::mod::include': }
   class { 'apache::mod::mime_magic': }
