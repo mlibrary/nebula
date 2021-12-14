@@ -18,6 +18,7 @@ class nebula::profile::fulcrum::app (
     'libclamav-dev',
     'imagemagick',
     'ffmpeg',
+    'ghostscript',
     'libreoffice',
     'netpbm',
     'pdftk',
