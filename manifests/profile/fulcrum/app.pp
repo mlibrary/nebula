@@ -22,6 +22,7 @@ class nebula::profile::fulcrum::app (
     'libreoffice',
     'netpbm',
     'pdftk',
+    'qpdf',
     'shared-mime-info',
     'tomcat8',
     'tomcat8-user',
