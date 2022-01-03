@@ -63,6 +63,15 @@ class nebula::profile::hathitrust::apache::redirection (
       redirect_status => 'permanent',
       redirect_dest   => "https://${www_servername}/";
 
+    'hathitrust canonical name redirection ssl':
+      servername      => $domain,
+      port            => '443',
+      serveraliases   => $alias_domains + $alias_domains.map |$alias_domain| { "www.${alias_domain}" },
+      redirect_source => '/',
+      redirect_status => 'permanent',
+      redirect_dest   => "https://${www_servername}/",
+      *               => $ssl_params;
+
     "m.${catalog_servername} redirection":
       servername      => "m.${catalog_servername}",
       port            => '80',
