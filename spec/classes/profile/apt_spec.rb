@@ -129,6 +129,21 @@ describe 'nebula::profile::apt' do
             repos: 'non-free',
           )
         end
+
+        context 'with ubuntu instead of debian' do
+          let(:facts) do
+            os_facts.merge('dmi' => { 'manufacturer' => 'HPE' },
+                           'operatingsystem' => 'Ubuntu')
+          end
+
+          it do
+            is_expected.to contain_apt__source('hp').with(
+              location: 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
+              release: "#{facts[:lsbdistcodename]}/current",
+              repos: 'non-free',
+            )
+          end
+        end
       end
 
       it do

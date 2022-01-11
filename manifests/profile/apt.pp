@@ -24,6 +24,18 @@ class nebula::profile::apt (
         architecture => $::os['architecture'],
       }
     }
+
+    if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
+      apt::source { 'hp':
+        location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
+        release  => "${::lsbdistcodename}/current",
+        repos    => 'non-free',
+        key      => {
+          'id'     => '57446EFDE098E5C934B69C7DC208ADDE26C2B797',
+          'source' => 'https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub',
+        },
+      }
+    }
   }
 
   if($::operatingsystem == 'Debian') {
@@ -113,18 +125,6 @@ class nebula::profile::apt (
       key      => {
         'id'     => 'D6811ED3ADEEB8441AF5AA8F4528B6CD9E61EF26',
         'source' => 'https://apt.puppetlabs.com/DEB-GPG-KEY-puppet-20250406'
-      }
-    }
-
-    if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
-      apt::source { 'hp':
-        location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
-        release  => "${::lsbdistcodename}/current",
-        repos    => 'non-free',
-        key      => {
-          'id'     => '57446EFDE098E5C934B69C7DC208ADDE26C2B797',
-          'source' => 'https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub',
-        },
       }
     }
 
