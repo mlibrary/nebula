@@ -142,18 +142,18 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('staff.lib http redirect')
-          .with_servername('staff.lib.umich.edu')
+        is_expected.to contain_apache__vhost('apps.staff.lib http redirect')
+          .with_servername('apps.staff.lib.umich.edu')
       end
 
       it do
-        is_expected.to contain_apache__vhost('staff.lib ssl')
-          .with_servername('staff.lib.umich.edu')
-          .with_ssl_cert('/etc/ssl/certs/staff.lib.umich.edu.crt')
+        is_expected.to contain_apache__vhost('apps.staff.lib ssl')
+          .with_servername('apps.staff.lib.umich.edu')
+          .with_ssl_cert('/etc/ssl/certs/apps.staff.lib.umich.edu.crt')
       end
 
       it 'defaults to allowing .htaccess for staff.lib' do
-        directories = catalogue.resource('Apache::Vhost', 'staff.lib ssl')[:directories]
+        directories = catalogue.resource('Apache::Vhost', 'apps.staff.lib ssl')[:directories]
         funds_transfer = directories.select { |x| x['path'] == '/www/staff.lib/web/funds_transfer' }
 
         expect(funds_transfer.first['allow_override']).to contain_exactly(
