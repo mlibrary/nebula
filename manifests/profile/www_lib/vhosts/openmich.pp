@@ -49,7 +49,7 @@ class nebula::profile::www_lib::vhosts::openmich (
         provider       => 'directory',
         path           => $docroot,
         options        => 'IncludesNOEXEC Indexes FollowSymLinks MultiViews',
-        allow_override => 'AuthConfig FileInfo Limit Options',
+        allow_override => 'AuthConfig FileInfo Limit Options Indexes',
         require        => $nebula::profile::www_lib::apache::default_access
       }
     ],
