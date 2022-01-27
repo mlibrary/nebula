@@ -347,14 +347,14 @@ class nebula::profile::hathitrust::apache::babel (
 
     request_headers             => [
       # Explicitly forward attributes extracted via Shibboleth
-      'set X-Shib-Persistent-ID %{persistent-id}e',
-      'set X-Shib-eduPersonPrincipalName %{eppn}e',
-      'set X-Shib-displayName %{displayName}e',
-      'set X-Shib-mail %{email}e',
-      'set X-Shib-eduPersonScopedAffiliation %{affiliation}e',
-      'set X-Shib-Authentication-Method %{Shib-Authentication-Method}e',
-      'set X-Shib-AuthnContext-Class %{Shib-AuthnContext-Class}e',
-      'set X-Shib-Identity-Provider %{Shib-Identity-Provider}e',
+      'set X-Shib-Persistent-ID %{persistent-id}e ENV=persistent-id',
+      'set X-Shib-eduPersonPrincipalName %{eppn}e ENV=eppn',
+      'set X-Shib-displayName %{displayName}e ENV=displayName',
+      'set X-Shib-mail %{email}e ENV=email',
+      'set X-Shib-eduPersonScopedAffiliation %{affiliation}e ENV=affiliation',
+      'set X-Shib-Authentication-Method %{Shib-Authentication-Method}e ENV=Shib-Authentication-Method',
+      'set X-Shib-AuthnContext-Class %{Shib-AuthnContext-Class}e ENV=Shib-AuthnContext-Class',
+      'set X-Shib-Identity-Provider %{Shib-Identity-Provider}e ENV=Shib-Identity-Provider',
       # Setting remote user for 2.4
       'set X-Remote-User "expr=%{REMOTE_USER}"',
       # Fix redirects being sent to non ssl url (https -> http)
