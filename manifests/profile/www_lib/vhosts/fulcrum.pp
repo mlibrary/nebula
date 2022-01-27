@@ -99,14 +99,14 @@ class nebula::profile::www_lib::vhosts::fulcrum (
     # TODO: Review Shib headers for apache 2.4
     request_headers => [
       # Explicitly forward attributes extracted via Shibboleth
-      'set X-Shib-Persistent-ID %{persistent-id}e',
-      'set X-Shib-eduPersonPrincipalName %{eppn}e',
-      'set X-Shib-displayName %{displayName}e',
-      'set X-Shib-mail %{email}e',
-      'set X-Shib-eduPersonScopedAffiliation %{affiliation}e',
-      'set X-Shib-Authentication-Method %{Shib-Authentication-Method}e',
-      'set X-Shib-AuthnContext-Class %{Shib-AuthnContext-Class}e',
-      'set X-Shib-Identity-Provider %{Shib-Identity-Provider}e',
+      'set X-Shib-Persistent-ID %{persistent-id}e ENV=persistent-id',
+      'set X-Shib-eduPersonPrincipalName %{eppn}e ENV=eppn',
+      'set X-Shib-displayName %{displayName}e ENV=displayName',
+      'set X-Shib-mail %{email}e ENV=email',
+      'set X-Shib-eduPersonScopedAffiliation %{affiliation}e ENV=affiliation',
+      'set X-Shib-Authentication-Method %{Shib-Authentication-Method}e ENV=Shib-Authentication-Method',
+      'set X-Shib-AuthnContext-Class %{Shib-AuthnContext-Class}e ENV=Shib-AuthnContext-Class',
+      'set X-Shib-Identity-Provider %{Shib-Identity-Provider}e ENV=Shib-Identity-Provider',
       # Set remote user header to allow app to use http header auth.
       'set X-Remote-User "expr=%{REMOTE_USER}"',
       'set X-Forwarded-Proto "https"',
