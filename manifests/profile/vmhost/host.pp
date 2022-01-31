@@ -28,6 +28,8 @@ class nebula::profile::vmhost::host (
   Array   $nameservers,
   String  $local_storage = '',
   String  $local_storage_size = '',
+  String  $internet_bridge = 'br0',
+  String  $lan_bridge      = 'br1',
 ) {
 
   file { '/etc/default/libvirt-guests':
@@ -68,17 +70,19 @@ class nebula::profile::vmhost::host (
   $vms.each |$vm_name, $vm_settings| {
     nebula::virtual_machine {
       default:
-        build         => $build,
-        cpus          => $cpus,
-        disk          => $disk,
-        ram           => $ram,
-        domain        => $domain,
-        filehost      => $filehost,
-        image_dir     => $image_dir,
-        net_interface => $net_interface,
-        netmask       => $netmask,
-        gateway       => $gateway,
-        nameservers   => $nameservers,
+        build           => $build,
+        cpus            => $cpus,
+        disk            => $disk,
+        ram             => $ram,
+        domain          => $domain,
+        filehost        => $filehost,
+        image_dir       => $image_dir,
+        net_interface   => $net_interface,
+        internet_bridge => $internet_bridge,
+        lan_bridge      => $lan_bridge,
+        netmask         => $netmask,
+        gateway         => $gateway,
+        nameservers     => $nameservers,
       ;
       $vm_name:
         *       => $vm_settings,

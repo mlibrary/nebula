@@ -22,6 +22,23 @@ describe 'nebula::profile::vmhost::host' do
         it { is_expected.not_to contain_vm('vmname') }
       end
 
+      context 'when given bridge network interfaces' do
+        let(:params) do
+          {
+            internet_bridge: 'internet_bridge',
+            lan_bridge: 'lan_bridge',
+            vms: {
+              'vmname' => {
+                'addr' => '1.2.3.4',
+              },
+            },
+          }
+        end
+
+        it { is_expected.to contain_vm('vmname').with_internet_bridge('internet_bridge') }
+        it { is_expected.to contain_vm('vmname').with_lan_bridge('lan_bridge') }
+      end
+
       context 'when given a single hostname with an ip' do
         let(:params) do
           {
@@ -41,6 +58,8 @@ describe 'nebula::profile::vmhost::host' do
         it { is_expected.to contain_vm('vmname').with_filehost('default.filehost.invalid') }
         it { is_expected.to contain_vm('vmname').with_image_dir('default.image_dir.invalid') }
         it { is_expected.to contain_vm('vmname').with_net_interface('default.iface.invalid') }
+        it { is_expected.to contain_vm('vmname').with_internet_bridge('br0') }
+        it { is_expected.to contain_vm('vmname').with_lan_bridge('br1') }
         it { is_expected.to contain_vm('vmname').with_netmask('0.0.0.0') }
         it { is_expected.to contain_vm('vmname').with_gateway('10.1.2.3') }
         it { is_expected.to contain_vm('vmname').with_nameservers(['5.5.5.5', '4.4.4.4']) }

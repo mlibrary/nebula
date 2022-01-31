@@ -109,6 +109,21 @@ describe 'nebula::virtual_machine' do
         end
       end
 
+      context 'with bridge interface overrides' do
+        let(:params) do
+          {
+            internet_bridge: 'internet_bridge',
+            lan_bridge: 'lan_bridge',
+          }
+        end
+
+        [
+          %r{ --network bridge=internet_bridge,model=virtio .* --network bridge=lan_bridge,model=virtio}m,
+        ].each do |command|
+          it { is_expected.to contain_install.with_command(command) }
+        end
+      end
+
       context 'with nothing but the title "secondvm"' do
         let(:title) { 'secondvm' }
 

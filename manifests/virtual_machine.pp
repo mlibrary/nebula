@@ -59,21 +59,23 @@
 #                                           # disables the timeout
 #   }
 define nebula::virtual_machine(
-  String  $addr           = '127.0.0.1',
-  String  $build          = 'stretch',
-  Integer $cpus           = 2,
-  Integer $disk           = 16,
-  Integer $ram            = 1,
-  String  $autostart_path = '/etc/libvirt/qemu/autostart',
-  String  $image_dir      = '/var/lib/libvirt/images',
-  String  $image_path     = '',
-  String  $net_interface  = 'eth0',
-  String  $netmask        = '255.255.255.0',
-  String  $gateway        = '192.168.1.1',
-  Array   $nameservers    = ['192.168.1.1'],
-  String  $domain         = 'default.invalid',
-  String  $filehost       = 'files.default.invalid',
-  Integer $timeout        = 600,
+  String  $addr            = '127.0.0.1',
+  String  $build           = 'stretch',
+  Integer $cpus            = 2,
+  Integer $disk            = 16,
+  Integer $ram             = 1,
+  String  $autostart_path  = '/etc/libvirt/qemu/autostart',
+  String  $image_dir       = '/var/lib/libvirt/images',
+  String  $image_path      = '',
+  String  $net_interface   = 'eth0',
+  String  $netmask         = '255.255.255.0',
+  String  $gateway         = '192.168.1.1',
+  String  $internet_bridge = 'br0',
+  String  $lan_bridge      = 'br1',
+  Array   $nameservers     = ['192.168.1.1'],
+  String  $domain          = 'default.invalid',
+  String  $filehost        = 'files.default.invalid',
+  Integer $timeout         = 600,
 ) {
   require nebula::profile::vmhost::prereqs
 
@@ -123,8 +125,8 @@ define nebula::virtual_machine(
           --location ${location}                                      \
           --os-type=linux                                             \
           --disk '${full_image_path},size=${disk}'                    \
-          --network bridge=br0,model=virtio                           \
-          --network bridge=br1,model=virtio                           \
+          --network bridge=${internet_bridge},model=virtio                           \
+          --network bridge=${lan_bridge},model=virtio                           \
           --console pty,target_type=virtio                            \
           --virt-type kvm                                             \
           --graphics vnc                   ${initrd_inject}           \
