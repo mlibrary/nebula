@@ -79,10 +79,11 @@ class nebula::profile::shibboleth (
   }
 
   file { '/etc/shibboleth/shibboleth2.xml':
-    mode   => '0440',
-    owner  => '_shibd',
-    group  => 'nogroup',
-    source => "${config_source}/shibboleth2.xml"
+    mode         => '0440',
+    owner        => '_shibd',
+    group        => 'nogroup',
+    source       => "${config_source}/shibboleth2.xml",
+    validate_cmd => '/usr/sbin/shibd -t -c %'
   }
 
   file { '/etc/systemd/system/shibd.service.d':
