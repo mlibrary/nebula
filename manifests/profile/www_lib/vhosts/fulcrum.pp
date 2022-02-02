@@ -98,6 +98,15 @@ class nebula::profile::www_lib::vhosts::fulcrum (
 
     # TODO: Review Shib headers for apache 2.4
     request_headers => [
+      # Remove existing X-Shib- headers before setting new ones based on shib env vars
+      'unset X-Shib-Persistent-ID',
+      'unset X-Shib-eduPersonPrincipalName',
+      'unset X-Shib-displayName',
+      'unset X-Shib-mail',
+      'unset X-Shib-eduPersonScopedAffiliation',
+      'unset X-Shib-Authentication-Method',
+      'unset X-Shib-AuthnContext-Class',
+      'unset X-Shib-Identity-Provider',
       # Explicitly forward attributes extracted via Shibboleth
       'set X-Shib-Persistent-ID %{persistent-id}e ENV=persistent-id',
       'set X-Shib-eduPersonPrincipalName %{eppn}e ENV=eppn',
