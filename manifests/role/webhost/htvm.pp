@@ -8,6 +8,7 @@
 #   include nebula::role::webhost::htvm
 class nebula::role::webhost::htvm (
   String $private_address_template = '192.168.0.%s',
+  String $shibboleth_config_source = 'puppet:///shibboleth'
 ) {
   include nebula::role::hathitrust
 
@@ -33,7 +34,7 @@ class nebula::role::webhost::htvm (
   include nebula::profile::unison
 
   class { 'nebula::profile::shibboleth':
-    config_source    => 'puppet:///shibboleth',
+    config_source    => $shibboleth_config_source,
     startup_timeout  => 1800,
     watchdog_minutes => '*/30',
   }
