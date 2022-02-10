@@ -93,15 +93,11 @@ define nebula::virtual_machine(
     ensure => 'directory',
   }
 
-  if $build == 'stretch' or $build == 'buster' {
-    file { "${tmpdir}/preseed.cfg":
-      content => template("nebula/virtual_machine/${build}.cfg.erb"),
-    }
-
-    $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
-  } else {
-    $initrd_inject = ''
+  file { "${tmpdir}/preseed.cfg":
+    content => template("nebula/virtual_machine/${build}.cfg.erb"),
   }
+
+  $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
 
   unless $::vm_guests.member($title) {
     exec { "${prefix}::virt-install":

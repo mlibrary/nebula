@@ -278,18 +278,18 @@ describe 'nebula::virtual_machine' do
         end
       end
 
-      context 'with build set to jessie' do
-        let(:params) { { build: 'jessie' } }
+      context 'with build set to somecodename' do
+        let(:params) { { build: 'somecodename' } }
 
         it do
           is_expected.to contain_install.with_command(
-            %r{ --location http://ftp\.us\.debian\.org/debian/dists/jessie/main/installer-amd64/},
+            %r{ --location http://ftp\.us\.debian\.org/debian/dists/somecodename/main/installer-amd64/},
           )
         end
 
-        it { is_expected.not_to contain_preseed }
+        it { is_expected.to contain_preseed }
 
-        it { is_expected.not_to contain_install.with_command(%r{--initrd-inject}) }
+        it { is_expected.to contain_install.with_command(%r{--initrd-inject}) }
       end
 
       context 'with domain set to awesome.com' do
