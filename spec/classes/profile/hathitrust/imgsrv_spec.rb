@@ -20,6 +20,7 @@ describe 'nebula::profile::hathitrust::imgsrv' do
       end
 
       it { is_expected.to contain_service('imgsrv') }
+      it { is_expected.to contain_package('libfcgi-bin') }
 
       it { is_expected.to contain_file('/usr/local/bin/startup_imgsrv').with_content(%r{^SDRROOT=/sdrroot$}) }
       it { is_expected.to contain_file('/usr/local/bin/startup_imgsrv').with_content(%r{^NPROC=10$}) }

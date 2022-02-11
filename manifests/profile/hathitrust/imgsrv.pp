@@ -55,12 +55,13 @@ class nebula::profile::hathitrust::imgsrv (
     hasrestart =>  true
   }
 
+  package { 'libfcgi-bin': }
   cron { 'imgsrv responsiveness check':
     command => '/usr/local/bin/check_imgsrv > /dev/null 2>&1',
     user    => 'root',
     minute  => '*/2',
+    require => Package['libfcgi-bin']
   }
-
 
   $http_files = lookup('nebula::http_files')
   file { '/usr/local/bin/check_imgsrv':
