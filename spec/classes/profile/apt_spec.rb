@@ -10,41 +10,74 @@ describe 'nebula::profile::apt' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it do
-        is_expected.to contain_class('apt').with(
-          purge: {
-            'sources.list'   => true,
-            'sources.list.d' => true,
-            'preferences'    => true,
-            'preferences.d'  => true,
-          },
-          update: {
-            'frequency' => 'daily',
-          },
-        )
-      end
+      if os.start_with? "debian"
+        it do
+          is_expected.to contain_class('apt').with(
+            purge: {
+              'sources.list'   => true,
+              'sources.list.d' => true,
+              'preferences'    => true,
+              'preferences.d'  => true,
+            },
+            update: {
+              'frequency' => 'daily',
+            },
+          )
+        end
 
-      it 'sets apt to never install recommended packages' do
-        is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
-          .with_content(%r{^APT::Install-Recommends "0";$})
-          .with_content(%r{^APT::Install-Suggests "0";$})
-      end
+        it 'sets apt to never install recommended packages' do
+          is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
+            .with_content(%r{^APT::Install-Recommends "0";$})
+            .with_content(%r{^APT::Install-Suggests "0";$})
+        end
 
-      it do
-        is_expected.to contain_apt__source('main').with(
-          location: 'http://ftp.us.debian.org/debian/',
-          repos: 'main contrib non-free',
-        )
+        it do
+          is_expected.to contain_apt__source('main').with(
+            location: 'http://ftp.us.debian.org/debian/',
+            repos: 'main contrib non-free',
+          )
+        end
+
+        it { is_expected.to contain_apt__source('security').with_repos('main contrib non-free') }
+
+        case os
+        when 'debian-9-x86_64'
+          it { is_expected.to contain_apt__source('security').with_release("#{facts[:lsbdistcodename]}/updates") }
+        when 'debian-10-x86_64'
+          it { is_expected.to contain_apt__source('security').with_release("#{facts[:lsbdistcodename]}/updates") }
+        else
+          it { is_expected.to contain_apt__source('security').with_release("#{facts[:lsbdistcodename]}-security") }
+        end
+
+        it do
+          is_expected.to contain_apt__source('puppet').with(
+            location: 'http://apt.puppetlabs.com',
+            repos: 'puppet5',
+          )
+        end
+
+        it do
+          is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
+            .with_content(%r{^Acquire::ForceIPv4 "true";$})
+        end
+
+        context 'when given a mirror of http://debian.uchicago.edu/' do
+          let(:params) { { mirror: 'http://debian.uchicago.edu/' } }
+
+          it do
+            is_expected.to contain_apt__source('main')
+              .with_location('http://debian.uchicago.edu/')
+          end
+        end
+
+        context 'when given a puppet_repo of PC1' do
+          let(:params) { { puppet_repo: 'PC1' } }
+
+          it { is_expected.to contain_apt__source('puppet').with_repos('PC1') }
+        end
       end
 
       it { is_expected.to contain_apt__source('local').with_architecture('amd64') }
-
-      it do
-        is_expected.to contain_apt__source('security').with(
-          release: "#{facts[:lsbdistcodename]}/updates",
-          repos: 'main contrib non-free',
-        )
-      end
 
       case os
       when 'debian-8-x86_64'
@@ -92,29 +125,6 @@ describe 'nebula::profile::apt' do
               .with_location('http://ftp.us.debian.org/debian/')
           end
         end
-
-      end
-
-      context 'when given a mirror of http://debian.uchicago.edu/' do
-        let(:params) { { mirror: 'http://debian.uchicago.edu/' } }
-
-        it do
-          is_expected.to contain_apt__source('main')
-            .with_location('http://debian.uchicago.edu/')
-        end
-      end
-
-      it do
-        is_expected.to contain_apt__source('puppet').with(
-          location: 'http://apt.puppetlabs.com',
-          repos: 'puppet5',
-        )
-      end
-
-      context 'when given a puppet_repo of PC1' do
-        let(:params) { { puppet_repo: 'PC1' } }
-
-        it { is_expected.to contain_apt__source('puppet').with_repos('PC1') }
       end
 
       it { is_expected.not_to contain_apt__source('hp') }
@@ -144,11 +154,6 @@ describe 'nebula::profile::apt' do
             )
           end
         end
-      end
-
-      it do
-        is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
-          .with_content(%r{^Acquire::ForceIPv4 "true";$})
       end
     end
   end

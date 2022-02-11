@@ -77,36 +77,28 @@ class nebula::profile::apt (
       repos    => 'main contrib non-free',
     }
 
-    apt::source { 'security':
-      release => "${::lsbdistcodename}/updates",
-      repos   => 'main contrib non-free',
+    $security_release = $::lsbdistcodename ? {
+      'stretch' => "${::lsbdistcodename}/updates",
+      'buster'  => "${::lsbdistcodename}/updates",
+      default   => "${::lsbdistcodename}-security",
     }
 
-    case $::lsbdistcodename {
-      'jessie': {
-        Apt::Source['security'] {
-          location => 'http://security.debian.org/',
-        }
+    apt::source { 'security':
+      location => 'http://security.debian.org/debian-security',
+      release  => $security_release,
+      repos    => 'main contrib non-free',
+    }
+
+    unless empty($::installed_backports) {
+      class { 'apt::backports':
+        location => $mirror,
       }
+    }
 
-      default: {
-        Apt::Source['security'] {
-          location => 'http://security.debian.org/debian-security',
-        }
-
-        unless empty($::installed_backports) {
-          class { 'apt::backports':
-            location => $mirror,
-          }
-        }
-
-        apt::source { 'updates':
-          location => $mirror,
-          release  => "${::lsbdistcodename}-updates",
-          repos    => 'main contrib non-free',
-        }
-
-      }
+    apt::source { 'updates':
+      location => $mirror,
+      release  => "${::lsbdistcodename}-updates",
+      repos    => 'main contrib non-free',
     }
 
     apt::source { 'adoptopenjdk':
