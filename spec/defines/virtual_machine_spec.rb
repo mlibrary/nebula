@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -47,7 +47,7 @@ describe 'nebula::virtual_machine' do
           %r{^d-i netcfg/get_hostname string vmname\.default\.invalid$},
           %r{^d-i netcfg/get_domain string default\.invalid$},
           %r{^d-i netcfg/hostname string vmname\.default\.invalid$},
-          %r{^d-i apt-setup/local0/repository string http://apt\.puppetlabs\.com stretch puppet5$.*^d-i apt-setup/local0/key string http://files\.default\.invalid/puppetlabs-pc1-keyring\.gpg$}m,
+          %r{^d-i apt-setup/local0/repository string http://apt\.puppetlabs\.com bullseye puppet6$.*^d-i apt-setup/local0/key string http://files\.default\.invalid/puppetlabs-pc1-keyring\.gpg$}m,
           %r{\swget -O /target/etc/puppetlabs/puppet/puppet\.conf\s.*http://files\.default\.invalid/puppet\.conf}m,
         ].each do |line|
           it { is_expected.to contain_preseed.with_content(line) }
@@ -86,7 +86,7 @@ describe 'nebula::virtual_machine' do
           %r{ -n 'vmname'},
           %r{ -r 1024},
           %r{ --vcpus 2},
-          %r{ --location http://ftp\.us\.debian\.org/debian/dists/stretch/main/installer-amd64/},
+          %r{ --location http://ftp\.us\.debian\.org/debian/dists/bullseye/main/installer-amd64/},
           %r{ --os-type=linux},
           %r{ --disk '/var/lib/libvirt/images/vmname\.img,size=16'},
           %r{ --network bridge=br0,model=virtio .* --network bridge=br1,model=virtio}m,
@@ -278,18 +278,10 @@ describe 'nebula::virtual_machine' do
         end
       end
 
-      context 'with build set to jessie' do
-        let(:params) { { build: 'jessie' } }
+      context 'with invalid build name' do
+        let(:params) { { build: 'foobar' } }
 
-        it do
-          is_expected.to contain_install.with_command(
-            %r{ --location http://ftp\.us\.debian\.org/debian/dists/jessie/main/installer-amd64/},
-          )
-        end
-
-        it { is_expected.not_to contain_preseed }
-
-        it { is_expected.not_to contain_install.with_command(%r{--initrd-inject}) }
+        it { is_expected.not_to compile }
       end
 
       context 'with domain set to awesome.com' do
@@ -308,7 +300,7 @@ describe 'nebula::virtual_machine' do
         let(:params) { { filehost: 'gr8storage.biz' } }
 
         [
-          %r{^d-i apt-setup/local0/repository string http://apt\.puppetlabs\.com stretch puppet5$.*^d-i apt-setup/local0/key string http://gr8storage\.biz/puppetlabs-pc1-keyring\.gpg$}m,
+          %r{^d-i apt-setup/local0/repository string http://apt\.puppetlabs\.com bullseye puppet6$.*^d-i apt-setup/local0/key string http://gr8storage\.biz/puppetlabs-pc1-keyring\.gpg$}m,
           %r{\swget -O /target/etc/puppetlabs/puppet/puppet\.conf\s.*http://gr8storage\.biz/puppet\.conf}m,
         ].each do |line|
           it { is_expected.to contain_preseed.with_content(line) }
