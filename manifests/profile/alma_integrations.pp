@@ -2,6 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
+# Profile for configuring an SFTP-oriented server for integrations with Alma
 class nebula::profile::alma_integrations (
   Array[Hash] $ssh_keys = []
 ) {
