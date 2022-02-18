@@ -8,7 +8,8 @@ class nebula::profile::alma_integrations (
 ) {
 
   user { 'alma':
-    home => '/var/local/alma'
+    home       => '/var/local/alma',
+    managehome => true,
   }
 
   nebula::file::ssh_keys { '/var/local/alma/.ssh/authorized_keys':

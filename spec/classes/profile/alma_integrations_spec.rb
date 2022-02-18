@@ -12,7 +12,11 @@ describe 'nebula::profile::alma_integrations' do
 
       it { is_expected.to compile }
 
-      it { is_expected.to contain_user('alma').with_home('/var/local/alma') }
+      it do
+        is_expected.to contain_user('alma')
+          .with_home('/var/local/alma')
+          .with_managehome(true)
+      end
 
       it do
         is_expected.to contain_nebula__file__ssh_keys('/var/local/alma/.ssh/authorized_keys')
