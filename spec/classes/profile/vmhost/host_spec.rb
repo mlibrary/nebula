@@ -50,7 +50,7 @@ describe 'nebula::profile::vmhost::host' do
           }
         end
 
-        it { is_expected.to contain_vm('vmname').with_build('invalid-default') }
+        it { is_expected.to contain_vm('vmname').with_build('bullseye') }
         it { is_expected.to contain_vm('vmname').with_cpus(0) }
         it { is_expected.to contain_vm('vmname').with_disk(0) }
         it { is_expected.to contain_vm('vmname').with_ram(0) }

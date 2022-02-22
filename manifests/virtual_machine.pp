@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -60,7 +60,7 @@
 #   }
 define nebula::virtual_machine(
   String  $addr            = '127.0.0.1',
-  String  $build           = 'stretch',
+  String  $build           = 'bullseye',
   Integer $cpus            = 2,
   Integer $disk            = 16,
   Integer $ram             = 1,
@@ -93,21 +93,20 @@ define nebula::virtual_machine(
     ensure => 'directory',
   }
 
-  if $build == 'stretch' or $build == 'buster' {
-    file { "${tmpdir}/preseed.cfg":
-      content => template("nebula/virtual_machine/${build}.cfg.erb"),
+  unless $::vm_guests.member($title) {
+    if $build == 'stretch' or $build == 'buster' or $build == 'bullseye' {
+      file { "${tmpdir}/preseed.cfg":
+        content => template("nebula/virtual_machine/${build}.cfg.erb"),
+      }
+
+      $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
     }
 
-    $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
-  } else {
-    $initrd_inject = ''
-  }
-
-  unless $::vm_guests.member($title) {
     exec { "${prefix}::virt-install":
       require => [
         Package['libvirt-clients'],
         Package['virtinst'],
+        File["${tmpdir}/preseed.cfg"],
       ],
       creates => $full_image_path,
       timeout => $timeout,
@@ -125,8 +124,8 @@ define nebula::virtual_machine(
           --location ${location}                                      \
           --os-type=linux                                             \
           --disk '${full_image_path},size=${disk}'                    \
-          --network bridge=${internet_bridge},model=virtio                           \
-          --network bridge=${lan_bridge},model=virtio                           \
+          --network bridge=${internet_bridge},model=virtio            \
+          --network bridge=${lan_bridge},model=virtio                 \
           --console pty,target_type=virtio                            \
           --virt-type kvm                                             \
           --graphics vnc                   ${initrd_inject}           \
