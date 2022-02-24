@@ -64,6 +64,7 @@ end
             %w[nebula::role::log_host log_host],
             %w[nebula::role::webhost::www_lib_vm www_lib],
             %w[nebula::role::docker_registry docker_registry],
+            %w[nebula::role::fulcrum fulcrum],
             %w[nebula default],
           ].select { |role_base, _| role_name.start_with? role_base }.first[1]
         end

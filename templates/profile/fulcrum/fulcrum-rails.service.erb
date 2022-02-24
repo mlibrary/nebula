@@ -1,0 +1,15 @@
+# Managed by puppet (nebula/profile/fulcrum/fulcrum-rails.service.erb)
+[Unit]
+Description=Fulcrum Rails Application
+ReloadPropagatedFrom=fulcrum.target
+PartOf=fulcrum.target
+
+[Service]
+User=fulcrum
+Group=fulcrum
+EnvironmentFile=-/etc/default/fulcrum
+WorkingDirectory=/home/fulcrum/app/current
+ExecStart=/usr/local/rbenv/shims/bundle exec puma -C config/puma.rb
+
+[Install]
+WantedBy=fulcrum.target

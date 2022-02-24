@@ -1,0 +1,17 @@
+# Managed by puppet (nebula/profile/fulcrum/fulcrum-resque.service.erb)
+[Unit]
+Description=Fulcrum Resque Pool
+ReloadPropagatedFrom=fulcrum.target
+PartOf=fulcrum.target
+
+[Service]
+User=fulcrum
+Group=fulcrum
+EnvironmentFile=-/etc/default/fulcrum
+WorkingDirectory=/home/fulcrum/app/current
+KillMode=process
+KillSignal=QUIT
+ExecStart=/usr/local/rbenv/shims/bundle exec resque-pool
+
+[Install]
+WantedBy=fulcrum.target
