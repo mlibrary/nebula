@@ -160,6 +160,10 @@ class nebula::profile::fulcrum::nginx (
     ensure => 'directory',
   }
 
+  file { '/etc/nginx/modules-enabled':
+    ensure =>  'directory',
+  }
+
   file { '/etc/nginx/shib_clear_headers':
     source => 'puppet:///modules/nebula/nginx-shibboleth/shib_clear_headers',
   }
@@ -170,10 +174,12 @@ class nebula::profile::fulcrum::nginx (
 
   file { '/etc/nginx/modules-enabled/shibboleth.conf':
     content => template('nebula/profile/fulcrum/nginx-shibboleth.conf.erb'),
+    require => File['/etc/nginx/modules-enabled'],
   }
 
   file { '/etc/nginx/modules-enabled/headersmore.conf':
     content => template('nebula/profile/fulcrum/nginx-headersmore.conf.erb'),
+    require => File['/etc/nginx/modules-enabled'],
   }
 
   cron { 'restart nginx weekly to keep SSL keys up to date':

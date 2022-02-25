@@ -1,0 +1,7 @@
+# Managed by puppet (nebula/profile/fulcrum/sudoers-fedora.erb)
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl stop fedora.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl start fedora.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl restart fedora.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl status fedora.service
+%fulcrum ALL=(root) NOPASSWD: /bin/systemctl enable fedora.service
+%fulcrum ALL=(root) NOPASSWD: /bin/journalctl

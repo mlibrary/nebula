@@ -2,19 +2,8 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# Fulcrum
-#
-# This is desiged to manage a Debian Server that hosts the Fulcrum project. 
+# This is a temporary compatibilty role for a complete, standalone Fulcrum server. nebula::role::fulcrum::standalone should be used directly instead.
 
 class nebula::role::fulcrum {
-  include nebula::role::minimum
-  include nebula::profile::redis
-  include nebula::profile::ruby
-  include nebula::profile::fulcrum::base
-  include nebula::profile::fulcrum::app
-  include nebula::profile::fulcrum::logrotate
-  include nebula::profile::fulcrum::mysql
-  include nebula::profile::fulcrum::nginx
-  include nebula::profile::fulcrum::shibboleth
-  include nebula::profile::fulcrum::solr
+  include nebula::role::fulcrum::standalone
 }
