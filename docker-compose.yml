@@ -5,12 +5,14 @@ services:
     command: 'bundle exec rake spec'
     volumes:
       - .:/app
+      - ./vendor:/gems
 
   spec_prep:
     build: .
     command: 'bundle exec rake spec_prep'
     volumes:
       - .:/app
+      - ./vendor:/gems
 
   lint:
     build: .

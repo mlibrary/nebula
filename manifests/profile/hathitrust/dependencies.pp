@@ -72,7 +72,7 @@ class nebula::profile::hathitrust::dependencies () {
     [
       'openjdk-11-jdk-headless',
       'lftp',
-      'mariadb-client-10.1'
+      'mariadb-client'
     ]:
   }
 

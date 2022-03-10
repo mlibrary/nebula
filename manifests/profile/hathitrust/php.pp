@@ -14,19 +14,19 @@ class nebula::profile::hathitrust::php () {
 
   package {
     [
-      'php7.0-curl',
-      'php7.0-gd',
+      'php-curl',
+      'php-gd',
       'php-geoip', # PECL
       'php-http', # PECL
-      'php7.0-ldap',
-      'php7.0-mysql',
+      'php-ldap',
+      'php-mysql',
       'php-mdb2',
       'php-mdb2-driver-mysql',
       'php-smarty',
-      'php7.0-xsl',
-      'php7.0-mbstring',
+      'php-xsl',
+      'php-mbstring',
       'php-yaml',
-      'libapache2-mod-php7.0',
+      'libapache2-mod-php',
       'pear-channels'
     ]:
   }
