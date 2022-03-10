@@ -27,7 +27,6 @@ class nebula::profile::shibboleth (
   package {
     [ 
       'unixodbc',
-      'mariadb-unixodbc'
     ]:
   }
 
@@ -36,7 +35,9 @@ class nebula::profile::shibboleth (
     package {
       [
         'shibboleth-sp2-common',
-        'shibboleth-sp2-utils'
+        'shibboleth-sp2-utils',
+        # locally-built -- odbc-mariadb isn't in stretch (AEIM-1678)
+        'mariadb-unixodbc'
       ]:
     }
 
@@ -59,6 +60,7 @@ class nebula::profile::shibboleth (
       [
         'shibboleth-sp-common',
         'shibboleth-sp-utils',
+        'odbc-mariadb'
       ]:
     }
 
