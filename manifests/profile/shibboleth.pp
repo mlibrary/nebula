@@ -25,58 +25,26 @@ class nebula::profile::shibboleth (
   include nebula::systemd::daemon_reload
 
   package {
-    [ 
+    [
+      'shibboleth-sp-common',
+      'shibboleth-sp-utils',
+      'odbc-mariadb',
       'unixodbc',
     ]:
   }
 
-  if $::lsbdistcodename == 'stretch' { 
-    # stretch: Shibboleth 2
-    package {
-      [
-        'shibboleth-sp2-common',
-        'shibboleth-sp2-utils',
-        # locally-built -- odbc-mariadb isn't in stretch (AEIM-1678)
-        'mariadb-unixodbc'
-      ]:
-    }
+  # We require 'apache' here to make sure that this profile is used in
+  # conjunction with a managed Apache installation, rather than just pulling
+  # in an unmanaged package with APT.
+  package { 'libapache2-mod-shib':
+    require => [Class['apache']],
+  }
 
-    # We require 'apache' here to make sure that this profile is used in
-    # conjunction with a managed Apache installation, rather than just pulling
-    # in an unmanaged package with APT.
-    package { 'libapache2-mod-shib2':
-      require => [Class['apache']],
-    }
-
-    service { 'shibd':
-      ensure     => 'running',
-      enable     => true,
-      hasrestart => true,
-      require    => [Package['shibboleth-sp2-utils'], Package['mariadb-unixodbc']]
-    }
-  } else {
-    # buster, bullseye: Shibboleth 3
-    package {
-      [
-        'shibboleth-sp-common',
-        'shibboleth-sp-utils',
-        'odbc-mariadb'
-      ]:
-    }
-
-    # We require 'apache' here to make sure that this profile is used in
-    # conjunction with a managed Apache installation, rather than just pulling
-    # in an unmanaged package with APT.
-    package { 'libapache2-mod-shib':
-      require => [Class['apache']],
-    }
-
-    service { 'shibd':
-      ensure     => 'running',
-      enable     => true,
-      hasrestart => true,
-      require    => [Package['shibboleth-sp-utils'], Package['odbc-mariadb']]
-    }
+  service { 'shibd':
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+    require    => [Package['shibboleth-sp-utils'], Package['odbc-mariadb']]
   }
 
   file { '/etc/odbcinst.ini':
