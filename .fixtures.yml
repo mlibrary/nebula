@@ -18,7 +18,7 @@ fixtures:
       ref: "6.5.0"
     apache:
       repo: "puppetlabs/apache"
-      ref: "5.8.0"
+      ref: "7.0.0"
     apt:
       repo: "puppetlabs/apt"
       ref: "7.6.0"
@@ -66,7 +66,7 @@ fixtures:
       ref: "2.1.1"
     php:
       repo: "puppet/php"
-      ref: "7.1.0"
+      ref: "8.0.2"
     debconf:
       repo: "stm/debconf"
       ref: "3.2.0"

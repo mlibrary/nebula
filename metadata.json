@@ -8,7 +8,7 @@
   "issues_url": "https://github.com/mlibrary/nebula/issues",
   "dependencies": [
     {"name": "puppetlabs/stdlib", "version_requirement": ">= 4.25.1 < 7.0.0"},
-    {"name": "puppetlabs/apache", "version_requirement": ">= 3.4.0 < 6.0.0"},
+    {"name": "puppetlabs/apache", "version_requirement": ">= 7.0.0 < 8.0.0"},
     {"name": "puppetlabs/apt", "version_requirement": ">= 4.5.1 < 8.0.0"},
     {"name": "puppetlabs/concat", "version_requirement": ">= 4.2.0 < 7.0.0"},
     {"name": "puppetlabs/docker", "version_requirement": ">= 3.4.0 < 4.0.0"},
@@ -22,7 +22,7 @@
     {"name": "puppetlabs/reboot", "version_requirement": ">= 2.0.0 < 4.0.0"},
     {"name": "puppet/letsencrypt", "version_requirement": ">= 5.0.0 < 7.0.0"},
     {"name": "puppet/nginx", "version_requirement": ">= 1.0.0 < 3.0.0"},
-    {"name": "puppet/php", "version_requirement": ">= 6.0.2 < 8.0.0"},
+    {"name": "puppet/php", "version_requirement": ">= 8.0.2 < 9.0.0"},
     {"name": "puppet/logrotate", "version_requirement": ">= 3.4.0 < 6.0.0"},
     {"name": "stm/debconf", "version_requirement": ">= 2.1.0 < 4.0.0"},
     {"name": "camptocamp/kmod", "version_requirement": ">= 2.1.0 < 3.0.0"},
@@ -41,7 +41,6 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "9",
         "11"
       ]
     },
