@@ -25,7 +25,7 @@ class nebula::profile::hathitrust::dependencies () {
     ]
   )
 
-  file { '/l': 
+  file { '/l':
     ensure => 'directory'
   }
 
