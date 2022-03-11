@@ -14,6 +14,9 @@ describe 'nebula::role::webhost::htvm' do
 
       it { is_expected.to compile }
 
+      it { is_expected.not_to contain_package('php5-common') }
+      it { is_expected.not_to contain_package('php5-dev') }
+
       it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,nfsvers=3,ro') }
 
       it do
@@ -41,7 +44,7 @@ describe 'nebula::role::webhost::htvm' do
           .with(tag: 'monitor_config', content: { 'nfs' => ['/htapps'] }.to_yaml)
       end
 
-      if os == 'debian-9-x86_64'
+      if os == 'debian-11-x86_64'
         context 'with ens4' do
           let(:facts) do
             os_facts.merge(
@@ -58,6 +61,8 @@ describe 'nebula::role::webhost::htvm' do
           it { is_expected.to contain_service('bind9').that_requires('Exec[ifup ens4]') }
         end
 
+        it { is_expected.to contain_package('libapache2-mod-shib') }
+        it { is_expected.not_to contain_package('libapache2-mod-shib2') }
         it { is_expected.to contain_class('nebula::profile::networking::firewall') }
 
         it { is_expected.to contain_class('nebula::profile::krb5') }

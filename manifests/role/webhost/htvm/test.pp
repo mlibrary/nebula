@@ -7,16 +7,6 @@
 # @example
 #   include nebula::role::webhost::htvm::test
 class nebula::role::webhost::htvm::test {
-  # Temporary until Debian 8 test instance is decommissioned
-
-  # @@nebula::haproxy::binding { "${::hostname} test-hathitrust":
-  #   service       => 'test-hathitrust',
-  #   https_offload => true,
-  #   datacenter    => $::datacenter,
-  #   hostname      => $::hostname,
-  #   ipaddress     => $::ipaddress
-  # }
-
   lookup('umich::networks::all_trusted_machines').flatten.each |$network| {
     firewall { "100 HTTP ${network['name']}":
       proto  => 'tcp',
@@ -28,7 +18,6 @@ class nebula::role::webhost::htvm::test {
   }
 
   include nebula::role::webhost::htvm
-  include nebula::profile::named_instances
   include nebula::profile::hathitrust::apache::test
 
 }

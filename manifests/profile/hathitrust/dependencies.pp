@@ -25,6 +25,10 @@ class nebula::profile::hathitrust::dependencies () {
     ]
   )
 
+  file { '/l': 
+    ensure => 'directory'
+  }
+
   file { '/l/local':
     ensure => 'directory'
   }
@@ -34,31 +38,8 @@ class nebula::profile::hathitrust::dependencies () {
     target => '/usr/bin'
   }
 
-  # install jhove, pin it to buster if we're on stretch
-  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename == 'stretch' {
-    include nebula::profile::apt::buster
-    include apt::backports
-
-    $packages = ['jhove','libjaxb-api-java','libactivation-java']
-    $release = 'buster'
-
-    apt::pin { "${release}-jhove":
-      explanation => "Prioritize ${packages} from ${release}",
-      codename    => $release,
-      priority    => 700,
-      packages    => $packages,
-      require     => Class['nebula::profile::apt::buster']
-    }
-
-    package {
-      $packages:
-      require => Apt::Pin["${release}-jhove"]
-    }
-  }
-  else {
-    package {
-      'jhove':
-    }
+  package {
+    'jhove':
   }
 
   $http_files = lookup('nebula::http_files')

@@ -12,13 +12,6 @@ describe 'nebula::role::webhost::htvm::test' do
       require 'pry'
       include_context 'with setup for htvm node', os_facts
 
-      it { is_expected.to compile }
-      it { is_expected.not_to contain_package('php5-common') }
-      it { is_expected.not_to contain_package('php5-dev') }
-
-      if(os == 'debian-11-x86_64')
-        it { is_expected.not_to contain_package('libapache2-mod-shib2') }
-      end
     end
   end
 end
