@@ -101,7 +101,6 @@ class nebula::profile::hathitrust::perl () {
     'libpod-simple-perl',
     'libproc-processtable-perl',
     'libreadonly-perl',
-    'libreadonly-xs-perl',
     'libroman-perl',
     'libsoap-lite-perl',
     'libspreadsheet-writeexcel-perl',
