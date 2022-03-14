@@ -15,10 +15,14 @@ class nebula::profile::hathitrust::dependencies () {
     [
       'awscli',
       'git',
+      'jhove',
       'kakadu',
+      'lftp',
       'libjs-jquery',
       'libxerces-c-samples',
+      'mariadb-client',
       'netpbm-sf',
+      'openjdk-11-jdk-headless',
       'rsync',
       'unzip',
       'zip'
@@ -38,23 +42,11 @@ class nebula::profile::hathitrust::dependencies () {
     target => '/usr/bin'
   }
 
-  package {
-    'jhove':
-  }
-
   $http_files = lookup('nebula::http_files')
   file { '/usr/local/bin/kdu_munge':
     ensure => 'present',
     mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/kdu_munge"
-  }
-
-  package {
-    [
-      'openjdk-11-jdk-headless',
-      'lftp',
-      'mariadb-client'
-    ]:
   }
 
 }
