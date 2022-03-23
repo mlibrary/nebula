@@ -27,7 +27,7 @@ class nebula::profile::fulcrum::nginx (
   if $letsencrypt_directory {
     nginx::resource::server { 'fulcrum':
       server_name          => [$server_name],
-      www_root             => '/home/fulcrum/app/current/public',
+      www_root             => '/fulcrum/app/current/public',
       use_default_location => false,
       listen_port          => 443,
       ssl                  => true,

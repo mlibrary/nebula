@@ -40,7 +40,7 @@ class nebula::profile::fulcrum::app (
     require => Package['nodejs'],
   }
 
-  nebula::file::ssh_keys { '/home/fulcrum/.ssh/authorized_keys':
+  nebula::file::ssh_keys { '/fulcrum/.ssh/authorized_keys':
     keys   => $authorized_keys,
     secret => true,
     owner  => 'fulcrum',
@@ -52,40 +52,47 @@ class nebula::profile::fulcrum::app (
     require => Package['sudo'],
   }
 
-  file { '/var/local/fulcrum/data':
-    ensure  => directory,
-    owner   => 'fulcrum',
-    group   => 'fulcrum',
-    require => File['/var/local/fulcrum'],
-  }
-
-  file { '/home/fulcrum/app':
+  file { '/fulcrum/data':
     ensure  => directory,
     owner   => 'fulcrum',
     group   => 'fulcrum',
     require => User['fulcrum'],
   }
 
-  file { '/home/fulcrum/app/releases':
+  # "Long term temp", for bootsnap, etc.; never networked
+  file { '/fulcrum/tmp':
     ensure  => directory,
     owner   => 'fulcrum',
     group   => 'fulcrum',
-    require => File['/home/fulcrum/app'],
+    require => User['fulcrum'],
   }
 
-  file { '/home/fulcrum/app/shared':
+  file { '/fulcrum/app':
     ensure  => directory,
     owner   => 'fulcrum',
     group   => 'fulcrum',
-    require => File['/home/fulcrum/app'],
+    require => User['fulcrum'],
   }
 
-  file { '/home/fulcrum/app/shared/tmp':
-    ensure  => symlink,
+  file { '/fulcrum/app/releases':
+    ensure  => directory,
     owner   => 'fulcrum',
     group   => 'fulcrum',
-    target  => '/var/local/fulcrum/tmp',
-    require => File['/home/fulcrum/app/shared'],
+    require => File['/fulcrum/app'],
+  }
+
+  file { '/fulcrum/app/shared':
+    ensure  => directory,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    require => File['/fulcrum/app'],
+  }
+
+  file { '/fulcrum/app/shared/tmp':
+    ensure  => directory,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    require => File['/fulcrum/app/shared'],
   }
 
   archive { '/tmp/fits.zip':

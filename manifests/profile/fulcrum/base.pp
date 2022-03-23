@@ -42,16 +42,9 @@ class nebula::profile::fulcrum::base (
     comment    => 'Fulcrum Application User',
     uid        => $uid,
     gid        => $gid,
-    home       => '/home/fulcrum',
+    home       => '/fulcrum',
     shell      => '/bin/bash',
     managehome => true,
     require    => Group['fulcrum'],
-  }
-
-  file { '/var/local/fulcrum':
-    ensure  => directory,
-    owner   => 'fulcrum',
-    group   => 'fulcrum',
-    require => User['fulcrum'],
   }
 }
