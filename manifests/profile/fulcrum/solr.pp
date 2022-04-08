@@ -6,9 +6,9 @@
 
 class nebula::profile::fulcrum::solr {
   class { 'nebula::profile::solr':
-    base    => '/var/lib/solr',
-    home    => '/var/lib/solr/data',
-    logs    => '/var/log/solr',
+    base => '/var/lib/solr',
+    home => '/var/lib/solr/data',
+    logs => '/var/log/solr',
   }
 
   file {

@@ -26,45 +26,10 @@ class nebula::profile::www_lib::apache (
     ]
   }
 ) {
-  include nebula::profile::logrotate
+  include nebula::profile::www_lib::apache_minimum
 
-  ensure_packages(['bsd-mailx'])
-
-  class { 'nebula::profile::apache':
-    log_formats => {
-      vhost_combined => '%v:%p %a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D \"%{skynet}C\"',
-      combined       => '%a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D \"%{skynet}C\"',
-      usertrack      => '{\"user\":\"%u\",\"session\":\"%{skynet}C\",\"request\":\"%r\",\"time\":\"%t\",\"domain\":\"%V\"}'
-    }
-  }
-
-  include nebula::profile::apache::monitoring
-
-  class { 'nebula::profile::monitor_pl':
-    directory  => $nebula::profile::apache::monitoring::monitor_dir,
-    shibboleth => true,
-    solr_cores => lookup('nebula::www_lib::monitor::solr_cores'),
-    mysql      => lookup('nebula::www_lib::monitor::mysql')
-  }
-
-  apache::mod { ['access_compat','asis','authz_groupfile','usertrack']: }
-  include apache::mod::auth_basic
-  include apache::mod::authn_file
-  include apache::mod::authn_core
-  include apache::mod::authz_user
-  include apache::mod::autoindex
-  include apache::mod::cgi
-  include apache::mod::deflate
-
-  class { 'apache::mod::dir':
-    indexes => ['index.html','index.htm','index.php','index.phtml','index.shtml']
-  }
-
-  include apache::mod::env
-  include apache::mod::headers
-  include apache::mod::include
-  include apache::mod::mime
-  include apache::mod::negotiation
+  include nebula::profile::apache::authz_umichlib
+  include nebula::profile::apache::cosign
 
   class { 'apache::mod::php':
     # we'll configure php 7.3 separately
@@ -72,20 +37,6 @@ class nebula::profile::www_lib::apache (
     extensions   => ['.php','.phtml'],
     php_version  => '5.6'
   }
-
-  class { 'apache::mod::proxy':
-    proxy_timeout => '300',
-  }
-
-  include apache::mod::proxy_fcgi
-  include apache::mod::proxy_http
-  include apache::mod::reqtimeout
-  include apache::mod::setenvif
-  class { 'apache::mod::shib': }
-  include apache::mod::xsendfile
-
-  include nebula::profile::apache::authz_umichlib
-  include nebula::profile::apache::cosign
 
   # should be moved elsewhere to include as virtual all that might be present on the puppet master
   @nebula::apache::ssl_keypair {
@@ -97,7 +48,6 @@ class nebula::profile::www_lib::apache (
       'deepblue.lib.umich.edu',
       'developingwritersbook.com',
       'digital.bentley.umich.edu',
-      'fulcrum.org',
       'open.umich.edu',
       'michiganelt.org',
       'med.lib.umich.edu',
@@ -111,20 +61,7 @@ class nebula::profile::www_lib::apache (
       'www.heartofdarknessarchive.com',
     ]:
   }
-
-  file { '/etc/apache2/mods-available/shib2.conf':
-    ensure  => 'present',
-    content => template('nebula/profile/www_lib/shib2.conf.erb'),
-    require => File['/etc/apache2/mods-available'],
-  }
-
-  file { '/etc/apache2/mods-enabled/shib2.conf':
-    ensure  => 'link',
-    target  => '/etc/apache2/mods-available/shib2.conf',
-    require => File['/etc/apache2/mods-available/shib2.conf'],
-  }
-
-  # depends on ssl_keypairs above
+  # depends on ssl_keypairs above (or delcared in includes like fulcrum_apache)
   include nebula::profile::www_lib::vhosts::redirects
 
   $vhost_prefix = 'nebula::profile::www_lib::vhosts'
@@ -136,8 +73,7 @@ class nebula::profile::www_lib::apache (
     }
   }
 
-
-  include nebula::profile::www_lib::vhosts::fulcrum
+  include nebula::profile::www_lib::fulcrum_apache
   include nebula::profile::www_lib::vhosts::midaily
   include nebula::profile::www_lib::vhosts::publishing
   include nebula::profile::www_lib::vhosts::med

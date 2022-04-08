@@ -21,8 +21,10 @@ class nebula::profile::duo (
   String $pushinfo,
   String $failmode,
 ) {
-  package { 'sudo': }
-  package { 'libpam-duo': }
+  ensure_packages([
+    'sudo',
+    'libpam-duo'
+  ])
 
   package { 'duo-unix':
     ensure => absent

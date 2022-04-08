@@ -9,10 +9,22 @@
 # @example
 #   include nebula::profile::www_lib::vhosts::fulcrum
 class nebula::profile::www_lib::vhosts::fulcrum (
-  String $docroot = '/hydra/heliotrope-production/current/public'
+  String $docroot = '/fulcrum/app/current/public',
+  String $derivatives_path = '/fulcrum/data/derivatives',
+  String $logging_prefix = 'fulcrum',
+  String $app_host = 'app',
+  String $app_port = '3000'
 ) {
   $servername = 'www.fulcrum.org'
-  $logging_prefix = 'heliotrope-production'
+
+  $authz_base_requires = {
+    enforce  => 'all',
+    requires => [
+      'not env badrobot',
+      'not env loadbalancer',
+      'all granted'
+    ]
+  }
 
   file { "${apache::params::logroot}/${logging_prefix}":
     ensure => 'directory',
@@ -35,7 +47,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       {
         provider => 'location',
         path     => '/',
-        require  => $nebula::profile::www_lib::apache::default_access,
+        require  => $authz_base_requires,
       },
     ],
   }
@@ -59,17 +71,17 @@ class nebula::profile::www_lib::vhosts::fulcrum (
     rewrites        => [
       {
         comment      => 'Serve static assets through apache',
-        rewrite_cond => ['/hydra/heliotrope-production/current/public/$1 -d [OR]', '/hydra/heliotrope-production/current/public/$1 -f'],
-        rewrite_rule => '^/(.*)$  /hydra/heliotrope-production/current/public/$1 [L]',
+        rewrite_cond => ["${docroot}/\$1 -d [OR]", "${docroot}/\$1 -f"],
+        rewrite_rule => "^/(.*)$  ${docroot}/\$1 [L]",
       },
       {
         comment      => 'Proxy metrics requests to Yabeda/Prometheus exporter',
-        rewrite_rule => '^/metrics$ http://app-heliotrope-production:9394/metrics [P]',
+        rewrite_rule => "^/metrics$ http://${app_host}:9394/metrics [P]",
       },
       {
         comment      => 'Reverse proxy application to app hostname and port',
         rewrite_cond => ['%{REQUEST_URI} !^/cosign/valid', '%{REQUEST_URI} !^/Shibboleth.sso'],
-        rewrite_rule => '^(/.*)$ http://app-heliotrope-production:30399$1 [P]',
+        rewrite_rule => "^(/.*)$ http://${app_host}:${app_port}\$1 [P]",
       },
     ],
 
@@ -77,14 +89,14 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       {
         provider => 'location',
         path     => '/',
-        require  => $nebula::profile::www_lib::apache::default_access,
+        require  => $authz_base_requires,
       },
       {
         provider       => 'directory',
         path           => $docroot,
         options        => 'FollowSymlinks',
         allow_override => 'None',
-        require        => $nebula::profile::www_lib::apache::default_access,
+        require        => $authz_base_requires,
       },
       {
         provider => 'location',
@@ -133,13 +145,13 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       { 'error_code' => '503', 'document' => '/503.html' },
     ],
 
-    custom_fragment => @(EOT)
+    custom_fragment => @("EOT")
 
       # Reverse proxy application to app hostname and port
-      ProxyPassReverse / http://app-heliotrope-production:30399/
+      ProxyPassReverse / http://${app_host}:${app_port}/
       # XSendFile settings
       XSendFile on
-      XSendFilePath /hydra/heliotrope-production/current/tmp/derivatives
+      XSendFilePath ${derivatives_path}
       # Configure Shibboleth for authentication via InCommon partner login
       <Location "/">
         AuthType shibboleth

@@ -31,11 +31,6 @@ class nebula::role::webhost::www_lib_vm (
   include nebula::profile::www_lib::apache
   include nebula::profile::www_lib::cron
 
-  class { 'nebula::profile::shibboleth':
-    config_source    => 'puppet:///shibboleth-www_lib',
-    watchdog_minutes => '*/30',
-  }
-
   include nebula::profile::krb5
   include nebula::profile::afs
   include nebula::profile::www_lib::users
