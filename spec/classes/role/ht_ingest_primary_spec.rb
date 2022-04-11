@@ -13,15 +13,6 @@ describe 'nebula::role::hathitrust::ingest_indexing::primary' do
       let(:hiera_config) { 'spec/fixtures/hiera/hathitrust_config.yaml' }
 
       it { is_expected.to compile }
-
-      it do
-        is_expected.to contain_cron('mail rights load summary')
-          .with_ensure('absent')
-      end
-
-      it do
-        is_expected.to contain_cron('daily tasks').with_ensure('absent')
-      end
     end
   end
 end
