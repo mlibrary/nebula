@@ -44,8 +44,9 @@ class nebula::profile::prometheus (
 
   docker::run { 'pushgateway':
     image            => "prom/pushgateway:${pushgateway_version}",
+    command          => '--persistence.file=/archive/pushgateway',
     net              => 'host',
-    extra_parameters => ['--restart=always', '--persistence.file=/archive/pushgateway'],
+    extra_parameters => ['--restart=always'],
     volumes          => ['/opt/pushgateway:/archive'],
     require          => File['/opt/pushgateway'],
   }
