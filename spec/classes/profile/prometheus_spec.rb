@@ -40,7 +40,9 @@ describe 'nebula::profile::prometheus' do
         is_expected.to contain_docker__run('pushgateway')
           .with_image('prom/pushgateway:latest')
           .with_net('host')
-          .with_extra_parameters(%w[--restart=always])
+          .with_extra_parameters(%w[--restart=always --persistence.file=/archive/pushgateway])
+          .with_volumes(%w[/opt/pushgateway:/archive])
+          .that_requires('File[/opt/pushgateway]')
       end
 
       context 'with pushgateway_version set to v2.11.1' do
@@ -131,6 +133,13 @@ describe 'nebula::profile::prometheus' do
 
       it do
         is_expected.to contain_file('/opt/prometheus')
+          .with_ensure('directory')
+          .with_owner(65_534)
+          .with_group(65_534)
+      end
+
+      it do
+        is_expected.to contain_file('/opt/pushgateway')
           .with_ensure('directory')
           .with_owner(65_534)
           .with_group(65_534)

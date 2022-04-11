@@ -45,7 +45,9 @@ class nebula::profile::prometheus (
   docker::run { 'pushgateway':
     image            => "prom/pushgateway:${pushgateway_version}",
     net              => 'host',
-    extra_parameters => ['--restart=always'],
+    extra_parameters => ['--restart=always', '--persistence.file=/archive/pushgateway'],
+    volumes          => ['/opt/pushgateway:/archive'],
+    require          => File['/opt/pushgateway'],
   }
 
   file { '/etc/prometheus/prometheus.yml':
@@ -108,6 +110,12 @@ class nebula::profile::prometheus (
   }
 
   file { '/opt/prometheus':
+    ensure => 'directory',
+    owner  => 65534,
+    group  => 65534,
+  }
+
+  file { '/opt/pushgateway':
     ensure => 'directory',
     owner  => 65534,
     group  => 65534,
