@@ -39,8 +39,9 @@ describe 'nebula::profile::prometheus' do
       it do
         is_expected.to contain_docker__run('pushgateway')
           .with_image('prom/pushgateway:latest')
+          .with_command('--persistence.file=/archive/pushgateway')
           .with_net('host')
-          .with_extra_parameters(%w[--restart=always --persistence.file=/archive/pushgateway])
+          .with_extra_parameters(%w[--restart=always])
           .with_volumes(%w[/opt/pushgateway:/archive])
           .that_requires('File[/opt/pushgateway]')
       end

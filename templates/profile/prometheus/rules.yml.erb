@@ -59,6 +59,13 @@ groups:
     for: 30m
     labels:
       severity: page
+  - alert: PrometheusExporterDown
+    annotations:
+      summary: '{{$labels.job}} exporter isn''t responding to Prometheus.'
+    expr: 'up{job!="node"} == 0'
+    for: 30m
+    labels:
+      severity: page
   - alert: WindowsInstanceDown
     annotations:
       summary: 'Windows node {{$labels.hostname}} isn''t responding to Prometheus.'
