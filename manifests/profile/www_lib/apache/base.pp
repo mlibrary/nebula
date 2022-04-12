@@ -2,13 +2,12 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::www_lib::apache_minimum
+# nebula::profile::www_lib::apache::base
 #
 # The base setup for "www-lib" Apache hosts, here to allow for extraction
 # and further refactoring.
 #
-class nebula::profile::www_lib::apache_minimum (
-) {
+class nebula::profile::www_lib::apache::base {
   include nebula::profile::logrotate
 
   ensure_packages(['bsd-mailx'])

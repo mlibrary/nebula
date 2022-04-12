@@ -17,8 +17,8 @@ class nebula::role::webhost::fulcrum_www_and_app (
 
   create_resources('host',$hosts)
 
-  include nebula::profile::www_lib::apache_minimum
-  include nebula::profile::www_lib::fulcrum_apache
+  include nebula::profile::www_lib::apache::base
+  include nebula::profile::www_lib::apache::fulcrum
 
   cron {
     default:

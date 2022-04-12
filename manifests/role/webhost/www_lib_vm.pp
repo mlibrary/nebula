@@ -28,10 +28,17 @@ class nebula::role::webhost::www_lib_vm (
   include nebula::profile::www_lib::dependencies
   include nebula::profile::www_lib::perl
   include nebula::profile::www_lib::php
-  include nebula::profile::www_lib::apache
   include nebula::profile::www_lib::cron
 
   include nebula::profile::krb5
   include nebula::profile::afs
   include nebula::profile::www_lib::users
+
+  # This is only for the global constant of $default_accesss, used in the more
+  # specific profiles, where all of the resources are defined.
+  include nebula::profile::www_lib::apache
+
+  include nebula::profile::www_lib::apache::base
+  include nebula::profile::www_lib::apache::misc
+  include nebula::profile::www_lib::apache::fulcrum
 }
