@@ -20,6 +20,15 @@ class nebula::role::webhost::fulcrum_www_and_app (
   include nebula::profile::www_lib::apache::base
   include nebula::profile::www_lib::apache::fulcrum
 
+  # Include a default vhost to catch monitoring requests by IP/fqdn.
+  # This is here rather than in the profile because it would be duplicate
+  # on www_lib_vm.
+  class { 'nebula::profile::www_lib::vhosts::default':
+    prefix => '',
+    domain => 'fulcrum.org',
+    ssl_cn => 'fulcrum.org',
+  }
+
   cron {
     default:
       user => 'root',
