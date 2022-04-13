@@ -13,6 +13,11 @@ class nebula::role::webhost::fulcrum_www_and_app (
   include nebula::role::umich
   include nebula::role::fulcrum::app_host
   include nebula::profile::www_lib::register_for_load_balancing
+
+  # The perl profile is needed for monitor_pl to work, but it pulls in a
+  # ton of stuff. We should probably allow for different haproxy http checks
+  # for a service, and eliminate the perl/monitor_pl dependency here.
+  include nebula::profile::www_lib::perl
   include nebula::profile::networking::firewall::http
 
   create_resources('host',$hosts)
