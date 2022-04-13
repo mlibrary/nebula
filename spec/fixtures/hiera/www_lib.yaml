@@ -36,6 +36,13 @@ nebula::profile::apache::authz_umichlib::oracle_servers:
     - ORCL.MYSERVER2_ALIAS1
     - ORCL.MYSERVER2_ALIAS2
 
+
+nebula::profile::www_lib::vhosts::fulcrum::docroot: "/hydra/heliotrope-production/current/public"
+nebula::profile::www_lib::vhosts::fulcrum::derivatives_path: "/hydra/heliotrope-production/current/tmp/derivatives"
+nebula::profile::www_lib::vhosts::fulcrum::logging_prefix: "heliotrope-production"
+nebula::profile::www_lib::vhosts::fulcrum::app_host: "app-heliotrope-production"
+nebula::profile::www_lib::vhosts::fulcrum::app_port: "30399"
+
 nebula::apache::ssl_keypair::chain_crt: foo.crt
 
 nebula::virtual::users::all_users:

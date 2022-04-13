@@ -16,7 +16,7 @@ describe 'nebula::profile::fulcrum::logrotate' do
 
       it do
         is_expected.to contain_logrotate__rule('fulcrum')
-          .with_path('/home/fulcrum/app/shared/log/*.log')
+          .with_path('/fulcrum/app/shared/log/*.log')
           .with_rotate(7)
           .with_rotate_every('day')
           .with_missingok(true)

@@ -1,12 +1,18 @@
-# Copyright (c) 2021 The Regents of the University of Michigan.
+# Copyright (c) 2021-2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
 
-# Base profile for a Fulcrum host; sets up host aliases, etc.
-class nebula::profile::fulcrum::base {
+# Base profile for a Fulcrum host; sets up networking and app user.
+class nebula::profile::fulcrum::base (
+  $uid = 717,
+  $gid = 717,
+) {
+  ensure_packages([
+    'sudo',
+  ])
+
   host { 'localhost':
-    host_aliases => ['fedora', 'mysql', 'redis', 'solr'],
     ip           => '127.0.0.1',
   }
 
@@ -28,4 +34,17 @@ class nebula::profile::fulcrum::base {
     ip => 'ff02::2',
   }
 
+  group { 'fulcrum':
+    gid => $gid,
+  }
+
+  user { 'fulcrum':
+    comment    => 'Fulcrum Application User',
+    uid        => $uid,
+    gid        => $gid,
+    home       => '/fulcrum',
+    shell      => '/bin/bash',
+    managehome => true,
+    require    => Group['fulcrum'],
+  }
 }

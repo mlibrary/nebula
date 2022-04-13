@@ -11,3 +11,16 @@ nebula::profile::networking::firewall::http_datacenters::networks:
   - name: 'Datacenter Two'
     block: '10.1.2.0/24'
     datacenter: two
+
+
+
+
+### Compatibility data
+# While we are running combined Apache+Fulcrum nodes and until we
+# extract the www-lib pieces, these settings need to be present.
+nebula::role::webhost::fulcrum_www_and_app::hosts:
+  mysql-web:
+    ip: 10.0.0.123
+
+nebula::www_lib::monitor::solr_cores: []
+nebula::www_lib::monitor::mysql: {}

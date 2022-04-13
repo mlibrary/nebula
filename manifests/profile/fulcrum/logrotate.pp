@@ -6,7 +6,7 @@ class nebula::profile::fulcrum::logrotate {
   include nebula::profile::logrotate
 
   logrotate::rule { 'fulcrum':
-    path          => '/home/fulcrum/app/shared/log/*.log',
+    path          => '/fulcrum/app/shared/log/*.log',
     rotate        => 7,
     rotate_every  => 'day',
     missingok     => true,

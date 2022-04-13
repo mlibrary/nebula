@@ -63,6 +63,7 @@ end
             %w[nebula::role::kubernetes kubernetes/first_cluster],
             %w[nebula::role::log_host log_host],
             %w[nebula::role::webhost::www_lib_vm www_lib],
+            %w[nebula::role::webhost::fulcrum_www_and_app fulcrum],
             %w[nebula::role::docker_registry docker_registry],
             %w[nebula::role::fulcrum fulcrum],
             %w[nebula default],
