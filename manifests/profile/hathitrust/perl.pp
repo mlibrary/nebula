@@ -143,6 +143,7 @@ class nebula::profile::hathitrust::perl () {
     'Algorithm::LUHN',
     'OAuth::Lite',
     'EBook::EPUB',
+    'IP::Geolocation::MMDB',
     'Sub::Uplevel',
     'Test::Exception',
     'Devel::Cycle',
