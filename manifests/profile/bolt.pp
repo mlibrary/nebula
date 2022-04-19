@@ -6,10 +6,10 @@ class nebula::profile::bolt {
   package { 'puppet-bolt': }
 
   $users = lookup('nebula::profile::authorized_keys::ssh_keys').keys
-  $membership = inverted_hashlist('nebula::usergroup::membership')
+  $all_users = inverted_hashlist('nebula::virtual::users::all_users')
 
   $users.each |$user| {
-    $data = $membership[$user]
+    $data = $all_users[$user]
 
     user { $user:
       ensure  => 'present',
