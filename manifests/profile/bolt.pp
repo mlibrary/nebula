@@ -3,6 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 
 class nebula::profile::bolt {
+  include nebula::virtual::users
   package { 'puppet-bolt': }
 
   $users = lookup('nebula::profile::authorized_keys::ssh_keys').keys
@@ -11,14 +12,9 @@ class nebula::profile::bolt {
   $users.each |$user| {
     $data = $all_users[$user]
 
-    user { "bastion ${user}":
-      name    => $user,
-      ensure  => 'present',
-      gid     => 100,
-      shell   => '/bin/bash',
+    User <| title == $user |> {
       home    => "/home/${user}",
-      comment => $data['comment'],
-      uid     => $data['uid'],
+      gid     => 100,
       require => File["/home/${user}"],
     }
 
