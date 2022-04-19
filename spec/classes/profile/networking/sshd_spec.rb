@@ -25,6 +25,7 @@ describe 'nebula::profile::networking::sshd' do
       end
 
       [
+        %r{^#Port 22$},
         %r{^PermitRootLogin (prohibit|without)-password$},
         %r{^PubkeyAuthentication no$},
         %r{^PasswordAuthentication no$},
@@ -96,6 +97,20 @@ describe 'nebula::profile::networking::sshd' do
         is_expected.to contain_concat_fragment('/etc/pam.d/sshd: base')
           .with_target('/etc/pam.d/sshd')
           .with_content(%r{@include sshd-defaults})
+      end
+
+      context 'with port set to 44' do
+        let(:params) { { port: 44 } }
+
+        it { is_expected.not_to contain_sshd.with_content(%r{^#Port 22$}) }
+        it { is_expected.to contain_sshd.with_content(%r{^Port 44$}) }
+      end
+
+      context 'with port set to 333' do
+        let(:params) { { port: 333 } }
+
+        it { is_expected.not_to contain_sshd.with_content(%r{^#Port 22$}) }
+        it { is_expected.to contain_sshd.with_content(%r{^Port 333$}) }
       end
     end
   end

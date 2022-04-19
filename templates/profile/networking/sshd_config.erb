@@ -12,7 +12,11 @@
 # possible, but leave them commented.  Uncommented options override the
 # default value.
 
+<% if @port == 22 -%>
 #Port 22
+<% else -%>
+Port <%= @port %>
+<% end -%>
 #AddressFamily any
 #ListenAddress 0.0.0.0
 #ListenAddress ::

@@ -95,6 +95,12 @@ class nebula::profile::networking::firewall (
         ]
       }
 
+      'fwknop': {
+        $input_ignore = ['-j FWKNOP_INPUT']
+        $output_ignore = []
+        $forward_ignore = []
+      }
+
       default: {
         $input_ignore = []
         $output_ignore = []
