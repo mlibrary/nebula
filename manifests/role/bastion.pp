@@ -7,5 +7,6 @@ class nebula::role::bastion {
   include nebula::profile::bolt
   include nebula::profile::duo
   include nebula::profile::krb5
+  include nebula::profile::networking
   include nebula::profile::root_ssh_private_keys
 }
