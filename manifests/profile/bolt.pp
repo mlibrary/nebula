@@ -11,7 +11,8 @@ class nebula::profile::bolt {
   $users.each |$user| {
     $data = $all_users[$user]
 
-    user { $user:
+    user { "bastion ${user}":
+      name    => $user,
       ensure  => 'present',
       gid     => 100,
       shell   => '/bin/bash',
