@@ -6,7 +6,7 @@ class nebula::profile::bolt {
   package { 'puppet-bolt': }
 
   $users = lookup('nebula::profile::authorized_keys::ssh_keys').keys
-  $all_users = inverted_hashlist('nebula::virtual::users::all_users')
+  $all_users = lookup('nebula::virtual::users::all_users')
 
   $users.each |$user| {
     $data = $all_users[$user]
