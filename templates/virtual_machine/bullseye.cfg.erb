@@ -482,6 +482,7 @@ d-i finish-install/reboot_in_progress note
 
 # install puppet.conf, firewall
 d-i preseed/late_command string                       \
+    in-target systemctl enable puppet;                \
     wget -O /target/etc/puppetlabs/puppet/puppet.conf \
         http://<%= @filehost %>/puppet.conf;          \
     wget -O /target/etc/iptables/rules.v4             \

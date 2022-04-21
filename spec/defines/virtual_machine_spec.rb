@@ -284,6 +284,27 @@ describe 'nebula::virtual_machine' do
         it { is_expected.not_to compile }
       end
 
+      context 'with bullseye build name' do
+        let(:params) { { build: 'bullseye' } }
+
+        [
+          %r{^d-i preseed/late_command string\b},
+          %r{\sin-target systemctl enable puppet\b},
+        ].each do |line|
+          it { is_expected.to contain_preseed.with_content(line) }
+        end
+      end
+
+      context 'with pre-bullseye build name' do
+        let(:params) { { build: 'buster' } }
+
+        [
+          %r{\sin-target systemctl enable puppet\b},
+        ].each do |line|
+          it { is_expected.not_to contain_preseed.with_content(line) }
+        end
+      end
+
       context 'with domain set to awesome.com' do
         let(:params) { { domain: 'awesome.com' } }
 
