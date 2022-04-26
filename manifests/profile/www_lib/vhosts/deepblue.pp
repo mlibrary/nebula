@@ -72,11 +72,12 @@ class nebula::profile::www_lib::vhosts::deepblue (
       },
       {
         comment      => 'Deep Blue Data',
+        rewrite_cond => '%{ENV:badrobot} !(^true$)',
         rewrite_rule => '^(/data.*)$ https://app-deepbluedata.deepblue.lib.umich.edu:30060$1 [P]',
       },
       {
         comment      => 'Deep Blue Documents; dont proxy cosign',
-        rewrite_cond => '%{REQUEST_URI} !^(/cosign/valid)',
+        rewrite_cond => ['%{ENV:badrobot} !(^true$)', '%{REQUEST_URI} !^(/cosign/valid)'],
         rewrite_rule => '^(.*)$	http://bulleit-2.umdl.umich.edu:8080$1 [P]'
       },
       {
