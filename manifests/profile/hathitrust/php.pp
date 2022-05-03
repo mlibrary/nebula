@@ -25,6 +25,7 @@ class nebula::profile::hathitrust::php () {
       'php-smarty',
       'php7.0-xsl',
       'php7.0-mbstring',
+      'php-yaml',
       'libapache2-mod-php7.0',
       'pear-channels'
     ]:
