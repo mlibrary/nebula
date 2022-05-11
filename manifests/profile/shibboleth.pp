@@ -25,12 +25,12 @@ class nebula::profile::shibboleth (
   include nebula::systemd::daemon_reload
 
   package {
-    [ 
+    [
       'unixodbc',
     ]:
   }
 
-  if $::lsbdistcodename == 'stretch' { 
+  if $::lsbdistcodename == 'stretch' {
     # stretch: Shibboleth 2
     package {
       [

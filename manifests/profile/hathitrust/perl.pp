@@ -12,6 +12,10 @@ class nebula::profile::hathitrust::perl () {
   include nebula::profile::hathitrust::dependencies
   include nebula::profile::geoip
 
+  if $::lsbdistcodename == 'stretch' {
+    package { 'libreadonly-xs-perl': }
+  }
+
   package { [
     'libalgorithm-diff-xs-perl',
     'libany-moose-perl',
@@ -101,7 +105,6 @@ class nebula::profile::hathitrust::perl () {
     'libpod-simple-perl',
     'libproc-processtable-perl',
     'libreadonly-perl',
-    'libreadonly-xs-perl',
     'libroman-perl',
     'libsoap-lite-perl',
     'libspreadsheet-writeexcel-perl',
