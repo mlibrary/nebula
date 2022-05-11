@@ -25,6 +25,11 @@ class nebula::profile::hathitrust::dependencies () {
     ]
   )
 
+  file { '/l':
+    ensure => 'directory'
+  }
+
+
   file { '/l/local':
     ensure => 'directory'
   }
@@ -72,8 +77,13 @@ class nebula::profile::hathitrust::dependencies () {
     [
       'openjdk-11-jdk-headless',
       'lftp',
-      'mariadb-client-10.1'
     ]:
+  }
+
+  if $::lsbdistcodename == 'stretch' {
+    ensure_packages(['mariadb-client-10.1'])
+  } elsif $::lsbdistcodename == 'bullseye' {
+    ensure_packages(['mariadb-client'])
   }
 
 }
