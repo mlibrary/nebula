@@ -64,10 +64,8 @@ describe 'nebula::role::webhost::htvm' do
       it { is_expected.to contain_class('nebula::profile::users') }
 
       if os == 'debian-11-x86_64'
-
-        # These tests fail with puppet php module version 7.1.0 but should pass with 8.0.0
-        xit { is_expected.not_to contain_package('php5-common') }
-        xit { is_expected.not_to contain_package('php5-dev') }
+        it { is_expected.not_to contain_package('php5-common') }
+        it { is_expected.not_to contain_package('php5-dev') }
         it { is_expected.to contain_package('libapache2-mod-shib') }
         it { is_expected.not_to contain_package('libapache2-mod-shib2') }
         it { is_expected.to contain_package('mariadb-client') }
