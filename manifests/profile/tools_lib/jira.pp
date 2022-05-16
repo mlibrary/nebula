@@ -34,8 +34,8 @@ class nebula::profile::tools_lib::jira (
     homedir                   => '/var/opt/jira',
     dbuser                    => 'jira',
     dbpassword                => lookup('nebula::profile::tools_lib::db::jira::password'),
-    jvm_xms                   => '1G',
-    jvm_xmx                   => '4G', # min for stable operation
+    jvm_xms                   => '10G',
+    jvm_xmx                   => '10G',
     tomcat_max_threads        => '48', # don't exhaust db connection limit
     enable_connection_pooling => true, # add serveral required settings to dbconfig.xml
     proxy                     => {
