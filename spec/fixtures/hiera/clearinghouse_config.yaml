@@ -1,9 +1,0 @@
----
-:backends:
-  - yaml
-:hierarchy:
-  - clearinghouse
-  - default
-:yaml:
-  :datadir: 'spec/fixtures/hiera'
-

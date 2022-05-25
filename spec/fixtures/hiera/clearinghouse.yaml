@@ -1,3 +1,0 @@
-nebula::profile::mysql::password: changeme
-nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt
-nebula::profile::clearinghouse::s3backup::bucket: invalid.default
