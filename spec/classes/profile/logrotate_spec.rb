@@ -24,26 +24,26 @@ describe 'nebula::profile::logrotate' do
       # reason to stop doing that, although we switched them from
       # monthly to weekly, as they can get very large otherwise.
       it "contains debian's wtmp logrotate config" do
-        is_expected.to contain_logrotate__rule('debian_wtmp').with(
+        is_expected.to contain_logrotate__rule('wtmp').with(
           path: '/var/log/wtmp',
           missingok: true,
           rotate_every: 'week',
           create_mode: '0664',
           create_owner: 'root',
           create_group: 'utmp',
-          rotate: 1,
+          rotate: 4,
         )
       end
 
       it "contains debian's btmp logrotate config" do
-        is_expected.to contain_logrotate__rule('debian_btmp').with(
+        is_expected.to contain_logrotate__rule('btmp').with(
           path: '/var/log/btmp',
           missingok: true,
           rotate_every: 'week',
           create_mode: '0660',
           create_owner: 'root',
           create_group: 'utmp',
-          rotate: 1,
+          rotate: 4,
         )
       end
     end

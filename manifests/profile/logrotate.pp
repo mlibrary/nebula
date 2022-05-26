@@ -17,13 +17,15 @@ class nebula::profile::logrotate {
       create_mode  => '0660',
       create_owner => 'root',
       create_group => 'utmp',
-      rotate       => 1,
+      rotate       => 4,
       ;
-    'debian_wtmp':
+# Override the logrotate module definition for 
+# wtmp and btmp to apply our preferred 4 x weekly schedule 
+    'wtmp':
       path        => '/var/log/wtmp',
       create_mode => '0664',
       ;
-    'debian_btmp':
+    'btmp':
       path        => '/var/log/btmp',
       ;
   }

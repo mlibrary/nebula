@@ -14,5 +14,8 @@ class nebula::profile::fulcrum::logrotate {
     ifempty       => false,
     delaycompress => true,
     copytruncate  => true,
+    su            => true,
+    su_user       => 'fulcrum',
+    su_group      => 'fulcrum',
   }
 }

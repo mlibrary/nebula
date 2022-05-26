@@ -24,6 +24,9 @@ describe 'nebula::profile::fulcrum::logrotate' do
           .with_ifempty(false)
           .with_delaycompress(true)
           .with_copytruncate(true)
+          .with_su(true)
+          .with_su_user('fulcrum')
+          .with_su_group('fulcrum')
       end
     end
   end
