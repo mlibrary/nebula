@@ -44,7 +44,7 @@ groups:
     expr: 'increase(node_vmstat_oom_kill[5m]) > 0'
     for: 0m
     labels:
-      severity: page
+      severity: ticket
   - alert: HostUnderMemoryPressure
     annotations:
       summary: 'Linux node {{$labels.hostname}} is under memory pressure'
