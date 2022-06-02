@@ -18,9 +18,7 @@ class nebula::profile::hathitrust::apache::babel (
   String $domain,
   String $gwt_code,
   String $otis_endpoint,
-  String $otis_basic_auth,
   String $dex_endpoint,
-  String $dex_basic_auth,
   String $ptsearch_solr,
   String $ptsearch_solr_basic_auth,
   Array[String] $cache_paths = [ ],
@@ -57,6 +55,29 @@ class nebula::profile::hathitrust::apache::babel (
     user    => 'nobody',
     minute  => '23',
     hour    => '1',
+  }
+
+  ### client cert
+
+  $certname = $trusted['certname'];
+  $client_cert = "/etc/ssl/private/${certname}.pem";
+
+  concat { $client_cert:
+    ensure => 'present',
+    mode   => '0600',
+    owner  => 'root',
+  }
+
+  concat::fragment { 'client cert':
+    target => $client_cert,
+    source => "/etc/puppetlabs/puppet/ssl/certs/${certname}.pem",
+    order  =>  1
+  }
+
+  concat::fragment { 'client key':
+    target => $client_cert,
+    source => "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem",
+    order  =>  2
   }
 
   ## VHOST DEFINITION
@@ -309,7 +330,6 @@ class nebula::profile::hathitrust::apache::babel (
         auth_type             => 'shibboleth',
         require               => 'shibboleth',
         shib_request_settings => { 'requireSession' => '0'},
-        request_headers       => ["set Authorization \"Basic ${otis_basic_auth}\""],
       },
       {
         provider              => 'location',
@@ -317,8 +337,7 @@ class nebula::profile::hathitrust::apache::babel (
         auth_type             => 'shibboleth',
         require               => 'shibboleth',
         shib_request_settings => { 'requireSession' => '0'},
-        request_headers       => ['unset X-Remote-User',
-                            "set Authorization \"Basic ${dex_basic_auth}\""],
+        request_headers       => ['unset X-Remote-User'],
         proxy_pass            => [ { url =>$dex_endpoint }],
       },
       {
@@ -327,10 +346,7 @@ class nebula::profile::hathitrust::apache::babel (
         auth_type             => 'shibboleth',
         require               => 'valid-user',
         shib_request_settings => { 'requireSession' => '1'},
-        request_headers       => [
-          'set X-Remote-User "expr=%{REMOTE_USER}',
-          "set Authorization \"Basic ${dex_basic_auth}\""
-        ],
+        request_headers       => [ 'set X-Remote-User "expr=%{REMOTE_USER}' ],
         proxy_pass            => [ { url =>"${dex_endpoint}callback/htrc-saml-proxy" }],
       }
 
@@ -339,6 +355,7 @@ class nebula::profile::hathitrust::apache::babel (
     ssl_proxyengine             => true,
     ssl_proxy_check_peer_name   => 'on',
     ssl_proxy_check_peer_expire => 'on',
+    ssl_proxy_machine_cert      => $client_cert,
 
     custom_fragment             => "
     <Proxy \"fcgi://${imgsrv_address}\" enablereuse=off max=10>
@@ -374,7 +391,7 @@ class nebula::profile::hathitrust::apache::babel (
       'unset X-Forwarded-For',
     ],
 
-    allow_encoded_slashes       =>  'on',
+    allow_encoded_slashes       => 'on',
 
   }
 
