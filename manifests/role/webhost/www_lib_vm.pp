@@ -23,7 +23,6 @@ class nebula::role::webhost::www_lib_vm (
 
   create_resources('host',$hosts)
 
-  include nebula::profile::geoip
   #include nebula::profile::www_lib::php73
   include nebula::profile::www_lib::dependencies
   include nebula::profile::www_lib::perl

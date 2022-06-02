@@ -10,7 +10,6 @@
 #   include nebula::profile::hathitrust::perl
 class nebula::profile::hathitrust::perl () {
   include nebula::profile::hathitrust::dependencies
-  include nebula::profile::geoip
 
   if $::lsbdistcodename == 'stretch' {
     package { 'libreadonly-xs-perl': }

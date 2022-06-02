@@ -21,7 +21,6 @@ class nebula::profile::php73 (
 
   ensure_packages (
     [
-      'php7.3-geoip',
       'php7.3-igbinary',
       'php7.3-imagick',
       'php7.3-memcached',

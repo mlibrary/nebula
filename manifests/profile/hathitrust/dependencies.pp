@@ -14,6 +14,7 @@ class nebula::profile::hathitrust::dependencies () {
   ensure_packages (
     [
       'awscli',
+      'geoip-bin',
       'git',
       'kakadu',
       'libjs-jquery',
@@ -37,6 +38,10 @@ class nebula::profile::hathitrust::dependencies () {
   file { '/l/local/bin':
     ensure => 'symlink',
     target => '/usr/bin'
+  }
+
+  file { '/usr/share/GeoIP':
+    target =>  '/htapps/babel/geoip'
   }
 
   # install jhove, pin it to buster if we're on stretch
