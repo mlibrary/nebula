@@ -10,7 +10,6 @@
 #   include nebula::profile::hathitrust::php
 class nebula::profile::hathitrust::php () {
   include nebula::profile::hathitrust::apache
-  include nebula::profile::geoip
 
   if $::lsbdistcodename == 'stretch' {
     package {

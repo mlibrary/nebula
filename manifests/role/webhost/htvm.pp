@@ -21,7 +21,6 @@ class nebula::role::webhost::htvm (
   include nebula::profile::hathitrust::hosts
   include nebula::profile::hathitrust::mounts
 
-  include nebula::profile::geoip
   include nebula::profile::hathitrust::dependencies
   include nebula::profile::hathitrust::perl
   include nebula::profile::hathitrust::php
