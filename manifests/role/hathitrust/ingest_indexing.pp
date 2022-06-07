@@ -43,8 +43,6 @@ class nebula::role::hathitrust::ingest_indexing (
 
   include nebula::profile::hathitrust::dependencies
   include nebula::profile::hathitrust::perl
-  include nebula::profile::hathitrust::clamav
-  include nebula::profile::hathitrust::ingest_service
 
   include nebula::profile::ruby
 
