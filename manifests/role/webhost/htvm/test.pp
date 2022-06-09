@@ -17,6 +17,8 @@ class nebula::role::webhost::htvm::test {
     }
   }
 
+  ensure_packages(['ripgrep','tmux','perl-doc','silversearcher-ag'])
+
   include nebula::role::webhost::htvm
   include nebula::profile::hathitrust::apache::test
 
