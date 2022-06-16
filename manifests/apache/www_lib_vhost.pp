@@ -210,6 +210,7 @@ define nebula::apache::www_lib_vhost (
     ssl_proxyengine             => $ssl_proxyengine,
     ssl_proxy_check_peer_name   => $ssl_proxy_check_peer_name,
     ssl_proxy_check_peer_expire => $ssl_proxy_check_peer_expire,
+    ssl_proxy_machine_cert      => $ssl_proxy_machine_cert,
     setenvifnocase              => $setenvifnocase,
     setenv                      => $setenv_with_perl,
     error_documents             => $error_documents,
