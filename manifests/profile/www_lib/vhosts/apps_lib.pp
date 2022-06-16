@@ -19,6 +19,29 @@ class nebula::profile::www_lib::vhosts::apps_lib (
 
   $servername = "${prefix}apps.${domain}"
 
+  ### client cert
+
+  $certname = $trusted['certname'];
+  $client_cert = "/etc/ssl/private/${certname}.pem";
+
+  concat { $client_cert:
+    ensure => 'present',
+    mode   => '0600',
+    owner  => 'root',
+  }
+
+  concat::fragment { 'client cert':
+    target => $client_cert,
+    source => "/etc/puppetlabs/puppet/ssl/certs/${certname}.pem",
+    order  =>  1
+  }
+
+  concat::fragment { 'client key':
+    target => $client_cert,
+    source => "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem",
+    order  =>  2
+  }
+
   nebula::apache::www_lib_vhost { 'apps.lib-http':
     servername => $servername,
     docroot    => $docroot,
@@ -171,6 +194,11 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         path        => "${www_lib_root}/cgi/",
       },
     ],
+
+    ssl_proxyengine               => true,
+    ssl_proxy_check_peer_name     => 'on',
+    ssl_proxy_check_peer_expire   => 'on',
+    ssl_proxy_machine_cert        => $client_cert,
 
     custom_fragment               => @(EOT)
       ProxyPassReverse / https://sali.lib.umich.edu/
