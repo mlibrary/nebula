@@ -30,6 +30,7 @@ define nebula::apache::www_lib_vhost (
   Boolean $ssl_proxyengine = false,
   Optional[String] $ssl_proxy_check_peer_name = undef,
   Optional[String] $ssl_proxy_check_peer_expire = undef,
+  Optional[String] $ssl_proxy_machine_cert = undef,
   Optional[Array] $setenv = undef,
   Optional[Array] $setenvifnocase = undef,
   Optional[Array] $error_documents = undef,
