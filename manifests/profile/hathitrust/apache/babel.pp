@@ -21,6 +21,7 @@ class nebula::profile::hathitrust::apache::babel (
   String $dex_endpoint,
   String $ptsearch_solr,
   String $ptsearch_solr_basic_auth,
+  Boolean $prod_crms_instance = true,
   Array[String] $cache_paths = [ ],
 ) {
 
@@ -137,8 +138,9 @@ class nebula::profile::hathitrust::apache::babel (
 
     setenvifnocase              => [
       "Host ^crms-training.${servername} CRMS_INSTANCE=crms-training",
-      "Host ^${servername} CRMS_INSTANCE=production"
-    ],
+    ] + if($prod_crms_instance) {
+      ["Host ^${servername} CRMS_INSTANCE=production"]
+    } else{ [] },
 
     rewrites                    => [
       {
