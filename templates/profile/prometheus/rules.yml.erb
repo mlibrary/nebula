@@ -328,7 +328,7 @@ groups:
   - record: backend_datacenter:haproxy_server_up:count_servers_per_backend
     expr: >
       count without(server)(
-        min without(hostname, instance, priority)(
+        max without(hostname, instance, priority)(
           haproxy_server_up
         )
       )
@@ -336,7 +336,7 @@ groups:
   - record: backend_datacenter:haproxy_server_up:sum_servers_up_per_backend
     expr: >
       sum without(server)(
-        min without(hostname, instance, priority)(
+        max without(hostname, instance, priority)(
           haproxy_server_up
         )
       )
