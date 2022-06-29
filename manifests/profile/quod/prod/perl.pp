@@ -16,7 +16,6 @@ class nebula::profile::quod::prod::perl () {
     'libmime-base32-perl',
     'libarchive-extract-perl',
     'libcgi-fast-perl',
-    'libcpan-meta-perl',
     'libcrypt-ssleay-perl',
     'libdata-section-perl',
     'libfcgi-perl',
