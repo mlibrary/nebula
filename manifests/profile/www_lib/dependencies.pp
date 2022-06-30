@@ -8,7 +8,8 @@
 #
 # @example
 #   include nebula::profile::www_lib::dependencies
-class nebula::profile::www_lib::dependencies () {
+class nebula::profile::www_lib::dependencies {
+  $jdk_version = lookup('nebula::jdk_version')
 
   ensure_packages (
     [
@@ -17,7 +18,7 @@ class nebula::profile::www_lib::dependencies () {
       'git',
       'emacs',
       'imagemagick',
-      'openjdk-11-jre',
+      "openjdk-${jdk_version}-jre",
     ]
   )
 

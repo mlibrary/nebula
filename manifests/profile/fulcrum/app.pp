@@ -8,6 +8,8 @@ class nebula::profile::fulcrum::app (
   Array $authorized_keys = [],
   String $private_address_template = '192.168.0.%s',
 ) {
+  $jdk_version = lookup('nebula::jdk_version')
+
   class { 'nebula::profile::networking::private':
     address_template => $private_address_template
   }
@@ -22,7 +24,7 @@ class nebula::profile::fulcrum::app (
     'ghostscript',
     'libreoffice',
     'netpbm',
-    'openjdk-8-jre-headless',
+    "openjdk-${jdk_version}-jre-headless",
     'pdftk',
     'qpdf',
     'shared-mime-info',

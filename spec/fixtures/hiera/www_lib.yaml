@@ -13,6 +13,8 @@ nebula::www_lib::monitor::solr_cores:
   - solrcore1
   - solrcore2
 
+nebula::www_lib::monitor::http_checks: []
+
 nebula::www_lib::monitor::mysql:
   param1: value1
   param2: value2

@@ -9,7 +9,7 @@
 #
 # @example
 #   include nebula::profile::www_lib::perl
-class nebula::profile::www_lib::perl () {
+class nebula::profile::www_lib::perl {
   include nebula::profile::www_lib::dependencies
 
   ensure_packages([
