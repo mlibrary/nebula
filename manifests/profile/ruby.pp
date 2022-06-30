@@ -41,12 +41,10 @@ class nebula::profile::ruby (
     'libgdbm-dev'
   ])
 
-  if $::os['release']['major'] == '8' {
-    package { 'libmysqlclient-dev': }
-  }
-
-  if $::os['release']['major'] == '9' {
-    package { 'default-libmysqlclient-dev': }
+  case $::os['release']['major'] {
+    '8':     { package { 'libmysqlclient-dev': } }
+    '9':     { package { 'default-libmysqlclient-dev': } }
+    default: { package { 'libmariadb-dev': } }
   }
 
   class { 'rbenv':
