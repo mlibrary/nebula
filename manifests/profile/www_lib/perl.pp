@@ -125,8 +125,8 @@ class nebula::profile::www_lib::perl {
   ])
 
   nebula::cpan { [
-    'Crypt::GPG',
     'CGI',
+    'Crypt::GPG',
     'Dancer::Template::Haml',
     'Digest::SHA1',
     'Relations',
