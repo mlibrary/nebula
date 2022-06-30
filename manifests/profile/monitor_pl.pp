@@ -11,14 +11,15 @@
 #
 # @example
 # class { 'nebula::profile::monitor_pl':
-#   directory  => '/usr/lib/cgi-bin/monitor',
-#   nfs_mounts => ['/www']
-#   solr_cores => ['http://solr-host:8080/solr/core1']
-#   mysql      => {
-#     host     => 'mysql-whatever',
-#     user     => 'someuser',
-#     password => 'somepassword',
-#     database => 'mydatabase'
+#   directory   => '/usr/lib/cgi-bin/monitor',
+#   nfs_mounts  => ['/www']
+#   solr_cores  => ['http://solr-host:8080/solr/core1']
+#   http_checks => ['http://my-app:4567/-/health']
+#   mysql       => {
+#     host      => 'mysql-whatever',
+#     user      => 'someuser',
+#     password  => 'somepassword',
+#     database  => 'mydatabase'
 #   },
 #   shibboleth => true
 # }
@@ -26,6 +27,7 @@ class nebula::profile::monitor_pl (
   String  $directory,
   Array[String] $nfs_mounts = [],
   Array[String] $solr_cores = [],
+  Array[String] $http_checks = [],
   Optional[Hash] $mysql = undef,
   Boolean $shibboleth = false,
 ) {
@@ -44,7 +46,7 @@ class nebula::profile::monitor_pl (
     owner  => 'root',
     group  => 'root',
     mode   => '0755',
-    source => "https://${http_files}/ae-utils/bins/monitor.pl"
+    source => "https://${http_files}/ae-utils/bins/monitor-with-http-check.pl"
   }
 
   $monitor_file = "${directory}/monitor_config.yaml"
@@ -65,6 +67,8 @@ class nebula::profile::monitor_pl (
       content => { 'nfs' => $nfs_mounts }.to_yaml();
     'monitor solr cores':
       content => { 'solr' => $solr_cores }.to_yaml();
+    'monitor http_checks':
+      content => { 'http' => $http_checks }.to_yaml();
     'monitor mysql':
       content => { 'mysql' => $mysql }.to_yaml();
     'monitor shibboleth':
