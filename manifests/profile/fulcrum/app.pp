@@ -95,6 +95,13 @@ class nebula::profile::fulcrum::app (
     require => File['/fulcrum/app/shared'],
   }
 
+  file { '/fulcrum/app/shared/public':
+    ensure  => directory,
+    owner   => 'fulcrum',
+    group   => 'fulcrum',
+    require => File['/fulcrum/app/shared'],
+  }
+
   archive { '/tmp/fits.zip':
     ensure        => present,
     extract       => true,
