@@ -112,6 +112,7 @@ class nebula::profile::hathitrust::apache (
   }
   class { 'apache::mod::proxy_fcgi': }
   class { 'apache::mod::reqtimeout': }
+  class { 'apache::mod::setenvif': }
   class { 'apache::mod::shib': }
 
   class { 'apache::mod::remoteip':
@@ -161,7 +162,7 @@ class nebula::profile::hathitrust::apache (
   }
 
 
-  ['redirection','babel','www','catalog'].each |$vhost| {
+  ['redirection','babel','www','catalog','crms_training'].each |$vhost| {
     class { "${title}::${vhost}":
       * =>  $default_vhost_params
     }

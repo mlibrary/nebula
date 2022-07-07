@@ -35,17 +35,18 @@ class nebula::profile::hathitrust::apache::catalog (
   }
 
   apache::vhost { "${servername} ssl":
-    servername        => $servername,
-    port              => 443,
-    manage_docroot    => false,
-    docroot           => $docroot,
-    error_log_file    => 'catalog/error.log',
-    access_log_file   => 'catalog/access.log',
-    access_log_format => 'combined',
-    directoryindex    => 'index.html index.htm index.php index.phtml index.shtml',
-    *                 => $ssl_params,
+    servername         => $servername,
+    use_canonical_name => 'On',
+    port               => 443,
+    manage_docroot     => false,
+    docroot            => $docroot,
+    error_log_file     => 'catalog/error.log',
+    access_log_file    => 'catalog/access.log',
+    access_log_format  => 'combined',
+    directoryindex     => 'index.html index.htm index.php index.phtml index.shtml',
+    *                  => $ssl_params,
 
-    directories       => [
+    directories        => [
       {
         provider => 'filesmatch',
         path     =>  '~$',
@@ -65,7 +66,7 @@ class nebula::profile::hathitrust::apache::catalog (
       },
     ],
 
-    aliases           => [
+    aliases            => [
       {
         aliasmatch => '^/favicon.ico$',
         path       => "${sdrroot}/common/web/favicon.ico"
@@ -76,7 +77,7 @@ class nebula::profile::hathitrust::apache::catalog (
       }
     ],
 
-    rewrites          => [
+    rewrites           => [
       {
 
         # redirect top-level page to www.hathitrust.org, but not for mobile or orphanworks host names

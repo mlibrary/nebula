@@ -63,7 +63,7 @@ describe 'nebula::profile::hathitrust::apache' do
       end
 
       describe 'Production HT hostnames' do
-        %w[babel catalog www].each do |vhost|
+        %w[babel catalog www crms-training.babel].each do |vhost|
           it {
             is_expected.to contain_apache__vhost("#{vhost}.hathitrust.org ssl").with(
               servername: "#{vhost}.hathitrust.org",
