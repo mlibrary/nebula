@@ -13,8 +13,8 @@ describe 'nebula::profile::hathitrust::apache::babel' do
       let(:pre_condition) { "include apache" }
 
       let(:base_params) { {
-        sdrroot: '',
-        sdremail: '',
+        sdrroot: '/sdrroot',
+        sdremail: 'sdremail@default.invalid',
         default_access: { enforce: 'all', requires: ['all denied'] },
         haproxy_ips: [],
         ssl_params: {},
@@ -26,21 +26,18 @@ describe 'nebula::profile::hathitrust::apache::babel' do
 
       describe "CRMS_INSTANCE" do
 
-        it do 
-          is_expected.to contain_apache__vhost('babel.hathitrust.org ssl')
-          .with_setenvifnocase([
-            "Host ^crms-training.babel.hathitrust.org CRMS_INSTANCE=crms-training",
-            "Host ^babel.hathitrust.org CRMS_INSTANCE=production",
-          ])
+        let(:babel_env) do
+          catalogue.resource('apache::vhost','babel.hathitrust.org ssl')["setenv"]
+        end
+
+        it "sets crms_instance production" do 
+          expect(babel_env).to include("CRMS_INSTANCE production")
         end
 
         context("with prod_crms_instance set to false") do
           let(:params) { base_params.merge(prod_crms_instance: false) }
-          it do 
-            is_expected.to contain_apache__vhost('babel.hathitrust.org ssl')
-            .with_setenvifnocase([
-              "Host ^crms-training.babel.hathitrust.org CRMS_INSTANCE=crms-training",
-            ])
+          it "does not set CRMS_INSTANCE env var" do 
+            expect(babel_env).not_to include(/^CRMS_INSTANCE/)
           end
         end
 

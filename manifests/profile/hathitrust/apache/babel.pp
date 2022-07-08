@@ -89,7 +89,7 @@ class nebula::profile::hathitrust::apache::babel (
 
   apache::vhost { "${servername} ssl":
     servername                  => $servername,
-    serveraliases               => [ "crms-training.${servername}" ],
+    use_canonical_name          => 'On',
     port                        => '443',
     docroot                     => $sdrroot,
     manage_docroot              => false,
@@ -134,12 +134,8 @@ class nebula::profile::hathitrust::apache::babel (
       "ASSERTION_EMAIL ${sdremail}",
       "PTSEARCH_SOLR ${ptsearch_solr}",
       "PTSEARCH_SOLR_BASIC_AUTH ${ptsearch_solr_basic_auth}"
-    ],
-
-    setenvifnocase              => [
-      "Host ^crms-training.${servername} CRMS_INSTANCE=crms-training",
     ] + if($prod_crms_instance) {
-      ["Host ^${servername} CRMS_INSTANCE=production"]
+      ['CRMS_INSTANCE production']
     } else{ [] },
 
     rewrites                    => [
