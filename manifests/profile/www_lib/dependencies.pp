@@ -17,7 +17,7 @@ class nebula::profile::www_lib::dependencies () {
       'git',
       'emacs',
       'imagemagick',
-      'openjdk-8-jre',
+      'openjdk-11-jre',
     ]
   )
 

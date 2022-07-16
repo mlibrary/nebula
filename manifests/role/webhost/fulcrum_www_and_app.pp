@@ -8,6 +8,7 @@
 #   include nebula::role::webhost::fulcrum_www_and_app
 class nebula::role::webhost::fulcrum_www_and_app (
   String $private_address_template = '192.168.0.%s',
+  String $shibboleth_config_source = 'puppet:///shibboleth-www-lib',
   Hash $hosts = {}
 ) {
   include nebula::role::umich
@@ -24,6 +25,11 @@ class nebula::role::webhost::fulcrum_www_and_app (
 
   include nebula::profile::www_lib::apache::base
   include nebula::profile::www_lib::apache::fulcrum
+
+  class { 'nebula::profile::shibboleth':
+    config_source    => $shibboleth_config_source,
+    watchdog_minutes => '*/30',
+  }
 
   # Include a default vhost to catch monitoring requests by IP/fqdn.
   # This is here rather than in the profile because it would be duplicate
