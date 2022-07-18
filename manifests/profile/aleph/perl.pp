@@ -24,6 +24,11 @@ class nebula::profile::aleph::perl () {
   nebula::cpan { [
     'MARC::File::XML',
     'Net::Z3950::ZOOM',
+    'XML::LibXML',
+    'Mail::DWIM',
+    'File::MMagic',
+    'MIME::Lite',
+    'Dotenv',
     'SMS::Send::Twilio']:
   }
 }
