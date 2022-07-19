@@ -17,7 +17,14 @@ class nebula::role::webhost::htvm::test {
     }
   }
 
-  ensure_packages(['ripgrep','tmux','perl-doc','silversearcher-ag'])
+  ensure_packages([
+    'libxml2-utils',
+    'perl-doc',
+    'ripgrep',
+    'silversearcher-ag',
+    'tmux',
+    'xsltproc'
+  ])
 
   include nebula::role::webhost::htvm
   include nebula::profile::hathitrust::apache::test
