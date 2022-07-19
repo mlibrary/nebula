@@ -23,6 +23,13 @@ class nebula::profile::hathitrust::apache::crms_training (
 
   $imgsrv_address = lookup('nebula::profile::hathitrust::imgsrv::bind');
 
+  file { "/var/log/apache2/crms-training":
+    ensure => 'directory',
+    mode   => '0755',
+    owner  => 'root',
+    group  => 'root',
+  }
+
   apache::vhost { "${servername} ssl":
     servername            => $servername,
     use_canonical_name    => 'On',
