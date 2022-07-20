@@ -264,7 +264,7 @@ class nebula::profile::hathitrust::apache::babel (
         path                  => '/',
         auth_type             => 'shibboleth',
         require               => 'shibboleth',
-        shib_request_settings => { 'requireSession' => '0'}
+        shib_request_settings => { 'requireSession' => '0', 'discoveryURL' => "https://${servername}/cgi/wayf" }
       },
       {
         # Grant access to necessary directories under the document root:
