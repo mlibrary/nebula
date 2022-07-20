@@ -35,6 +35,9 @@ class nebula::profile::kubernetes::kubelet {
     fail("You must set a kube api IP address for the cluster's gateway")
   }
 
+  package { 'containerd': }
+  kmod::load { 'br_netfilter': }
+
   service { 'kubelet':
     ensure  => 'running',
     enable  => true,
