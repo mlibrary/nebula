@@ -37,6 +37,13 @@ class nebula::profile::kubernetes::kubelet {
 
   package { 'containerd': }
   kmod::load { 'br_netfilter': }
+  file { '/etc/default/grub.d/cgroup.cfg':
+    contents => "GRUB_CMDLINE_LINUX=systemd.unified_cgroup_hierarchy=false\n",
+    notify   => Exec['/usr/sbin/update-grub']
+  }
+  exec { '/usr/sbin/update-grub':
+    refreshonly => true,
+  }
 
   service { 'kubelet':
     ensure  => 'running',
