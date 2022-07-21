@@ -95,5 +95,9 @@ class nebula::profile::kubernetes::kubelet {
     '200 Cluster Prometheus':
       dport => 9100,
     ;
+
+    '200 Cluster Calico Typha':
+      dport => 5473,
+    ;
   }
 }
