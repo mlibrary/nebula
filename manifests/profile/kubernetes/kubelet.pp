@@ -36,7 +36,11 @@ class nebula::profile::kubernetes::kubelet {
   }
 
   package { 'containerd': }
+  package { 'conntrack': }
   kmod::load { 'br_netfilter': }
+  kmod::load { 'nf_conntrack_proto_sctp':
+    require => Package['conntrack']
+  }
 
   service { 'kubelet':
     ensure  => 'running',
