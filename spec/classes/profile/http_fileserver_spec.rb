@@ -22,6 +22,7 @@ describe 'nebula::profile::http_fileserver' do
       it do
         is_expected.to contain_class('apache').with(
           docroot: '/srv/www',
+          default_ssl_chain: '/etc/ssl/certs/incommon_sha2.crt',
           default_ssl_cert: "/etc/ssl/certs/#{fqdn}.crt",
           default_ssl_key: "/etc/ssl/private/#{fqdn}.key",
         )
@@ -31,6 +32,15 @@ describe 'nebula::profile::http_fileserver' do
       it { is_expected.to contain_file("/etc/ssl/certs/#{fqdn}.crt") }
       it { is_expected.to contain_file("/etc/ssl/private/#{fqdn}.key") }
       it { is_expected.to contain_file('/etc/ssl/certs/intermediate_ca.crt') }
+
+      context "with chain_crt set to abc.crt" do
+        let(:params) do
+          super().merge(chain_crt: 'abc.crt')
+        end
+
+        it { is_expected.to compile }
+        it { is_expected.to contain_class('apache').with_default_ssl_chain('/etc/ssl/certs/abc.crt') }
+      end
     end
   end
 end

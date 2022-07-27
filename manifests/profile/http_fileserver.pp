@@ -11,7 +11,8 @@
 
 class nebula::profile::http_fileserver (
   String $storage_path,
-  String $docroot = '/srv/www'
+  String $docroot = '/srv/www',
+  String $chain_crt = 'incommon_sha2.crt'
 ) {
 
   package { 'nfs-common': }
@@ -35,7 +36,7 @@ class nebula::profile::http_fileserver (
   class { 'apache':
     docroot           => '/srv/www',
     default_mods      => false,
-    default_ssl_chain => '/etc/ssl/certs/incommon_sha2.crt',
+    default_ssl_chain => "/etc/ssl/certs/${chain_crt}",
     default_ssl_cert  => "/etc/ssl/certs/${::fqdn}.crt",
     default_ssl_key   => "/etc/ssl/private/${::fqdn}.key",
     default_vhost     => true,
