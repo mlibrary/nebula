@@ -66,15 +66,25 @@ class nebula::profile::kubernetes::kubelet {
     require => Apt::Source['cri-o-stable', 'cri-o-specific']
   }
   service { 'crio':
+    ensure  => 'running',
+    enable  => true,
     require => Package['cri-o']
   }
   kmod::load { 'br_netfilter': }
+  kmod::load { 'overlay': }
   file { '/etc/default/grub.d/cgroup.cfg':
     content => "GRUB_CMDLINE_LINUX=systemd.unified_cgroup_hierarchy=false\n",
     notify  => Exec['/usr/sbin/update-grub']
   }
   exec { '/usr/sbin/update-grub':
     refreshonly => true,
+  }
+  file { '/etc/sysctl.d/99-kubernetes-cri.conf':
+    content => @("SYSCTL")
+      net.bridge.bridge-nf-call-iptables  = 1
+      net.ipv4.ip_forward                 = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+      | SYSCTL
   }
 
   service { 'kubelet':
