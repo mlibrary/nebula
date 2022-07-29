@@ -4,6 +4,7 @@
 
 class nebula::profile::kubernetes::kubelet {
   include nebula::profile::kubernetes::apt
+  include nebula::systemd::daemon_reload
 
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
   $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
@@ -58,10 +59,14 @@ class nebula::profile::kubernetes::kubelet {
     }
   }
   package { 'cri-o':
-    require => Package['cri-o-runc']
+    require => Package['cri-o-runc'],
+    notify  => Exec['/bin/systemctl daemon-reload']
   }
   package { 'cri-o-runc':
     require => Apt::Source['cri-o-stable', 'cri-o-specific']
+  }
+  service { 'crio':
+    require => Package['cri-o']
   }
   kmod::load { 'br_netfilter': }
   file { '/etc/default/grub.d/cgroup.cfg':
