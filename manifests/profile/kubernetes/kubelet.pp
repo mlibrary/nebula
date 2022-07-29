@@ -3,8 +3,8 @@
 # BSD License. See LICENSE.txt for details.
 
 class nebula::profile::kubernetes::kubelet {
-  include nebula::profile::kubernetes::docker
   include nebula::profile::kubernetes::apt
+  include nebula::systemd::daemon_reload
 
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
   $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
@@ -36,6 +36,57 @@ class nebula::profile::kubernetes::kubelet {
     fail("You must set a kube api IP address for the cluster's gateway")
   }
 
+  $os_name = $facts['os']['name']
+  $os_major = $facts['os']['release']['major']
+  $os = "${os_name}_${os_major}"
+  $version = $kubernetes_version.regsubst(/\.[^.]+$/, '')
+  apt::source { 'cri-o-stable':
+    location => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/${os}/",
+    release  => '/',
+    repos    => '',
+    key      => {
+      'id'     => '2472D6D0D2F66AF87ABA8DA34D64390375060AA4',
+      'source' => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/${os}/Release.key"
+    }
+  }
+  apt::source { 'cri-o-specific':
+    location => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${version}/${os}/",
+    release  => '/',
+    repos    => '',
+    key      => {
+      'id'     => '2472D6D0D2F66AF87ABA8DA34D64390375060AA4',
+      'source' => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${version}/${os}/Release.key"
+    }
+  }
+  package { 'cri-o':
+    require => Package['cri-o-runc'],
+    notify  => Exec['/bin/systemctl daemon-reload']
+  }
+  package { 'cri-o-runc':
+    require => Apt::Source['cri-o-stable', 'cri-o-specific']
+  }
+  service { 'crio':
+    ensure  => 'running',
+    enable  => true,
+    require => Package['cri-o']
+  }
+  kmod::load { 'br_netfilter': }
+  kmod::load { 'overlay': }
+  file { '/etc/default/grub.d/cgroup.cfg':
+    content => "GRUB_CMDLINE_LINUX=systemd.unified_cgroup_hierarchy=false\n",
+    notify  => Exec['/usr/sbin/update-grub']
+  }
+  exec { '/usr/sbin/update-grub':
+    refreshonly => true,
+  }
+  file { '/etc/sysctl.d/99-kubernetes-cri.conf':
+    content => @("SYSCTL")
+      net.bridge.bridge-nf-call-iptables  = 1
+      net.ipv4.ip_forward                 = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+      | SYSCTL
+  }
+
   service { 'kubelet':
     ensure  => 'running',
     enable  => true,
@@ -44,7 +95,7 @@ class nebula::profile::kubernetes::kubelet {
 
   package { 'kubelet':
     ensure  => "${kubernetes_version}-00",
-    require => [Apt::Source['kubernetes'], Class['docker']],
+    require => Apt::Source['kubernetes'],
   }
 
   apt::pin { 'kubelet':
