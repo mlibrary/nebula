@@ -41,7 +41,8 @@ class nebula::profile::kubernetes::kubelet {
   $version = $kubernetes_version.regsubst(/\.[^.]+$/, '')
   apt::source { 'cri-o-stable':
     location => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/${os}/",
-    repos    => '/',
+    release  => '/',
+    repos    => '',
     key      => {
       'id'     => '2472D6D0D2F66AF87ABA8DA34D64390375060AA4',
       'source' => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/${os}/Release.key"
@@ -49,7 +50,8 @@ class nebula::profile::kubernetes::kubelet {
   }
   apt::source { 'cri-o-specific':
     location => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${version}/${os}/",
-    repos    => '/',
+    release  => '/',
+    repos    => '',
     key      => {
       'id'     => '2472D6D0D2F66AF87ABA8DA34D64390375060AA4',
       'source' => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${version}/${os}/Release.key"
