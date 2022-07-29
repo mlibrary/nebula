@@ -35,7 +35,29 @@ class nebula::profile::kubernetes::kubelet {
     fail("You must set a kube api IP address for the cluster's gateway")
   }
 
-  package { 'containerd': }
+  $os_name = $facts['os']['name']
+  $os_major = $facts['os']['release']['major']
+  $os = "${os_name}_${os_major}"
+  $version = $kubernetes_version.regsubst(/\.[^.]+$/, '')
+  apt::source { 'cri-o-stable':
+    location => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/${os}/",
+    repos    => '/',
+    key      => {
+      'id'     => '2472D6D0D2F66AF87ABA8DA34D64390375060AA4',
+      'source' => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/${os}/Release.key"
+    }
+  }
+  apt::source { 'cri-o-specific':
+    location => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${version}/${os}/",
+    repos    => '/',
+    key      => {
+      'id'     => '2472D6D0D2F66AF87ABA8DA34D64390375060AA4',
+      'source' => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${version}/${os}/Release.key"
+    }
+  }
+  package { ['cri-o', 'cri-o-runc']:
+    require => Apt::Source['cri-o-stable', 'cri-o-specific']
+  }
   kmod::load { 'br_netfilter': }
   file { '/etc/default/grub.d/cgroup.cfg':
     content => "GRUB_CMDLINE_LINUX=systemd.unified_cgroup_hierarchy=false\n",
