@@ -57,7 +57,10 @@ class nebula::profile::kubernetes::kubelet {
       'source' => "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${version}/${os}/Release.key"
     }
   }
-  package { ['cri-o', 'cri-o-runc']:
+  package { 'cri-o':
+    require => Package['cri-o-runc']
+  }
+  package { 'cri-o-runc':
     require => Apt::Source['cri-o-stable', 'cri-o-specific']
   }
   kmod::load { 'br_netfilter': }
