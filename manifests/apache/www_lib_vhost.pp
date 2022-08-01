@@ -36,6 +36,7 @@ define nebula::apache::www_lib_vhost (
   Optional[Array] $error_documents = undef,
   $priority = false,
   Array[String] $default_allow_override = ['None'],
+  String $ssl_chain = '/etc/ssl/certs/incommon_sha2.crt',
 ) {
   $ssl_cert = "${nebula::profile::apache::ssl_cert_dir}/${ssl_cn}.crt"
   $ssl_key = "${nebula::profile::apache::ssl_key_dir}/${ssl_cn}.key"
@@ -185,6 +186,7 @@ define nebula::apache::www_lib_vhost (
     ssl_cipher                  => 'ECDHE-RSA-AES256-GCM-SHA384',
     ssl_cert                    => $ssl_cert,
     ssl_key                     => $ssl_key,
+    ssl_chain                   => $ssl_chain,
     rewrites                    => $rewrites,
     error_log_file              => "${logging_prefix}error.log",
     access_logs                 => [

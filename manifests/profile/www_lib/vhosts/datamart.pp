@@ -40,6 +40,7 @@ class nebula::profile::www_lib::vhosts::datamart (
 
     ssl                           => true,
     ssl_cn                        => $ssl_cn,
+    ssl_chain                     => '/etc/ssl/certs/lets_encrypt.crt',
     cosign                        => true,
     cosign_service                => 'datamart.lib.umich.edu',
 
