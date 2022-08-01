@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018, 2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -24,6 +24,8 @@ class nebula::profile::hathitrust::apache::babel (
   Boolean $prod_crms_instance = true,
   Array[String] $cache_paths = [ ],
 ) {
+
+  include nebula::profile::client_cert
 
   ### MONITORING
 
@@ -56,29 +58,6 @@ class nebula::profile::hathitrust::apache::babel (
     user    => 'nobody',
     minute  => '23',
     hour    => '1',
-  }
-
-  ### client cert
-
-  $certname = $trusted['certname'];
-  $client_cert = "/etc/ssl/private/${certname}.pem";
-
-  concat { $client_cert:
-    ensure => 'present',
-    mode   => '0600',
-    owner  => 'root',
-  }
-
-  concat::fragment { 'client cert':
-    target => $client_cert,
-    source => "/etc/puppetlabs/puppet/ssl/certs/${certname}.pem",
-    order  =>  1
-  }
-
-  concat::fragment { 'client key':
-    target => $client_cert,
-    source => "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem",
-    order  =>  2
   }
 
   ## VHOST DEFINITION
@@ -353,7 +332,7 @@ class nebula::profile::hathitrust::apache::babel (
     ssl_proxyengine             => true,
     ssl_proxy_check_peer_name   => 'on',
     ssl_proxy_check_peer_expire => 'on',
-    ssl_proxy_machine_cert      => $client_cert,
+    ssl_proxy_machine_cert      => $nebula::profile::client_cert::path,
 
     custom_fragment             => "
     <Proxy \"fcgi://${imgsrv_address}\" enablereuse=off max=10>
