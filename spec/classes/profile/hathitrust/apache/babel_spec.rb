@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018, 2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -41,6 +41,14 @@ describe 'nebula::profile::hathitrust::apache::babel' do
           end
         end
 
+      end
+
+      context 'with certname set to myhostname.tld' do
+        let(:node) { 'myhostname.tld' }
+
+        it { is_expected.to compile }
+        it { is_expected.to contain_apache__vhost('babel.hathitrust.org ssl').with_ssl_proxy_machine_cert('/etc/ssl/private/myhostname.tld.pem') }
+        it { is_expected.to contain_class('Nebula::Profile::Client_cert') }
       end
     end
   end
