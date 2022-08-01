@@ -48,6 +48,7 @@ class nebula::profile::www_lib::vhosts::search (
 
     ssl                         => true,
     ssl_cn                      => $ssl_cn,
+    ssl_chain                   => '/etc/ssl/certs/lets_encrypt.crt',
     cosign                      => true,
     usertrack                   => true,
 

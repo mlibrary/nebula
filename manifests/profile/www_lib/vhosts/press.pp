@@ -85,6 +85,7 @@ class nebula::profile::www_lib::vhosts::press (
     logging_prefix  => "${logging_prefix}/",
     ssl             => true,
     ssl_cn          => $ssl_cn,
+    ssl_chain       => '/etc/ssl/certs/lets_encrypt.crt',
     setenv          => ['HTTPS on'],
 
     rewrites        => [
