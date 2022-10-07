@@ -133,6 +133,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
 
     headers                       => [
       'set "Strict-Transport-Security" "max-age=3600"',
+      'set "X-Frame-Options" "SAMEORIGIN"',
     ],
 
     ssl_proxyengine               => true,
