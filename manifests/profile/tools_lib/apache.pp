@@ -84,6 +84,10 @@ class nebula::profile::tools_lib::apache (
     ssl_key             => "/etc/ssl/private/${keyname}.key",
     ssl_chain           => "/etc/ssl/certs/${chain_crt}",
 
+    rewrites => [{
+      rewrite_rule => ['^/jira/browse/((CSB|FULCRUMOPS|HELIO)-\d+) https://mlit.atlassian.net/browse/$1 [L,R=301]']
+    }],
+
     # from babel-common
     directoryindex      => 'index.html',
 
