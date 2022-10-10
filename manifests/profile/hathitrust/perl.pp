@@ -151,7 +151,9 @@ class nebula::profile::hathitrust::perl () {
     'Devel::Cycle',
     'Test::Memory::Cycle',
     'Mozilla::CA',
-    'Noid']:
+    'Noid',
+    'MARC::Record',
+    'MARC::File::XML']:
   }
 
 }
