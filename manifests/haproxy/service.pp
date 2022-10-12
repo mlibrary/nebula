@@ -141,7 +141,7 @@ define nebula::haproxy::service(
     if($protocol == 'https') {
       concat_fragment { "${service_prefix} check":
         target  => $service_cfg,
-        content => "http-check expect status 200\n",
+        content => "option httpchk GET /monitor/monitor.pl\nhttp-check expect status 200\n",
         order   => '02'
       }
     }
