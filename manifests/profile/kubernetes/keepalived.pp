@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 The Regents of the University of Michigan.
+# Copyright (c) 2019-2020, 2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -11,6 +11,7 @@ class nebula::profile::kubernetes::keepalived (
 
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
   $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
+  $control_dns = $cluster['control_dns']
   $public_address = $cluster['public_address']
   $private_address = $cluster['private_address']
   $router_address = $cluster['router_address']
@@ -57,4 +58,15 @@ class nebula::profile::kubernetes::keepalived (
 
   package { 'keepalived': }
   package { 'ipset': }
+
+  $::ssh.each |$name, $key_obj| {
+    $type = $key_obj["type"]
+    $key = $key_obj["key"]
+
+    @@concat_fragment { "known host ${control_dns} ${::fqdn} ${name}":
+      tag     => 'known_host_public_keys',
+      target  => '/etc/ssh/ssh_known_hosts',
+      content => "${control_dns} ${type} ${key}\n",
+    }
+  }
 }
