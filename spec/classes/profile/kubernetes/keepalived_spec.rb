@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2019-2020 The Regents of the University of Michigan.
+# Copyright (c) 2019-2020, 2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -102,6 +102,29 @@ describe 'nebula::profile::kubernetes::keepalived' do
           is_expected.to contain_file(file)
             .with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
             .that_notifies(['Service[keepalived]', 'Service[procps]'])
+        end
+      end
+
+      context 'with fqdn of default.invalid and an ssh-rsa public key' do
+        let(:facts) do
+          {
+            'fqdn' => "default.invalid",
+            "ssh" => {
+              "rsa" => {
+                "type" => "ssh-rsa",
+                "key" => "abc123"
+              }
+            }
+          }
+        end
+
+        it { is_expected.to compile }
+
+        it "exports an ssh_known_hosts line for its rsa key" do
+          expect(exported_resources).to contain_concat_fragment("known host public.first.cluster default.invalid rsa")
+            .with_target("/etc/ssh/ssh_known_hosts")
+            .with_tag("known_host_public_keys")
+            .with_content("public.first.cluster ssh-rsa abc123\n")
         end
       end
     end

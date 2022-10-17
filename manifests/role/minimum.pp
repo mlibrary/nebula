@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2021 The Regents of the University of Michigan.
+# Copyright (c) 2018-2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -14,6 +14,7 @@ class nebula::role::minimum (
     include nebula::profile::work_around_puppet_bugs
     include nebula::profile::prometheus::exporter::node
     include nebula::profile::authorized_keys
+    include nebula::profile::known_host_public_keys
     include nebula::profile::falcon
 
     if $::lsbdistcodename != 'jessie' {

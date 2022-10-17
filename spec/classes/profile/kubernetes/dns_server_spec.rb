@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2020 The Regents of the University of Michigan.
+# Copyright (c) 2020, 2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'

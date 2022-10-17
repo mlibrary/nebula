@@ -1,4 +1,4 @@
-# Copyright (c) 2020 The Regents of the University of Michigan.
+# Copyright (c) 2020, 2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -53,6 +53,9 @@ class nebula::profile::kubernetes::dns_server {
       order   => '06',
     ;
   }
+
+  concat { '/etc/ssh/ssh_known_hosts': }
+  Concat_fragment <<| tag == "${cluster_name}_known_host_public_keys" |>>
 
   if $private_zones {
     $private_zones.each |Hash $zone| {
