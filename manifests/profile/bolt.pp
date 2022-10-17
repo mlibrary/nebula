@@ -25,4 +25,7 @@ class nebula::profile::bolt {
       mode   => '0755',
     }
   }
+
+  concat { '/etc/ssh/ssh_known_hosts': }
+  Concat_fragment <<| tag == 'known_host_public_keys' |>>
 }
