@@ -153,7 +153,8 @@ class nebula::profile::hathitrust::perl () {
     'Mozilla::CA',
     'Noid',
     'MARC::Record',
-    'MARC::File::XML']:
+    'MARC::File::XML',
+    'MARC::File::MiJ']:
   }
 
 }
