@@ -29,6 +29,14 @@ describe 'nebula::profile::kubernetes::bootstrap::etcd_config' do
           .with_refreshonly(true)
           .that_notifies('Service[kubelet]')
       end
+
+      it { is_expected.to contain_file('/tmp/etcd.yaml') }
+
+      context 'with cluster set to second_cluster' do
+        let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
+
+        it { is_expected.not_to contain_file('/tmp/etcd.yaml') }
+      end
     end
   end
 end
