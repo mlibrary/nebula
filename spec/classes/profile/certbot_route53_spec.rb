@@ -71,21 +71,20 @@ describe 'nebula::profile::certbot_route53' do
             )
         end
 
+        it { is_expected.to contain_concat("/certs/example.invalid.crt").with_group("puppet") }
+        it { is_expected.to contain_concat("/certs/example.invalid.key").with_group("puppet") }
+        it { is_expected.to contain_concat("/haproxy/onlyservice/example.invalid.pem").with_group("puppet") }
+
         it do
-          is_expected.to contain_file("/certs/example.invalid.crt")
-            .with_group("puppet")
+          is_expected.to contain_concat_fragment("example.invalid.crt cert")
+            .with_target("/certs/example.invalid.crt")
             .with_source("/etc/letsencrypt/live/example.invalid/fullchain.pem")
         end
 
         it do
-          is_expected.to contain_file("/certs/example.invalid.key")
-            .with_group("puppet")
+          is_expected.to contain_concat_fragment("example.invalid.key key")
+            .with_target("/certs/example.invalid.key")
             .with_source("/etc/letsencrypt/live/example.invalid/privkey.pem")
-        end
-
-        it do
-          is_expected.to contain_concat("/haproxy/onlyservice/example.invalid.pem")
-            .with_group("puppet")
         end
 
         it do
@@ -124,15 +123,21 @@ describe 'nebula::profile::certbot_route53' do
         end
 
         it { is_expected.to compile }
-        it { is_expected.to contain_file("/var/local/cert_dir/abc.invalid.crt") }
-        it { is_expected.to contain_file("/var/local/cert_dir/abc.example.crt") }
-        it { is_expected.to contain_file("/var/local/cert_dir/zyx.invalid.crt") }
-        it { is_expected.to contain_file("/var/local/cert_dir/abc.invalid.key") }
-        it { is_expected.to contain_file("/var/local/cert_dir/abc.example.key") }
-        it { is_expected.to contain_file("/var/local/cert_dir/zyx.invalid.key") }
+        it { is_expected.to contain_concat("/var/local/cert_dir/abc.invalid.crt") }
+        it { is_expected.to contain_concat("/var/local/cert_dir/abc.example.crt") }
+        it { is_expected.to contain_concat("/var/local/cert_dir/zyx.invalid.crt") }
+        it { is_expected.to contain_concat("/var/local/cert_dir/abc.invalid.key") }
+        it { is_expected.to contain_concat("/var/local/cert_dir/abc.example.key") }
+        it { is_expected.to contain_concat("/var/local/cert_dir/zyx.invalid.key") }
         it { is_expected.to contain_concat("/var/local/haproxy_cert_dir/a/abc.invalid.pem") }
         it { is_expected.to contain_concat("/var/local/haproxy_cert_dir/a/abc.example.pem") }
         it { is_expected.to contain_concat("/var/local/haproxy_cert_dir/z/zyx.invalid.pem") }
+        it { is_expected.to contain_concat_fragment("abc.invalid.crt cert") }
+        it { is_expected.to contain_concat_fragment("abc.example.crt cert") }
+        it { is_expected.to contain_concat_fragment("zyx.invalid.crt cert") }
+        it { is_expected.to contain_concat_fragment("abc.invalid.key key") }
+        it { is_expected.to contain_concat_fragment("abc.example.key key") }
+        it { is_expected.to contain_concat_fragment("zyx.invalid.key key") }
         it { is_expected.to contain_concat_fragment("abc.invalid.pem cert") }
         it { is_expected.to contain_concat_fragment("abc.example.pem cert") }
         it { is_expected.to contain_concat_fragment("zyx.invalid.pem cert") }

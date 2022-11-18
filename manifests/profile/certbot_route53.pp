@@ -39,18 +39,26 @@ class nebula::profile::certbot_route53 (
       $all_domains = [$main_domain] + $alt_domains
 
       $all_domains.each |$domain| {
-        file { "${cert_dir}/${domain}.crt":
+        concat { "${cert_dir}/${domain}.crt":
           group  => "puppet",
-          source => "/etc/letsencrypt/live/${domain}/fullchain.pem"
         }
 
-        file { "${cert_dir}/${domain}.key":
+        concat { "${cert_dir}/${domain}.key":
           group  => "puppet",
-          source => "/etc/letsencrypt/live/${domain}/privkey.pem"
         }
 
         concat { "${haproxy_cert_dir}/${service}/${domain}.pem":
           group => "puppet",
+        }
+
+        concat_fragment { "${domain}.crt cert":
+          target => "${cert_dir}/${domain}.crt",
+          source => "/etc/letsencrypt/live/${domain}/fullchain.pem"
+        }
+
+        concat_fragment { "${domain}.key key":
+          target => "${cert_dir}/${domain}.key",
+          source => "/etc/letsencrypt/live/${domain}/privkey.pem"
         }
 
         concat_fragment { "${domain}.pem cert":
