@@ -10,6 +10,7 @@ class nebula::role::puppet::master {
   include nebula::role::umich
   include nebula::profile::puppet::master
   include nebula::profile::puppet::master_with_db
+  include nebula::profile::certbot_route53
 
   # FIXME because there's also a git repo
   include nebula::profile::krb5
