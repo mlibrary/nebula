@@ -51,38 +51,6 @@ class nebula::profile::puppet::master (
     require => Package['puppetserver'],
   }
 
-  $fileservers.each |$name, $data| {
-    if $data =~ String {
-      $path = $data
-      $options = {}
-    } else {
-      $path = $data['location']
-
-      if 'options' in $data {
-        $options = $data['options']
-      } else {
-        $options = {}
-      }
-    }
-
-    file { $path:
-      ensure  => 'directory',
-      source  => "puppet:///${name}",
-      recurse => true,
-      purge   => true,
-      force   => true,
-      *       => $options,
-      require => Package['puppetserver'],
-    }
-
-    find_all_files_under($path).each |$f| {
-      file { "${path}/${f}":
-        ensure => 'file',
-        source => "puppet:///${name}/${f}",
-      }
-    }
-  }
-
   package { 'puppetserver':
     require => Rbenv::Gem['r10k', 'librarian-puppet'],
   }
