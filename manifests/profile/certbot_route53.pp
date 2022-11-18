@@ -36,42 +36,38 @@ class nebula::profile::certbot_route53 (
 
   $certs.each |$service, $domains| {
     $domains.each |$main_domain, $alt_domains| {
-      $all_domains = [$main_domain] + $alt_domains
+      concat { "${cert_dir}/${main_domain}.crt":
+        group  => "puppet",
+      }
 
-      $all_domains.each |$domain| {
-        concat { "${cert_dir}/${domain}.crt":
-          group  => "puppet",
-        }
+      concat { "${cert_dir}/${main_domain}.key":
+        group  => "puppet",
+      }
 
-        concat { "${cert_dir}/${domain}.key":
-          group  => "puppet",
-        }
+      concat { "${haproxy_cert_dir}/${service}/${main_domain}.pem":
+        group => "puppet",
+      }
 
-        concat { "${haproxy_cert_dir}/${service}/${domain}.pem":
-          group => "puppet",
-        }
+      concat_fragment { "${main_domain}.crt cert":
+        target => "${cert_dir}/${main_domain}.crt",
+        source => "/etc/letsencrypt/live/${main_domain}/fullchain.pem"
+      }
 
-        concat_fragment { "${domain}.crt cert":
-          target => "${cert_dir}/${domain}.crt",
-          source => "/etc/letsencrypt/live/${domain}/fullchain.pem"
-        }
+      concat_fragment { "${main_domain}.key key":
+        target => "${cert_dir}/${main_domain}.key",
+        source => "/etc/letsencrypt/live/${main_domain}/privkey.pem"
+      }
 
-        concat_fragment { "${domain}.key key":
-          target => "${cert_dir}/${domain}.key",
-          source => "/etc/letsencrypt/live/${domain}/privkey.pem"
-        }
+      concat_fragment { "${main_domain}.pem cert":
+        order  => "01",
+        target => "${haproxy_cert_dir}/${service}/${main_domain}.pem",
+        source => "/etc/letsencrypt/live/${main_domain}/fullchain.pem"
+      }
 
-        concat_fragment { "${domain}.pem cert":
-          order  => "01",
-          target => "${haproxy_cert_dir}/${service}/${domain}.pem",
-          source => "/etc/letsencrypt/live/${domain}/fullchain.pem"
-        }
-
-        concat_fragment { "${domain}.pem key":
-          order  => "02",
-          target => "${haproxy_cert_dir}/${service}/${domain}.pem",
-          source => "/etc/letsencrypt/live/${domain}/privkey.pem"
-        }
+      concat_fragment { "${main_domain}.pem key":
+        order  => "02",
+        target => "${haproxy_cert_dir}/${service}/${main_domain}.pem",
+        source => "/etc/letsencrypt/live/${main_domain}/privkey.pem"
       }
     }
   }

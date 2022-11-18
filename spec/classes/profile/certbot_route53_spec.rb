@@ -106,7 +106,7 @@ describe 'nebula::profile::certbot_route53' do
         let(:params) do
           {
             certs: {
-              "a" => { "abc.invalid" => %w[abc.example] },
+              "a" => { "abc.invalid" => %w[abc.example], "abc.com" => [] },
               "z" => { "zyx.invalid" => [] }
             }
           }
@@ -117,33 +117,45 @@ describe 'nebula::profile::certbot_route53' do
             .with_content(
               <<~EOF
                 certbot certonly --dns-route53 -m "nope@nope.zone" -d "abc.invalid,*.abc.invalid,abc.example,*.abc.example"
+                certbot certonly --dns-route53 -m "nope@nope.zone" -d "abc.com,*.abc.com"
                 certbot certonly --dns-route53 -m "nope@nope.zone" -d "zyx.invalid,*.zyx.invalid"
               EOF
             )
         end
 
         it { is_expected.to compile }
+
         it { is_expected.to contain_concat("/var/local/cert_dir/abc.invalid.crt") }
-        it { is_expected.to contain_concat("/var/local/cert_dir/abc.example.crt") }
-        it { is_expected.to contain_concat("/var/local/cert_dir/zyx.invalid.crt") }
         it { is_expected.to contain_concat("/var/local/cert_dir/abc.invalid.key") }
-        it { is_expected.to contain_concat("/var/local/cert_dir/abc.example.key") }
-        it { is_expected.to contain_concat("/var/local/cert_dir/zyx.invalid.key") }
         it { is_expected.to contain_concat("/var/local/haproxy_cert_dir/a/abc.invalid.pem") }
-        it { is_expected.to contain_concat("/var/local/haproxy_cert_dir/a/abc.example.pem") }
-        it { is_expected.to contain_concat("/var/local/haproxy_cert_dir/z/zyx.invalid.pem") }
         it { is_expected.to contain_concat_fragment("abc.invalid.crt cert") }
-        it { is_expected.to contain_concat_fragment("abc.example.crt cert") }
-        it { is_expected.to contain_concat_fragment("zyx.invalid.crt cert") }
         it { is_expected.to contain_concat_fragment("abc.invalid.key key") }
-        it { is_expected.to contain_concat_fragment("abc.example.key key") }
-        it { is_expected.to contain_concat_fragment("zyx.invalid.key key") }
         it { is_expected.to contain_concat_fragment("abc.invalid.pem cert") }
-        it { is_expected.to contain_concat_fragment("abc.example.pem cert") }
-        it { is_expected.to contain_concat_fragment("zyx.invalid.pem cert") }
         it { is_expected.to contain_concat_fragment("abc.invalid.pem key") }
-        it { is_expected.to contain_concat_fragment("abc.example.pem key") }
+
+        it { is_expected.to contain_concat("/var/local/cert_dir/abc.com.crt") }
+        it { is_expected.to contain_concat("/var/local/cert_dir/abc.com.key") }
+        it { is_expected.to contain_concat("/var/local/haproxy_cert_dir/a/abc.com.pem") }
+        it { is_expected.to contain_concat_fragment("abc.com.crt cert") }
+        it { is_expected.to contain_concat_fragment("abc.com.key key") }
+        it { is_expected.to contain_concat_fragment("abc.com.pem cert") }
+        it { is_expected.to contain_concat_fragment("abc.com.pem key") }
+
+        it { is_expected.to contain_concat("/var/local/cert_dir/zyx.invalid.crt") }
+        it { is_expected.to contain_concat("/var/local/cert_dir/zyx.invalid.key") }
+        it { is_expected.to contain_concat("/var/local/haproxy_cert_dir/z/zyx.invalid.pem") }
+        it { is_expected.to contain_concat_fragment("zyx.invalid.crt cert") }
+        it { is_expected.to contain_concat_fragment("zyx.invalid.key key") }
+        it { is_expected.to contain_concat_fragment("zyx.invalid.pem cert") }
         it { is_expected.to contain_concat_fragment("zyx.invalid.pem key") }
+
+        it { is_expected.not_to contain_concat("/var/local/cert_dir/abc.example.crt") }
+        it { is_expected.not_to contain_concat("/var/local/cert_dir/abc.example.key") }
+        it { is_expected.not_to contain_concat("/var/local/haproxy_cert_dir/a/abc.example.pem") }
+        it { is_expected.not_to contain_concat_fragment("abc.example.crt cert") }
+        it { is_expected.not_to contain_concat_fragment("abc.example.key key") }
+        it { is_expected.not_to contain_concat_fragment("abc.example.pem cert") }
+        it { is_expected.not_to contain_concat_fragment("abc.example.pem key") }
       end
     end
   end
