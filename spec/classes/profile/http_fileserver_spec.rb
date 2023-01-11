@@ -13,33 +13,65 @@ describe 'nebula::profile::http_fileserver' do
 
       let(:facts) { os_facts }
       let(:hiera_config) { 'spec/fixtures/hiera/deb_server_config.yaml' }
-      let(:fqdn) { facts[:fqdn] }
+      let(:node) { "foo.example.com" } # see spec/default_facts.yml
 
       let(:params) do
         { storage_path: 'somehost:/whatever' }
       end
 
+      it { is_expected.to contain_mount('/srv/www').with(fstype: 'nfs', device: 'somehost:/whatever') }
+      it { is_expected.to contain_file('/srv/www').with_ensure('directory') }
+      it { is_expected.to contain_file('/var/local/http').with_ensure('directory') }
+
       it do
         is_expected.to contain_class('apache').with(
           docroot: '/srv/www',
-          default_ssl_chain: '/etc/ssl/certs/incommon_sha2.crt',
-          default_ssl_cert: "/etc/ssl/certs/#{fqdn}.crt",
-          default_ssl_key: "/etc/ssl/private/#{fqdn}.key",
+          default_ssl_cert: '/etc/letsencrypt/live/foo.example.com/fullchain.pem',
+          default_ssl_key: '/etc/letsencrypt/live/foo.example.com/privkey.pem',
+          default_vhost: false,
+          default_ssl_vhost: true,
         )
       end
 
-      it { is_expected.to contain_mount('/srv/www').with(fstype: 'nfs', device: 'somehost:/whatever') }
-      it { is_expected.to contain_file("/etc/ssl/certs/#{fqdn}.crt") }
-      it { is_expected.to contain_file("/etc/ssl/private/#{fqdn}.key") }
-      it { is_expected.to contain_file('/etc/ssl/certs/intermediate_ca.crt') }
+      it do
+        is_expected.to contain_apache__vhost("foo.example.com http")
+          .with_servername("foo.example.com")
+          .with_port(80)
+          .with_docroot("/var/local/http")
+          .that_requires("File[/var/local/http]")
+      end
 
-      context "with chain_crt set to abc.crt" do
-        let(:params) do
-          super().merge(chain_crt: 'abc.crt')
+      it do
+        is_expected.to contain_nebula__cert("foo.example.com")
+          .with_webroot("/var/local/http")
+          .that_requires("File[/var/local/http]")
+          .that_requires("Apache::Vhost[foo.example.com http]")
+      end
+
+      context "with no existing certificate" do
+        let(:node) { "nocert.example.com" }
+
+        it do
+          is_expected.to contain_class('apache')
+            .with_docroot('/srv/www')
+            .with_default_vhost(false)
+            .with_default_ssl_vhost(false)
         end
 
-        it { is_expected.to compile }
-        it { is_expected.to contain_class('apache').with_default_ssl_chain('/etc/ssl/certs/abc.crt') }
+        it do
+          is_expected.to contain_apache__vhost("nocert.example.com http")
+            .with_servername("nocert.example.com")
+            .with_port(80)
+            .with_docroot("/var/local/http")
+            .that_requires("File[/var/local/http]")
+        end
+
+        it do
+          is_expected.to contain_nebula__cert("nocert.example.com")
+            .with_webroot("/var/local/http")
+            .that_requires("File[/var/local/http]")
+            .that_requires("Apache::Vhost[nocert.example.com http]")
+        end
       end
     end
   end
