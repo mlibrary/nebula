@@ -9,7 +9,7 @@
 #
 # @example
 #   include nebula::profile::www_lib::perl
-class nebula::profile::www_lib::perl () {
+class nebula::profile::www_lib::perl {
   include nebula::profile::www_lib::dependencies
 
   ensure_packages([
@@ -125,8 +125,8 @@ class nebula::profile::www_lib::perl () {
   ])
 
   nebula::cpan { [
-    'Crypt::GPG',
     'CGI',
+    'Crypt::GPG',
     'Dancer::Template::Haml',
     'Digest::SHA1',
     'Relations',

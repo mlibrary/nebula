@@ -17,11 +17,12 @@ class nebula::profile::solr (
   String $heap = '1G',
   Integer $port = 8983
 ) {
+  $jdk_version = lookup('nebula::jdk_version')
 
-  ensure_packages(['openjdk-8-jre-headless','solr','lsof'])
+  ensure_packages(["openjdk-${jdk_version}-jre-headless",'solr','lsof'])
 
   # Note: Along with variables above these are used in erb files also.
-  $java_home = '/usr/lib/jvm/java-8-openjdk-amd64/jre'
+  $java_home = "/usr/lib/jvm/java-${jdk_version}-openjdk-amd64/jre"
   $solr_bin = '/opt/solr/bin/solr'
 
   nebula::usergroup { 'solr': }

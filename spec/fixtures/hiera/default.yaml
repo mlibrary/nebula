@@ -171,3 +171,4 @@ umich::networks::private_blocks:
 nebula::profile::falcon::cid: default-invalid-cid
 nebula::profile::tsm::servername: tsmserver
 nebula::profile::tsm::serveraddress: tsm.default.invalid
+nebula::jdk_version: '8'
