@@ -24,7 +24,6 @@ class nebula::profile::www_lib::perl () {
     'libclass-method-modifiers-perl',
     'libcommon-sense-perl',
     'libconvert-asn1-perl',
-    'libcrypt-gpg-perl',
     'libcrypt-hcesha-perl',
     'libdancer-perl',
     'libdata-page-perl',
@@ -77,6 +76,7 @@ class nebula::profile::www_lib::perl () {
     'libmath-bigint-perl',
     'libmouse-perl',
     'libmro-compat-perl',
+    'libmojolicious-perl',
     'libnet-daemon-perl',
     'libnet-http-perl',
     'libnet-ldap-perl',
@@ -125,11 +125,10 @@ class nebula::profile::www_lib::perl () {
   ])
 
   nebula::cpan { [
+    'Crypt::GPG',
     'CGI',
     'Dancer::Template::Haml',
     'Digest::SHA1',
-    'Mojolicious', # must pin to version
-    'Mojo::Server::FastCGI', # must pin to version
     'Relations',
     'Relations::Query',
     'SQL::Beautify',

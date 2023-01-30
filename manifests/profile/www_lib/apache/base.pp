@@ -59,11 +59,6 @@ class nebula::profile::www_lib::apache::base {
   class { 'apache::mod::shib': }
   include apache::mod::xsendfile
 
-  class { 'nebula::profile::shibboleth':
-    config_source    => 'puppet:///shibboleth-www_lib',
-    watchdog_minutes => '*/30',
-  }
-
   file { '/etc/apache2/mods-available/shib2.conf':
     ensure  => 'present',
     content => template('nebula/profile/www_lib/shib2.conf.erb'),

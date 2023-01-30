@@ -19,16 +19,20 @@ class nebula::profile::www_lib::vhosts::press (
   String $logging_prefix = 'press'
 ) {
   $servername = "${prefix}www.press.umich.edu"
-  $log_path = "${apache::params::logroot}/${logging_prefix}/mojo"
 
-  file { $log_path:
+  file { "${apache::params::logroot}/${logging_prefix}":
+    ensure => 'directory',
+  }
+
+  $mojo_log_path = "${apache::params::logroot}/${logging_prefix}/mojo"
+  file { $mojo_log_path:
     ensure => 'directory',
     owner  => 'nobody',
     group  => 'nogroup',
   }
 
   logrotate::rule { 'press':
-    path          => [ "${log_path}/press.out", "${log_path}/press.err" ],
+    path          => [ "${mojo_log_path}/press.out", "${mojo_log_path}/press.err" ],
     rotate        => 7,
     rotate_every  => 'day',
     missingok     => true,
