@@ -76,6 +76,11 @@ describe 'nebula::profile::kubernetes::dns_server' do
         end
 
         it do
+          is_expected.to contain_file('/etc/dnsmasq.d/local_domain')
+            .with_content("local=/first.cluster/\n")
+        end
+
+        it do
           is_expected.to contain_concat_fragment('/etc/hosts ipv6 debian')
             .with_target('/etc/hosts')
             .with_order('06')
@@ -90,6 +95,11 @@ describe 'nebula::profile::kubernetes::dns_server' do
         it { is_expected.to compile }
 
         it { is_expected.not_to contain_file('/etc/dnsmasq.d/smartconnect') }
+
+        it do
+          is_expected.to contain_file('/etc/dnsmasq.d/local_domain')
+            .with_content("local=/second.cluster/\n")
+        end
       end
     end
   end
