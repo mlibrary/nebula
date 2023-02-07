@@ -360,7 +360,7 @@ d-i apt-setup/non-free boolean true
 # "GPG key public keyring" format, the "keybox database" format is
 # currently not supported.
 d-i apt-setup/local0/repository string http://apt.puppetlabs.com bullseye puppet6
-d-i apt-setup/local0/key string http://<%= @filehost %>/puppetlabs-pc1-keyring.gpg
+d-i apt-setup/local0/key string https://<%= @filehost %>/puppetlabs-pc1-keyring.gpg
 
 # By default the installer requires that repositories be authenticated
 # using a known gpg key. This setting can be used to disable that
@@ -484,8 +484,8 @@ d-i finish-install/reboot_in_progress note
 d-i preseed/late_command string                       \
     in-target systemctl enable puppet;                \
     wget -O /target/etc/puppetlabs/puppet/puppet.conf \
-        http://<%= @filehost %>/puppet.conf;          \
+        https://<%= @filehost %>/puppet.conf;         \
     wget -O /target/etc/iptables/rules.v4             \
-        http://<%= @filehost %>/rules.v4;             \
+        https://<%= @filehost %>/rules.v4;            \
     chmod 600 /target/etc/iptables/rules.v4
 
