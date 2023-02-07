@@ -334,7 +334,7 @@ d-i apt-setup/non-free boolean true
 # sources.list line will be left commented out
 #d-i apt-setup/local0/key string http://local.server/key
 d-i apt-setup/local0/repository string http://apt.puppetlabs.com stretch puppet5
-d-i apt-setup/local0/key string http://<%= @filehost %>/puppetlabs-pc1-keyring.gpg
+d-i apt-setup/local0/key string https://<%= @filehost %>/puppetlabs-pc1-keyring.gpg
 
 # By default the installer requires that repositories be authenticated
 # using a known gpg key. This setting can be used to disable that
@@ -464,8 +464,8 @@ d-i finish-install/reboot_in_progress note
 d-i preseed/late_command string                       \
     echo y | lvremove /dev/internal/blank;            \
     wget -O /target/etc/puppetlabs/puppet/puppet.conf \
-        http://<%= @filehost %>/puppet.conf;          \
+        https://<%= @filehost %>/puppet.conf;         \
     wget -O /target/etc/iptables/rules.v4             \
-        http://<%= @filehost %>/rules.v4;             \
+        https://<%= @filehost %>/rules.v4;            \
     chmod 600 /target/etc/iptables/rules.v4
 
