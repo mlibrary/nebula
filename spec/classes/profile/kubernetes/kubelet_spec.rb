@@ -96,7 +96,7 @@ describe 'nebula::profile::kubernetes::kubelet' do
             release: 'kubernetes-xenial',
             repos: 'main',
             key: {
-              'id'     => '7F92E05B31093BEF5A3C2D38FEEA9169307EA071',
+              'id'     => 'A362B822F6DEDC652817EA46B53DC80D13EDEF05',
               'source' => 'https://packages.cloud.google.com/apt/doc/apt-key.gpg',
             },
           )
