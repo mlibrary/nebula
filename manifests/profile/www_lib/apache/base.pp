@@ -26,7 +26,7 @@ class nebula::profile::www_lib::apache::base {
     directory   => $nebula::profile::apache::monitoring::monitor_dir,
     shibboleth  => true,
     solr_cores  => lookup('nebula::www_lib::monitor::solr_cores'),
-    http_checks => lookup('nebula::www_lib::monitor::http_checks'),
+    http_checks => lookup('nebula::www_lib::monitor::http_checks', default_value => []),
     mysql       => lookup('nebula::www_lib::monitor::mysql')
   }
 
