@@ -30,7 +30,6 @@ class nebula::profile::www_lib::apache::misc (
     [
       'apps.lib.umich.edu',
       'apps.staff.lib.umich.edu',
-      'copyright.umich.edu',
       'datamart.lib.umich.edu',
       'deepblue.lib.umich.edu',
       'developingwritersbook.com',
