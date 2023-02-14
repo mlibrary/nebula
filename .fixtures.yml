@@ -66,7 +66,7 @@ fixtures:
       ref: "2.1.1"
     php:
       repo: "puppet/php"
-      ref: "7.1.0"
+      ref: "8.0.3"
     debconf:
       repo: "stm/debconf"
       ref: "3.2.0"
