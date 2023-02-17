@@ -51,7 +51,7 @@ end
           )
         end
 
-        it { is_expected.to contain_class('Nebula::Profile::Ntp') }
+        it { is_expected.to contain_class('Nebula::Profile::Chrony') }
 
         it { is_expected.not_to contain_resources('firewall').with_purge(true) }
 

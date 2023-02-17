@@ -5,6 +5,7 @@
 # Prometheus for hardware monitoring
 class nebula::role::prometheus ()
 {
+  include nebula::profile::chrony
   include nebula::role::minimal_docker
   include nebula::profile::prometheus
 }

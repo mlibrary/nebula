@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 The Regents of the University of Michigan.
+# Copyright (c) 2019-2023 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -7,7 +7,7 @@ class nebula::role::kubernetes::controller {
     internal_routing => 'kubernetes_calico',
   }
 
-  include nebula::profile::ntp
+  include nebula::profile::chrony
   include nebula::profile::kubernetes::dns_client
   include nebula::profile::kubernetes::kubelet
   include nebula::profile::kubernetes::kubeadm
