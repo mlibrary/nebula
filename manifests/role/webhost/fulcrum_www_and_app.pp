@@ -8,7 +8,7 @@
 #   include nebula::role::webhost::fulcrum_www_and_app
 class nebula::role::webhost::fulcrum_www_and_app (
   String $private_address_template = '192.168.0.%s',
-  String $shibboleth_config_source = 'puppet:///shibboleth-www-lib-prod-bullseye',
+  String $shibboleth_config_source = 'puppet:///shibboleth-fulcrum',
   Hash $hosts = {}
 ) {
   include nebula::role::umich
