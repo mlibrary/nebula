@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019, 2023 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -12,19 +12,9 @@
 #
 # Any users the cron jobs run as should be in the 'cron' group to ensure they
 # get created on this node.
-#
-# @param crons Resource definitions for cron jobs to configure on this node.
-#
-# @example
-#   include nebula::role::cron_runner
-class nebula::role::cron_runner(
-  Hash $crons = {}
-) {
+class nebula::role::cron_runner {
   include nebula::role::umich
   include nebula::profile::ruby
   include nebula::profile::nodejs
-
-  nebula::usergroup { 'cron': }
-  User <| title == 'spot' |>
-  create_resources(cron,$crons)
+  include nebula::profile::cron_runner
 }
