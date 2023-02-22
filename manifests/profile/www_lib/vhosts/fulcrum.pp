@@ -13,10 +13,9 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   String $derivatives_path = '/fulcrum/data/derivatives',
   String $logging_prefix = 'fulcrum',
   String $app_host = 'app',
-  String $app_port = '3000'
+  String $app_port = '3000',
+  String $servername = 'www.fulcrum.org'
 ) {
-  $servername = 'www.fulcrum.org'
-
   $authz_base_requires = {
     enforce  => 'all',
     requires => [
