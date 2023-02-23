@@ -5,4 +5,5 @@
 class nebula::role::alma_integrations {
   include nebula::role::umich
   include nebula::profile::alma_integrations
+  include nebula::profile::cron_runner
 }
