@@ -14,6 +14,7 @@ class nebula::profile::mysql (
     create_root_user        => true,
     create_root_my_cnf      => true,
     root_password           => $password,
+    datadir                 => $datapath,
     remove_default_accounts => true,
   }
 
