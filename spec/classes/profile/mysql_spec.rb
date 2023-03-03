@@ -10,6 +10,7 @@ describe 'nebula::profile::mysql' do
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:params) { { password: 'some_password' } }
+      let(:params) { { datadir: 'some_path' } }
 
       it { is_expected.to compile }
     end
