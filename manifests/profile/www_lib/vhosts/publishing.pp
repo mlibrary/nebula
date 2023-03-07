@@ -58,12 +58,6 @@ class nebula::profile::www_lib::vhosts::publishing (
     ],
   }
 
-  nebula::apache::redirect_vhost_https { 'fulcrum.publishing.umich.edu':
-    ssl_cn   => 'www.publishing.umich.edu',
-    priority => '07',
-    target   => 'https://tools.lib.umich.edu/confluence/display/FPS'
-  }
-
   # A range of other sites served under the same Wordpress installation
   apache::vhost { 'publishing-partners-http':
     servername     => 'blog.press.umich.edu',

@@ -54,11 +54,6 @@ class nebula::profile::www_lib::apache::fulcrum (
       target        => 'https://www.fulcrum.org/dialogue',
       serveraliases => [ 'dialogue.fulcrum.org', 'dialogue.fulcrumservices.org'],
     ;
-
-    'fulcrum.www.lib.umich.edu':
-      target        => 'https://www.fulcrum.org/',
-      serveraliases => ['fulcrum.lib.umich.edu'],
-    ;
   }
 
   nebula::apache::redirect_vhost_https { 'fulcrum.org':
