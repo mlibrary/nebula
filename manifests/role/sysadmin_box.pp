@@ -10,7 +10,7 @@
 #   include nebula::role::sysadmin_box
 class nebula::role::sysadmin_box {
   include nebula::role::umich
-  # include nebula::profile::users
+  include nebula::profile::users
   include nebula::profile::ruby
   include nebula::profile::root_ssh_private_keys
 
