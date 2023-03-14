@@ -169,6 +169,7 @@ class nebula::profile::fulcrum::app (
   }
 
   service { 'fulcrum':
+    name    => 'fulcrum.target',
     ensure  => 'running',
     enable  => true,
     require => [
