@@ -152,6 +152,22 @@ class nebula::profile::fulcrum::app (
     notify  => Service['fulcrum'],
   }
 
+  file_line { 'fulcrum-profile-rails-env':
+    ensure => present,
+    path   => '/fulcrum/.profile',
+    line   => 'export RAILS_ENV=production',
+    match  => '^export RAILS_ENV=',
+    require => User['fulcrum'],
+  }
+
+  file_line { 'fulcrum-profile-bootsnap-cache':
+    ensure  => present,
+    path    => '/fulcrum/.profile',
+    line    => 'export BOOTSNAP_CACHE_DIR=/fulcrum/tmp',
+    match   => '^export BOOTNSAP_CACHE_DIR=',
+    require => User['fulcrum'],
+  }
+
   service { 'fulcrum':
     ensure  => 'running',
     enable  => true,
