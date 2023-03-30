@@ -14,7 +14,8 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   String $logging_prefix = 'fulcrum',
   String $app_host = 'app',
   String $app_port = '3000',
-  String $servername = 'www.fulcrum.org'
+  String $servername = 'www.fulcrum.org',
+  Array[String] $additional_sendfile_paths = []
 ) {
   $authz_base_requires = {
     enforce  => 'all',
@@ -52,6 +53,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   }
 
   $datacenter_cidrs = lookup('nebula::known_addresses::datacenter').flatten.map |String $cidr| { "ip ${cidr}" }
+  $additional_sendfile_directives = $additional_sendfile_paths.map |String $path| { "XSendFilePath ${path}" }.join("\n")
 
   nebula::apache::www_lib_vhost { 'fulcrum-https':
     priority        => '13',
@@ -151,6 +153,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       # XSendFile settings
       XSendFile on
       XSendFilePath ${derivatives_path}
+      ${additional_sendfile_directives}
       # Configure Shibboleth for authentication via InCommon partner login
       <Location "/">
         AuthType shibboleth
