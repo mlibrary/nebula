@@ -5,7 +5,7 @@
 # nebula::profile::openjdk_java
 #
 class nebula::profile::openjdk_java (
-  Array[String] $jdk_packages = ['openjdk-11-jdk-headless']
+  Array[String] $jdk_packages = ['openjdk-11-jdk-headless'],
   String $default_jdk = 'openjdk-11-jdk-headless',
   String $base_alternative = 'java-11-openjdk-amd64',
   String $java_alternative = 'java-1.11.0-openjdk-amd64'
