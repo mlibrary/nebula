@@ -201,10 +201,7 @@ class nebula::profile::www_lib::vhosts::apps_lib (
     ssl_proxy_machine_cert        => $client_cert,
 
     custom_fragment               => @(EOT)
-      ProxyPassReverse / http://app-sali-production:30789/
+      ProxyPassReverse / https://sali.lib.umich.edu:8443/
     | EOT
-    # custom_fragment               => @(EOT)
-    #   ProxyPassReverse / https://sali.lib.umich.edu:8443/
-    # | EOT
   }
 }
