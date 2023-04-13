@@ -162,8 +162,7 @@ class nebula::profile::www_lib::vhosts::apps_lib (
       },
       {
         rewrite_cond => '%{REQUEST_URI} !^/cosign/valid',
-        rewrite_rule => '^(/instruction/request.*)$ http://app-sali-production:30789$1 [P]',
-        # rewrite_rule => '^(/instruction/request.*)$ https://sali.lib.umich.edu:8443$1 [P]',
+        rewrite_rule => '^(/instruction/request.*)$ https://sali.lib.umich.edu:8443$1 [P]',
       },
 
       { rewrite_rule => '^/my-account/favorites - [last]' },
