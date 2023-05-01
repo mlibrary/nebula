@@ -23,7 +23,7 @@ class nebula::profile::fulcrum::app (
     'ffmpeg',
     'ghostscript',
     'libreoffice',
-    'netpbm',
+    'netpbm-sf',
     "openjdk-${jdk_version}-jre-headless",
     'pdftk',
     'qpdf',

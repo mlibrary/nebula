@@ -6,6 +6,8 @@
 
 class nebula::profile::fulcrum::mounts (
   Hash $config = {},
+  Hash $cifs_config = {},
 ) {
   create_resources('nebula::nfs_mount', $config)
+  create_resources('nebula::cifs_mount', $cifs_config)
 }
