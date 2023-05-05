@@ -50,11 +50,6 @@ class nebula::profile::hathitrust::hosts(
     ip      => $mysql_htdev
   }
 
-  host { 'apps-ht':
-    comment => 'ht app server',
-    ip      => $apps_ht
-  }
-
   $solr_search.each |Integer $i, String $ip| {
     host { "solr-sdr-search-${$i+1}":
       ip      => $ip
