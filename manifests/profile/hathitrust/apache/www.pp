@@ -65,16 +65,6 @@ class nebula::profile::hathitrust::apache::www (
         path     =>  "${sdrroot}/common/web",
         require  => $default_access,
       },
-      {
-        provider => 'directory',
-        path     => '/htapps/apps/usdocs_registry/public',
-        require  => $default_access
-      },
-      {
-        provider => 'location',
-        path     => '/usdocs_registry',
-        require  => $default_access
-      }
     ],
 
     aliases            => [
@@ -85,22 +75,6 @@ class nebula::profile::hathitrust::apache::www (
       {
         alias => '/common/',
         path  => "${sdrroot}/common/web/"
-      }
-    ],
-
-    rewrites           => [
-      {
-        # Serve static assets through apache
-        rewrite_cond => '/htapps/apps/usdocs_registry/public/$1 -f',
-        rewrite_rule =>  '^/usdocs_registry/(.*)$  /htapps/apps/usdocs_registry/public/$1 [L]',
-      }
-    ],
-
-    proxy_pass         => [
-      {
-        path   => '/usdocs_registry',
-        url    => 'http://apps-ht:30001/',
-        params => { 'retry' => '2' }
       }
     ],
 

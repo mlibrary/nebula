@@ -22,7 +22,6 @@ nebula::profile::hathitrust::hosts::solr_search:
   - '4.4.4.4'
   - '5.5.5.5'
 nebula::profile::hathitrust::hosts::solr_catalog: '6.6.6.6'
-nebula::profile::hathitrust::hosts::solr_usfeddocs: '8.8.8.8'
 nebula::profile::hathitrust::hosts::solr_vufind_primary: '9.9.9.9'
 nebula::profile::hathitrust::hosts::solr_vufind_failover: '22.22.22.22'
 nebula::profile::hathitrust::ingest_hosts::mysql_sdr: '10.1.2.4'

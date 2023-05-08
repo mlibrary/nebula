@@ -14,7 +14,6 @@ class nebula::profile::hathitrust::hosts(
   String $apps_ht,
   Array[String] $solr_search,
   String $solr_catalog,
-  String $solr_usfeddocs,
   String $solr_vufind_primary,
   String $solr_vufind_failover
 ) {
@@ -51,11 +50,6 @@ class nebula::profile::hathitrust::hosts(
     ip      => $mysql_htdev
   }
 
-  host { 'apps-ht':
-    comment => 'ht app server',
-    ip      => $apps_ht
-  }
-
   $solr_search.each |Integer $i, String $ip| {
     host { "solr-sdr-search-${$i+1}":
       ip      => $ip
@@ -65,11 +59,6 @@ class nebula::profile::hathitrust::hosts(
   host { 'solr-sdr-catalog':
     comment => 'solr (ht catalog)',
     ip      => $solr_catalog
-  }
-
-  host { 'solr-sdr-usfeddocs':
-    comment => 'solr (usfeddocs)',
-    ip      => $solr_usfeddocs
   }
 
   host { 'solr-vufind':

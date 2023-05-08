@@ -110,6 +110,7 @@ class nebula::profile::hathitrust::apache (
   class { 'apache::mod::php':
     extensions => ['.php','.phtml']
   }
+  class { 'apache::mod::proxy': }
   class { 'apache::mod::proxy_fcgi': }
   class { 'apache::mod::reqtimeout': }
   class { 'apache::mod::setenvif': }
