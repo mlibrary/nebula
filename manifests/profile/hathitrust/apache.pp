@@ -112,6 +112,7 @@ class nebula::profile::hathitrust::apache (
   }
   class { 'apache::mod::proxy': }
   class { 'apache::mod::proxy_fcgi': }
+  class { 'apache::mod::proxy_http': }
   class { 'apache::mod::reqtimeout': }
   class { 'apache::mod::setenvif': }
   class { 'apache::mod::shib': }
