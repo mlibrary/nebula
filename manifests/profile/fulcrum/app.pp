@@ -7,6 +7,7 @@
 class nebula::profile::fulcrum::app (
   Array $authorized_keys = [],
   String $private_address_template = '192.168.0.%s',
+  String $image_magick_secret = 'secret',
 ) {
   $jdk_version = lookup('nebula::jdk_version')
 
@@ -126,6 +127,11 @@ class nebula::profile::fulcrum::app (
   file { '/usr/local/bin/fits.sh':
     ensure => 'symlink',
     target => '/usr/local/fits/fits.sh',
+  }
+
+  file { '/etc/ImageMagick-6/policy.xml':
+    content => template('nebula/profile/fulcrum/imagemagick-policy.xml.erb'),
+    require => Package['imagemagick'],
   }
 
   file { '/etc/systemd/system/fulcrum.target':
