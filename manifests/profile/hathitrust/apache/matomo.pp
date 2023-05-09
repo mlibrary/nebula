@@ -71,9 +71,9 @@ class nebula::profile::hathitrust::apache::matomo (
         require        =>  'all denied'
       },
       {
-        provider              => 'location',
-        path                  => '/',
-        proxy_pass            => [ { url =>$matomo_endpoint }],
+        provider   => 'location',
+        path       => '/',
+        proxy_pass => [ { url =>$matomo_endpoint }],
       },
     ],
 

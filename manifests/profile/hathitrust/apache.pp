@@ -187,7 +187,7 @@ class nebula::profile::hathitrust::apache (
     minute  => '1',
     hour    => '0',
   }
-  
+
   ### client cert
 
   $certname = $trusted['certname'];
