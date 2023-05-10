@@ -25,6 +25,11 @@ class nebula::profile::hathitrust::apache::babel (
   Array[String] $cache_paths = [ ],
 ) {
 
+  ### client cert
+
+  $certname = $trusted['certname'];
+  $client_cert = "/etc/ssl/private/${certname}.pem";
+
   ### MONITORING
 
   $monitor_location = '/monitor'
@@ -56,29 +61,6 @@ class nebula::profile::hathitrust::apache::babel (
     user    => 'nobody',
     minute  => '23',
     hour    => '1',
-  }
-
-  ### client cert
-
-  $certname = $trusted['certname'];
-  $client_cert = "/etc/ssl/private/${certname}.pem";
-
-  concat { $client_cert:
-    ensure => 'present',
-    mode   => '0600',
-    owner  => 'root',
-  }
-
-  concat::fragment { 'client cert':
-    target => $client_cert,
-    source => "/etc/puppetlabs/puppet/ssl/certs/${certname}.pem",
-    order  =>  1
-  }
-
-  concat::fragment { 'client key':
-    target => $client_cert,
-    source => "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem",
-    order  =>  2
   }
 
   ## VHOST DEFINITION

@@ -164,7 +164,7 @@ class nebula::profile::hathitrust::apache (
   }
 
 
-  ['redirection','babel','www','catalog','crms_training'].each |$vhost| {
+  ['redirection','babel','www','catalog','crms_training','matomo'].each |$vhost| {
     class { "${title}::${vhost}":
       * =>  $default_vhost_params
     }
@@ -188,6 +188,29 @@ class nebula::profile::hathitrust::apache (
     user    => 'root',
     minute  => '1',
     hour    => '0',
+  }
+
+  ### client cert
+
+  $certname = $trusted['certname'];
+  $client_cert = "/etc/ssl/private/${certname}.pem";
+
+  concat { $client_cert:
+    ensure => 'present',
+    mode   => '0600',
+    owner  => 'root',
+  }
+
+  concat::fragment { 'client cert':
+    target => $client_cert,
+    source => "/etc/puppetlabs/puppet/ssl/certs/${certname}.pem",
+    order  =>  1
+  }
+
+  concat::fragment { 'client key':
+    target => $client_cert,
+    source => "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem",
+    order  =>  2
   }
 
 }
