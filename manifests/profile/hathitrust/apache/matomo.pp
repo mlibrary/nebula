@@ -16,6 +16,7 @@ class nebula::profile::hathitrust::apache::matomo (
   String $prefix,
   String $domain,
   String $matomo_endpoint,
+  String $subdomain = 'matomo.www',
 ) {
 
   ### client cert
@@ -25,7 +26,7 @@ class nebula::profile::hathitrust::apache::matomo (
 
   ## VHOST DEFINITION
 
-  $servername = "${prefix}matomo.${domain}"
+  $servername = "${subdomain}.${domain}"
 
   file { '/var/log/apache2/matomo':
     ensure => 'directory',
