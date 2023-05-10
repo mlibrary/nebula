@@ -11,6 +11,8 @@
 class nebula::profile::www_lib::vhosts::fulcrum (
   String $docroot = '/fulcrum/app/current/public',
   String $derivatives_path = '/fulcrum/data/derivatives',
+  # Temporary to allow legacy servers use old/new paths in parallel
+  String $alt_derivatives_path = '/hydra/heliotrope-production/current/tmp/derivatives',
   String $logging_prefix = 'fulcrum',
   String $app_host = 'app',
   String $app_port = '3000',
@@ -151,6 +153,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       # XSendFile settings
       XSendFile on
       XSendFilePath ${derivatives_path}
+      XSendFilePath ${alt_derivatives_path}
       # Configure Shibboleth for authentication via InCommon partner login
       <Location "/">
         AuthType shibboleth
