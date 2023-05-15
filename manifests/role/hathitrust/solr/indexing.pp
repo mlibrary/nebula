@@ -10,4 +10,5 @@ class nebula::role::hathitrust::solr::indexing {
   include nebula::role::hathitrust::solr
   include nebula::profile::ruby
   include nebula::profile::hathitrust::slip
+  include nebula::profile::openjdk_java
 }
