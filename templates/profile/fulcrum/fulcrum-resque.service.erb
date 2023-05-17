@@ -12,6 +12,7 @@ WorkingDirectory=/fulcrum/app/current
 KillMode=process
 KillSignal=QUIT
 ExecStart=/usr/local/rbenv/shims/bundle exec resque-pool
+Restart=on-failure
 
 [Install]
 WantedBy=fulcrum.target

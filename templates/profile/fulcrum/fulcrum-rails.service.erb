@@ -10,6 +10,7 @@ Group=fulcrum
 EnvironmentFile=-/etc/default/fulcrum
 WorkingDirectory=/fulcrum/app/current
 ExecStart=/usr/local/rbenv/shims/bundle exec puma -C config/puma.rb
+Restart=on-failure
 
 [Install]
 WantedBy=fulcrum.target
