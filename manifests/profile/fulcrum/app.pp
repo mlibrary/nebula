@@ -135,6 +135,11 @@ class nebula::profile::fulcrum::app (
     require => Package['imagemagick'],
   }
 
+  file { '/usr/local/fits/xml/fits.xml':
+    content => template('nebula/profile/fulcrum/fits.xml.erb'),
+    require => Archive['/tmp/fits.zip'],
+  }
+
   file { '/etc/systemd/system/fulcrum.target':
     content => template('nebula/profile/fulcrum/fulcrum.target.erb'),
     notify  => Service['fulcrum'],
