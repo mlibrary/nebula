@@ -18,4 +18,18 @@ class nebula::profile::fulcrum::logrotate {
     su_user       => 'fulcrum',
     su_group      => 'fulcrum',
   }
+
+  logrotate::rule { 'fulcrum-keycard':
+    path          => '/fulcrum/app/releases/*/db/*.log',
+    rotate        => 7,
+    rotate_every  => 'day',
+    missingok     => true,
+    compress      => true,
+    ifempty       => false,
+    delaycompress => false,
+    copytruncate  => true,
+    su            => true,
+    su_user       => 'fulcrum',
+    su_group      => 'fulcrum',
+  }
 }
