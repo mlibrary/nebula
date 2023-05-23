@@ -21,16 +21,9 @@ class nebula::profile::www_lib::vhosts::www_lib (
     servername                    => "${prefix}www.${domain}",
     ssl                           => true,
     usertrack                     => true,
-    cosign                        => true,
+    cosign                        => false,
     docroot                       => $docroot,
     directories                   => [
-      {
-        provider       => 'directory',
-        path           => "${www_lib_root}/cgi",
-        allow_override => ['None'],
-        options        => ['None'],
-        require        => $nebula::profile::www_lib::apache::default_access,
-      },
       {
         provider       => 'directory',
         path           => $docroot,

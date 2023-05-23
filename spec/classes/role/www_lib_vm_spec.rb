@@ -71,11 +71,6 @@ describe 'nebula::role::webhost::www_lib_vm' do
         is_expected.to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
       end
 
-      it do
-        is_expected.to contain_concat_fragment('www.lib-ssl-cosign')
-          .with_content(%r{^\s*CosignCrypto\s*/etc/ssl/private/www.lib.umich.edu.key /etc/ssl/certs/www.lib.umich.edu.crt /etc/ssl/certs})
-      end
-
       # from hiera
       it { is_expected.to contain_host('mysql-web').with_ip('10.0.0.123') }
 

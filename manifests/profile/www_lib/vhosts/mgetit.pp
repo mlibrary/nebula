@@ -48,7 +48,7 @@ class nebula::profile::www_lib::vhosts::mgetit (
 
     ssl                         => true,
     ssl_cn                      => $ssl_cn,
-    cosign                      => true,
+    cosign                      => false,
     usertrack                   => true,
 
     setenv                      => ['HTTPS on'],
@@ -77,13 +77,6 @@ class nebula::profile::www_lib::vhosts::mgetit (
         options        => 'FollowSymlinks',
         allow_override => 'None',
         require        => $nebula::profile::www_lib::apache::default_access,
-      },
-      {
-        provider        => 'location',
-        path            => '/login',
-        auth_type       => 'cosign',
-        auth_require    => 'valid-user',
-        custom_fragment => 'CosignAllowPublicAccess Off',
       },
     ],
 
