@@ -16,7 +16,6 @@ describe 'nebula::profile::kubernetes::kubeadm' do
         it { is_expected.to compile }
 
         it { is_expected.to contain_package('kubeadm').with_ensure('1.14.2-00') }
-        it { is_expected.to contain_package('kubeadm').that_requires('Class[Docker]') }
         it { is_expected.to contain_package('kubeadm').that_requires('Apt::Source[kubernetes]') }
 
         it do

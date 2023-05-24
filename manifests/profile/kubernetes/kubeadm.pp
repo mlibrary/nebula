@@ -3,7 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 
 class nebula::profile::kubernetes::kubeadm {
-  include nebula::profile::kubernetes::docker
+  include nebula::profile::containerd
   include nebula::profile::kubernetes::kubelet
 
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
@@ -13,7 +13,7 @@ class nebula::profile::kubernetes::kubeadm {
 
   package { 'kubeadm':
     ensure  => "${kubernetes_version}-00",
-    require => [Apt::Source['kubernetes'], Class['docker']],
+    require => [Apt::Source['kubernetes']],
   }
 
   apt::pin { 'kubeadm':
