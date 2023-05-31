@@ -9,7 +9,7 @@
 # @example
 #   include nebula::profile::www_lib::php
 class nebula::profile::www_lib::php (
-  String $default_php_version = '7.3'
+  String $default_php_version = '8.1'
 ) {
 
   # Set the php repo
@@ -51,7 +51,6 @@ class nebula::profile::www_lib::php (
       "php${default_php_version}-xdebug",
       "php${default_php_version}-curl",
       "php${default_php_version}-gd",
-      "php${default_php_version}-json",
       "php${default_php_version}-ldap",
       "php${default_php_version}-mbstring",
       "php${default_php_version}-mysql",
