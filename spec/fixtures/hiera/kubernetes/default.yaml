@@ -16,7 +16,6 @@ nebula::profile::kubernetes::clusters:
     kube_api_address: 172.16.0.7
     private_domain: first.cluster
     control_dns: public.first.cluster
-    docker_version: 5:18.09.6~3-0~debian-stretch
     kubernetes_version: 1.14.2
     service_cidr: "172.16.0.0/13"
     pod_cidr: "172.24.0.0/14"
@@ -40,44 +39,32 @@ nebula::profile::kubernetes::clusters:
     kube_api_address: 172.16.1.7
     private_domain: second.cluster
     control_dns: public.second.cluster
-    docker_version: 18.06.2~ce~3-0~debian
     kubernetes_version: 1.11.9
-  implicit_docker_version:
-    public_address: 10.0.0.3
-    router_address: 172.16.2.1
-    etcd_address: 172.16.2.6
-    kube_api_address: 172.16.2.7
-    kubernetes_version: 1.14.2
   implicit_kubernetes_version:
     public_address: 10.0.0.4
     router_address: 172.16.3.1
     etcd_address: 172.16.3.6
     kube_api_address: 172.16.3.7
-    docker_version: 5:18.09.6~3-0~debian-stretch
   implicit_public_address:
     router_address: 172.16.4.1
     etcd_address: 172.16.4.6
     kube_api_address: 172.16.4.7
     kubernetes_version: 1.14.2
-    docker_version: 5:18.09.6~3-0~debian-stretch
   implicit_router_address:
     public_address: 10.0.0.6
     etcd_address: 172.16.5.6
     kube_api_address: 172.16.5.7
     kubernetes_version: 1.14.2
-    docker_version: 5:18.09.6~3-0~debian-stretch
   implicit_etcd_address:
     public_address: 10.0.0.7
     router_address: 172.16.6.1
     kube_api_address: 172.16.6.7
     kubernetes_version: 1.14.2
-    docker_version: 5:18.09.6~3-0~debian-stretch
   implicit_kube_api_address:
     public_address: 10.0.0.8
     router_address: 172.16.7.1
     etcd_address: 172.16.7.6
     kubernetes_version: 1.14.2
-    docker_version: 5:18.09.6~3-0~debian-stretch
 
 nebula::cifs::credentials::users:
 - kubernetes

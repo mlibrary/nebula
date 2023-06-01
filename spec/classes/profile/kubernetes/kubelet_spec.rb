@@ -19,12 +19,6 @@ describe 'nebula::profile::kubernetes::kubelet' do
         it { is_expected.not_to compile }
       end
 
-      context 'with cluster set to one without a docker version' do
-        let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/implicit_docker_version_config.yaml' }
-
-        it { is_expected.not_to compile }
-      end
-
       context 'with cluster set to one without a kubernetes version' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/implicit_kubernetes_version_config.yaml' }
 
@@ -63,30 +57,12 @@ describe 'nebula::profile::kubernetes::kubelet' do
         it { is_expected.to contain_service('kubelet').that_requires('Package[kubelet]') }
 
         it { is_expected.to contain_package('kubelet').with_ensure('1.14.2-00') }
-
-        [
-          'Class[Docker]',
-          'Apt::Source[kubernetes]',
-        ].each do |requirement|
-          it { is_expected.to contain_package('kubelet').that_requires(requirement) }
-        end
+        it { is_expected.to contain_package('kubelet').that_requires('Apt::Source[kubernetes]') }
 
         it do
           is_expected.to contain_apt__pin('kubelet').with(
             packages: ['kubelet'],
             version: '1.14.2-00',
-          )
-        end
-
-        it do
-          is_expected.to contain_file('/etc/systemd/system/docker.service.d')
-            .with_ensure('directory')
-        end
-
-        it do
-          is_expected.to contain_class('nebula::profile::docker').with(
-            version: '5:18.09.6~3-0~debian-stretch',
-            docker_compose_version: '',
           )
         end
 
@@ -127,7 +103,6 @@ describe 'nebula::profile::kubernetes::kubelet' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
 
         it { is_expected.to contain_package('kubelet').with_ensure('1.11.9-00') }
-        it { is_expected.to contain_class('nebula::profile::docker').with_version('18.06.2~ce~3-0~debian') }
         it { is_expected.to contain_apt__pin('kubelet').with_version('1.11.9-00') }
         it { is_expected.to contain_firewall('200 Cluster BGP').with_source('10.123.234.0/24') }
       end

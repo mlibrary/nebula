@@ -15,7 +15,7 @@ describe 'nebula::profile::kubernetes::bootstrap::etcd_config' do
 
       it do
         is_expected.to contain_file('/etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf')
-          .with_content(%r{^ExecStart=/usr/bin/kubelet --address=127.0.0.1 --pod-manifest-path=/etc/kubernetes/manifests --cgroup-driver=systemd$})
+          .with_content(%r{^ExecStart=/usr/bin/kubelet --address=127.0.0.1 --pod-manifest-path=/etc/kubernetes/manifests --cgroup-driver=systemd --container-runtime=remote --container-runtime-endpoint=unix:///run/containerd/containerd.sock$})
           .that_notifies('Exec[kubelet reload daemon]')
           .that_requires('Package[kubelet]')
           .that_requires('File[/etc/systemd/system/kubelet.service.d]')
