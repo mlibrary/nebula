@@ -1,21 +1,9 @@
-Puppet Nebula
-=============
+This is required by the hatcher cluster
+=======================================
 
-[![Build Status][status-image]][travis]
+The `production` branch broke compatibility with hatcher once it merged
+the pull request about [switching from docker to containerd][1]. If all
+hatcher nodes switch from docker to containerd, they should be safe to
+go back to `production`.
 
-[travis]:       https://travis-ci.org/mlibrary/nebula
-[status-image]: https://travis-ci.org/mlibrary/nebula.svg?branch=master
-
-# Development
-
-1. git clone
-2. `docker-compose build`
-3. `docker-compose run spec_prep`
-4. `docker-compose run specs`
-
-or:
-
-```bash
-docker-compose run specs bundle exec rspec specs/path/to/a_spec.rb
-docker-compose run specs bundle exec rake spec_standalone
-```
+[1]: https://github.com/mlibrary/nebula/pull/582
