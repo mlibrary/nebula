@@ -16,4 +16,6 @@ class nebula::role::chipmunk {
   include apache::mod::xsendfile
 
   include nebula::profile::prometheus::exporter::mysql
+
+  include nebula::profile::apache::auth_openidc
 }
