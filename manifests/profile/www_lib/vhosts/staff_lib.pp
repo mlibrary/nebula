@@ -31,8 +31,8 @@ class nebula::profile::www_lib::vhosts::staff_lib (
     ssl_cn                             => 'apps.staff.lib.umich.edu',
     ssl                                => true,
     usertrack                          => true,
-    cosign                             => true,
-    cosign_service                     => 'apps.staff.lib.umich.edu',
+    auth_openidc                       => true,
+    auth_openidc_redirect_uri          => 'https://apps.staff.lib.umich.edu/openid-connect/callback',
     docroot                            => $docroot,
     setenvifnocase                     => ['^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1'],
     default_allow_override             => ['AuthConfig','FileInfo','Limit','Options'],
@@ -53,6 +53,11 @@ class nebula::profile::www_lib::vhosts::staff_lib (
           # TODO: Extract version or socket path to params/hiera
           handler    => 'proxy:unix:/run/php/php8.1-fpm.sock|fcgi://localhost'
         }],
+        auth_type       => 'openid-connect',
+        auth_require    => 'valid-user',
+        custom_fragment => @(EOT)
+        OIDCUnAuthAction pass
+        | EOT
       },
       {
         provider       => 'directory',
@@ -75,53 +80,82 @@ class nebula::profile::www_lib::vhosts::staff_lib (
         path     => '^\.ph(ar|p|ps|tml)$',
         require  => 'all denied'
       },
-    ],
-
-    # Don't allow passive auth for directories still protected by auth system
-    cosign_public_access_off_dirs      => [
-      # results in odd looping behavior
-      # {
-      #   provider => 'location',
-      #   path     => '/user/login'
-      # },
+      # Don't allow passive auth for directories still protected by auth system
       {
-        provider => 'directory',
-        path     => "${docroot}/funds_transfer",
+        provider        => 'directorymatch',
+        path            => "^${docroot}/funds_transfer",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
       },
       {
-        provider => 'directory',
-        path     => "${docroot}/sites/staff.lib.umich.edu.funds_transfer",
+        provider        => 'directorymatch',
+        path            => "^${docroot}/sites/staff.lib.umich.edu.funds_transfer",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
       },
       {
-        provider => 'directory',
-        path     => "${docroot}/linkscan",
+        provider        => 'directorymatch',
+        path            => "^${docroot}/linkscan",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
       },
       {
-        provider => 'directory',
-        path     => "${docroot}/linkscan117",
+        provider        => 'directorymatch',
+        path            => "^${docroot}/linkscan117",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
       },
       {
-        provider => 'directory',
-        path     => "${docroot}/pagerate",
+        provider        => 'directorymatch',
+        path            => "^${docroot}/pagerate",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
       },
       {
-        provider => 'directory',
-        path     => "${docroot}/ts",
+        provider        => 'directorymatch',
+        path            => "^${docroot}/ts",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
       },
-    ],
-
-    cosign_public_access_off_php5_dirs => [
+      # Those that need php-related settings too
       {
-        provider => 'directory',
-        path     => "${docroot}/coral",
+        provider        => 'directorymatch',
+        path            => "^${docroot}/coral",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true',
+        addhandlers     => [{
+          extensions    => ['.php'],
+          handler       => 'application/x-httpd-php'
+        }]
       },
       {
-        provider => 'directory',
-        path     => "${docroot}/ptf",
+        provider        => 'directorymatch',
+        path            => "^${docroot}/ptf",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true',
+        addhandlers     => [{
+          extensions    => ['.php'],
+          handler       => 'application/x-httpd-php'
+        }]
       },
       {
-        provider => 'directory',
-        path     => "${docroot}/sites/staff.lib.umich.edu/local",
+        provider        => 'directorymatch',
+        path            => "^${docroot}/sites/staff.lib.umich.edu/local",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true',
+        addhandlers     => [{
+          extensions    => ['.php'],
+          handler       => 'application/x-httpd-php'
+        }]
       },
     ],
 

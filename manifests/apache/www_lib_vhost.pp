@@ -8,13 +8,11 @@ define nebula::apache::www_lib_vhost (
   Array[String] $serveraliases = [],
   Boolean $ssl = false,
   Optional[Integer] $port_override = undef,
-  Boolean $cosign = false,
+  Boolean $auth_openidc = false,
   Boolean $usertrack = false,
-  Optional[String] $cosign_service = regsubst($servername,'\.umich\.edu$',''),
+  Optional[String] $auth_openidc_redirect_uri = undef,
   String $ssl_cn = $servername,
   Array[Hash] $directories = [],
-  Array[Hash] $cosign_public_access_off_dirs = [],
-  Array[Hash] $cosign_public_access_off_php5_dirs = [],
   Optional[Array] $rewrites = undef,
   Optional[Array] $aliases = undef,
   String $logging_prefix = '',
@@ -77,84 +75,18 @@ define nebula::apache::www_lib_vhost (
     $usertrack_log = []
   }
 
-  if($cosign) {
-    $default_cosign_locations = [
-      {
-        provider        => 'location',
-        path            => '/cosign/valid',
-        sethandler      => 'cosign',
-        require         => 'all granted',
-        satisfy         => 'any',
-        custom_fragment => @(EOT),
-          Satisfy any
-          CosignProtected Off
-        |EOT
-      },
-      {
-        provider => 'location',
-        path     =>  '/robots.txt',
-        custom_fragment => 'CosignProtected Off',
-        require         => 'all granted'
-      },
-      {
-        provider        => 'location',
-        path            => '/ctools',
-        custom_fragment => 'CosignProtected Off',
-        require         => ''
-      },
-    ]
-
-    # For www_lib, we are sure that Shibboleth is installed, and we must
-    # disable its "compatibility mode" with valid-user, or mod_cosign never
-    # gets a chance at the request. The name of the option and its docs
-    # imply the reverse, but we want Compat On.
-    # https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPApacheConfig#NativeSPApacheConfig-Server/VirtualHostOptions
-    $cosign_fragment = @("EOT")
-      CosignProtected  On
-      CosignHostname   weblogin.umich.edu
-      CosignValidReference              ^https?:\/\/[^/]+.umich\.edu(\/.*)?
-      CosignValidationErrorRedirect      http://weblogin.umich.edu/cosign/validation_error.html
-      CosignCheckIP    never
-      CosignRedirect   https://weblogin.umich.edu/
-      CosignNoAppendRedirectPort  On
-      CosignPostErrorRedirect  https://weblogin.umich.edu/post_error.html
-      CosignService    ${cosign_service}
-      CosignCrypto     ${ssl_key} ${ssl_cert} ${nebula::profile::apache::ssl_cert_dir}
-      CosignAllowPublicAccess on
+  if($auth_openidc) {
+    $auth_openidc_fragment = @("EOT")
+      OIDCRedirectURI ${auth_openidc_redirect_uri}
+      # For www_lib, we are sure that Shibboleth is installed, and we must
+      # disable its "compatibility mode" with valid-user, or mod_auth_openidc never
+      # gets a chance at the request. The name of the option and its docs
+      # imply the reverse, but we want Compat On.
+      # https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPApacheConfig#NativeSPApacheConfig-Server/VirtualHostOptions
       ShibCompatValidUser On
     |EOT
-
-    $cosign_public_access_off = @(EOT)
-      CosignAllowPublicAccess Off
-      AuthType Cosign
-      Require valid-user
-    |EOT
-
-    concat::fragment { "${title}-cosign":
-      target  => "${title}.conf",
-      order   => 59,
-      content => $cosign_fragment,
-    }
-
-    $cosign_locations = $default_cosign_locations + $cosign_public_access_off_dirs.map |$dir| {
-      $dir.merge( {
-        custom_fragment => $cosign_public_access_off,
-        require         => [],
-        allow_override  => pick($dir['allow_override'], $default_allow_override),
-      })
-    } + $cosign_public_access_off_php5_dirs.map |$dir| {
-      $dir.merge( {
-        custom_fragment => $cosign_public_access_off,
-        require         => [],
-        allow_override  => pick($dir['allow_override'], $default_allow_override),
-        addhandlers => [{
-          extensions => ['.php'],
-          handler => 'application/x-httpd-php'
-        }],
-      })
-    }
   } else {
-    $cosign_locations = []
+    $auth_openidc_fragment = ''
   }
 
   if($ssl) {
@@ -176,7 +108,7 @@ define nebula::apache::www_lib_vhost (
     port                        => $port,
     docroot                     => $docroot,
     manage_docroot              => false,
-    directories                 => $default_directories + $directories + $cosign_locations,
+    directories                 => $default_directories + $directories,
     log_level                   => 'warn',
     priority                    => $priority,
     ssl                         => $ssl,
@@ -196,6 +128,7 @@ define nebula::apache::www_lib_vhost (
     custom_fragment             => @("EOT"),
       ${custom_fragment}
       ${usertrack_fragment}
+      ${auth_openidc_fragment}
     | EOT
     redirect_source             => $redirect_source,
     redirect_status             => $redirect_status,

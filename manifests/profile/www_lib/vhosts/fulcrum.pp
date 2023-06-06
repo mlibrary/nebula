@@ -81,7 +81,7 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       },
       {
         comment      => 'Reverse proxy application to app hostname and port',
-        rewrite_cond => ['%{REQUEST_URI} !^/cosign/valid', '%{REQUEST_URI} !^/Shibboleth.sso'],
+        rewrite_cond => ['%{REQUEST_URI} !^/Shibboleth.sso'],
         rewrite_rule => "^(/.*)$ http://${app_host}:${app_port}\$1 [P]",
       },
     ],

@@ -16,7 +16,7 @@ class nebula::profile::www_lib::apache::misc (
   String $domain = 'lib.umich.edu',
 ) {
   include nebula::profile::apache::authz_umichlib
-  include nebula::profile::apache::cosign
+  include nebula::profile::apache::auth_openidc
 
   class { 'apache::mod::php':
     # we'll configure php 7.3 separately

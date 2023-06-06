@@ -42,7 +42,6 @@ class nebula::profile::www_lib::vhosts::openmich (
 
     ssl            => true,
     ssl_cn         => $ssl_cn,
-    cosign         => false,
 
     directories    => [
       {

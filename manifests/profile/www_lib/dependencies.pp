@@ -13,7 +13,6 @@ class nebula::profile::www_lib::dependencies {
 
   ensure_packages (
     [
-      'libapache2-mod-cosign',
       'curl',
       'git',
       'emacs',

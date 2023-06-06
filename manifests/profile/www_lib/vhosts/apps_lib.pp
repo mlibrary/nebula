@@ -58,45 +58,24 @@ class nebula::profile::www_lib::vhosts::apps_lib (
     servername                    => $servername,
     ssl                           => true,
     usertrack                     => true,
-    cosign                        => true,
+    auth_openidc                  => true,
+    auth_openidc_redirect_uri     => 'https://apps.lib.umich.edu/openid-connect/callback',
     docroot                       => $docroot,
-    cosign_public_access_off_dirs => [
-      {
-        provider => 'location',
-        path     => '/login'
-      },
-      {
-        provider => 'location',
-        path     => '/vf/vflogin_dbsess.php'
-      },
-      {
-        provider => 'location',
-        path     => '/pk',
-      },
-      {
-        provider => 'directory',
-        path     => "${www_lib_root}/cgi/l/login",
-      },
-      {
-        provider => 'location',
-        path     => '/instruction/request/login',
-      },
-    ],
 
     directories                   => [
       {
-        provider       => 'directory',
-        path           => $docroot,
-        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
-        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
-        require        => $nebula::profile::www_lib::apache::default_access
+        provider        => 'directory',
+        path            => $docroot,
+        options         => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
+        allow_override  => ['AuthConfig','FileInfo','Limit','Options'],
+        require         => $nebula::profile::www_lib::apache::default_access,
       },
       {
-        provider       => 'directory',
-        path           => "${www_lib_root}/cgi",
-        allow_override => ['None'],
-        options        => ['None'],
-        require        => $nebula::profile::www_lib::apache::default_access
+        provider        => 'directory',
+        path            => "${www_lib_root}/cgi",
+        allow_override  => ['None'],
+        options         => ['None'],
+        require         => $nebula::profile::www_lib::apache::default_access,
       },
       {
         provider       => 'directory',
@@ -118,19 +97,63 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         path     => '.+\.phps$',
         require  => 'all denied'
       },
+      # Passive authn globally
+      {
+        provider        => 'location',
+        path            => "/",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction pass'
+      },
+      # Force authn for these paths
+      {
+        provider        => 'location',
+        path            => "/login",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
+      },
+      {
+        provider        => 'location',
+        path            => '/pk',
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
+      },
+      {
+        provider        => 'location',
+        path            => '/vf/vflogin_dbsess.php',
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
+      },
+      {
+        provider        => 'directory',
+        path            => "${www_lib_root}/cgi/l/login",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
+      },
       {
         provider        => 'locationmatch',
         path            => '^/instruction/request',
         custom_fragment => @(EOT)
           # Set remote user header to allow app to use http header auth.
           RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
-          #RequestHeader set X-Cosign-Factor   %{COSIGN_FACTOR}e
           RequestHeader set X-Authzd-Coll     %{AUTHZD_COLL}e
           RequestHeader set X-Public-Coll     %{PUBLIC_COLL}e
           RequestHeader set X-Forwarded-Proto 'https'
           RequestHeader unset X-Forwarded-For
           Header set "Strict-Transport-Security" "max-age=3600"
         | EOT
+      },
+      # This must be declared after the above block or it will be superseded. 
+      {
+        provider        => 'location',
+        path            => '/instruction/request/login',
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
       },
     ],
 
@@ -161,7 +184,7 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         rewrite_rule => '^/islamic	http://guides.lib.umich.edu/islamicmss/find 	[redirect=permanent,last]'
       },
       {
-        rewrite_cond => '%{REQUEST_URI} !^/cosign/valid',
+        rewrite_cond => '%{REQUEST_URI} !^/openid-connect',
         rewrite_rule => '^(/instruction/request.*)$ https://sali.lib.umich.edu:8443$1 [P]',
       },
 

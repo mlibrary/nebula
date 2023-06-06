@@ -147,18 +147,6 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_ssl_cert('/etc/ssl/certs/apps.staff.lib.umich.edu.crt')
       end
 
-      it 'defaults to allowing .htaccess for staff.lib' do
-        directories = catalogue.resource('Apache::Vhost', 'apps.staff.lib ssl')[:directories]
-        funds_transfer = directories.select { |x| x['path'] == '/www/staff.lib/web/funds_transfer' }
-
-        expect(funds_transfer.first['allow_override']).to contain_exactly(
-          'AuthConfig',
-          'FileInfo',
-          'Limit',
-          'Options',
-        )
-      end
-
       it do
         is_expected.to contain_apache__vhost('www.publishing-http')
       end
@@ -238,7 +226,6 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_content(%r{PORT\s+=\s+1234})
       end
 
-      it { is_expected.to contain_cron('purge cosign tickets') }
       it { is_expected.to contain_cron('purge apache access logs 1/2') }
       it { is_expected.to contain_cron('purge apache access logs 2/2') }
       it { is_expected.to contain_cron('reload fcgi for Press site nightly') }

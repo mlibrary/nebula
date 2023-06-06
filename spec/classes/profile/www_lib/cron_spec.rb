@@ -15,14 +15,12 @@ describe 'nebula::profile::www_lib::cron' do
       context 'with user set to "cron_friend"' do
         let(:params) { { user: 'cron_friend' } }
 
-        it { is_expected.to contain_cron('purge cosign tickets').with_user('root') }
         it { is_expected.to contain_cron('staff.lib parse').with_user('cron_friend') }
       end
 
       context 'with mailto set to "crons@umich.edu"' do
         let(:params) { { mailto: 'crons@umich.edu' } }
 
-        it { is_expected.to contain_cron('purge cosign tickets').without_environment }
         it { is_expected.to contain_cron('staff.lib parse').with_environment(['MAILTO=crons@umich.edu']) }
       end
 

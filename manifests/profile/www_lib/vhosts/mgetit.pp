@@ -48,7 +48,6 @@ class nebula::profile::www_lib::vhosts::mgetit (
 
     ssl                         => true,
     ssl_cn                      => $ssl_cn,
-    cosign                      => false,
     usertrack                   => true,
 
     setenv                      => ['HTTPS on'],
