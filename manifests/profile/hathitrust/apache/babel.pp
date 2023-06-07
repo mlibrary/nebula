@@ -245,7 +245,10 @@ class nebula::profile::hathitrust::apache::babel (
         provider              => 'location',
         path                  => '/',
         auth_type             => 'shibboleth',
-        require               => 'shibboleth',
+        require               => {
+          enforce  => 'all',
+          requires => ['shibboleth'] + $default_access['requires']
+        },
         shib_request_settings => { 'requireSession' => '0', 'discoveryURL' => "https://${servername}/cgi/wayf" }
       },
       {
