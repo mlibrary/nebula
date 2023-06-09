@@ -183,6 +183,12 @@ describe 'nebula::profile::prometheus' do
           .with_content("PUSHGATEWAY='http://#{facts[:fqdn]}:9091'\n")
       end
 
+      it do
+        expect(exported_resources).to contain_concat_fragment('02 pushgateway advanced url mydatacenter')
+          .with_target('/usr/local/bin/pushgateway_advanced')
+          .with_content("PUSHGATEWAY='http://#{facts[:fqdn]}:9091'\n")
+      end
+
       context 'with some static nodes set' do
         let(:fragment) { 'prometheus node service static_host' }
         let(:params) do

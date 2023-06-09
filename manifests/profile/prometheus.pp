@@ -136,6 +136,11 @@ class nebula::profile::prometheus (
     content => "PUSHGATEWAY='http://${::fqdn}:9091'\n",
   }
 
+  @@concat_fragment { "02 pushgateway advanced url ${::datacenter}":
+    target  => '/usr/local/bin/pushgateway_advanced',
+    content => "PUSHGATEWAY='http://${::fqdn}:9091'\n",
+  }
+
   @@firewall { "010 prometheus node exporter ${::hostname}":
     tag    => "${::datacenter}_prometheus_node_exporter",
     proto  => 'tcp',

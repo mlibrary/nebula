@@ -1,0 +1,512 @@
+<%# Shebang and $PUSHGATEWAY are defined by concat fragments -%>
+PROG="$0"
+USAGE='[-n] [-l NAME1=VALUE1 [-l NAME2=VALUE2...]] -j JOB_NAME'
+HOST_LABELS=('instance=<%= @ipaddress %>:9100'
+             'hostname=<%= @hostname %>'
+             'datacenter=<%= @datacenter %>'
+             'role=<%= @role %>')
+LABELS=("${HOST_LABELS[@]}")
+RUN_COMMAND='true'
+DELETE_METRICS='false'
+QUERY_METRIC=''
+QUERY_SIMPLE='true'
+JOB_NAME=''
+METRIC_FORMAT='%s'
+METRICS_FILENAME=''
+
+errorout() {
+  echo "usage: $PROG (-h|-L|-U)" >&2
+  echo "  or   cat metrics | $PROG $USAGE" >&2
+  echo "  or   $PROG $USAGE [-f FORMAT] -q METRIC_NAME" >&2
+  echo "  or   $PROG $USAGE -d" >&2
+  [ -n "$1" ] && echo "${PROG}: error: $@" >&2
+  exit 1
+}
+
+printhelp() {
+  cat <<EOF
+usage: $PROG (-h|-L|-U)
+  or   cat metrics | $PROG $USAGE
+  or   $PROG $USAGE [-f FORMAT] -q METRIC_NAME
+  or   $PROG $USAGE -d
+
+Push arbitrary metrics to a prometheus pushgateway. To use this script,
+you define every aspect of the contents of the metrics, so here are the
+docs: https://prometheus.io/docs/instrumenting/exposition_formats/
+
+BE CAREFUL NAMING METRICS!
+
+There are no namespaces, so all metrics are shared in a global namespace
+for all LIT monitoring and across all teams. Be sure to prefix
+everything with something specific to your team or product so that there
+are no collisions. Once a name is set, the longer it lives, the harder
+it is to change.
+
+We aren't paying by the character, so better too long and descriptive
+than too short. Nobody likes long variable names, but, once you've built
+dashboards and alerts, nobody will have to look at metric names.
+
+Prometheus has documentation on metric naming best practices as well:
+https://prometheus.io/docs/practices/naming/
+
+Example 1: pushing metrics to a pushgateway
+
+    \$ cat <<EOF | $PROG -l label1=value1 -j my_job
+    # HELP my_job_duration_seconds Time spent running my_job
+    # TYPE my_job_duration_seconds gauge
+    my_job_duration_seconds 123
+    # HELP my_job_last_success Last successful run of my_job
+    # TYPE my_job_last_success gauge
+    my_job_last_success \`date "+%s"\`
+    # HELP my_job_color Demonstrating metric-specific labels
+    # TYPE my_job_color counter
+    my_job_color{color="blue"} 10
+    my_job_color{color="green"} 20
+    EOF
+
+Example 2: Querying a metric with a specified format
+
+    \$ $PROG -l label1=value1 -j my_job -q my_job_duration_seconds
+    1.23e+02
+    \$ $PROG -l label1=value1 -j my_job -q my_job_duration_seconds -f "%d"
+    123
+
+Example 3: Querying a metric that doesn't exist (or requires more labels
+be specified) yields 0
+
+    \$ $PROG -l label1=value1 -j my_job -q my_job_brlglphrphgh
+    0
+    \$ $PROG -l label1=value1 -j my_job -q my_job_color -f "%e"
+    0.000000e+00
+
+Example 4: Querying a metric with additional labels
+
+    \$ $PROG -l label1=value1 -l color=blue -j my_job -q my_job_color
+    10
+    \$ $PROG -l label1=value1 -l color=green -j my_job -q my_job_color
+    20
+
+Example 5: Deleting a group of metrics incorrectly
+
+    \$ $PROG -l label1=value1 -l color=blue -j my_job -q my_job_color
+    10
+    \$ $PROG -j my_job -d
+    \$ $PROG -l label1=value1 -l color=blue -j my_job -q my_job_color
+    10
+    \$ $PROG -l label1=value1 -l color=blue -j my_job -d
+    \$ $PROG -l label1=value1 -l color=blue -j my_job -q my_job_color
+    10
+
+Example 6: Deleting a group of metrics successfully by using the same
+job and labels they were pushed with
+
+    \$ $PROG -l label1=value1 -l color=blue -j my_job -q my_job_color
+    10
+    \$ $PROG -l label1=value1 -j my_job -d
+    \$ $PROG -l label1=value1 -l color=blue -j my_job -q my_job_color
+    0
+
+Example 7: A complete shell script that makes use of both querying and
+pushing metrics
+
+    #!/bin/sh
+    # Record the moment the script starts.
+    START_TIMESTAMP=\`date "+%s"\`
+
+    # ... Your code here!
+    # ...
+    # ... Let's say this section sets a couple variables:
+    # ... - \$MY_SCRIPT_SUCCEEDED         either "true" or "false"
+    # ... - \$COUNT_OF_RECORDS_PROCESSED  a number that could vary
+
+    # Only push metrics on success.
+    if \$MY_SCRIPT_SUCCEEDED; then
+      # Query the total from last time to add today's count to.
+      PREVIOUS_TOTAL=\`$PROG -j team_product_app_job -f "%d" -q team_product_app_job_records_processed_total\`
+      RECORDS_PROCESSED_TOTAL=\`echo "\$PREVIOUS_TOTAL + \$COUNT_OF_RECORDS_PROCESSED" | bc\`
+
+      # Get the end timestamp and calculate the duration.
+      END_TIMESTAMP=\`date "+%s"\`
+      DURATION=\`echo "\$END_TIMESTAMP - \$START_TIMESTAMP" | bc\`
+
+      # Send the metrics to the pushgateway.
+      cat <<EOF | $PROG -j team_product_app_job
+    # HELP team_product_app_job_duration_seconds Time spent running team_product_app_job
+    # TYPE team_product_app_job_duration_seconds gauge
+    team_product_app_job_duration_seconds \$DURATION
+    # HELP team_product_app_job_last_success Last successful run of team_product_app_job
+    # TYPE team_product_app_job_last_success gauge
+    team_product_app_job_last_success \$END_TIMESTAMP
+    # HELP team_product_app_job_records_processed_total Count of records processed by team_product_app_job
+    # TYPE team_product_app_job_records_processed_total counter
+    team_product_app_job_records_processed_total \$RECORDS_PROCESSED_TOTAL
+    EOF
+    fi
+
+Example 8: Histograms and summaries are too complex to return one value,
+so you have to ask for the full json object
+
+    $ cat <<EOF | $PROG -j http
+    # HELP http_request_duration_seconds A histogram of the request duration.
+    # TYPE http_request_duration_seconds histogram
+    http_request_duration_seconds_bucket{le="0.05"} 24054
+    http_request_duration_seconds_bucket{le="0.1"} 33444
+    http_request_duration_seconds_bucket{le="0.2"} 100392
+    http_request_duration_seconds_bucket{le="0.5"} 129389
+    http_request_duration_seconds_bucket{le="1"} 133988
+    http_request_duration_seconds_bucket{le="+Inf"} 144320
+    http_request_duration_seconds_sum 53423
+    http_request_duration_seconds_count 144320
+    EOF
+
+    $ $PROG -j http -q http_request_duration_seconds
+    null
+    $ $PROG -j http -Q http_request_duration_seconds
+    {
+      "buckets": {
+        "+Inf": "144320",
+        "0.05": "24054",
+        "0.1": "33444",
+        "0.2": "100392",
+        "0.5": "129389",
+        "1": "133988"
+      },
+      "count": "1.44320e+05",
+      "sum": "53423"
+    }
+
+required arguments:
+ -j JOB_NAME      Name of the job; will set the {job="JOB_NAME"} label
+
+optional arguments:
+ -d               Delete the set of metrics stored with this job and labels
+ -f METRIC_FORMAT Printf format to use when querying (default: $METRIC_FORMAT)
+ -h               Display this help message and exit
+ -L               List host labels and exit
+ -l NAME=VALUE    Add this label to every metric
+ -n               Print what would be run; do not execute
+ -Q METRIC_NAME   Query the previous value for a metric (full json)
+ -q METRIC_NAME   Query the previous value for a metric (simple value only)
+ -U               Print URL for this host's pushgateway and exit
+EOF
+}
+
+if [ "$1" = "--help" ]; then
+  printhelp
+  exit 0
+fi
+
+while getopts ':j:hLUndl:q:Q:f:' opt; do
+  case "$opt" in
+    j)
+      JOB_NAME="$OPTARG"
+      ;;
+
+    h)
+      printhelp
+      exit 0
+      ;;
+
+    L)
+      for label in "${HOST_LABELS[@]}"; do
+        echo "$label"
+      done
+      exit 0
+      ;;
+
+    U)
+      echo "$PUSHGATEWAY"
+      exit 0
+      ;;
+
+    n)
+      RUN_COMMAND="false"
+      ;;
+
+    d)
+      DELETE_METRICS="true"
+      ;;
+
+    l)
+      LABELS=("${LABELS[@]}" "$OPTARG")
+      ;;
+
+    Q)
+      QUERY_METRIC="$OPTARG"
+      QUERY_SIMPLE="false"
+      ;;
+
+    q)
+      QUERY_METRIC="$OPTARG"
+      QUERY_SIMPLE="true"
+      ;;
+
+    f)
+      METRIC_FORMAT="$OPTARG"
+      ;;
+
+    ?)
+      errorout "unrecognized argument: \`-$opt'"
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+main() {
+  validate_arguments "$@"
+
+  case `determine_action` in
+    push)
+      push_metrics
+      ;;
+
+    query)
+      query_metric
+      ;;
+
+    delete)
+      delete_metrics
+      ;;
+  esac
+
+  clean_up
+}
+
+validate_arguments() {
+  assert_no_positional_arguments
+  validate_job
+  validate_labels
+  validate_desired_action
+}
+
+assert_no_positional_arguments() {
+  if [ -n "$1" ]; then
+    errorout "unexpected argument: \`$1'"
+  fi
+}
+
+validate_job() {
+  if [ -z "$JOB_NAME" ]; then
+    errorout "Expected a job name (found none)"
+  fi
+
+  if ! echo "$JOB_NAME" | grep -Eq '^[a-z_]+$'; then
+    errorout "Expected a job name made of lowercase letters and underscores: \`$JOB_NAME'"
+  fi
+}
+
+validate_labels() {
+  for label in "${LABELS[@]}"; do
+    validate_label "$label"
+  done
+}
+
+validate_label() {
+  if ! echo "$1" | grep -Eq '^[a-z_]+=.+$'; then
+    errorout "invalid label: \`$1'"
+  fi
+
+  if echo "$1" | grep -q "^job="; then
+    errorout "invalid label: \`$1'"
+  fi
+}
+
+validate_desired_action() {
+  if $DELETE_METRICS; then
+    if [ -n "$QUERY_METRIC" ]; then
+      errorout "cannot use both \`-d' and \`-q'"
+    fi
+  elif [ -z "$QUERY_METRIC" ]; then
+    capture_input
+    validate_metrics
+  fi
+}
+
+validate_metrics() {
+  if print_metrics | grep -v -q "^#\\|^${JOB_NAME}_"; then
+    errorout "expected all metric names to start with \`${JOB_NAME}_'"
+  fi
+}
+
+determine_action() {
+  if $DELETE_METRICS; then
+    echo "delete"
+  elif [ -n "$QUERY_METRIC" ]; then
+    echo "query"
+  else
+    echo "push"
+  fi
+}
+
+push_metrics() {
+  if $RUN_COMMAND; then
+    # -X POST is implicit with --data-binary.
+    print_metrics | curl -Ss --data-binary @- "`metrics_url`"
+
+  else
+    print_base64_comment
+    echo "cat <<EOF | curl --data-binary @- \"`metrics_url`\""
+    print_metrics
+    echo "EOF"
+  fi
+}
+
+query_metric() {
+  if $RUN_COMMAND; then
+    local jq="`jq_query_for_metric`"
+    if $QUERY_SIMPLE; then
+      printf "$METRIC_FORMAT\\n" "`curl -Ss -X GET "$PUSHGATEWAY/api/v1/metrics" | jq -r "$jq"`"
+    else
+      curl -Ss -X GET "$PUSHGATEWAY/api/v1/metrics" | jq "$jq"
+    fi
+
+  else
+    # I'm probably being over-cautious by escaping single quotes, but
+    # I'd like this output to be copy-paste-able no matter what.
+    echo "# This jq jumble is annotated in the script code."
+    if $QUERY_SIMPLE; then
+      echo "printf '$METRIC_FORMAT\\n' \`curl -X GET \"$PUSHGATEWAY/api/v1/metrics\" | jq -r '`jq_query_for_metric | escape_for_single_quotes`'\`"
+    else
+      echo "curl -X GET \"$PUSHGATEWAY/api/v1/metrics\" | jq '`jq_query_for_metric | escape_for_single_quotes`'"
+    fi
+  fi
+}
+
+escape_for_single_quotes() {
+  # echo 'I ain'\''t goin'\'' anywhere'
+  #  -> I ain't goin' anywhere
+  sed -e "s/'/'\\\\''/g"
+}
+
+delete_metrics() {
+  if $RUN_COMMAND; then
+    curl -Ss -X DELETE "`metrics_url`"
+
+  else
+    print_base64_comment
+    echo "curl -X DELETE \"`metrics_url`\""
+  fi
+}
+
+jq_query_for_metric() {
+  # status: "success"
+  # data: [MetricsGroup {
+  #   last_push_successful: Boolean
+  #   labels: LabelObject {
+  #     label_name1: "label_value1"
+  #     label_name2: "label_value2"
+  #   }
+  #   push_failure_time_seconds: MetricValue
+  #   push_time_seconds: MetricValue
+  #   metric_name1: MetricValue
+  #   metric_name2: MetricValue {
+  #     time_stamp: "YYYY-mm-ddTHH:MM:SS.nnnnnnnnnZ"
+  #     type: "GAUGE|COUNTER|UNTYPED|HISTOGRAM|SUMMARY"
+  #     help: String
+  #     metrics: [SimpleMetric|Histogram|Summary]
+  #   }
+  # }]
+  #
+  # SimpleMetric { // GAUGE|COUNTER|UNTYPED
+  #   labels: LabelObject
+  #   value: String // e.g. "162", "1867512348", "1.686138605e+09"
+  # }
+  #
+  # Histogram {
+  #   labels: LabelObject
+  #   buckets: Buckets { String => String }
+  #   count: String
+  #   sum: String
+  # }
+  #
+  # Summary {
+  #   labels: LabelObject
+  #   quantiles: Quantiles { String => String }
+  #   count: String
+  #   sum: String
+  # }
+  local metric_key="`echo "$QUERY_METRIC" | jq -R .`"
+  local jq=".data | map(select(has($metric_key)))" # exclude nulls
+  local jq="$jq | [.[][$metric_key]]"              # get specific metric
+  local jq="$jq | sort_by(.time_stamp)"            # latest if multiple
+  local jq="$jq | [.[].metrics] | [.[][]]"         # flatten metrics
+  local jq="$jq | map(select(.labels == `json_object_from_labels`))"
+  if $QUERY_SIMPLE; then
+    local jq="$jq | [{\"value\":\"0\"}] + ."       # 0 in case empty
+    local jq="$jq | .[-1].value"                   # latest will be last
+  else
+    local jq="$jq | [{}] + ."                      # {} in case empty
+    local jq="$jq | .[-1] | del(.labels)"          # latest will be last
+  fi
+  echo "$jq"
+}
+
+json_object_from_labels() {
+  local object="`json_key_value_from_label job="$JOB_NAME"`"
+  for label in "${LABELS[@]}"; do
+    local object="$object,`json_key_value_from_label "$label"`"
+  done
+  echo "{$object}"
+}
+
+json_key_value_from_label() {
+  local label_name="`echo "$1" | sed -e "s/=.*$//" | jq -R .`"
+  local label_value="`echo "$1" | sed -e "s/^[^=]*=//" | jq -R .`"
+  echo "$label_name:$label_value"
+}
+
+metrics_url() {
+  if [ -z "$METRICS_URL" ]; then
+    METRICS_URL="$PUSHGATEWAY/metrics/`label_to_http_path job="$JOB_NAME"`"
+    for label in "${LABELS[@]}"; do
+      METRICS_URL="$METRICS_URL/`label_to_http_path "$label"`"
+    done
+  fi
+
+  echo "$METRICS_URL"
+}
+
+label_to_http_path() {
+  local label_name="`echo "$1" | sed -e "s/=.*$//"`"
+  local label_value="`echo "$1" | sed -e "s/^[^=]*=//"`"
+  echo "${label_name}@base64/`urlsafe_base64 "$label_value"`"
+}
+
+urlsafe_base64() {
+  # https://tools.ietf.org/html/rfc4648#section-5
+  echo -n "$1" | base64 -w 0 | tr '/+' '_-'
+}
+
+print_base64_comment() {
+  echo "# If you're curious about any of these base64 values,"
+  echo "# echo UkZDLTQ2NDggU2VjdGlvbiA1Cg== | tr '_-' '/+' | base64 -d"
+}
+
+print_metrics() {
+  cat "$METRICS_FILENAME"
+}
+
+capture_input() {
+  if ! there_is_a_metrics_file; then
+    METRICS_FILENAME=`mktemp /tmp/XXXXXX.prom`
+    cat > "$METRICS_FILENAME"
+  fi
+}
+
+clean_up() {
+  if there_is_a_metrics_file; then
+    rm "$METRICS_FILENAME"
+  fi
+}
+
+there_is_a_metrics_file() {
+  [ -f "$METRICS_FILENAME" ]
+}
+
+# Clean up if possible on HUP, INT, QUIT, ABRT, and/or TERM signals. I
+# expect to receive INT (ctrl-c) if anyone ever forgets to put metrics
+# in stdin, for example.
+trap clean_up 1 2 3 6 15
+
+main "$@"
