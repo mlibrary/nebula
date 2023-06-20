@@ -1,12 +1,11 @@
-<%# Shebang and $PUSHGATEWAY are defined by concat fragments -%>
+#!/usr/bin/env bash
+set -eo pipefail
+
 RUN_COMMAND=true
 PROG="$0"
 USAGE1='[-nf] -j JOB -b START_TIMESTAMP'
 USAGE2='[-nf] -j JOB -s STEP [-s STEP ...]'
-LABELS=('instance=<%= @ipaddress %>:9100'
-        'hostname=<%= @hostname %>'
-        'datacenter=<%= @datacenter %>'
-        'role=<%= @role %>')
+LABELS=()
 JOB=''
 END_TIMESTAMP="`date '+%s'`"
 SUCCESS='true'
@@ -142,7 +141,6 @@ shift $((OPTIND - 1))
 main() {
   validate_arguments
   set_metrics
-  set_push_url
   push_metrics
 }
 
@@ -244,37 +242,77 @@ print_success_metric() {
   echo "${JOB}_last_success $END_TIMESTAMP"
 }
 
-set_push_url() {
-  PUSH_URL="${PUSHGATEWAY}/metrics/job@base64/`urlsafe_base64 "$JOB"`"
-
-  for label in "${LABELS[@]}"; do
-    label_name="`echo "$label" | sed -e 's/=.*$//'`"
-    label_value="`echo "$label" | sed -e 's/^[^=]*=//'`"
-
-    PUSH_URL="${PUSH_URL}/${label_name}@base64/`urlsafe_base64 "$label_value"`"
-  done
-}
-
-urlsafe_base64() {
-  # https://tools.ietf.org/html/rfc4648#section-5
-  echo -n "$1" | base64 -w 0 | tr '/+' '_-'
-}
-
 push_metrics() {
-  if $RUN_COMMAND; then
-    echo "$METRICS" | curl -s --data-binary @- "$PUSH_URL" > /dev/null
+  local args=("-j" "$JOB")
+  for label in "${LABELS[@]}"; do
+    local args=("${args[@]}" "-l" "$label")
+  done
 
+  pipe_metrics_to_pushgateway_advanced "${args[@]}"
+}
+
+pipe_metrics_to_pushgateway_advanced() {
+  if $RUN_COMMAND; then
+    echo "$METRICS" | /usr/local/bin/pushgateway_advanced "$@"
   else
-    show_how_to_push_metrics
+    echo "cat <<EOF | /usr/local/bin/pushgateway_advanced `args_to_bash_string "$@"`"
+    echo "$METRICS"
+    echo "EOF"
   fi
 }
 
-show_how_to_push_metrics() {
-  echo "# If you're curious about any of these base64 values,"
-  echo "# echo UkZDLTQ2NDggU2VjdGlvbiA1Cg== | tr '_-' '/+' | base64 -d"
-  echo "cat <<EOF | curl -s --data-binary @- '$PUSH_URL' > /dev/null"
-  echo "$METRICS"
-  echo 'EOF'
+args_to_bash_string() {
+  if [ "$#" = 0 ]; then
+    echo ""
+  else
+    local args="`single_bash_argument $1`"
+    shift
+
+    for i in "$@"; do
+      local args="$args `single_bash_argument $i`"
+    done
+
+    echo "$args"
+  fi
+}
+
+single_bash_argument() {
+  # The goal here is for the `-n` output to be human readable if
+  # possible. Something like
+  #
+  #     ./my_script '-j' 'JOB' '-l' 'etc.'
+  #
+  # Is awful to look at, so this function prefers no quotes where
+  # possible, double quotes if nothing needs escaping, and single quotes
+  # where we must.
+  local line_count=`echo "$*" | wc -l`
+
+  if [ -z "$*" ]; then
+    # If empty print ""
+    echo '""'
+
+  elif ! [ "$line_count" = 1 ]; then
+    # If multiline resort to single quotes
+    echo "'`echo $* | escape_for_single_quotes`'"
+
+  elif echo "$*" | grep -q '^[-_=./0-9A-Za-z]*$'; then
+    # If simple characters and no whitespace, no quotes
+    echo "$*"
+
+  elif echo "$*" | grep '^[ -~]*$' | grep -q '^[^"$`\\!]*$'; then
+    # If all ASCII but without ["$`\!], double quotes
+    echo "\"$*\""
+
+  else
+    # Double quotes always works if we must.
+    echo "'`echo $* | escape_for_single_quotes`'"
+  fi
+}
+
+escape_for_single_quotes() {
+  # echo 'I ain'\''t goin'\'' anywhere'
+  #  -> I ain't goin' anywhere
+  sed -e "s/'/'\\\\''/g"
 }
 
 main

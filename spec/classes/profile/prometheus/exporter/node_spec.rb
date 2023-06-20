@@ -64,21 +64,11 @@ describe 'nebula::profile::prometheus::exporter::node' do
       end
 
       it { is_expected.to contain_package('curl') }
+      it { is_expected.to contain_package('jq') }
 
       it do
-        is_expected.to contain_concat_file('/usr/local/bin/pushgateway')
+        is_expected.to contain_file('/usr/local/bin/pushgateway')
           .with_mode('0755')
-      end
-
-      it do
-        is_expected.to contain_concat_fragment('01 pushgateway shebang')
-          .with_target('/usr/local/bin/pushgateway')
-          .with_content("#!/usr/bin/env bash\n")
-      end
-
-      it do
-        is_expected.to contain_concat_fragment('03 main pushgateway content')
-          .with_target('/usr/local/bin/pushgateway')
       end
 
       it "exports itself to the default datacenter's service discovery" do
@@ -110,6 +100,22 @@ describe 'nebula::profile::prometheus::exporter::node' do
           expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]}")
             .with_tag('mydatacenter_pushgateway_node')
         end
+      end
+
+      it do
+        is_expected.to contain_concat_file('/usr/local/bin/pushgateway_advanced')
+          .with_mode('0755')
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('01 pushgateway advanced shebang')
+          .with_target('/usr/local/bin/pushgateway_advanced')
+          .with_content("#!/usr/bin/env bash\nset -eo pipefail\n\n")
+      end
+
+      it do
+        is_expected.to contain_concat_fragment('03 main pushgateway advanced content')
+          .with_target('/usr/local/bin/pushgateway_advanced')
       end
     end
   end

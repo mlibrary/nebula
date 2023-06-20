@@ -125,22 +125,27 @@ class nebula::profile::prometheus::exporter::node (
     $monitoring_datacenter = $default_datacenter
   }
 
-  ensure_packages(['curl'])
+  ensure_packages(['curl', 'jq'])
 
-  concat_file { '/usr/local/bin/pushgateway':
+  file { '/usr/local/bin/pushgateway':
+    content => template('nebula/profile/prometheus/exporter/node/pushgateway.sh.erb'),
+    mode    => '0755',
+  }
+
+  concat_file { '/usr/local/bin/pushgateway_advanced':
     mode => '0755',
   }
 
-  concat_fragment { '01 pushgateway shebang':
-    target  => '/usr/local/bin/pushgateway',
-    content => "#!/usr/bin/env bash\n",
+  concat_fragment { '01 pushgateway advanced shebang':
+    target  => '/usr/local/bin/pushgateway_advanced',
+    content => "#!/usr/bin/env bash\nset -eo pipefail\n\n",
   }
 
-  Concat_fragment <<| title == "02 pushgateway url ${monitoring_datacenter}" |>>
+  Concat_fragment <<| title == "02 pushgateway advanced url ${monitoring_datacenter}" |>>
 
-  concat_fragment { '03 main pushgateway content':
-    target  => '/usr/local/bin/pushgateway',
-    content => template('nebula/profile/prometheus/exporter/node/pushgateway.sh.erb'),
+  concat_fragment { '03 main pushgateway advanced content':
+    target  => '/usr/local/bin/pushgateway_advanced',
+    content => template('nebula/profile/prometheus/exporter/node/pushgateway_advanced.sh.erb'),
   }
 
   @@concat_fragment { "prometheus node service ${hostname}":
