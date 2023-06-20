@@ -131,11 +131,6 @@ class nebula::profile::prometheus (
     block => 'umich::networks::all_trusted_machines',
   }
 
-  @@concat_fragment { "02 pushgateway url ${::datacenter}":
-    target  => '/usr/local/bin/pushgateway',
-    content => "PUSHGATEWAY='http://${::fqdn}:9091'\n",
-  }
-
   @@concat_fragment { "02 pushgateway advanced url ${::datacenter}":
     target  => '/usr/local/bin/pushgateway_advanced',
     content => "PUSHGATEWAY='http://${::fqdn}:9091'\n",

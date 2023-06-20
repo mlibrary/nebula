@@ -67,19 +67,8 @@ describe 'nebula::profile::prometheus::exporter::node' do
       it { is_expected.to contain_package('jq') }
 
       it do
-        is_expected.to contain_concat_file('/usr/local/bin/pushgateway')
+        is_expected.to contain_file('/usr/local/bin/pushgateway')
           .with_mode('0755')
-      end
-
-      it do
-        is_expected.to contain_concat_fragment('01 pushgateway shebang')
-          .with_target('/usr/local/bin/pushgateway')
-          .with_content("#!/usr/bin/env bash\n")
-      end
-
-      it do
-        is_expected.to contain_concat_fragment('03 main pushgateway content')
-          .with_target('/usr/local/bin/pushgateway')
       end
 
       it "exports itself to the default datacenter's service discovery" do

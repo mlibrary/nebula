@@ -178,12 +178,6 @@ describe 'nebula::profile::prometheus' do
       end
 
       it do
-        expect(exported_resources).to contain_concat_fragment('02 pushgateway url mydatacenter')
-          .with_target('/usr/local/bin/pushgateway')
-          .with_content("PUSHGATEWAY='http://#{facts[:fqdn]}:9091'\n")
-      end
-
-      it do
         expect(exported_resources).to contain_concat_fragment('02 pushgateway advanced url mydatacenter')
           .with_target('/usr/local/bin/pushgateway_advanced')
           .with_content("PUSHGATEWAY='http://#{facts[:fqdn]}:9091'\n")

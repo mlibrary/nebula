@@ -11,13 +11,12 @@ DELETE_METRICS='false'
 QUERY_METRIC=''
 QUERY_SIMPLE='true'
 JOB_NAME=''
-METRIC_FORMAT='%s'
 METRICS_FILENAME=''
 
 errorout() {
   echo "usage: $PROG (-h|-L|-U)" >&2
   echo "  or   cat metrics | $PROG $USAGE" >&2
-  echo "  or   $PROG $USAGE [-f FORMAT] -q METRIC_NAME" >&2
+  echo "  or   $PROG $USAGE -q METRIC_NAME" >&2
   echo "  or   $PROG $USAGE -d" >&2
   [ -n "$1" ] && echo "${PROG}: error: $@" >&2
   exit 1
@@ -27,7 +26,7 @@ printhelp() {
   cat <<EOF
 usage: $PROG (-h|-L|-U)
   or   cat metrics | $PROG $USAGE
-  or   $PROG $USAGE [-f FORMAT] -q METRIC_NAME
+  or   $PROG $USAGE -q METRIC_NAME
   or   $PROG $USAGE -d
 
 Push arbitrary metrics to a prometheus pushgateway. To use this script,
@@ -68,16 +67,12 @@ Example 2: Querying a metric with a specified format
 
     \$ $PROG -l label1=value1 -j my_job -q my_job_duration_seconds
     1.23e+02
-    \$ $PROG -l label1=value1 -j my_job -q my_job_duration_seconds -f "%d"
-    123
 
 Example 3: Querying a metric that doesn't exist (or requires more labels
 be specified) yields 0
 
     \$ $PROG -l label1=value1 -j my_job -q my_job_brlglphrphgh
     0
-    \$ $PROG -l label1=value1 -j my_job -q my_job_color -f "%e"
-    0.000000e+00
 
 Example 4: Querying a metric with additional labels
 
@@ -122,7 +117,8 @@ pushing metrics
     # Only push metrics on success.
     if \$MY_SCRIPT_SUCCEEDED; then
       # Query the total from last time to add today's count to.
-      PREVIOUS_TOTAL=\`$PROG -j team_product_app_job -f "%d" -q team_product_app_job_records_processed_total\`
+      PREVIOUS_TOTAL_RAW=\`$PROG -j team_product_app_job -q team_product_app_job_records_processed_total\`
+      PREVIOUS_TOTAL=\`perl -e "print \$PREVIOUS_TOTAL_RAW"\`
       RECORDS_PROCESSED_TOTAL=\`echo "\$PREVIOUS_TOTAL + \$COUNT_OF_RECORDS_PROCESSED" | bc\`
 
       # Get the end timestamp and calculate the duration.
@@ -180,7 +176,6 @@ required arguments:
 
 optional arguments:
  -d               Delete the set of metrics stored with this job and labels
- -f METRIC_FORMAT Printf format to use when querying (default: $METRIC_FORMAT)
  -h               Display this help message and exit
  -L               List host labels and exit
  -l NAME=VALUE    Add this label to every metric
@@ -196,7 +191,7 @@ if [ "$1" = "--help" ]; then
   exit 0
 fi
 
-while getopts ':j:hLUndl:q:Q:f:' opt; do
+while getopts ':j:hLUndl:q:Q:' opt; do
   case "$opt" in
     j)
       JOB_NAME="$OPTARG"
@@ -239,10 +234,6 @@ while getopts ':j:hLUndl:q:Q:f:' opt; do
     q)
       QUERY_METRIC="$OPTARG"
       QUERY_SIMPLE="true"
-      ;;
-
-    f)
-      METRIC_FORMAT="$OPTARG"
       ;;
 
     ?)
@@ -356,7 +347,7 @@ query_metric() {
   if $RUN_COMMAND; then
     local jq="`jq_query_for_metric`"
     if $QUERY_SIMPLE; then
-      printf "$METRIC_FORMAT\\n" "`curl -Ss -X GET "$PUSHGATEWAY/api/v1/metrics" | jq -r "$jq"`"
+      curl -Ss -X GET "$PUSHGATEWAY/api/v1/metrics" | jq -r "$jq"
     else
       curl -Ss -X GET "$PUSHGATEWAY/api/v1/metrics" | jq "$jq"
     fi
@@ -366,7 +357,7 @@ query_metric() {
     # I'd like this output to be copy-paste-able no matter what.
     echo "# This jq jumble is annotated in the script code."
     if $QUERY_SIMPLE; then
-      echo "printf '$METRIC_FORMAT\\n' \`curl -X GET \"$PUSHGATEWAY/api/v1/metrics\" | jq -r '`jq_query_for_metric | escape_for_single_quotes`'\`"
+      echo "curl -X GET \"$PUSHGATEWAY/api/v1/metrics\" | jq -r '`jq_query_for_metric | escape_for_single_quotes`'"
     else
       echo "curl -X GET \"$PUSHGATEWAY/api/v1/metrics\" | jq '`jq_query_for_metric | escape_for_single_quotes`'"
     fi
