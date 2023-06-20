@@ -8,6 +8,20 @@ else
     sleep 5
     if ! /bin/nc -zw10 <%= @bind.sub(':', ' ') %>; then
       /bin/systemctl -q restart press
+      previous_restart_counter=`/usr/local/bin/pushgateway_advanced -j press_fcgi_check -q press_fcgi_check_restarts_total`
+      new_restart_count=`perl -e "printf(\"%d\\n\", $previous_restart_counter + 1);"`
+      cat <<EOF | /usr/local/bin/pushgateway_advanced -j press_fcgi_check
+# HELP press_fcgi_check_restarts_total Count of times we automatically restart press fcgi
+# TYPE press_fcgi_check_restarts_total counter
+press_fcgi_check_restarts_total $new_restart_count
+EOF
     fi
   fi
+
+  STOP_TIME=`date '+%s'`
+  cat <<EOF | /usr/local/bin/pushgateway_advanced -j press_fcgi_check
+# HELP press_fcgi_check_duration_seconds Time spent running press_fcgi_check
+# TYPE press_fcgi_check_duration_seconds gauge
+press_fcgi_check_duration_seconds `echo $STOP_TIME - $START_TIME | bc`
+EOF
 fi
