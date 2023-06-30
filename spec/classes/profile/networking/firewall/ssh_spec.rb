@@ -43,6 +43,13 @@ describe 'nebula::profile::networking::firewall::ssh' do
         it do
           is_expected.to contain_nebula__exposed_port('100 SSH').with(
             port: 22,
+            block: 'umich::networks::all_trusted_machines',
+          )
+        end
+
+        it do
+          is_expected.to contain_nebula__exposed_port('100 Private SSH').with(
+            port: 22,
             block: 'umich::networks::private_bastion_hosts',
           )
         end
