@@ -99,7 +99,11 @@ class nebula::profile::hathitrust::apache::babel (
       },
       {
         aliasmatch => '^/favicon.ico$',
-        path       => "${sdrroot}/common/web/favicon.ico"
+        path       => "${sdrroot}/firebird-common/dist/favicon.ico"
+      },
+      {
+        alias => '/common/firebird/',
+        path  => "${sdrroot}/firebird-common/"
       },
       {
         # Used for example logo and style sheet in error templates.
@@ -247,6 +251,11 @@ class nebula::profile::hathitrust::apache::babel (
         auth_type             => 'shibboleth',
         require               => 'shibboleth',
         shib_request_settings => { 'requireSession' => '0', 'discoveryURL' => "https://${servername}/cgi/wayf" }
+      },
+      {
+        provider => 'directory',
+        path     =>  "${sdrroot}/firebird-common",
+        require  => $default_access,
       },
       {
         # Grant access to necessary directories under the document root:

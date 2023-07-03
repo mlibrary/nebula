@@ -62,6 +62,11 @@ class nebula::profile::hathitrust::apache::www (
       },
       {
         provider => 'directory',
+        path     =>  "${sdrroot}/firebird-common",
+        require  => $default_access,
+      },
+      {
+        provider => 'directory',
         path     =>  "${sdrroot}/common/web",
         require  => $default_access,
       },
@@ -70,7 +75,11 @@ class nebula::profile::hathitrust::apache::www (
     aliases            => [
       {
         aliasmatch => '^/favicon.ico$',
-        path       => "${sdrroot}/common/web/favicon.ico"
+        path       => "${sdrroot}/firebird-common/dist/favicon.ico"
+      },
+      {
+        alias => '/common/firebird/',
+        path  => "${sdrroot}/firebird-common/"
       },
       {
         alias => '/common/',
