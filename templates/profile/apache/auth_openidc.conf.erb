@@ -1,0 +1,38 @@
+OIDCProviderMetadataURL <%= @oidc_metadata %>
+OIDCClientID <%= @oidc_client_id %>
+OIDCClientSecret <%= @oidc_client_secret %>
+OIDCCryptoPassphrase <%= @oidc_crypto %>
+
+# Essential, as the default client_secret_basic is not supported by ITS' shib OIDC provider config
+OIDCProviderTokenEndpointAuth client_secret_post
+
+# Defaults to code, but be explicit for transparency
+OIDCResponseType code
+
+OIDCScope "openid email profile"
+OIDCRemoteUserClaim preferred_username
+
+# Always protect the default redirect URI in all vhosts
+<Location /openid-connect/callback>
+    AuthType openid-connect
+    Require valid-user
+</Location>
+
+# Setup file-based session cache
+OIDCCacheType file
+OIDCCacheDir "/var/cache/apache2/mod_auth_openidc/oidc-sessions"
+OIDCCacheFileCleanInterval 60
+OIDCSessionCacheFallbackToCookie On
+OIDCSessionInactivityTimeout 28800
+OIDCSessionType server-cache
+OIDCCacheEncrypt On
+
+# Indicates whether POST data will be preserved across authentication requests.
+# Preservation is done via HTML 5 local storage. Note that this can lead to private
+# data exposure on shared terminals, that is why the default is "Off". Can be
+# configured on a per Directory/Location basis.
+OIDCPreservePost On
+OIDCRefreshAccessTokenBeforeExpiry 300 logout_on_error
+
+# A redirect URI must be defined to load the module successfully
+OIDCRedirectURI "https://missing-callback.invalid/check-the-apache-oidc-configuration"

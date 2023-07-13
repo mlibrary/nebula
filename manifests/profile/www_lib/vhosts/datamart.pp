@@ -40,15 +40,8 @@ class nebula::profile::www_lib::vhosts::datamart (
 
     ssl                           => true,
     ssl_cn                        => $ssl_cn,
-    cosign                        => true,
-    cosign_service                => 'datamart.lib.umich.edu',
-
-    cosign_public_access_off_dirs => [
-      {
-        provider => 'location',
-        path     => '/',
-      },
-    ],
+    auth_openidc                  => true,
+    auth_openidc_redirect_uri     => 'https://datamart.lib.umich.edu/openid-connect/callback',
 
     directories                   => [
       {
@@ -63,12 +56,27 @@ class nebula::profile::www_lib::vhosts::datamart (
             handler    => 'cgi-script'
           }
         ]
-      }
+      },
+      # Standard mod_auth_openidc active login
+      {
+        provider        => 'location',
+        path            => '/',
+        auth_type       => 'openid-connect',
+        auth_require    => 'valid-user',
+        custom_fragment => @(EOT)
+        OIDCUnAuthAction auth true
+        | EOT
+      },
+      {
+        provider        => 'location',
+        path            => '/robots.txt',
+        auth_require    => 'all granted',
+      },
     ],
 
     rewrites                      => [
       {
-        rewrite_cond => ['%{REQUEST_URI} !^/cosign',
+        rewrite_cond => ['%{REQUEST_URI} !^/openid-connect',
                         '%{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-f'],
         rewrite_rule => '^(.*)$ /dispatch.cgi/$1 [qsappend,last]'
       }

@@ -41,15 +41,9 @@ class nebula::profile::www_lib::vhosts::deepblue (
 
     ssl                           => true,
     ssl_cn                        => $ssl_cn,
-    cosign                        => true,
     usertrack                     => true,
-
-    cosign_public_access_off_dirs => [
-      {
-        provider => 'location',
-        path     => '/webiso-login',
-      },
-    ],
+    auth_openidc                  => true,
+    auth_openidc_redirect_uri     => 'https://deepblue.lib.umich.edu/openid-connect/callback',
 
     rewrites                      => [
       {
@@ -76,8 +70,8 @@ class nebula::profile::www_lib::vhosts::deepblue (
         rewrite_rule => '^(/data.*)$ https://app-deepbluedata.deepblue.lib.umich.edu:30060$1 [P]',
       },
       {
-        comment      => 'Deep Blue Documents; dont proxy cosign',
-        rewrite_cond => ['%{ENV:badrobot} !(^true$)', '%{REQUEST_URI} !^(/cosign/valid)'],
+        comment      => 'Deep Blue Documents; dont proxy auth_oidc',
+        rewrite_cond => ['%{ENV:badrobot} !(^true$)', '%{REQUEST_URI} !^(/openid-connect)'],
         rewrite_rule => '^(.*)$	http://bulleit-2.umdl.umich.edu:8080$1 [P]'
       },
       {
@@ -104,13 +98,30 @@ class nebula::profile::www_lib::vhosts::deepblue (
         require  => 'all denied'
       },
       {
-        provider        => 'locationmatch',
-        path            => '^/data/login',
-        auth_type       => 'cosign',
+        provider        => 'location',
+        path            => '/',
+        auth_type       => 'openid-connect',
         auth_require    => 'valid-user',
         custom_fragment => @(EOT)
-          CosignRequireFactor UMICH.EDU
-          CosignAllowPublicAccess Off
+        OIDCUnAuthAction pass
+        | EOT
+      },
+      {
+        provider        => 'location',
+        path            => '/webiso-login',
+        auth_type       => 'openid-connect',
+        auth_require    => 'valid-user',
+        custom_fragment => @(EOT)
+        OIDCUnAuthAction auth true
+        | EOT
+      },
+      {
+        provider        => 'locationmatch',
+        path            => '^/data/login',
+        auth_type       => 'openid-connect',
+        auth_require    => 'valid-user',
+        custom_fragment => @(EOT)
+        OIDCUnAuthAction auth true
         | EOT
       },
       {

@@ -35,6 +35,10 @@ nebula::profile::apache::authz_umichlib::oracle_servers:
     - ORCL.MYSERVER2_ALIAS1
     - ORCL.MYSERVER2_ALIAS2
 
+nebula::profile::apache::auth_openidc::oidc_metadata: someURL
+nebula::profile::apache::auth_openidc::oidc_client_id: something
+nebula::profile::apache::auth_openidc::oidc_client_secret: clientsecret
+nebula::profile::apache::auth_openidc::oidc_crypto: crypt
 
 nebula::profile::www_lib::vhosts::fulcrum::docroot: "/hydra/heliotrope-production/current/public"
 nebula::profile::www_lib::vhosts::fulcrum::derivatives_path: "/hydra/heliotrope-production/current/tmp/derivatives"

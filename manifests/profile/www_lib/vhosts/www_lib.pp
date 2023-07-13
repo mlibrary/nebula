@@ -21,7 +21,6 @@ class nebula::profile::www_lib::vhosts::www_lib (
     servername                    => "${prefix}www.${domain}",
     ssl                           => true,
     usertrack                     => true,
-    cosign                        => false,
     docroot                       => $docroot,
     directories                   => [
       {

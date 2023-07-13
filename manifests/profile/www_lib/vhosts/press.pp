@@ -95,7 +95,6 @@ class nebula::profile::www_lib::vhosts::press (
       {
         rewrite_cond => [
           '%{DOCUMENT_ROOT}/%{REQUEST_URI} !-f',
-          '%{REQUEST_URI} !^/cosign',
         ],
         rewrite_rule => "^(.*) http://${bind}\$1 [P]"
       }

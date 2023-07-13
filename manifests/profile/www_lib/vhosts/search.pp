@@ -48,8 +48,9 @@ class nebula::profile::www_lib::vhosts::search (
 
     ssl                         => true,
     ssl_cn                      => $ssl_cn,
-    cosign                      => true,
     usertrack                   => true,
+    auth_openidc                => true,
+    auth_openidc_redirect_uri   => 'https://search.lib.umich.edu/openid-connect/callback',
 
     rewrites                    => [
       {
@@ -79,7 +80,7 @@ class nebula::profile::www_lib::vhosts::search (
       },
       {
         comment      => 'Reverse proxy application to app hostname and port',
-        rewrite_cond => '%{REQUEST_URI} !^/cosign/valid',
+        rewrite_cond => '%{REQUEST_URI} !^/openid-connect',
         rewrite_rule => '^(/.*)$ http://app-search:30101$1 [P]',
       },
     ],
@@ -97,12 +98,24 @@ class nebula::profile::www_lib::vhosts::search (
         allow_override => 'None',
         require        => $nebula::profile::www_lib::apache::default_access,
       },
+      # Standard mod_auth_openidc pasive login
+      {
+        provider        => 'location',
+        path            => '/',
+        auth_type       => 'openid-connect',
+        auth_require    => 'valid-user',
+        custom_fragment => @(EOT)
+        OIDCUnAuthAction pass
+        | EOT
+      },
       {
         provider        => 'location',
         path            => '/login',
-        auth_type       => 'cosign',
+        auth_type       => 'openid-connect',
         auth_require    => 'valid-user',
-        custom_fragment => 'CosignAllowPublicAccess Off',
+        custom_fragment => @(EOT)
+        OIDCUnAuthAction auth true
+        | EOT
       },
     ],
 

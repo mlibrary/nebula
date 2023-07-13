@@ -40,12 +40,6 @@ class nebula::profile::www_lib::cron (
       user => 'root',
     ;
 
-    'purge cosign tickets':
-      hour    => 0,
-      minute  => 7,
-      command => '/usr/bin/find /var/cosign/filter -type f -mtime +1 -exec /bin/rm {} \; > /dev/null 2>&1',
-    ;
-
     'purge apache access logs 1/2':
       hour    => 1,
       minute  => 7,
