@@ -164,7 +164,7 @@ class nebula::profile::hathitrust::apache (
   }
 
 
-  ['redirection','babel','www','catalog','crms_training','matomo'].each |$vhost| {
+  ['redirection','babel','old_www','www','catalog','crms_training','matomo'].each |$vhost| {
     class { "${title}::${vhost}":
       * =>  $default_vhost_params
     }
