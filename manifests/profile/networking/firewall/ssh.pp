@@ -9,13 +9,13 @@
 # @example
 #   include nebula::profile::networking::firewall::ssh
 class nebula::profile::networking::firewall::ssh {
-  if is_publicly_accessible() {
-    nebula::exposed_port { '100 SSH':
-      port  => 22,
-      block => 'umich::networks::all_trusted_machines',
-    }
-  } else {
-    nebula::exposed_port { '100 SSH':
+  nebula::exposed_port { '100 SSH':
+    port  => 22,
+    block => 'umich::networks::all_trusted_machines',
+  }
+
+  if ! is_publicly_accessible() {
+    nebula::exposed_port { '100 Private SSH':
       port  => 22,
       block => 'umich::networks::private_bastion_hosts',
     }
