@@ -26,6 +26,10 @@ class nebula::role::webhost::htvm::test {
     'xsltproc'
   ])
 
+  class { 'nebula::profile::nodejs':
+    version => '18',
+  }
+
   include nebula::role::webhost::htvm
   include nebula::profile::hathitrust::apache::test
 
