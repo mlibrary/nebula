@@ -25,7 +25,7 @@ class nebula::profile::hathitrust::apache::redirection (
   $www_servername     = "${prefix}www.${domain}"
 
 
-  ['babel', 'catalog', 'm', 'www'].each |String $vhost| {
+  ['babel', 'catalog', 'm', 'www', 'old.www'].each |String $vhost| {
     $servername = "${prefix}${vhost}.${domain}"
 
     apache::vhost { "${servername} non-ssl":
