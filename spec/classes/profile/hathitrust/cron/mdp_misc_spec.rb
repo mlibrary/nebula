@@ -57,6 +57,12 @@ describe 'nebula::profile::hathitrust::cron::mdp_misc' do
                   ],
                   minute: 30)
         end
+
+        it do
+          is_expected.to contain_cron('wordpress cron')
+            .with(command: %r{.*wp-cron.php.*},
+                  minute: 0)
+        end
       end
     end
   end
