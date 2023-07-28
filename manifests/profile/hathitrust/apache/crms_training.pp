@@ -50,7 +50,11 @@ class nebula::profile::hathitrust::apache::crms_training (
       },
       {
         aliasmatch => '^/favicon.ico$',
-        path       => "${sdrroot}/common/web/favicon.ico"
+        path       => "${sdrroot}/firebird-common/web/favicon.ico"
+      },
+      {
+        alias => '/common/firebird/',
+        path  => "${sdrroot}/firebird-common/"
       },
       {
         # Used for example logo and style sheet in error templates.
