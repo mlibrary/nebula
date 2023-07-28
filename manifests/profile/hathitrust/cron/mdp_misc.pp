@@ -70,7 +70,7 @@ class nebula::profile::hathitrust::cron::mdp_misc (
 
     'wordpress cron':
       minute  => 0,
-      command =>  '/usr/bin/curl -s https://www.hathitrust.org/wp-cron.php --resolve "www.hathitrust.org:443:127.0.0.1';
+      command =>  '/usr/bin/curl -s https://www.hathitrust.org/wp-cron.php --resolve "www.hathitrust.org:443:127.0.0.1"';
 
   }
 
