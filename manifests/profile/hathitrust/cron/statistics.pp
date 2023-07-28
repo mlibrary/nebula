@@ -12,7 +12,7 @@
 class nebula::profile::hathitrust::cron::statistics (
   String $mail_recipient,
   String $user = 'libadm',
-  String $sdr_root = '/htapps/www'
+  String $sdr_root = '/htapps/drupal.www'
 ){
 
   $drupal_home = "${sdr_root}/sites/www.hathitrust.org"

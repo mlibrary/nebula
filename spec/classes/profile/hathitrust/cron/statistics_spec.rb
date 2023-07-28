@@ -20,9 +20,9 @@ describe 'nebula::profile::hathitrust::cron::statistics' do
 
         it do
           is_expected.to contain_cron('callnumber prefix counts')
-            .with(command: %r{.*perl /htapps/www/sites/www\.hathitrust\.org/modules/custom/callnumber_prefix_counts\.pl.*mail.*nobody@default\.invalid},
+            .with(command: %r{.*perl /htapps/drupal.www/sites/www\.hathitrust\.org/modules/custom/callnumber_prefix_counts\.pl.*mail.*nobody@default\.invalid},
                   user: 'libadm',
-                  environment: ['MAILTO=nobody@default.invalid', 'SDRROOT=/htapps/www'])
+                  environment: ['MAILTO=nobody@default.invalid', 'SDRROOT=/htapps/drupal.www'])
         end
       end
 
