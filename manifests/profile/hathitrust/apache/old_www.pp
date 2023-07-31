@@ -46,11 +46,6 @@ class nebula::profile::hathitrust::apache::old_www (
         allow_override => ['None'],
         require        => $default_access,
       },
-      {
-        provider => 'directory',
-        path     =>  "${sdrroot}/common/web",
-        require  => $default_access,
-      },
     ],
 
     aliases            => [
@@ -58,10 +53,6 @@ class nebula::profile::hathitrust::apache::old_www (
         aliasmatch => '^/favicon.ico$',
         path       => "${sdrroot}/common/web/favicon.ico"
       },
-      {
-        alias => '/common/',
-        path  => "${sdrroot}/common/web/"
-      }
     ],
 
     headers            => 'set "Strict-Transport-Security" "max-age=31536000"',
