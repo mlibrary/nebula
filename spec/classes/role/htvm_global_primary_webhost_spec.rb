@@ -17,6 +17,13 @@ describe 'nebula::role::webhost::htvm::global_primary' do
       it { is_expected.to contain_class('nebula::profile::hathitrust::cron::statistics') }
       it { is_expected.to contain_class('nebula::profile::hathitrust::cron::catalog') }
       it { is_expected.to contain_class('nebula::role::webhost::htvm::site_primary') }
+
+      it do
+        is_expected.to contain_cron('wordpress cron')
+          .with(user: 'nobody',
+                command: %r{.*wp-cron.php.*},
+                minute: 0)
+      end
     end
   end
 end
