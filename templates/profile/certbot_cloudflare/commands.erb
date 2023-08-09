@@ -1,0 +1,7 @@
+<% @certs.each do |service, domains| -%>
+<% domains.each do |main_domain, alt_domains| -%>
+<% full_san = [main_domain, "*.#{main_domain}"] -%>
+<% alt_domains.each { |x| full_san += [x, "*.#{x}"] } -%>
+certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -m "<%= @letsencrypt_email %>" -d "<%= full_san.join(",") %>"
+<% end -%>
+<% end -%>
