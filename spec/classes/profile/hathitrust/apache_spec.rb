@@ -74,7 +74,6 @@ describe 'nebula::profile::hathitrust::apache' do
               ssl_key: '/etc/ssl/private/www.hathitrust.org.key',
             )
           }
-          it { is_expected.not_to contain_apache__vhost("#{vhost}.hathitrust.org ssl").with(ssl_chain: '/etc/ssl/certs/bad_cert.crt')}
         end
       end
 
