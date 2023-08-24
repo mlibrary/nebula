@@ -1,4 +1,3 @@
 nebula::profile::http_fileserver::storage_path: somehost:/somewhere
-nebula::profile::ssl_keypair::chain_crt: intermediate_ca.crt
 nebula::profile::deb_signing::sign_key: puppet:///somewhere/mykey.key
 nebula::profile::deb_signing::sign_script: puppet:///somewhere/signit.sh
