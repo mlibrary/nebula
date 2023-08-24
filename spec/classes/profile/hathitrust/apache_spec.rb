@@ -72,7 +72,6 @@ describe 'nebula::profile::hathitrust::apache' do
               ssl_cipher: 'ECDHE-RSA-AES256-GCM-SHA384',
               ssl_cert: '/etc/ssl/certs/www.hathitrust.org.crt',
               ssl_key: '/etc/ssl/private/www.hathitrust.org.key',
-              ssl_chain: '/etc/ssl/certs/intermediate_ca.crt',
             )
           }
         end
