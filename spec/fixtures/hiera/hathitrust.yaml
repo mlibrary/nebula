@@ -59,7 +59,7 @@ hathitrust::networks::staff:
   - "%{alias('networks::one')}"
   - "%{alias('networks::two')}"
 
-nebula::profile::ssl_keypair::chain_crt: 'intermediate_ca.crt'
+nebula::profile::ssl_keypair::chain_crt: 'bad_cert.crt'
 
 nebula::usergroup::membership:
   htprod: ['htingest', 'htweb']
