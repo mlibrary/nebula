@@ -29,7 +29,6 @@ class nebula::profile::fulcrum::demomysql (
   # Install the mysql client
   class { 'mysql::client':
     bindings_enable => false,
-    ssl_mode => 'DISABLED',
   }
 
   mysql::db { 'fedora':
