@@ -20,7 +20,7 @@ class nebula::role::aws (
 
   include nebula::profile::aws::filesystem
 
-  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
+  if $facts['os']['family'] == 'Debian' {
     include nebula::profile::exim4
     include nebula::profile::ntp
     class { 'nebula::profile::networking':

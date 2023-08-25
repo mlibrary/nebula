@@ -17,13 +17,11 @@ class nebula::role::minimum (
     include nebula::profile::known_host_public_keys
     include nebula::profile::falcon
 
-    if $::lsbdistcodename != 'jessie' {
-      class { 'nebula::profile::networking::firewall':
-        internal_routing => $internal_routing,
-      }
-
-      include nebula::profile::apt
-      include nebula::profile::vim
+    class { 'nebula::profile::networking::firewall':
+      internal_routing => $internal_routing,
     }
+
+    include nebula::profile::apt
+    include nebula::profile::vim
   }
 }
