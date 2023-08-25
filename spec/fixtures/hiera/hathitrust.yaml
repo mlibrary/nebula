@@ -108,11 +108,6 @@ nebula::profile::hathitrust::cron::catalog::mail_recipient: nobody@default.inval
 
 umich::networks::staff: []
 
-nebula::profile::hathitrust::solr_lss::timezone: Somewhere/City
-
-nebula::role::hathitrust::backup::tsm_servername: tsmserver
-nebula::role::hathitrust::backup::tsm_serveraddress: tsm.default.invalid
-
 nebula::profile::hathitrust::rsync::datasets:
   dataset1:
     comment: "Dataset 1"
