@@ -53,7 +53,6 @@ end
             # The first pair that matches will be chosen.
             %w[nebula::role::webhost::htvm hathitrust],
             %w[nebula::role::hathitrust hathitrust],
-            %w[nebula::role::tools_lib tools_lib],
             %w[nebula::role::chipmunk chipmunk],
             %w[nebula::role::app_host::standalone chipmunk],
             %w[nebula::role::app_host::hyrax chipmunk],
