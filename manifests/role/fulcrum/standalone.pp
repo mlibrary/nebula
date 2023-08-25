@@ -8,6 +8,7 @@
 
 class nebula::role::fulcrum::standalone {
   $jdk_version = '11'
+  $password = 'changeme'
 
   include nebula::role::minimum
   include nebula::profile::ruby
