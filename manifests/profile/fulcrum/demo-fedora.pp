@@ -2,9 +2,9 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# nebula::profile::fulcrum::fedora
+# nebula::profile::fulcrum::demo-fedora
 
-class nebula::profile::fulcrum::fedora (
+class nebula::profile::fulcrum::demo-fedora (
   String $fedora_username = 'fedora',
   String $fedora_password = lookup('nebula::profile::fulcrum::mysql::fedora_password'),
 ) {
