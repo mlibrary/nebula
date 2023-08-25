@@ -17,6 +17,8 @@ class nebula::role::fulcrum::standalone {
   include nebula::profile::fulcrum::demofedora
   include nebula::profile::fulcrum::logrotate
   include nebula::profile::fulcrum::mysql
+  include nebula::profile::fulcrum::demomysql
+  include nebula::profile::fulcrum::nginx
   include nebula::profile::fulcrum::redis
   include nebula::profile::fulcrum::shibboleth
   include nebula::profile::fulcrum::solr
