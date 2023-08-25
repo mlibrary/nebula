@@ -21,6 +21,10 @@ class nebula::profile::http_fileserver (
     ensure => 'directory',
   }
 
+  file { "/var/local/http":
+    ensure => 'directory',
+  }
+
   mount { $docroot:
     ensure  => 'mounted',
     device  => $storage_path,
@@ -29,19 +33,37 @@ class nebula::profile::http_fileserver (
     require => ['Package[nfs-common]']
   }
 
-  class { 'nebula::profile::ssl_keypair':
-    common_name => $::fqdn
+  $letsencrypt_directory = $::letsencrypt_directory[$::fqdn]
+  if $letsencrypt_directory {
+    class { 'apache':
+      docroot           => '/srv/www',
+      default_mods      => false,
+      default_ssl_cert  => "${letsencrypt_directory}/fullchain.pem",
+      default_ssl_key   => "${letsencrypt_directory}/privkey.pem",
+      default_vhost     => false,
+      default_ssl_vhost => true,
+      conf_enabled      => '/etc/apache2/conf-enabled',
+    }
+  } else {
+    class { 'apache':
+      docroot           => '/srv/www',
+      default_mods      => false,
+      default_vhost     => false,
+      default_ssl_vhost => false,
+      conf_enabled      => '/etc/apache2/conf-enabled',
+    }
   }
 
-  class { 'apache':
-    docroot           => '/srv/www',
-    default_mods      => false,
-    default_ssl_chain => "/etc/ssl/certs/${chain_crt}",
-    default_ssl_cert  => "/etc/ssl/certs/${::fqdn}.crt",
-    default_ssl_key   => "/etc/ssl/private/${::fqdn}.key",
-    default_vhost     => true,
-    default_ssl_vhost => true,
-    conf_enabled      => '/etc/apache2/conf-enabled',
+  apache::vhost { "${::fqdn} http":
+    servername => $::fqdn,
+    port       => 80,
+    docroot    => "/var/local/http",
+    require    => File["/var/local/http"]
+  }
+
+  nebula::cert { $::fqdn:
+    webroot => "/var/local/http",
+    require => Apache::Vhost["${::fqdn} http"]
   }
 
   include nebula::profile::networking::firewall::http_datacenters
