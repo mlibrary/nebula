@@ -145,8 +145,6 @@ class nebula::profile::hathitrust::apache (
     content => template('nebula/profile/apache/logrotate.d/apache2.erb'),
   }
 
-  $chain_crt = lookup('nebula::profile::ssl_keypair::chain_crt')
-
   $default_vhost_params = {
     sdrroot        => $sdrroot,
     default_access => $default_access,
@@ -157,7 +155,6 @@ class nebula::profile::hathitrust::apache (
       ssl_cipher     => 'ECDHE-RSA-AES256-GCM-SHA384',
       ssl_cert       => '/etc/ssl/certs/www.hathitrust.org.crt',
       ssl_key        => '/etc/ssl/private/www.hathitrust.org.key',
-      ssl_chain      => "/etc/ssl/certs/${chain_crt}"
     },
     prefix         => $prefix,
     domain         => $domain
