@@ -7,9 +7,6 @@
 # This is desiged to manage a Debian Server that hosts the Fulcrum project, with all of the dependencies and services included. 
 
 class nebula::role::fulcrum::standalone {
-  $jdk_version = '11'
-  $password = 'changeme'
-
   include nebula::role::minimum
   include nebula::profile::ruby
   include nebula::profile::fulcrum::base

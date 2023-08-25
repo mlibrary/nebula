@@ -18,7 +18,12 @@ class nebula::profile::fulcrum::demomysql (
     create_root_my_cnf      => true,
     root_password           => $password,
     remove_default_accounts => true,
-    skip_ssl                => true,
+  }
+
+  $override_options = {
+    'mysqld' => {
+      'skip-ssl'
+    }
   }
 
   # Install the mysql client
