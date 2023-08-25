@@ -6,7 +6,7 @@
 
 class nebula::profile::fulcrum::demofedora (
   String $fedora_username = 'fedora',
-  String $fedora_password = lookup('nebula::profile::fulcrum::mysql::fedora_password'),
+  String $fedora_password = lookup('nebula::profile::fulcrum::demomysql::fedora_password'),
 ) {
   ensure_packages([
     'tomcat9-user',
