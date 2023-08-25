@@ -12,7 +12,6 @@
 class nebula::profile::http_fileserver (
   String $storage_path,
   String $docroot = '/srv/www',
-  String $chain_crt = 'incommon_sha2.crt'
 ) {
 
   package { 'nfs-common': }
