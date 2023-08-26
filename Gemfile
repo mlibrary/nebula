@@ -10,6 +10,7 @@ group :development do
   gem "puppet-module-posix-dev-r#{minor_version}",     require: false, platforms: [:ruby]
   gem "rspec-puppet-utils"
   gem "faker"
+  gem "parallel_tests"
 end
 
 gem 'puppet', '~> 6.19'
