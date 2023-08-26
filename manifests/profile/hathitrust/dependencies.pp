@@ -44,31 +44,8 @@ class nebula::profile::hathitrust::dependencies () {
     target =>  '/htapps/babel/geoip'
   }
 
-  # install jhove, pin it to buster if we're on stretch
-  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename == 'stretch' {
-    include nebula::profile::apt::buster
-    include apt::backports
-
-    $packages = ['jhove','libjaxb-api-java','libactivation-java']
-    $release = 'buster'
-
-    apt::pin { "${release}-jhove":
-      explanation => "Prioritize ${packages} from ${release}",
-      codename    => $release,
-      priority    => 700,
-      packages    => $packages,
-      require     => Class['nebula::profile::apt::buster']
-    }
-
-    package {
-      $packages:
-      require => Apt::Pin["${release}-jhove"]
-    }
-  }
-  else {
-    package {
-      'jhove':
-    }
+  package {
+    'jhove':
   }
 
   $http_files = lookup('nebula::http_files')
@@ -85,10 +62,6 @@ class nebula::profile::hathitrust::dependencies () {
     ]:
   }
 
-  if $::lsbdistcodename == 'stretch' {
-    ensure_packages(['mariadb-client-10.1'])
-  } elsif $::lsbdistcodename == 'bullseye' {
-    ensure_packages(['mariadb-client'])
-  }
+  ensure_packages(['mariadb-client'])
 
 }

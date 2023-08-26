@@ -11,10 +11,6 @@
 class nebula::profile::hathitrust::perl () {
   include nebula::profile::hathitrust::dependencies
 
-  if $::lsbdistcodename == 'stretch' {
-    package { 'libreadonly-xs-perl': }
-  }
-
   package { [
     'libalgorithm-diff-xs-perl',
     'libany-moose-perl',
