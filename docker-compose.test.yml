@@ -2,7 +2,7 @@ version: '3'
 services:
   specs:
     build: .
-    command: 'bundle exec rake spec'
+    command: 'bundle exec rake parallel_spec'
 
   lint:
     build: .
