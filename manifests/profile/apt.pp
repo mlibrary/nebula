@@ -78,7 +78,6 @@ class nebula::profile::apt (
     }
 
     $security_release = $::lsbdistcodename ? {
-      'stretch' => "${::lsbdistcodename}/updates",
       'buster'  => "${::lsbdistcodename}/updates",
       default   => "${::lsbdistcodename}-security",
     }

@@ -14,7 +14,7 @@ class nebula::role::hathitrust (
     internal_routing => $internal_routing,
   }
 
-  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
+  if $facts['os']['family'] == 'Debian' {
     include nebula::profile::krb5
     include nebula::profile::afs
     include nebula::profile::duo

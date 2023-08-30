@@ -32,26 +32,6 @@ class nebula::profile::prometheus::exporter::node (
   include nebula::subscriber::rsyslog
   include nebula::subscriber::systemctl_daemon_reload
 
-  # There's a bug in HP machines that only affects pre-stretch that
-  # makes hwmon checks spew a bunch of annoying log messages. This can
-  # be removed (as well as the corresponding logic in the template) once
-  # we don't have jessie machines anymore.
-  #
-  # For more info, http://www.serveradminblog.com/2015/05/kernel-acpi-error-smbusipmigenericserialbus/
-  if $facts {
-    if $facts['os'] and $facts['dmi'] {
-      if $facts['os']['distro'] and $facts['dmi']['manufacturer'] {
-        if $facts['os']['distro']['codename'] {
-          if $facts['os']['distro']['codename'] == 'jessie' and $facts['dmi']['manufacturer'] == 'HP' {
-            $disable_hwmon = true
-          } else {
-            $disable_hwmon = false
-          }
-        }
-      }
-    }
-  }
-
   file { '/etc/default/prometheus-node-exporter':
     content => template('nebula/profile/prometheus/exporter/node/defaults.sh.erb'),
     notify  => Service['prometheus-node-exporter'],
@@ -163,7 +143,5 @@ class nebula::profile::prometheus::exporter::node (
     action => 'accept',
   }
 
-  if $::lsbdistcodename != 'jessie' {
-    Firewall <<| tag == "${monitoring_datacenter}_prometheus_node_exporter" |>>
-  }
+  Firewall <<| tag == "${monitoring_datacenter}_prometheus_node_exporter" |>>
 }

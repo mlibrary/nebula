@@ -11,44 +11,23 @@
 class nebula::profile::hathitrust::php () {
   include nebula::profile::hathitrust::apache
 
-  if $::lsbdistcodename == 'stretch' {
-    package {
-      [
-        'php7.0-curl',
-        'php7.0-gd',
-        'php-geoip', # PECL
-        'php-http', # PECL
-        'php7.0-ldap',
-        'php7.0-mysql',
-        'php-mdb2',
-        'php-mdb2-driver-mysql',
-        'php-smarty',
-        'php7.0-xsl',
-        'php7.0-mbstring',
-        'php-yaml',
-        'libapache2-mod-php7.0',
-        'pear-channels'
-      ]:
-    }
-  } else {
-    package {
-      [
-        'php-curl',
-        'php-gd',
-        'php-geoip', # PECL
-        'php-http', # PECL
-        'php-ldap',
-        'php-mysql',
-        'php-mdb2',
-        'php-mdb2-driver-mysql',
-        'php-smarty',
-        'php-xml',
-        'php-mbstring',
-        'php-yaml',
-        'libapache2-mod-php',
-        'pear-channels'
-      ]:
-    }
+  package {
+    [
+      'php-curl',
+      'php-gd',
+      'php-geoip', # PECL
+      'php-http', # PECL
+      'php-ldap',
+      'php-mysql',
+      'php-mdb2',
+      'php-mdb2-driver-mysql',
+      'php-smarty',
+      'php-xml',
+      'php-mbstring',
+      'php-yaml',
+      'libapache2-mod-php',
+      'pear-channels'
+    ]:
   }
 
   -> class { '::php':

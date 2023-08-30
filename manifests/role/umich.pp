@@ -17,7 +17,7 @@ class nebula::role::umich (
     internal_routing => $internal_routing,
   }
 
-  if $facts['os']['family'] == 'Debian' and $::lsbdistcodename != 'jessie' {
+  if $facts['os']['family'] == 'Debian' {
     include nebula::profile::duo
     include nebula::profile::exim4
     include nebula::profile::grub
