@@ -1,11 +1,6 @@
 Puppet Nebula
 =============
 
-[![Build Status][status-image]][travis]
-
-[travis]:       https://travis-ci.org/mlibrary/nebula
-[status-image]: https://travis-ci.org/mlibrary/nebula.svg?branch=master
-
 # Development
 
 1. git clone
