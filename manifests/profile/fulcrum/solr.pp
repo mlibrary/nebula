@@ -12,12 +12,6 @@ class nebula::profile::fulcrum::solr {
   }
 
   file {
-    ['/opt/solr', '/opt/solr/bin']:
-      ensure => 'directory',
-    ;
-  }
-
-  file {
     ['/var/lib/solr/data/cores']:
       ensure => 'directory',
       owner  => 'solr',
