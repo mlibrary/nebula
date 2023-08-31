@@ -8,6 +8,7 @@ class nebula::profile::fulcrum::nginx (
   Integer $port = 3000,
   String $server_name = $::fqdn,
   String $webroot = '/var/www/acme',
+  String $webrootroot = '/var/www',
 ) {
   class { 'nginx':
     manage_repo    => true,
@@ -154,6 +155,10 @@ class nebula::profile::fulcrum::nginx (
     listen_port => 80,
     www_root    => $webroot,
     require     => File[$webroot],
+  }
+
+  file { $webrootroot:
+    ensure => 'directory',
   }
 
   file { $webroot:
