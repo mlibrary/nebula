@@ -53,6 +53,11 @@ class nebula::profile::solr (
     ;
   }
 
+  file { "/etc/environment":
+      content => inline_template("JAVA_HOME=/usr/bin/java")
+  }
+
+
   file { '/etc/systemd/system/solr.service':
     owner   => 'root',
     group   => 'root',
