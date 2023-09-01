@@ -7,7 +7,6 @@ User=solr
 Type=forking
 Environment="SOLR_INCLUDE=<%= @solr_in_sh %>"
 Environment="UMASK=002"
-Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/"
 ExecStart=<%= @solr_bin %> start
 ExecStop=<%= @solr_bin %> stop
 Restart=always
