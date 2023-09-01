@@ -26,7 +26,7 @@ class nebula::profile::fulcrum::app (
     'libreoffice',
     'libjemalloc2',
     'netpbm-sf',
-    "openjdk-${jdk_version}-jre-headless",
+    "temurin-${jdk_version}-jre",
     'pdftk',
     'qpdf',
     'shared-mime-info',
