@@ -20,7 +20,7 @@ class nebula::profile::fulcrum::demomysql (
     remove_default_accounts => true,
   }
 
-  $override_options = {
+  $options = {
     'mysqld' => {
       'ssl-disable' => true
     }
