@@ -14,6 +14,7 @@
 class nebula::profile::networking::firewall (
   String $internal_routing = '',
   Hash $rules = {},
+  Hash $advanced_rules = {},
 ) {
   # Include standard SSH rules by default
   include nebula::profile::networking::firewall::ssh
@@ -141,6 +142,7 @@ class nebula::profile::networking::firewall (
   }
 
   create_resources(firewall,$rules,$firewall_defaults)
+  create_resources(firewall,$advanced_rules)
 
   # Default IPv4 items, sorted by title
   firewall { '001 accept related established rules':

@@ -68,6 +68,21 @@ describe 'nebula::profile::networking::firewall' do
       end
 
       it do
+        is_expected.to contain_firewall('900 port forwarding: an advanced rule').with(
+          table: 'nat',
+          proto: 'tcp',
+          dport: '4657',
+          jump: 'REDIRECT',
+          chain: 'PREROUTING',
+          toports: '1234',
+        )
+        is_expected.not_to contain_firewall('900 port forwarding: an advanced rule').with(
+          action: 'accept',
+          state: 'NEW',
+        )
+      end
+
+      it do
         is_expected.to contain_firewall('999 drop all').with(
           proto: 'all',
           action: 'drop',
@@ -82,7 +97,7 @@ describe 'nebula::profile::networking::firewall' do
         )
       end
 
-      it { is_expected.to have_firewall_resource_count(8) }
+      it { is_expected.to have_firewall_resource_count(9) }
 
       it { is_expected.to contain_package('iptables-persistent') }
       it { is_expected.to contain_package('netfilter-persistent') }
