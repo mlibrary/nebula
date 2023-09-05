@@ -22,7 +22,7 @@ class nebula::profile::fulcrum::demomysql (
 
   $override_options = {
     'mysqld' => {
-      'skip-ssl' => true
+      'ssl-disable' => true
     }
   }
 
