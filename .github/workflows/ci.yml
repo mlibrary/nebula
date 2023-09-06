@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ contains( github.event.pull_request.labels.*.name, 'use_fast_ci') && 'ubuntu-latest-16core' || 'ubuntu-latest' }}
+    runs-on: ${{ contains( github.event.pull_request.labels.*.name, 'use_fast_ci') && 'ubuntu-latest-8core' || 'ubuntu-latest' }}
     steps:
     - uses: actions/checkout@v4
     - name: Run tests
