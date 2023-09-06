@@ -82,15 +82,6 @@ fixtures:
     java:
       repo: "puppetlabs/java"
       ref: "6.4.0"
-    java_ks:
-      repo: "puppetlabs/java_ks"
-      ref: "3.3.0"
-    confluence:
-      repo: "puppet/confluence"
-      ref: "3.2.0"
-    jira:
-      repo: "puppet/jira"
-      ref: "4.0.1"
     augeas_core:
       repo: "puppetlabs/augeas_core"
       ref: "1.1.1"
