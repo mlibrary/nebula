@@ -13,3 +13,11 @@ nebula::profile::networking::firewall::rules:
     dport: 123
     proto: udp
 
+nebula::profile::networking::firewall::advanced_rules:
+  "900 port forwarding: an advanced rule":
+    table: 'nat'
+    proto: 'tcp'
+    dport: '4657'
+    jump: 'REDIRECT'
+    chain: 'PREROUTING'
+    toports: '1234'
