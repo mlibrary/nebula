@@ -20,6 +20,9 @@ describe 'nebula::profile::hathitrust::mounts' do
       it { is_expected.to contain_mount('/htapps').that_requires('Service[bind9]') }
       it { is_expected.to contain_nebula__nfs_mount('/htapps') }
 
+      it { is_expected.to contain_file('/etc/resolv.conf').with_content(%r{nameserver 127.0.0.1}) }
+      it { is_expected.to contain_service('bind9') }
+
       context 'with /htapps specified as a non-smartconnect mount' do
         let(:params) do
           {

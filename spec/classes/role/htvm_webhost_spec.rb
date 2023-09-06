@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018, 2023 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -14,22 +14,19 @@ describe 'nebula::role::webhost::htvm' do
 
       it { is_expected.to compile }
 
-      it { is_expected.to contain_mount('/sdr1').with_options('auto,hard,nfsvers=3,ro') }
-
       it do
         is_expected.to contain_class('nebula::profile::shibboleth')
           .with(startup_timeout: 1800)
           .with(watchdog_minutes: '*/30')
       end
 
-      it { is_expected.to contain_php__extension('File_MARC').with_provider('pear') }
-      it { is_expected.to contain_nebula__cpan('EBook::EPUB').that_requires('Package[libmoose-perl]') }
-
-      it { is_expected.to contain_file('/etc/resolv.conf').with_content(%r{nameserver 127.0.0.1}) }
-      it { is_expected.to contain_service('bind9') }
-
-      # default from hiera
-      it { is_expected.to contain_host('mysql-sdr').with_ip('10.1.2.4') }
+      it do
+        is_expected.to contain_class('nebula::profile::hathitrust::dependencies')
+        is_expected.to contain_class('nebula::profile::hathitrust::hosts')
+        is_expected.to contain_class('nebula::profile::hathitrust::mounts')
+        is_expected.to contain_class('nebula::profile::hathitrust::perl')
+        is_expected.to contain_class('nebula::profile::hathitrust::php')
+      end
 
       it do
         is_expected.to contain_concat_fragment('monitor nfs /sdr1')
@@ -68,7 +65,6 @@ describe 'nebula::role::webhost::htvm' do
         it { is_expected.not_to contain_package('php5-dev') }
         it { is_expected.to contain_package('libapache2-mod-shib') }
         it { is_expected.not_to contain_package('libapache2-mod-shib2') }
-        it { is_expected.to contain_package('mariadb-client') }
       end
 
       # not specified explicitly as a usergroup, just brought in as part of 'all groups'
