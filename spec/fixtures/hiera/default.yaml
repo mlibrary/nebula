@@ -113,9 +113,6 @@ nebula::profile::named_instances::puma_wrapper: "/l/local/bin/profile_puma_wrap"
 nebula::profile::named_instances::pubkey: "somepublickey"
 nebula::profile::named_instances::puma_config: "config/fauxpaas_puma.rb"
 
-nebula::profile::work_around_puppet_bugs::state_yaml_path: '/opt/puppetlabs/puppet/cache/state/state.yaml'
-nebula::profile::work_around_puppet_bugs::state_yaml_max_size: '10m'
-
 nebula::http_files: 'default.http_files.invalid'
 
 nebula::profile::apt::local_repo:
