@@ -9,8 +9,28 @@ class nebula::profile::fulcrum::mysql (
   String $fulcrum_password,
   String $checkpoint_password,
   String $shibd_password,
+  String $password,
 ) {
-  include nebula::profile::mysql
+
+  # Install and configure mysql server
+  ensure_packages(['mariadb-server', 'mariadb-client'])
+  exec { 'secure_mysql':
+    command => "
+mysql -sfu root <<EOS
+-- set root password
+UPDATE mysql.user SET Password=PASSWORD({$password}) WHERE User='root';
+-- delete anonymous users
+DELETE FROM mysql.user WHERE User='';
+-- delete remote root capabilities
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+-- drop database 'test'
+DROP DATABASE IF EXISTS test;
+-- also make sure there are lingering permissions to it
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+-- make changes immediately
+FLUSH PRIVILEGES;
+EOS"
+  }
 
   mysql::db { 'fedora':
     user     => 'fedora',

@@ -9,7 +9,7 @@ class nebula::profile::fulcrum::fedora (
   String $fedora_password = lookup('nebula::profile::fulcrum::mysql::fedora_password'),
 ) {
   ensure_packages([
-    'tomcat8-user',
+    'tomcat9-user',
   ])
 
   file { '/etc/sudoers.d/fedora':
@@ -25,13 +25,13 @@ class nebula::profile::fulcrum::fedora (
   }
 
   exec { 'create fedora tomcat':
-    command => '/usr/bin/tomcat8-instance-create fedora',
+    command => '/usr/bin/tomcat9-instance-create fedora',
     cwd     => '/opt',
     user    => 'fulcrum',
     creates => '/opt/fedora',
     require => [
       User['fulcrum'],
-      Package['tomcat8-user'],
+      Package['tomcat9-user'],
     ],
   }
 
