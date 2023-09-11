@@ -13,7 +13,7 @@ class nebula::profile::fulcrum::mysql (
 ) {
 
   # Install and configure mysql server
-  ensure_packages(['mariadb-server', 'mariadb-client'])
+  ensure_packages(['mysql', 'mysql-client'])
   exec { 'secure_mysql':
     command => "
 mysql -sfu root <<EOS
