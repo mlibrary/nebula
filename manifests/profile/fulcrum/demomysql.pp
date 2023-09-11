@@ -13,22 +13,23 @@ class nebula::profile::fulcrum::demomysql (
 ) {
 
   # Install and configure mysql server
-  class { 'mysql::server':
-    create_root_user        => true,
-    create_root_my_cnf      => true,
-    root_password           => $password,
-    remove_default_accounts => true,
-  }
-
-  $options = {
-    'mysqld' => {
-      'ssl-disable' => true
-    }
-  }
-
-  # Install the mysql client
-  class { 'mysql::client':
-    bindings_enable => false,
+  ensure_packages(['mariadb-server', 'mariadb-client'])
+  exec { 'secure_mysql':
+    command => "
+mysql -sfu root <<EOS
+-- set root password
+UPDATE mysql.user SET Password=PASSWORD({$password}) WHERE User='root';
+-- delete anonymous users
+DELETE FROM mysql.user WHERE User='';
+-- delete remote root capabilities
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+-- drop database 'test'
+DROP DATABASE IF EXISTS test;
+-- also make sure there are lingering permissions to it
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+-- make changes immediately
+FLUSH PRIVILEGES;
+EOS"
   }
 
   mysql::db { 'fedora':
