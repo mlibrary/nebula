@@ -9,7 +9,7 @@
 class nebula::role::fulcrum::standalone {
   include nebula::role::minimum
   include nebula::profile::ruby
-# include nebula::profile::fulcrum::base
+ include nebula::profile::fulcrum::base
 # include nebula::profile::fulcrum::hosts
 # include nebula::profile::fulcrum::app
 # include nebula::profile::fulcrum::fedora
