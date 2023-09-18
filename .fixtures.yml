@@ -15,7 +15,7 @@ fixtures:
   forge_modules:
     rbenv:        {"repo": "jdowning/rbenv",          "ref": "2.2.0"}
     archive:      {"repo": "puppet/archive",          "ref": "4.6.0"}
-    kmod:         {"repo": "camptocamp/kmod",         "ref": "2.1.0"}
+    kmod:         {"repo": "puppet/kmod",             "ref": "3.2.0"}
     letsencrypt:  {"repo": "puppet/letsencrypt",      "ref": "6.0.0"}
     logrotate:    {"repo": "puppet/logrotate",        "ref": "5.0.0"}
     nginx:        {"repo": "puppet/nginx",            "ref": "2.1.1"}
