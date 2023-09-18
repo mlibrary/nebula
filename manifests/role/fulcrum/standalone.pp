@@ -22,10 +22,10 @@ class nebula::role::fulcrum::standalone (
   include nebula::profile::www_lib::apache::base
   include nebula::profile::www_lib::apache::fulcrum
 
-  class { 'nebula::profile::shibboleth':
-    config_source    => $shibboleth_config_source,
-    watchdog_minutes => '*/30',
-  }
+# class { 'nebula::profile::shibboleth':
+#   config_source    => $shibboleth_config_source,
+#   watchdog_minutes => '*/30',
+# }
 
 # cron {
 #   default:
@@ -55,7 +55,7 @@ class nebula::role::fulcrum::standalone (
   include nebula::profile::fulcrum::app
   include nebula::profile::fulcrum::logrotate
   include nebula::profile::fulcrum::redis
-# include nebula::profile::fulcrum::solr
+  include nebula::profile::fulcrum::solr
 # include nebula::profile::fulcrum::shibboleth
 # include nebula::profile::fulcrum::mysql
 # include nebula::profile::fulcrum::fedora
