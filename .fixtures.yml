@@ -14,7 +14,7 @@ fixtures:
   #    repo: "git://github.com/mlibrary/repo_name"
   forge_modules:
     rbenv:        {"repo": "jdowning/rbenv",          "ref": "2.2.0"}
-    archive:      {"repo": "puppet/archive",          "ref": "4.6.0"}
+    archive:      {"repo": "puppet/archive",          "ref": "6.1.2"}
     kmod:         {"repo": "puppet/kmod",             "ref": "3.2.0"}
     letsencrypt:  {"repo": "puppet/letsencrypt",      "ref": "6.0.0"}
     logrotate:    {"repo": "puppet/logrotate",        "ref": "5.0.0"}
@@ -22,7 +22,7 @@ fixtures:
     php:          {"repo": "puppet/php",              "ref": "8.0.3"}
     apache:       {"repo": "puppetlabs/apache",       "ref": "7.0.0"}
     apt:          {"repo": "puppetlabs/apt",          "ref": "7.6.0"}
-    augeas_core:  {"repo": "puppetlabs/augeas_core",  "ref": "1.1.1"}
+    augeas_core:  {"repo": "puppetlabs/augeas_core",  "ref": "1.4.0"}
     concat:       {"repo": "puppetlabs/concat",       "ref": "6.3.0"}
     cron_core:    {"repo": "puppetlabs/cron_core",    "ref": "1.0.5"}
     docker:       {"repo": "puppetlabs/docker",       "ref": "3.12.1"}
