@@ -131,18 +131,69 @@ class nebula::profile::prometheus (
     block => 'umich::networks::all_trusted_machines',
   }
 
-  @@concat_fragment { "02 pushgateway advanced url ${::datacenter}":
-    target  => '/usr/local/bin/pushgateway_advanced',
-    content => "PUSHGATEWAY='http://${::fqdn}:9091'\n",
-  }
-
-  @@firewall { "010 prometheus node exporter ${::hostname}":
+  # Delete this once nothing is importing it. It's only here for the
+  # sake of hosts that aren't in production.
+  @@firewall { "010 prometheus legacy node exporter ${::hostname}":
     tag    => "${::datacenter}_prometheus_node_exporter",
     proto  => 'tcp',
     dport  => 9100,
     source => $::ipaddress,
     state  => 'NEW',
     action => 'accept',
+  }
+
+  case $facts["mlibrary_ip_addresses"] {
+    Hash[String, Array[String]]: {
+      $all_public_addresses = $facts["mlibrary_ip_addresses"]["public"]
+      $all_private_addresses = $facts["mlibrary_ip_addresses"]["private"]
+    }
+
+    default: {
+      $all_public_addresses = [$::ipaddress]
+      $all_private_addresses = []
+    }
+  }
+
+  if $all_public_addresses != [] {
+    @@concat_fragment { "02 pushgateway advanced public url ${::datacenter}":
+      target  => '/usr/local/bin/pushgateway_advanced',
+      content => "PUSHGATEWAY='http://${all_public_addresses[0]}:9091'\n",
+    }
+
+    # Legacy resource name, delete when no longer in use.
+    @@concat_fragment { "02 pushgateway advanced url ${::datacenter}":
+      target  => '/usr/local/bin/pushgateway_advanced',
+      content => "PUSHGATEWAY='http://${all_public_addresses[0]}:9091'\n",
+    }
+  }
+
+  if $all_private_addresses != [] {
+    @@concat_fragment { "02 pushgateway advanced private url ${::datacenter}":
+      target  => '/usr/local/bin/pushgateway_advanced',
+      content => "PUSHGATEWAY='http://${all_private_addresses[0]}:9091'\n",
+    }
+  }
+
+  $all_public_addresses.each |$address| {
+    @@firewall { "010 prometheus public node exporter ${::hostname} ${address}":
+      tag    => "${::datacenter}_prometheus_public_node_exporter",
+      proto  => 'tcp',
+      dport  => 9100,
+      source => $address,
+      state  => 'NEW',
+      action => 'accept',
+    }
+  }
+
+  $all_private_addresses.each |$address| {
+    @@firewall { "010 prometheus private node exporter ${::hostname} ${address}":
+      tag    => "${::datacenter}_prometheus_private_node_exporter",
+      proto  => 'tcp',
+      dport  => 9100,
+      source => $address,
+      state  => 'NEW',
+      action => 'accept',
+    }
   }
 
   @@firewall { "010 prometheus haproxy exporter ${::hostname}":
