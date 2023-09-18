@@ -17,7 +17,7 @@ class nebula::profile::www_lib::dependencies {
       'git',
       'emacs',
       'imagemagick',
-      "openjdk-${jdk_version}-jre",
+      "temurin-${jdk_version}-jre",
     ]
   )
 
