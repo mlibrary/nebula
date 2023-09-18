@@ -13,87 +13,31 @@ fixtures:
   #  module_name:
   #    repo: "git://github.com/mlibrary/repo_name"
   forge_modules:
-    stdlib:
-      repo: "puppetlabs/stdlib"
-      ref: "6.5.0"
-    apache:
-      repo: "puppetlabs/apache"
-      ref: "7.0.0"
-    apt:
-      repo: "puppetlabs/apt"
-      ref: "7.6.0"
-    archive:
-      repo: "puppet/archive"
-      ref: "4.6.0"
-    concat:
-      repo: "puppetlabs/concat"
-      ref: "6.3.0"
-    docker:
-      repo: "puppetlabs/docker"
-      ref: "3.12.1"
-    firewall:
-      repo: "puppetlabs/firewall"
-      ref: "2.7.0"
-    inifile:
-      repo: "puppetlabs/inifile"
-      ref: "4.3.1"
-    lvm:
-      repo: "puppetlabs/lvm"
-      ref: "1.0.1"
-    mysql:
-      repo: "puppetlabs/mysql"
-      ref: "10.8.0"
-    ntp:
-      repo: "puppetlabs/ntp"
-      ref: "8.4.0"
-    postgresql:
-      repo: "puppetlabs/postgresql"
-      ref: "7.5.0"
-    puppetdb:
-      repo: "puppetlabs/puppetdb"
-      ref: "7.7.0"
-    reboot:
-      repo: "puppetlabs/reboot"
-      ref: "3.1.0"
-    logrotate:
-      repo: "puppet/logrotate"
-      ref: "5.0.0"
-    letsencrypt:
-      repo: "puppet/letsencrypt"
-      ref: "6.0.0"
-    nginx:
-      repo: "puppet/nginx"
-      ref: "2.1.1"
-    php:
-      repo: "puppet/php"
-      ref: "8.0.3"
-    debconf:
-      repo: "stm/debconf"
-      ref: "3.2.0"
-    kmod:
-      repo: "camptocamp/kmod"
-      ref: "2.1.0"
-    rbenv:
-      repo: "jdowning/rbenv"
-      ref: "2.2.0"
-    resolv_conf:
-      repo: "saz/resolv_conf"
-      ref: "4.2.1"
-    java:
-      repo: "puppetlabs/java"
-      ref: "6.4.0"
-    augeas_core:
-      repo: "puppetlabs/augeas_core"
-      ref: "1.1.1"
-    cron_core:
-      repo: "puppetlabs/cron_core"
-      ref: "1.0.5"
-    host_core:
-      repo: "puppetlabs/host_core"
-      ref: "1.0.3"
-    mount_core:
-      repo: "puppetlabs/mount_core"
-      ref: "1.0.4"
-    sshkeys_core:
-      repo: "puppetlabs/sshkeys_core"
-      ref: "2.2.0"
+    rbenv:        {"repo": "jdowning/rbenv",          "ref": "2.2.0"}
+    archive:      {"repo": "puppet/archive",          "ref": "4.6.0"}
+    kmod:         {"repo": "camptocamp/kmod",         "ref": "2.1.0"}
+    letsencrypt:  {"repo": "puppet/letsencrypt",      "ref": "6.0.0"}
+    logrotate:    {"repo": "puppet/logrotate",        "ref": "5.0.0"}
+    nginx:        {"repo": "puppet/nginx",            "ref": "2.1.1"}
+    php:          {"repo": "puppet/php",              "ref": "8.0.3"}
+    apache:       {"repo": "puppetlabs/apache",       "ref": "7.0.0"}
+    apt:          {"repo": "puppetlabs/apt",          "ref": "7.6.0"}
+    augeas_core:  {"repo": "puppetlabs/augeas_core",  "ref": "1.1.1"}
+    concat:       {"repo": "puppetlabs/concat",       "ref": "6.3.0"}
+    cron_core:    {"repo": "puppetlabs/cron_core",    "ref": "1.0.5"}
+    docker:       {"repo": "puppetlabs/docker",       "ref": "3.12.1"}
+    firewall:     {"repo": "puppetlabs/firewall",     "ref": "2.7.0"}
+    host_core:    {"repo": "puppetlabs/host_core",    "ref": "1.0.3"}
+    inifile:      {"repo": "puppetlabs/inifile",      "ref": "4.3.1"}
+    java:         {"repo": "puppetlabs/java",         "ref": "6.4.0"}
+    lvm:          {"repo": "puppetlabs/lvm",          "ref": "1.0.1"}
+    mount_core:   {"repo": "puppetlabs/mount_core",   "ref": "1.0.4"}
+    mysql:        {"repo": "puppetlabs/mysql",        "ref": "10.8.0"}
+    ntp:          {"repo": "puppetlabs/ntp",          "ref": "8.4.0"}
+    postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "7.5.0"}
+    puppetdb:     {"repo": "puppetlabs/puppetdb",     "ref": "7.7.0"}
+    reboot:       {"repo": "puppetlabs/reboot",       "ref": "3.1.0"}
+    sshkeys_core: {"repo": "puppetlabs/sshkeys_core", "ref": "2.2.0"}
+    stdlib:       {"repo": "puppetlabs/stdlib",       "ref": "6.5.0"}
+    resolv_conf:  {"repo": "saz/resolv_conf",         "ref": "4.2.1"}
+    debconf:      {"repo": "stm/debconf",             "ref": "3.2.0"}
