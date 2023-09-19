@@ -18,8 +18,8 @@ letsencrypt_directory:
   foo.example.com: '/etc/letsencrypt/live/foo.example.com'
   example.invalid: '/etc/letsencrypt/live/example.invalid'
 
-# required by camptocamp/kmod 2.1.0
-augeasversion: '1.4.0'
+# required by puppetlabs/postgres since 8.1.0
+service_provider: systemd
 
 # required by apt with update => { frequency => 'daily' }
 apt_update_last_success: '1523250000'

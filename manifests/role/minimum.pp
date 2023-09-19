@@ -11,7 +11,6 @@ class nebula::role::minimum (
 ) {
   if $facts['os']['family'] == 'Debian' {
     include nebula::profile::base
-    include nebula::profile::work_around_puppet_bugs
     include nebula::profile::prometheus::exporter::node
     include nebula::profile::authorized_keys
     include nebula::profile::known_host_public_keys

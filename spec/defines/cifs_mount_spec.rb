@@ -22,7 +22,7 @@ describe 'nebula::cifs_mount' do
 
       it { is_expected.to compile }
 
-      it { is_expected.to contain_package('cifs-utils').with_ensure('present') }
+      it { is_expected.to contain_package('cifs-utils').with_ensure('installed') }
       it { is_expected.to contain_file(title).with_ensure('directory') }
       it { is_expected.not_to contain_file('/etc/default/an_unused_user-credentials') }
 
