@@ -34,8 +34,8 @@ fixtures:
     mount_core:   {"repo": "puppetlabs/mount_core",   "ref": "1.2.0"}
     mysql:        {"repo": "puppetlabs/mysql",        "ref": "13.3.0"}
     ntp:          {"repo": "puppetlabs/ntp",          "ref": "9.2.2"}
-    postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "7.5.0"}
-    puppetdb:     {"repo": "puppetlabs/puppetdb",     "ref": "7.7.0"}
+    postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "8.3.0"}
+    puppetdb:     {"repo": "puppetlabs/puppetdb",     "ref": "7.13.0"}
     reboot:       {"repo": "puppetlabs/reboot",       "ref": "4.3.1"}
     sshkeys_core: {"repo": "puppetlabs/sshkeys_core", "ref": "2.4.0"}
     stdlib:       {"repo": "puppetlabs/stdlib",       "ref": "8.6.0"}
