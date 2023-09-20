@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 minor_version = Gem::Version.new(RUBY_VERSION.dup).segments[0..1].join('.')
 
-gem 'rake', '>= 12.3.3'
+gem 'rake', '>= 13.0.6'
 
 group :development do
   gem "fast_gettext",                                  require: false
@@ -13,10 +13,10 @@ group :development do
   gem "parallel_tests"
 end
 
-gem 'puppet', '~> 6.19'
+gem 'puppet', '~> 7.26'
 gem 'puppet-strings'
 gem 'semantic_puppet'
-gem 'yard', '>= 0.9.20'
+gem 'yard', '>= 0.9.34'
 
 # Evaluate Gemfile.local and ~/.gemfile if they exist
 [

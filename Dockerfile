@@ -1,10 +1,10 @@
-FROM ruby:2.5
+FROM ruby:2.7
 ARG UNAME=app
 ARG UID=1000
 ARG GID=1000
 ARG APP_HOME=/app
 
-RUN gem install 'bundler:~>2.1.4'
+RUN gem install 'bundler:~>2.4.19'
 RUN groupadd -g $GID -o $UNAME
 RUN useradd -m -d $APP_HOME -u $UID -g $GID -o -s /bin/bash $UNAME
 RUN mkdir -p /gems && chown $UID:$GID /gems
