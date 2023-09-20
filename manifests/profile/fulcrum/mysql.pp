@@ -15,6 +15,31 @@ class nebula::profile::fulcrum::mysql (
   # Install and configure mysql server
   ensure_packages(['mariadb-client', 'mariadb-server'])
 
+  service { 'mysqld':
+    enable  => true,
+    ensure  => running,
+    require => Package['mariadb-server'],
+  }
+
+  file { "/var/lib/mysql/my.cnf":
+    owner => "mysql", group => "mysql",
+    source => "puppet:///mysql/my.cnf",
+    notify => Service["mysqld"],
+    require => Package["mysql-server"],
+  }
+
+  file { "/etc/my.cnf":
+    require => File["/var/lib/mysql/my.cnf"],
+    ensure => "/var/lib/mysql/my.cnf",
+  }
+
+  exec { "set-mysql-password":
+    unless => "mysqladmin -uroot -p$password status",
+    path => ["/bin", "/usr/bin"],
+    command => "mysqladmin -uroot password $password",
+    require => Service["mysqld"],
+  }
+
 # mysql::db { 'fedora':
 #   user     => 'fedora',
 #   password => $fedora_password,
