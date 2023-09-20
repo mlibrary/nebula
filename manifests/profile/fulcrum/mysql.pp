@@ -13,46 +13,29 @@ class nebula::profile::fulcrum::mysql (
 ) {
 
   # Install and configure mysql server
-  ensure_packages(['mysql', 'mysql-client'])
-#  exec { 'secure_mysql':
-#    command => "
-#mysql -sfu root <<EOS
-#-- set root password
-#UPDATE mysql.user SET Password=PASSWORD({$password}) WHERE User='root';
-#-- delete anonymous users
-#DELETE FROM mysql.user WHERE User='';
-#-- delete remote root capabilities
-#DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
-#-- drop database 'test'
-#DROP DATABASE IF EXISTS test;
-#-- also make sure there are lingering permissions to it
-#DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
-#-- make changes immediately
-#FLUSH PRIVILEGES;
-#EOS"
-#  }
+  ensure_packages(['mariadb-client', 'mariadb-server'])
 
-  mysql::db { 'fedora':
-    user     => 'fedora',
-    password => $fedora_password,
-    host     => 'localhost',
-  }
+# mysql::db { 'fedora':
+#   user     => 'fedora',
+#   password => $fedora_password,
+#   host     => 'localhost',
+# }
 
-  mysql::db { 'fulcrum':
-    user     => 'fulcrum',
-    password => $fulcrum_password,
-    host     => 'localhost',
-  }
+# mysql::db { 'fulcrum':
+#   user     => 'fulcrum',
+#   password => $fulcrum_password,
+#   host     => 'localhost',
+# }
 
-  mysql::db { 'checkpoint':
-    user     => 'checkpoint',
-    password => $checkpoint_password,
-    host     => 'localhost',
-  }
+# mysql::db { 'checkpoint':
+#   user     => 'checkpoint',
+#   password => $checkpoint_password,
+#   host     => 'localhost',
+# }
 
-  mysql::db { 'shibd':
-    user     => 'shibd',
-    password => $shibd_password,
-    host     => 'localhost',
-  }
+# mysql::db { 'shibd':
+#   user     => 'shibd',
+#   password => $shibd_password,
+#   host     => 'localhost',
+# }
 }
