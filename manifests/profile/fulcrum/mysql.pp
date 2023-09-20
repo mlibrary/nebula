@@ -13,7 +13,7 @@ class nebula::profile::fulcrum::mysql (
 ) {
 
   # Install and configure mysql server
-  ensure_packages(['mariadb-client', 'mariadb-server'])
+  ensure_packages(['mysql-client', 'mysql'])
 
   service { 'mysqld':
     enable  => true,
