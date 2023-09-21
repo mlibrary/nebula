@@ -21,7 +21,7 @@ fixtures:
     nginx:        {"repo": "puppet/nginx",            "ref": "5.0.0"}
     php:          {"repo": "puppet/php",              "ref": "9.0.0"}
     apache:       {"repo": "puppetlabs/apache",       "ref": "7.0.0"} # 8.x breaks, blocking Puppet 8
-    apt:          {"repo": "puppetlabs/apt",          "ref": "9.0.0"} # 9.0.1+ breaks
+    apt:          {"repo": "puppetlabs/apt",          "ref": "9.0.0"} # 9.0.1+ breaks, needs updated stdlib
     augeas_core:  {"repo": "puppetlabs/augeas_core",  "ref": "1.4.0"}
     concat:       {"repo": "puppetlabs/concat",       "ref": "9.0.0"}
     cron_core:    {"repo": "puppetlabs/cron_core",    "ref": "1.2.0"}
