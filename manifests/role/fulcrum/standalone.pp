@@ -7,9 +7,9 @@
 # This is desiged to manage a Debian Server that hosts the Fulcrum project, with all of the dependencies and services included. 
 
 class nebula::role::fulcrum::standalone (
-  String $private_address_template = '192.168.0.%s',
-  String $shibboleth_config_source = 'puppet:///shibboleth-fulcrum',
-  Hash $hosts = {}
+# String $private_address_template = '192.168.0.%s',
+# String $shibboleth_config_source = 'puppet:///shibboleth-fulcrum',
+# Hash $hosts = {}
 ) {
 
   include nebula::role::minimum
