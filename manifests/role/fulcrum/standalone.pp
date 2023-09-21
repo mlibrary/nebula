@@ -12,15 +12,25 @@ class nebula::role::fulcrum::standalone (
   Hash $hosts = {}
 ) {
 
+  include nebula::role::minimum
+  include nebula::profile::ruby
+  include nebula::profile::fulcrum::base
+  include nebula::profile::fulcrum::hosts
+  include nebula::profile::fulcrum::app
+  include nebula::profile::fulcrum::logrotate
+  include nebula::profile::fulcrum::redis
+  include nebula::profile::fulcrum::solr
+# include nebula::profile::fulcrum::mysql
+
   # The perl profile is needed for monitor_pl to work, but it pulls in a
   # ton of stuff. We should probably allow for different haproxy http checks
   # for a service, and eliminate the perl/monitor_pl dependency here.
-  include nebula::profile::www_lib::perl
+# include nebula::profile::www_lib::perl
 
-  create_resources('host',$hosts)
+# create_resources('host',$hosts)
 
-  include nebula::profile::www_lib::apache::base
-  include nebula::profile::www_lib::apache::fulcrum
+# include nebula::profile::www_lib::apache::base
+# include nebula::profile::www_lib::apache::fulcrum
 
 # class { 'nebula::profile::shibboleth':
 #   config_source    => $shibboleth_config_source,
@@ -48,15 +58,6 @@ class nebula::role::fulcrum::standalone (
 
 # ensure_packages(['pigz'])
 
-  include nebula::role::minimum
-  include nebula::profile::ruby
-  include nebula::profile::fulcrum::base
-  include nebula::profile::fulcrum::hosts
-  include nebula::profile::fulcrum::app
-  include nebula::profile::fulcrum::logrotate
-  include nebula::profile::fulcrum::redis
-  include nebula::profile::fulcrum::solr
-  include nebula::profile::fulcrum::mysql
 # include nebula::profile::fulcrum::shibboleth
 # include nebula::profile::fulcrum::fedora
 }
