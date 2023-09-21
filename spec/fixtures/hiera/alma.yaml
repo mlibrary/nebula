@@ -1,0 +1,4 @@
+nebula::profile::alma_integrations::ssh_keys:
+  - type: 'ssh-rsa'
+    data: 'abcdefgh'
+    comment: 'sshuser@host'

@@ -1,0 +1,8 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - alma
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'
