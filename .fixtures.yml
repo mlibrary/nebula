@@ -38,6 +38,6 @@ fixtures:
     puppetdb:     {"repo": "puppetlabs/puppetdb",     "ref": "7.13.0"}
     reboot:       {"repo": "puppetlabs/reboot",       "ref": "4.3.1"}
     sshkeys_core: {"repo": "puppetlabs/sshkeys_core", "ref": "2.4.0"}
-    stdlib:       {"repo": "puppetlabs/stdlib",       "ref": "8.6.0"}
+    stdlib:       {"repo": "puppetlabs/stdlib",       "ref": "6.6.0"}
     resolv_conf:  {"repo": "saz/resolv_conf",         "ref": "5.1.0"}
     debconf:      {"repo": "stm/debconf",             "ref": "5.0.0"}
