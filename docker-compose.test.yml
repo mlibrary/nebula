@@ -10,3 +10,7 @@ services:
     - /bin/bash
     - '-c'
     - 'bundle exec rake rubocop && bundle exec rake syntax lint && bundle exec rake metadata_lint'
+
+  librarian:
+    build: .
+    command: 'bundle exec rake librarian'
