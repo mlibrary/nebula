@@ -11,6 +11,7 @@ group :development do
   gem "rspec-puppet-utils"
   gem "faker"
   gem "parallel_tests"
+  gem "librarian-puppet"
 end
 
 gem 'puppet', '~> 7.26'
