@@ -15,3 +15,11 @@ jobs:
         docker-compose --file docker-compose.test.yml build
         docker-compose --file docker-compose.test.yml run lint
         docker-compose --file docker-compose.test.yml run specs
+  librarian:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Resolve Dependencies
+      run: |
+        docker-compose --file docker-compose.test.yml build
+        docker-compose --file docker-compose.test.yml run librarian
