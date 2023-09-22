@@ -11,7 +11,7 @@ define nebula::usergroup(
   $membership = lookup('nebula::usergroup::membership')
   include nebula::virtual::users
 
-  if has_key($membership, $title) {
+  if $title in $membership {
     $membership[$title].each |$user| {
       realize User[$user]
     }

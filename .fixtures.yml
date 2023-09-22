@@ -14,30 +14,30 @@ fixtures:
   #    repo: "git://github.com/mlibrary/repo_name"
   forge_modules:
     rbenv:        {"repo": "jdowning/rbenv",          "ref": "3.0.0"}
-    archive:      {"repo": "puppet/archive",          "ref": "6.1.2"}
-    kmod:         {"repo": "puppet/kmod",             "ref": "3.2.0"}
+    archive:      {"repo": "puppet/archive",          "ref": "7.0.0"}
+    kmod:         {"repo": "puppet/kmod",             "ref": "4.0.0"}
     letsencrypt:  {"repo": "puppet/letsencrypt",      "ref": "9.2.0"}
-    logrotate:    {"repo": "puppet/logrotate",        "ref": "6.1.0"}
-    nginx:        {"repo": "puppet/nginx",            "ref": "4.4.0"}
-    php:          {"repo": "puppet/php",              "ref": "8.2.0"}
-    apache:       {"repo": "puppetlabs/apache",       "ref": "7.0.0"}
-    apt:          {"repo": "puppetlabs/apt",          "ref": "8.5.0"}
+    logrotate:    {"repo": "puppet/logrotate",        "ref": "7.0.0"}
+    nginx:        {"repo": "puppet/nginx",            "ref": "5.0.0"}
+    php:          {"repo": "puppet/php",              "ref": "9.0.0"}
+    apache:       {"repo": "puppetlabs/apache",       "ref": "7.0.0"} # 8.x breaks, blocking Puppet 8
+    apt:          {"repo": "puppetlabs/apt",          "ref": "9.0.0"} # 9.0.1+ breaks, needs updated stdlib
     augeas_core:  {"repo": "puppetlabs/augeas_core",  "ref": "1.4.0"}
-    concat:       {"repo": "puppetlabs/concat",       "ref": "7.4.0"}
+    concat:       {"repo": "puppetlabs/concat",       "ref": "7.4.0"} # blocked on apache, blocking Puppet 8
     cron_core:    {"repo": "puppetlabs/cron_core",    "ref": "1.2.0"}
-    docker:       {"repo": "puppetlabs/docker",       "ref": "6.1.0"}
-    firewall:     {"repo": "puppetlabs/firewall",     "ref": "4.1.0"}
+    docker:       {"repo": "puppetlabs/docker",       "ref": "7.0.0"} # 8.0.0 breaks
+    firewall:     {"repo": "puppetlabs/firewall",     "ref": "3.6.0"} # 5 breaks puppetdb, 6.0.0 needs stdlib 9, 7.0.0 breaks tests
     host_core:    {"repo": "puppetlabs/host_core",    "ref": "1.2.0"}
-    inifile:      {"repo": "puppetlabs/inifile",      "ref": "5.4.1"}
-    java:         {"repo": "puppetlabs/java",         "ref": "9.0.1"}
-    lvm:          {"repo": "puppetlabs/lvm",          "ref": "1.4.0"}
+    inifile:      {"repo": "puppetlabs/inifile",      "ref": "5.4.1"} # blocked on letsencrypt, blocking Puppet 8
+    java:         {"repo": "puppetlabs/java",         "ref": "10.1.2"}
+    lvm:          {"repo": "puppetlabs/lvm",          "ref": "2.0.3"}
     mount_core:   {"repo": "puppetlabs/mount_core",   "ref": "1.2.0"}
-    mysql:        {"repo": "puppetlabs/mysql",        "ref": "13.3.0"}
-    ntp:          {"repo": "puppetlabs/ntp",          "ref": "9.2.2"}
-    postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "8.3.0"}
+    mysql:        {"repo": "puppetlabs/mysql",        "ref": "14.0.0"} # 15.0.0 breaks
+    ntp:          {"repo": "puppetlabs/ntp",          "ref": "10.1.0"}
+    postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "8.3.0"} # 9.x blocked on puppetdb, blocks Puppet 8!?
     puppetdb:     {"repo": "puppetlabs/puppetdb",     "ref": "7.13.0"}
-    reboot:       {"repo": "puppetlabs/reboot",       "ref": "4.3.1"}
+    reboot:       {"repo": "puppetlabs/reboot",       "ref": "5.0.0"}
     sshkeys_core: {"repo": "puppetlabs/sshkeys_core", "ref": "2.4.0"}
-    stdlib:       {"repo": "puppetlabs/stdlib",       "ref": "6.6.0"}
+    stdlib:       {"repo": "puppetlabs/stdlib",       "ref": "8.6.0"} # ?! dragons...
     resolv_conf:  {"repo": "saz/resolv_conf",         "ref": "5.1.0"}
-    debconf:      {"repo": "stm/debconf",             "ref": "5.0.0"}
+    debconf:      {"repo": "stm/debconf",             "ref": "6.0.0"}

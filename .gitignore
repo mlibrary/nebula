@@ -3,6 +3,7 @@
 .yardoc
 .yardwarns
 *.iml
+.tmp
 /.bundle/
 /.idea/
 /.vagrant/
@@ -20,4 +21,5 @@
 /vendor/
 /convert_report.txt
 .DS_Store
-
+/modules/
+Puppetfile.lock
