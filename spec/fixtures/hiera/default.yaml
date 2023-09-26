@@ -152,6 +152,7 @@ nebula::known_addresses::all_library_machines: default.invalid
 nebula::known_addresses::staff: default.invalid
 nebula::known_addresses::datacenter: default.invalid
 
+umich::default_domain: "default.invalid"
 umich::networks::all_trusted_machines: []
 umich::networks::umich_vpn: []
 umich::networks::campus_wired_and_wireless: []

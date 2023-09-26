@@ -95,14 +95,58 @@ class nebula::profile::prometheus::exporter::node (
   realize User['prometheus']
 
   $role = lookup_role()
-  $ipaddress = $::ipaddress
   $datacenter = $::datacenter
-  $hostname = $::hostname
+
+  if $::domain == lookup("umich::default_domain", default_value => "prometheus-node-exporter.default.invalid") {
+    $hostname = $::hostname
+  } else {
+    $hostname = $::fqdn
+  }
 
   if $datacenter in $covered_datacenters {
     $monitoring_datacenter = $datacenter
   } else {
     $monitoring_datacenter = $default_datacenter
+  }
+
+  case $facts["mlibrary_ip_addresses"] {
+    Hash[String, Array[String]]: {
+      $all_public_addresses = $facts["mlibrary_ip_addresses"]["public"]
+      $all_private_addresses = $facts["mlibrary_ip_addresses"]["private"]
+    }
+
+    default: {
+      # If the public/private fact isn't working, fall back to assuming
+      # that the legacy `$::ipaddress` fact is public.
+      $all_public_addresses = [$::ipaddress]
+      $all_private_addresses = []
+    }
+  }
+
+  if $all_public_addresses == [] and $all_private_addresses == [] {
+    fail("Host cannot be scraped without a public or private IP address")
+  } elsif $all_public_addresses == [] and $monitoring_datacenter != $datacenter {
+    fail("${datacenter} host cannot be scraped by ${monitoring_datacenter} prometheus server without a public IP address")
+  } elsif $all_private_addresses != [] and $monitoring_datacenter == $datacenter {
+    $ipaddresses = $all_private_addresses
+    Firewall <<| tag == "${monitoring_datacenter}_prometheus_private_node_exporter" |>>
+    Concat_fragment <<| title == "02 pushgateway advanced private url ${monitoring_datacenter}" |>>
+  } else {
+    $ipaddresses = $all_public_addresses
+    Firewall <<| tag == "${monitoring_datacenter}_prometheus_public_node_exporter" |>>
+    Concat_fragment <<| title == "02 pushgateway advanced public url ${monitoring_datacenter}" |>>
+  }
+
+  $ipaddress = $ipaddresses[0]
+  $ipaddresses.each |$address| {
+    @@firewall { "300 pushgateway ${::hostname} ${address}":
+      tag    => "${monitoring_datacenter}_pushgateway_node",
+      proto  => 'tcp',
+      dport  => 9091,
+      source => $address,
+      state  => 'NEW',
+      action => 'accept',
+    }
   }
 
   ensure_packages(['curl', 'jq'])
@@ -121,27 +165,14 @@ class nebula::profile::prometheus::exporter::node (
     content => "#!/usr/bin/env bash\nset -eo pipefail\n\n",
   }
 
-  Concat_fragment <<| title == "02 pushgateway advanced url ${monitoring_datacenter}" |>>
-
   concat_fragment { '03 main pushgateway advanced content':
     target  => '/usr/local/bin/pushgateway_advanced',
     content => template('nebula/profile/prometheus/exporter/node/pushgateway_advanced.sh.erb'),
   }
 
-  @@concat_fragment { "prometheus node service ${hostname}":
+  @@concat_fragment { "prometheus node service ${::hostname}":
     tag     => "${monitoring_datacenter}_prometheus_node_service_list",
     target  => '/etc/prometheus/nodes.yml',
     content => template('nebula/profile/prometheus/exporter/node/target.yaml.erb'),
   }
-
-  @@firewall { "300 pushgateway ${::hostname}":
-    tag    => "${monitoring_datacenter}_pushgateway_node",
-    proto  => 'tcp',
-    dport  => 9091,
-    source => $::ipaddress,
-    state  => 'NEW',
-    action => 'accept',
-  }
-
-  Firewall <<| tag == "${monitoring_datacenter}_prometheus_node_exporter" |>>
 }
