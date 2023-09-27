@@ -20,7 +20,6 @@ describe 'nebula::named_instance::proxy' do
   let(:path)               { '/nonexistent' }
   let(:static_path)        { '/app' }
   let(:static_directories) { false }
-  let(:single_sign_on)     { 'cosign' }
   let(:sendfile_path)      { '/app/storage' }
   let(:public_aliases)     { [] }
   let(:whitelisted_ips)    { [] }
@@ -38,7 +37,6 @@ describe 'nebula::named_instance::proxy' do
       path: path,
       static_path: static_path,
       static_directories: static_directories,
-      single_sign_on: single_sign_on,
       sendfile_path: sendfile_path,
       public_aliases: public_aliases,
       whitelisted_ips: whitelisted_ips,
@@ -155,58 +153,6 @@ describe 'nebula::named_instance::proxy' do
         end
         it 'uses the listed ssl key' do
           expect(content).to include("SSLCertificateKeyFile /etc/ssl/private/#{ssl_key}")
-        end
-      end
-
-      context 'with single_sign_on set to cosign' do
-        context 'without a required factor' do
-          it 'configures cosign and does not require a special factor' do
-            # Note that this snippet assumes url_root is / above to form /login
-            cosign = <<~EOT
-              \ \ CosignCrypto /etc/ssl/private/#{ssl_key} /etc/ssl/certs/#{ssl_crt} /etc/ssl/certs
-                CosignAllowPublicAccess On
-
-                # Protect single path with cosign.  App should redirect here for auth needs.
-                <Location /login >
-                  CosignAllowPublicAccess Off
-                </Location>
-
-                # Set remote user header to allow app to use http header auth.
-                RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
-            EOT
-
-            expect(content).to include(cosign)
-          end
-        end
-
-        context 'with a required factor' do
-          let(:params) { default_params.merge(cosign_factor: 'FACTOR') }
-
-          it 'configures cosign and requires the factor' do
-            # Note that this snippet assumes url_root is / above to form /login
-            cosign = <<~EOT
-              \ \ CosignAllowPublicAccess On
-
-                # Protect single path with cosign.  App should redirect here for auth needs.
-                <Location /login >
-                  CosignRequireFactor FACTOR
-                  CosignAllowPublicAccess Off
-                </Location>
-
-                # Set remote user header to allow app to use http header auth.
-                RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
-            EOT
-
-            expect(content).to match(cosign)
-          end
-        end
-      end
-
-      context 'with single_sign_on of none' do
-        let(:single_sign_on) { 'none' }
-
-        it 'does not use cosign' do
-          expect(content).not_to include('Use cosign')
         end
       end
 

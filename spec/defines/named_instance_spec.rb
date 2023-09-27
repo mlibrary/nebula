@@ -22,7 +22,6 @@ describe 'nebula::named_instance' do
         {
           'public_hostname' => 'foo.default.invalid',
           'static_directories' => false,
-          'single_sign_on' => 'invalid',
         }
       end
 
