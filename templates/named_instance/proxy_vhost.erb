@@ -86,40 +86,6 @@
     OIDCUnAuthAction pass
     Require all granted
   </Location>
-<%- end -%>
-
-<%- if @apache_use_cosign -%>
-  CosignProtected   On
-  CosignHostname    weblogin.umich.edu
-  CosignValidReference              ^https?:\/\/[^/]+.umich\.edu(\/.*)?
-  CosignValidationErrorRedirect      http://weblogin.umich.edu/cosign/validation_error.html
-  <Location /cosign/valid>
-    SetHandler          cosign
-    CosignProtected     Off
-    Allow from all
-    Satisfy any
-  </Location>
-  <Location /robots.txt>
-    CosignProtected     Off
-    Allow from all
-    Satisfy any
-  </Location>
-  CosignCheckIP never
-  CosignRedirect https://weblogin.umich.edu/
-  CosignNoAppendRedirectPort  On
-  CosignPostErrorRedirect https://weblogin.umich.edu/post_error.html
-  CosignService <%= @apache_domain %>
-  CosignCrypto /etc/ssl/private/<%= @apache_ssl_key %> /etc/ssl/certs/<%= @apache_ssl_crt %> /etc/ssl/certs
-  CosignAllowPublicAccess On
-
-  # Protect single path with cosign.  App should redirect here for auth needs.
-  <Location <%= [@apache_url_root,"login"].join("/").gsub("//","/") %> >
-    <%- if @apache_cosign_factor -%>
-    CosignRequireFactor <%= @apache_cosign_factor %>
-    <%- end -%>
-    CosignAllowPublicAccess Off
-  </Location>
-
   # Set remote user header to allow app to use http header auth.
   RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
 <%- end -%>
@@ -150,10 +116,6 @@ RewriteRule ^<%= @apache_url_root %>(.*)$ <%= @apache_static_path %>/$1 [L]
 RewriteRule ^<%= @apache_url_root %>(.*)$ <%= @apache_static_path %>$1 [L]
 <%- end -%>
 
-<%- if @apache_url_root == '/' and @apache_use_cosign -%>
-# Don't reverse-proxy cosign/valid if deployed at domain root
-RewriteCond %{REQUEST_URI} !^/cosign/valid
-<%- end -%>
 <%- if @apache_url_root == '/' and @apache_use_auth_oidc -%>
 # Don't reverse-proxy openid-connect/callback if deployed at domain root
 RewriteCond %{REQUEST_URI} !^/openid-connect/callback

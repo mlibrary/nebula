@@ -19,8 +19,6 @@
 #   ssl_key: the name (not full path) of the SSL key file;
 #            defaults to <public_hostname>.key
 #   sendfile_path: if set, make this path available for X-Sendfile
-#   single_sign_on: if set to 'cosign', configure Cosign; to be extended for Shibboleth
-#   cosign_factor: if set, requires this factor on /login
 #   whitelisted_ips: if set, only allow access from this array of IPs; otherwise nobaddies
 #   public_aliases: add a ServerAlias for each hostname listed here (for multihomed vhost dispatch)
 #
@@ -38,8 +36,6 @@ define nebula::named_instance::proxy(
   String  $ssl_key = "${public_hostname}.key",
   String  $static_path = "${path}/current/public",
   Boolean $static_directories = false,
-  String  $single_sign_on = 'cosign',
-  Optional[String] $cosign_factor = undef,
   Optional[String] $sendfile_path = undef,     # If set, XSendFile will be enabled here
   Array[String]    $public_aliases = [],
   Array[String]    $whitelisted_ips = [],
@@ -50,7 +46,6 @@ define nebula::named_instance::proxy(
   # by the web host after being exported or virtualized wherever needed.
   $apache_app_hostname       = $hostname
   $apache_app_name           = $title
-  $apache_cosign_factor      = $cosign_factor
   $apache_domain             = $public_hostname
   $apache_port               = $port
   $apache_terminate_ssl      = $ssl
@@ -59,7 +54,6 @@ define nebula::named_instance::proxy(
   $apache_static_path        = $static_path
   $apache_static_directories = $static_directories
   $apache_url_root           = $url_root
-  $apache_use_cosign         = $single_sign_on ? { 'cosign' => true, default => false }
   $apache_aliases            = $public_aliases
   $apache_whitelisted_ips    = $whitelisted_ips
 

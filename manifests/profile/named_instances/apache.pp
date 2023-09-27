@@ -46,10 +46,6 @@ class nebula::profile::named_instances::apache (
   include apache::mod::rewrite
   include apache::mod::setenvif
 
-  apache::mod { 'cosign':
-    package => 'libapache2-mod-cosign'
-  }
-
   apache::listen { ['80','443']: }
 
   include nebula::profile::networking::firewall::http_datacenters
