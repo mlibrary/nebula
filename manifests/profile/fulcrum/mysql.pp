@@ -25,7 +25,7 @@ class nebula::profile::fulcrum::mysql (
     owner => "mysql", group => "mysql",
     source => "puppet:///mysql/my.cnf",
     notify => Service["mysqld"],
-    require => Package["mysql-server"],
+    require => Package["mariadb-server"],
   }
 
   file { "/etc/my.cnf":
