@@ -25,7 +25,7 @@ class nebula::role::fulcrum::standalone (
   # The perl profile is needed for monitor_pl to work, but it pulls in a
   # ton of stuff. We should probably allow for different haproxy http checks
   # for a service, and eliminate the perl/monitor_pl dependency here.
-# include nebula::profile::www_lib::perl
+  include nebula::profile::www_lib::perl
 
 # create_resources('host',$hosts)
 
