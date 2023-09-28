@@ -29,8 +29,8 @@ class nebula::role::fulcrum::standalone (
 
 # create_resources('host',$hosts)
 
-# include nebula::profile::www_lib::apache::base
-# include nebula::profile::www_lib::apache::fulcrum
+  include nebula::profile::www_lib::apache::base
+  include nebula::profile::www_lib::apache::fulcrum
 
 # class { 'nebula::profile::shibboleth':
 #   config_source    => $shibboleth_config_source,
