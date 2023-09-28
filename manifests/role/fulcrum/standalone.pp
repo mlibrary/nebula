@@ -52,7 +52,7 @@ class nebula::role::fulcrum::standalone (
   ensure_packages(['pigz'])
 
   include nebula::profile::fulcrum::solr
-# include nebula::profile::fulcrum::mysql
+  include nebula::profile::fulcrum::mysql
 
 # class { 'nebula::profile::shibboleth':
 #   config_source    => $shibboleth_config_source,
