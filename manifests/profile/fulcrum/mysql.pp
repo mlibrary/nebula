@@ -29,8 +29,7 @@ class nebula::profile::fulcrum::mysql (
   }
 
   file { "/etc/my.cnf":
-    require => File["/var/lib/mysql/my.cnf"],
-    ensure => "/var/lib/mysql/my.cnf",
+    source => File["/var/lib/mysql/my.cnf"],
   }
 
   exec { "set-mysql-password":
