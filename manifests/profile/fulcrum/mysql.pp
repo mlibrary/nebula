@@ -21,6 +21,17 @@ class nebula::profile::fulcrum::mysql (
     require => Package['mariadb-server'],
   }
 
+  file { "/var/lib/mysql/my.cnf":
+    owner => "mysql", group => "mysql",
+    content => template('nebula/mysql/my.cnf.erb'),
+    notify => Service["mysqld"],
+    require => Package["mariadb-server"],
+  }
+
+  file { "/etc/my.cnf":
+    source => "file:///var/lib/mysql/my.cnf",
+  }
+
   exec { "set-mysql-password":
     unless => "mysqladmin -uroot -p$password status",
     path => ["/bin", "/usr/bin"],
