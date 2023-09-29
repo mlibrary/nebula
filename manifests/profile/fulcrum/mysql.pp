@@ -44,7 +44,7 @@ class nebula::profile::fulcrum::mysql (
   $dbs = [['fedora', $fedora_password]]
 
   dbs.each |$name, $password| {
-    exec { "create-db":
+    exec { "create-$name-db":
       unless => "/usr/bin/mysql -u$name -p$password $name",
       command => "/usr/bin/mysql -uroot -p$mysql_password -e \"create database $name; grant all on $name.* to $name@localhost identified by '$password';\"",
       require => Service["mysqld"],
