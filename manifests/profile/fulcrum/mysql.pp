@@ -21,6 +21,10 @@ class nebula::profile::fulcrum::mysql (
     require => Package['mariadb-server'],
   }
 
+  file { "/etc/mysql/conf.d":
+    ensure => "directory"
+  }
+
   file { "/etc/mysql/my.cnf":
     owner => "mysql", group => "mysql",
     content => template('nebula/mysql/my.cnf.erb'),
