@@ -7,8 +7,8 @@
 class nebula::profile::fulcrum::shibboleth {
   ensure_packages([
     'unixodbc',
-    'shibboleth-sp2-common',
-    'shibboleth-sp2-utils',
+    'shibboleth-sp-common',
+    'shibboleth-sp-utils',
     'mariadb-unixodbc',
   ])
 
