@@ -21,23 +21,19 @@ class nebula::profile::fulcrum::mysql (
     require => Package['mariadb-server'],
   }
 
-  file { "/var/lib/mysql/my.cnf":
+  file { "/etc/mysql/my.cnf":
     owner => "mysql", group => "mysql",
     content => template('nebula/mysql/my.cnf.erb'),
     notify => Service["mysqld"],
     require => Package["mariadb-server"],
   }
 
-  file { "/etc/my.cnf":
-    source => "file:///var/lib/mysql/my.cnf",
-  }
-
-  exec { "set-mysql-password":
-    unless => "mysqladmin -uroot -p$password status",
-    path => ["/bin", "/usr/bin"],
-    command => "mysqladmin -uroot password $password",
-    require => Service["mysqld"],
-  }
+# exec { "set-mysql-password":
+#   unless => "mysqladmin -uroot -p$password status",
+#   path => ["/bin", "/usr/bin"],
+#   command => "mysqladmin -uroot password $password",
+#   require => Service["mysqld"],
+# }
 
 # mysql::db { 'fedora':
 #   user     => 'fedora',
