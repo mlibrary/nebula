@@ -43,7 +43,7 @@ class nebula::profile::fulcrum::mysql (
 
   $dbs = [['fedora', $fedora_password]]
 
-  dbs.each |$db| {
+  $dbs.each |$db| {
     $name = $db[0]
     $password = $db[1]
     exec { "create-${name}-db":
