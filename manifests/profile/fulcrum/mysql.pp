@@ -41,7 +41,8 @@ class nebula::profile::fulcrum::mysql (
     require => Service["mysqld"],
   }
 
-  $dbs = [['fedora', $fedora_password]]
+  $dbs = [['fedora', $fedora_password], ['fulcrum', $fulcrum_password],
+  ['checkpoint', $checkpoint_password], ['shibd', $shibd_password]]
 
   $dbs.each |$db| {
     $name = $db[0]
@@ -53,27 +54,4 @@ class nebula::profile::fulcrum::mysql (
     }
   }
 
-# mysql::db { 'fedora':
-#   user     => 'fedora',
-#   password => $fedora_password,
-#   host     => 'localhost',
-# }
-
-# mysql::db { 'fulcrum':
-#   user     => 'fulcrum',
-#   password => $fulcrum_password,
-#   host     => 'localhost',
-# }
-
-# mysql::db { 'checkpoint':
-#   user     => 'checkpoint',
-#   password => $checkpoint_password,
-#   host     => 'localhost',
-# }
-
-# mysql::db { 'shibd':
-#   user     => 'shibd',
-#   password => $shibd_password,
-#   host     => 'localhost',
-# }
 }
