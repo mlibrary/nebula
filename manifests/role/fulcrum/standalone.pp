@@ -59,6 +59,6 @@ class nebula::role::fulcrum::standalone (
 #   watchdog_minutes => '*/30',
 # }
 
-# include nebula::profile::fulcrum::shibboleth
+  include nebula::profile::fulcrum::shibboleth
 # include nebula::profile::fulcrum::fedora
 }
