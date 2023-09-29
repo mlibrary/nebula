@@ -54,7 +54,7 @@ class nebula::role::fulcrum::standalone (
   include nebula::profile::fulcrum::solr
   include nebula::profile::fulcrum::mysql
 
-  class { 'nebula::profile::shibboleth':
+  class { 'nebula::profile::fulcrum::shibboleth':
     config_source    => $shibboleth_config_source,
     watchdog_minutes => '*/30',
   }
