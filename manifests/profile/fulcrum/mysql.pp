@@ -15,6 +15,8 @@ class nebula::profile::fulcrum::mysql (
   # Install and configure mysql server
   ensure_packages(['mariadb-common','mariadb-server', 'mariadb-client'])
 
+# at some point need to do equivalent to `mysql_install_db --user=mysql --ldata=/var/lib/mysql`
+
   service { 'mysqld':
     enable  => true,
     ensure  => running,
@@ -32,12 +34,12 @@ class nebula::profile::fulcrum::mysql (
     require => Package["mariadb-server"],
   }
 
-# exec { "set-mysql-password":
-#   unless => "mysqladmin -uroot -p$password status",
-#   path => ["/bin", "/usr/bin"],
-#   command => "mysqladmin -uroot password $password",
-#   require => Service["mysqld"],
-# }
+  exec { "set-mysql-password":
+    unless => "mysqladmin -uroot -p$password status",
+    path => ["/bin", "/usr/bin"],
+    command => "mysqladmin -uroot password $password",
+    require => Service["mysqld"],
+  }
 
 # mysql::db { 'fedora':
 #   user     => 'fedora',
