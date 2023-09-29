@@ -6,6 +6,7 @@
 # See also the nginx profile that depends on these services.
 class nebula::profile::fulcrum::shibboleth {
   ensure_packages([
+    'unixodbc',
     'shibboleth-sp-common',
     'shibboleth-sp-utils',
     'mariadb-unixodbc',
