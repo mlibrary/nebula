@@ -52,7 +52,7 @@ class nebula::profile::fulcrum::shibboleth {
     ensure     => 'running',
     enable     => true,
     hasrestart => true,
-    require    => [Package['shibboleth-sp2-utils'], Package['mariadb-unixodbc']]
+    require    => [Package['shibboleth-sp-utils'], Package['mariadb-unixodbc']]
   }
 
   service { 'shibauthorizer.socket':
