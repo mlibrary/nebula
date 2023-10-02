@@ -21,4 +21,11 @@ class nebula::profile::kubernetes::kubeadm {
     version  => "${kubernetes_version}-00",
     priority => 999,
   }
+
+  include nebula::profile::networking::sysctl
+
+  file { '/etc/sysctl.d/kubernetes_cluster.conf':
+    content => template('nebula/profile/kubernetes/kubeadm_sysctl.conf.erb'),
+    notify  => Service['procps'],
+  }
 }
