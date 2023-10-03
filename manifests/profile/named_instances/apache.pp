@@ -38,7 +38,6 @@ class nebula::profile::named_instances::apache (
   }
 
   apache::mod { 'access_compat': }
-  # apache::mod { 'authz_host': }
   include apache::mod::proxy
   include apache::mod::proxy_http
   include apache::mod::headers
@@ -46,12 +45,6 @@ class nebula::profile::named_instances::apache (
   include apache::mod::rewrite
   include apache::mod::setenvif
 
-  apache::mod { 'cosign':
-    package => 'libapache2-mod-cosign'
-  }
-
   apache::listen { ['80','443']: }
-
-  include nebula::profile::networking::firewall::http_datacenters
 
 }

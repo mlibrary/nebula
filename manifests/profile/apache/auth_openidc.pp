@@ -49,8 +49,8 @@ class nebula::profile::apache::auth_openidc (
 
   file { '/var/cache/apache2/mod_auth_openidc/oidc-sessions':
     ensure => 'directory',
-    owner  => 'nobody',
-    group  => 'nogroup',
+    owner  => "${::apache::user}",
+    group  => "${::apache::group}",
     mode   => '0700'
   }
 
