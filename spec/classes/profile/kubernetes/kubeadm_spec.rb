@@ -31,6 +31,18 @@ describe 'nebula::profile::kubernetes::kubeadm' do
 
         it { is_expected.to contain_package('kubeadm').with_ensure('1.11.9-00') }
         it { is_expected.to contain_apt__pin('kubeadm').with_version('1.11.9-00') }
+
+        it do
+          is_expected.to contain_file('/etc/sysctl.d/kubernetes_cluster.conf')
+            .with_content(%r{^fs\.inotify\.max_user_instances *= *8192$})
+            .that_notifies('Service[procps]')
+        end
+
+        it do
+          is_expected.to contain_file('/etc/sysctl.d/kubernetes_cluster.conf')
+            .with_content(%r{^fs\.inotify\.max_user_watches *= *524288$})
+            .that_notifies('Service[procps]')
+        end
       end
     end
   end
