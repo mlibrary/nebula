@@ -24,4 +24,9 @@ class nebula::profile::containerd {
       src => false,
     },
   }
+
+  file { "/etc/containerd/config.toml":
+    content => template('nebula/profile/containerd/config.toml.erb'),
+    notify => Service['containerd']
+  }
 }

@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 The Regents of the University of Michigan.
+# Copyright (c) 2019-2023 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -104,8 +104,5 @@ class nebula::profile::kubernetes::kubelet {
   }
   file { "/etc/sysctl.d/kubernetes.conf":
     content => join(['net.bridge.bridge-nf-call-ip6tables = 1','net.bridge.bridge-nf-call-iptables = 1','net.ipv4.ip_forward = 1'], "\n"),
-  }
-  file { "/etc/containerd/config.toml":
-    content => template('nebula/profile/kubernetes/kubelet/config.toml.erb')
   }
 }
