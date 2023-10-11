@@ -100,14 +100,10 @@ class nebula::profile::kubernetes::kubelet {
   }
 
   file { "/etc/modules-load.d/kubernetes.conf":
-    content => "br_netfilter
-    ",
+    content => 'br_netfilter',
   }
   file { "/etc/sysctl.d/kubernetes.conf":
-    content => "net.bridge.bridge-nf-call-ip6tables = 1
-    net.bridge.bridge-nf-call-iptables = 1
-    net.ipv4.ip_forward = 1
-    ",
+    content => join(['net.bridge.bridge-nf-call-ip6tables = 1','net.bridge.bridge-nf-call-iptables = 1','net.ipv4.ip_forward = 1'], "\n"),
   }
 
 }
