@@ -99,10 +99,14 @@ class nebula::profile::kubernetes::kubelet {
     ;
   }
 
-  file { "/etc/modules-load.d/kubernetes.conf":
-    content => 'br_netfilter',
-  }
+  kmod::load { 'br_netfilter': }
   file { "/etc/sysctl.d/kubernetes.conf":
-    content => join(['net.bridge.bridge-nf-call-ip6tables = 1','net.bridge.bridge-nf-call-iptables = 1','net.ipv4.ip_forward = 1'], "\n"),
+    content => template('nebula/profile/kubernetes/kubelet/sysctl.d.erb'),
+    notify => Reboot['after_run']
+  }
+
+  reboot { 'after_run':
+    when => 'refreshed',
+    apply => 'finished',
   }
 }
