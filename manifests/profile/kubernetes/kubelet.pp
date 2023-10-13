@@ -36,6 +36,14 @@ class nebula::profile::kubernetes::kubelet {
     fail("You must set a kube api IP address for the cluster's gateway")
   }
 
+  kmod::load { 'br_netfilter': }
+
+  include nebula::profile::networking::sysctl
+  file { '/etc/sysctl.d/kubelet.conf':
+    content => template('nebula/profile/kubernetes/kubelet_sysctl.conf.erb'),
+    notify  => Service['procps'],
+  }
+
   service { 'kubelet':
     ensure  => 'running',
     enable  => true,
