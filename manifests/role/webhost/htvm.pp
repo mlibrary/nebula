@@ -7,14 +7,11 @@
 # @example
 #   include nebula::role::webhost::htvm
 class nebula::role::webhost::htvm (
-  String $private_address_template = '192.168.0.%s',
   String $shibboleth_config_source = 'puppet:///shibboleth'
 ) {
   include nebula::role::hathitrust
 
-  class { 'nebula::profile::networking::private':
-    address_template => $private_address_template
-  }
+  include nebula::profile::hathitrust::networking
 
   include nebula::profile::networking::firewall::http
 
