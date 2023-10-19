@@ -8,6 +8,7 @@ class nebula::role::kubernetes::controller {
   }
 
   include nebula::profile::ntp
+  include nebula::profile::unattended_upgrades
   include nebula::profile::kubernetes::dns_client
   include nebula::profile::kubernetes::kubelet
   include nebula::profile::kubernetes::kubeadm
