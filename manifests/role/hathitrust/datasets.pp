@@ -6,14 +6,10 @@
 #
 # @example
 #   include nebula::role::hathitrust::datasets
-class nebula::role::hathitrust::datasets (
-  String $private_address_template = '192.168.0.%s',
-) {
+class nebula::role::hathitrust::datasets () {
   include nebula::role::hathitrust
 
-  class { 'nebula::profile::networking::private':
-    address_template => $private_address_template
-  }
+  include nebula::profile::hathitrust::networking
 
   include nebula::profile::hathitrust::hosts
 

@@ -6,14 +6,10 @@
 #
 # @example
 #   include nebula::role::hathitrust::ingest_indexing
-class nebula::role::hathitrust::ingest_indexing (
-  String $private_address_template = '192.168.0.%s'
-) {
+class nebula::role::hathitrust::ingest_indexing () {
   include nebula::role::hathitrust
 
-  class { 'nebula::profile::networking::private':
-    address_template => $private_address_template
-  }
+  include nebula::profile::hathitrust::networking
 
   include nebula::profile::hathitrust::ingest_hosts
   include nebula::profile::hathitrust::slip
