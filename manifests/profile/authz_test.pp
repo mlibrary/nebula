@@ -25,4 +25,10 @@ class nebula::profile::authz_test {
   nebula::cpan { ['CGI']: }
   Package <| |> -> Nebula::Cpan <| |>
 
+  file { '/var/www/authz-test-site':
+    ensure => directory,
+    recurse => true,
+    source => 'puppet:///authz-test-site',
+  }
+
 }
