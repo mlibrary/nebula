@@ -9,6 +9,6 @@ DBDPrepareSQL "SELECT coll, dlpsPath, dlpsAuthenMethod, dlpsAuthzType FROM aa_co
 DBDriver oracle
 
 DLPSAuthExemptionPolicy checkOnlyListed
-DLPSAuthExemptionPaths  /www/www.lib/cgi /www/staff.lib/web/coral /www/staff.lib/web/linkscan /www/staff.lib/web/linkscan117 /www/staff.lib/web/pagerate /www/staff.lib/web/ptf /www/staff.lib/web/ts /www/staff.lib/web/sites/staff.lib.umich.edu/local /www/staff.lib/web/funds_transfer /www/staff.lib/web/sites/staff.lib.umich.edu.funds_transfer /tb/www.lib/instruction-request /instruction/request
+DLPSAuthExemptionPaths <%= @exempt_paths %>
 DLPSAuthFilenameHandlers application/x-httpd-php bwshare-info bwshare-trace cgi-script auth_openidc redirect-handler server-status drupal_security_do_not_remove_see_sa_2006_006 fcgid-script drupal_security_do_not_remove_see_sa_2013_003 shib-handler proxy:unix:/run/php/php8.1-fpm.sock|fcgi://localhost
 DLPSAuthURIHandlers jakarta-servlet proxy-server
