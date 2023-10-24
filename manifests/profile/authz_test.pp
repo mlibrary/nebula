@@ -35,4 +35,8 @@ class nebula::profile::authz_test {
     require => File['/var/www/authz-test-site'],
     mode => '0755',
   }
+
+  file { '/etc/apache2/sites-enabled/test.conf':
+    content => '# an allowed file'
+  }
 }
