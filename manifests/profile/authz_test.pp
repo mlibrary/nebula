@@ -6,7 +6,10 @@ class nebula::profile::authz_test {
   include nebula::profile::apache
   include nebula::profile::apache::authz_umichlib
 
-  ensure_packages(['libjson-xs-perl'])
+  ensure_packages([
+    'build-essentials',
+    'libjson-xs-perl'
+  ])
   nebula::cpan { ['CGI']: }
   Package <| |> -> Nebula::Cpan <| |>
 
