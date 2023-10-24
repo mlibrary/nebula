@@ -35,6 +35,7 @@ class nebula::profile::apache::authz_umichlib (
   String $oracle_home,
   String $oracle_sid = 'orcl',
   Integer $oracle_port = 1521,
+  String $exempt_paths = '/www/www.lib/cgi /www/staff.lib/web/coral /www/staff.lib/web/linkscan /www/staff.lib/web/linkscan117 /www/staff.lib/web/pagerate /www/staff.lib/web/ptf /www/staff.lib/web/ts /www/staff.lib/web/sites/staff.lib.umich.edu/local /www/staff.lib/web/funds_transfer /www/staff.lib/web/sites/staff.lib.umich.edu.funds_transfer /tb/www.lib/instruction-request /instruction/request',
 ) {
 
   include apache::mod::dbd
