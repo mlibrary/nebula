@@ -5,3 +5,6 @@
 certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -m "<%= @letsencrypt_email %>" -d "<%= full_san.join(",") %>"
 <% end -%>
 <% end -%>
+<% @simple_certs.each do |domain, sans| -%>
+certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -m "<%= @letsencrypt_email %>" -d "<%= [domain, sans].flatten.join(",") %>"
+<% end -%>
