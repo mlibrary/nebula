@@ -76,12 +76,22 @@ class nebula::profile::certbot_cloudflare (
   }
 
   $simple_certs.each |$domain, $sans| {
-    file { "${cert_dir}/${domain}.crt":
-      source => "/etc/letsencrypt/live/${domain}/fullchain.pem"
+    concat { "${cert_dir}/${domain}.crt":
+      group  => "puppet",
     }
 
-    file { "${cert_dir}/${domain}.key":
-      source => "/etc/letsencrypt/live/${domain}/privkey.pem"
+    concat_fragment { "${cert_dir}/${domain}.crt cert":
+      target => "${cert_dir}/${domain}.crt",
+      source => "/etc/letsencrypt/live/${domain}/fullchain.pem",
+    }
+
+    concat { "${cert_dir}/${domain}.key":
+      group  => "puppet",
+    }
+
+    concat_fragment { "${cert_dir}/${domain}.key key":
+      target => "${cert_dir}/${domain}.key",
+      source => "/etc/letsencrypt/live/${domain}/privkey.pem",
     }
   }
 }

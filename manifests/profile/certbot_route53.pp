@@ -78,11 +78,21 @@ class nebula::profile::certbot_route53 (
   }
 
   $simple_certs.each |$domain, $sans| {
-    file { "${cert_dir}/${domain}.crt":
+    concat { "${cert_dir}/${domain}.crt":
+      group  => "puppet",
+    }
+
+    concat { "${cert_dir}/${domain}.key":
+      group  => "puppet",
+    }
+
+    concat_fragment { "${domain}.crt cert":
+      target => "${cert_dir}/${domain}.crt",
       source => "/etc/letsencrypt/live/${domain}/fullchain.pem"
     }
 
-    file { "${cert_dir}/${domain}.key":
+    concat_fragment { "${domain}.key key":
+      target => "${cert_dir}/${domain}.key",
       source => "/etc/letsencrypt/live/${domain}/privkey.pem"
     }
   }
