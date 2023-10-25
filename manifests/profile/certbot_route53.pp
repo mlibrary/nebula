@@ -2,8 +2,13 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
+# @param certs domains/certificates with haproxy services; wildcard implicitly added
+#        example: "quod": { "somejournal.org": ["san-for-journal.org"] }
+# @param simple_certs domains/certificates for standalone hosts; no implicit wildcard
+#        example: "somedomain.org": ["san-for-domain.org","*.somedomain.org"]
 class nebula::profile::certbot_route53 (
   Hash[String, Hash[String, Array[String]]] $certs = {},
+  Hash[String, Array[String]] $simple_certs = {},
   String $cert_dir = "/var/local/cert_dir",
   String $haproxy_cert_dir = "/var/local/haproxy_cert_dir",
   String $letsencrypt_email = "nope@nope.zone",
@@ -69,6 +74,16 @@ class nebula::profile::certbot_route53 (
         target => "${haproxy_cert_dir}/${service}/${main_domain}.pem",
         source => "/etc/letsencrypt/live/${main_domain}/privkey.pem"
       }
+    }
+  }
+
+  $simple_certs.each |$domain, $sans| {
+    file { "${cert_dir}/${domain}.crt":
+      source => "/etc/letsencrypt/live/${domain}/fullchain.pem"
+    }
+
+    file { "${cert_dir}/${domain}.key":
+      source => "/etc/letsencrypt/live/${domain}/privkey.pem"
     }
   }
 }
