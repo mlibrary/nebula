@@ -157,6 +157,83 @@ describe 'nebula::profile::certbot_route53' do
         it { is_expected.not_to contain_concat_fragment("abc.example.pem cert") }
         it { is_expected.not_to contain_concat_fragment("abc.example.pem key") }
       end
+
+      context "with one simple cert, no SANs" do
+        let(:params) do
+          {
+            simple_certs: {
+              "abc.example": []
+            }
+          }
+        end
+
+        it { is_expected.to compile }
+
+        it do
+          is_expected.to contain_file("/tmp/all_cert_commands")
+            .with_content(%r{certbot certonly --dns-route53 -m "nope@nope.zone" -d "abc.example"})
+        end
+
+        it do
+          is_expected.to contain_file("/var/local/cert_dir/abc.example.crt")
+            .with_source("/etc/letsencrypt/live/abc.example/fullchain.pem")
+        end
+
+        it do
+          is_expected.to contain_file("/var/local/cert_dir/abc.example.key")
+            .with_source("/etc/letsencrypt/live/abc.example/privkey.pem")
+        end
+      end
+
+      context "with one simple cert, two SANs" do
+        let(:params) do
+          {
+            simple_certs: {
+              "abc.example": ['san.local','xyz.local']
+            }
+          }
+        end
+
+        it do
+          is_expected.to contain_file("/tmp/all_cert_commands")
+            .with_content(
+              <<~EOF
+              certbot certonly --dns-route53 -m "nope@nope.zone" -d "abc.example,san.local,xyz.local"
+              EOF
+            )
+        end
+      end
+
+      context "with two simple certs" do
+        let(:params) do
+          {
+            simple_certs: {
+              "abc.example": [],
+              "xyz.example": ['alt.example', '*.alt.example']
+            }
+          }
+        end
+
+        it do
+          is_expected.to contain_file("/tmp/all_cert_commands")
+            .with_content(%r{certbot certonly --dns-route53 -m "nope@nope.zone" -d "abc.example"})
+        end
+
+        it do
+          is_expected.to contain_file("/tmp/all_cert_commands")
+            .with_content(%r{certbot certonly --dns-route53 -m "nope@nope.zone" -d "xyz.example,alt.example,\*.alt.example"})
+        end
+
+        it do
+          is_expected.to contain_file("/var/local/cert_dir/abc.example.crt")
+            .with_source("/etc/letsencrypt/live/abc.example/fullchain.pem")
+        end
+
+        it do
+          is_expected.to contain_file("/var/local/cert_dir/xyz.example.crt")
+            .with_source("/etc/letsencrypt/live/xyz.example/fullchain.pem")
+        end
+      end
     end
   end
 end
