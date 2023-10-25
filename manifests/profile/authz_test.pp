@@ -16,7 +16,9 @@ class nebula::profile::authz_test {
   include apache::mod::env
   include apache::mod::headers
   include apache::mod::include
+  include apache::mod::rewrite
   include apache::mod::setenvif
+  include apache::mod::ssl
 
   class { 'nebula::profile::ssl_keypair':
     common_name => 'legacy.lauth.lib.umich.edu',
