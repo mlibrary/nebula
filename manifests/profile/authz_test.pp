@@ -18,6 +18,8 @@ class nebula::profile::authz_test {
   include apache::mod::include
   include apache::mod::setenvif
 
+  @nebula::apache::ssl_keypair { 'legacy.lauth.lib.umich.edu': }
+
   ensure_packages([
     'build-essential',
     'libjson-xs-perl',
