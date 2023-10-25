@@ -163,12 +163,14 @@ describe 'nebula::profile::certbot_cloudflare' do
         end
 
         it do
-          is_expected.to contain_file("/var/local/cert_dir/abc.example.crt")
+          is_expected.to contain_concat_fragment("/var/local/cert_dir/abc.example.crt cert")
+            .with_target("/var/local/cert_dir/abc.example.crt")
             .with_source("/etc/letsencrypt/live/abc.example/fullchain.pem")
         end
 
         it do
-          is_expected.to contain_file("/var/local/cert_dir/abc.example.key")
+          is_expected.to contain_concat_fragment("/var/local/cert_dir/abc.example.key key")
+            .with_target("/var/local/cert_dir/abc.example.key")
             .with_source("/etc/letsencrypt/live/abc.example/privkey.pem")
         end
       end
@@ -213,12 +215,14 @@ describe 'nebula::profile::certbot_cloudflare' do
         end
 
         it do
-          is_expected.to contain_file("/var/local/cert_dir/abc.example.crt")
+          is_expected.to contain_concat_fragment("/var/local/cert_dir/abc.example.crt cert")
+            .with_target("/var/local/cert_dir/abc.example.crt")
             .with_source("/etc/letsencrypt/live/abc.example/fullchain.pem")
         end
 
         it do
-          is_expected.to contain_file("/var/local/cert_dir/xyz.example.crt")
+          is_expected.to contain_concat_fragment("/var/local/cert_dir/xyz.example.crt cert")
+            .with_target("/var/local/cert_dir/xyz.example.crt")
             .with_source("/etc/letsencrypt/live/xyz.example/fullchain.pem")
         end
       end
