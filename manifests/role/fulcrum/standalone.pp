@@ -55,5 +55,5 @@ class nebula::role::fulcrum::standalone (
   include nebula::profile::fulcrum::mysql
 
   include nebula::profile::fulcrum::shibboleth
-# include nebula::profile::fulcrum::fedora
+  include nebula::profile::fulcrum::fedora
 }
