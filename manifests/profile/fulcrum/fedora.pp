@@ -81,7 +81,7 @@ class nebula::profile::fulcrum::fedora (
       File['/etc/systemd/system/fedora.service'],
       File['/var/lib/fedora'],
       Archive['/opt/fedora/webapps/fedora.war'],
-      Mysql::Db['fedora'],
+      Service['mysqld'],
     ],
   }
 }
