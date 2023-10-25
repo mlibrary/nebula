@@ -8,6 +8,7 @@ class nebula::profile::authz_test {
   include nebula::profile::apache
   include nebula::profile::apache::authz_umichlib
 
+  include apache::mod::alias
   include apache::mod::auth_basic
   include apache::mod::authn_core
   include apache::mod::authn_file
