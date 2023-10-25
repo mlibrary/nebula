@@ -16,6 +16,8 @@ class nebula::profile::authz_test {
   include apache::mod::env
   include apache::mod::headers
   include apache::mod::include
+  include apache::mod::proxy
+  include apache::mod::proxy_http
   include apache::mod::rewrite
   include apache::mod::setenvif
   include apache::mod::ssl
