@@ -12,13 +12,18 @@ class nebula::profile::authz_test {
   include apache::mod::authn_core
   include apache::mod::authn_file
   include apache::mod::authz_user
+  include apache::mod::autoindex
   include apache::mod::cgi
+  include apache::mod::dir
   include apache::mod::env
   include apache::mod::headers
   include apache::mod::include
+  include apache::mod::mime
+  include apache::mod::negotiation
   include apache::mod::proxy
   include apache::mod::proxy_http
   include apache::mod::rewrite
+  include apache::mod::reqtimeout
   include apache::mod::setenvif
   include apache::mod::ssl
 
