@@ -53,4 +53,11 @@ class nebula::profile::authz_test {
   file { '/etc/apache2/sites-enabled/test.conf':
     content => '# an allowed file'
   }
+
+  firewall { '200 HTTP(S): public':
+    proto  => 'tcp',
+    dport  => [80, 443],
+    state  => 'NEW',
+    action => 'accept',
+  }
 }
