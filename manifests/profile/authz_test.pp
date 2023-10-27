@@ -39,15 +39,21 @@ class nebula::profile::authz_test {
   nebula::cpan { ['CGI']: }
   Package <| |> -> Nebula::Cpan <| |>
 
-  file { '/var/www/authz-test-site':
+  file { '/lauth':
+    ensure => directory,
+    mode => '755',
+  }
+
+  file { '/lauth/test-site':
     ensure => directory,
     recurse => true,
     source => 'puppet:///authz-test-site',
+    require => File['/lauth'],
   }
 
-  file { '/var/www/authz-test-site/cgi/delegated':
-    require => File['/var/www/authz-test-site'],
+  file { '/lauth/test-site/cgi/delegated':
     mode => '0755',
+    require => File['/lauth/test-site'],
   }
 
   file { '/etc/apache2/sites-enabled/test.conf':
