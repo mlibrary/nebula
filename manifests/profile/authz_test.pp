@@ -52,6 +52,7 @@ class nebula::profile::authz_test {
   }
 
   file { '/lauth/test-site/cgi/delegated':
+    source => 'puppet:///authz-test-site/cgi/delegated',
     mode => '0755',
     require => File['/lauth/test-site'],
   }
