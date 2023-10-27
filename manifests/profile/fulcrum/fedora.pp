@@ -21,6 +21,7 @@ class nebula::profile::fulcrum::fedora (
       ensure => directory,
       owner  => 'fulcrum',
       group  => 'fulcrum',
+      require => Exec['create fedora tomcat'],
     ;
   }
 
