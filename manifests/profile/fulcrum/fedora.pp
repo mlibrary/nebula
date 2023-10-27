@@ -25,7 +25,7 @@ class nebula::profile::fulcrum::fedora (
   }
 
   exec { 'create fedora tomcat':
-    command => 'echo "CREATING FEDORA TOMCAT"',
+    command => '/usr/bin/echo "CREATING FEDORA TOMCAT"',
     cwd     => '/opt',
     user    => 'fulcrum',
     creates => '/opt/fedora',
