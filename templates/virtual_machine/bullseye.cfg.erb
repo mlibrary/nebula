@@ -359,7 +359,7 @@ d-i apt-setup/non-free boolean true
 # ASCII-armoured PGP key, if it ends in ".gpg" it needs to use the
 # "GPG key public keyring" format, the "keybox database" format is
 # currently not supported.
-d-i apt-setup/local0/repository string http://apt.puppetlabs.com bullseye puppet6
+d-i apt-setup/local0/repository string http://apt.puppetlabs.com bullseye puppet7
 d-i apt-setup/local0/key string https://<%= @filehost %>/puppetlabs-pc1-keyring.gpg
 
 # By default the installer requires that repositories be authenticated

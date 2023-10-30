@@ -321,7 +321,7 @@ d-i apt-setup/non-free boolean true
 # apt will complain about the unauthenticated repository and so the
 # sources.list line will be left commented out
 #d-i apt-setup/local0/key string http://local.server/key
-d-i apt-setup/local0/repository string http://apt.puppetlabs.com buster puppet5
+d-i apt-setup/local0/repository string http://apt.puppetlabs.com buster puppet7
 d-i apt-setup/local0/key string https://<%= @filehost %>/puppetlabs-pc1-keyring.gpg
 
 # By default the installer requires that repositories be authenticated
