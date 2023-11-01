@@ -60,7 +60,7 @@ define nebula::exposed_port(
   String $block,
   String $protocol = 'tcp',
 ) {
-  lookup($block).flatten.each |$cidr| {
+  lookup($block).flatten.unique.each |$cidr| {
     firewall { "${title}: ${cidr['name']}":
       proto  => $protocol,
       dport  => $port,

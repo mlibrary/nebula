@@ -55,6 +55,23 @@ describe 'nebula::exposed_port' do
         end
       end
 
+      context 'with duplicate blocks' do
+        let(:title) { '200 solr' }
+        let(:params) { { port: 8081, block: 'networks::one_and_two' } }
+
+        it { is_expected.to compile }
+        it { is_expected.to contain_firewall('200 solr: Net One').with(source: '10.0.1.0/24') }
+        it { is_expected.to contain_firewall('200 solr: Net Two').with(source: '10.0.2.0/24') }
+        it { is_expected.to contain_firewall('200 solr: Net Three').with(source: '10.0.3.0/24') }
+      end
+
+      context 'with contradictory blocks' do
+        let(:title) { '200 solr' }
+        let(:params) { { port: 8081, block: 'networks::one_and_three' } }
+
+        it { is_expected.not_to compile }
+      end
+
       context 'with block "devs_and_users"' do
         let(:title) { '250 HTTPS' }
         let(:params) { { port: 443, block: 'devs_and_users' } }
