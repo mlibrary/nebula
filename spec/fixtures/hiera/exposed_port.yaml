@@ -11,3 +11,25 @@ users:
   block: 10.10.10.0/24
 - name: On-site users
   block: 10.10.11.0/24
+
+networks::one:
+  - name: 'Net One'
+    block: '10.0.1.0/24'
+  - name: 'Net Three'
+    block: '10.0.3.0/24'
+networks::two:
+  - name: 'Net Two'
+    block: '10.0.2.0/24'
+  - name: 'Net Three'
+    block: '10.0.3.0/24'
+networks::three:
+  - name: 'Net Three'
+    block: '10.0.3.0/25'
+
+networks::one_and_two:
+- "%{alias('networks::one')}"
+- "%{alias('networks::two')}"
+
+networks::one_and_three:
+- "%{alias('networks::one')}"
+- "%{alias('networks::three')}"
