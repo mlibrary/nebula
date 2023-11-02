@@ -1,5 +1,6 @@
+# Managed by puppet (nebula/profile/hathitrust/solr_lss/log4j.properties.erb)
 #  Logging level
-solr.log=${solr.solr.home}/../logs
+solr.log=<%= @solr_home %>/logs
 log4j.rootLogger=INFO, file
 
 log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender

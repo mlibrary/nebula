@@ -1,0 +1,75 @@
+#! /bin/bash
+
+TODAY=`date +%Y-%m-%d`
+#TODAY="2019-08-31"
+
+SYMLINK=/htsolr/current_snap
+TARGET=/htsolr/lss/.snapshot/<%= @snapshot_name %>_${TODAY}
+
+# check if the administrative LSS release stop flag is set
+if [ -f /htsolr/lss/flags/STOPLSSRELEASE ]; then
+  /bin/echo "LSS release stop flag present...skip release today"
+  exit 1
+fi
+
+# check that today's snap exists
+if [ ! -d ${TARGET} ]; then
+  /bin/echo "missing today's snapshot...aborting release"
+  exit 1
+fi
+
+# check todays snap for 'busy' flag
+if [ -f ${TARGET}/flags/busy ]; then
+  /bin/echo "indexing and/or optimization ocurring on a shard...skip release today"
+  exit 1
+fi
+
+<% if not @is_primary_site %>#<% end %># check whether release happened at mirror site
+<% if not @is_primary_site %>#<% end %>if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/lss-release-${TODAY} --resolve "babel.hathitrust.org:443:<%= @mirror_site_ip %>" >& /dev/null; then
+<% if not @is_primary_site %>#<% end %>  /bin/echo "Mirror site index release appears to have failed...skip release today"
+<% if not @is_primary_site %>#<% end %>  exit 1
+<% if not @is_primary_site %>#<% end %>fi
+
+SEGMENTS=`ls ${TARGET}/cores/<%= @solr_core %>/core-<%= @solr_core %>x/data/index/*.fdt | wc -l`
+if [ ${SEGMENTS} -lt 1 ] || [ ${SEGMENTS} -gt 2 ]; then
+  /bin/echo "at least one core served by `hostname -s` has an improper number of segments...aborting release"
+  exit 1
+fi
+
+# stop solr
+systemctl stop solr
+if [ $? -ne 0 ]; then
+  /bin/echo "error stopping lss solr on `hostname -s`"
+  exit 1
+fi
+
+# replace the snapshot symlink
+rm -f ${SYMLINK} && ln -s ${TARGET} ${SYMLINK}
+if [ $? -ne 0 ]; then
+    /bin/echo "error removing or creating ${SYMLINK} symlink...solr WILL NOT be started on `hostname -s`"
+    exit 1
+fi
+
+# if all went well, start solr
+systemctl start solr
+if [ $? -ne 0 ]; then
+  /bin/echo "error starting solr-current-lss on `hostname -s`"
+  exit 1
+fi
+
+<% if not @is_primary_node %>#<% end %># touch release flag (only on first core/node, so it happens once per datacenter)
+<% if not @is_primary_node %>#<% end %>rm -f /htapps/babel/flags/web/lss-release-*
+<% if not @is_primary_node %>#<% end %>touch /htapps/babel/flags/web/lss-release-${TODAY}
+
+# run the first query to initialize solr
+INITQUERY=0
+if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-<%= @solr_core %>:8081/solr/core-<%= @solr_core %>x/select/?q=aardvark&version=2.2&start=0&rows=10&indent=on" >& /dev/null; then
+  /bin/echo "WARN: failed to perform initial query against core <%= @solr_core %> after successful release"
+  INITQUERY=1
+fi
+if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-<%= @solr_core %>:8081/solr/core-<%= @solr_core %>y/select?indent=on&q=*:*&rows=0" >& /dev/null; then
+  /bin/echo "WARN: failed to perform initial query against core <%= @solr_core %>y after successful release"
+  INITQUERY=1
+fi
+
+exit ${INITQUERY}
