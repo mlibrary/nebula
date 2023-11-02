@@ -64,7 +64,7 @@ fi
 # run the first query to initialize solr
 INITQUERY=0
 if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-<%= @solr_core %>:8081/solr/core-<%= @solr_core %>x/select/?q=aardvark&version=2.2&start=0&rows=10&indent=on" >& /dev/null; then
-  /bin/echo "WARN: failed to perform initial query against core <%= @solr_core %> after successful release"
+  /bin/echo "WARN: failed to perform initial query against core <%= @solr_core %>x after successful release"
   INITQUERY=1
 fi
 if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-<%= @solr_core %>:8081/solr/core-<%= @solr_core %>y/select?indent=on&q=*:*&rows=0" >& /dev/null; then
