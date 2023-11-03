@@ -58,8 +58,8 @@ if [ $? -ne 0 ]; then
 fi
 
 <% if not @is_primary_node %>#<% end %># touch release flag (only on first core/node, so it happens once per datacenter)
-<% if not @is_primary_node %>#<% end %>rm -f /htapps/babel/flags/web/lss-release-*
-<% if not @is_primary_node %>#<% end %>touch /htapps/babel/flags/web/lss-release-${TODAY}
+<% if not @is_primary_node %>#<% end %>rm -f /htapps/babel/flags/web/NEWlss-release-*
+<% if not @is_primary_node %>#<% end %>touch /htapps/babel/flags/web/NEWlss-release-${TODAY}
 
 # run the first query to initialize solr
 INITQUERY=0
@@ -76,7 +76,7 @@ fi
 <% if not @is_primary_node %>#<% end %># cache warming, after delay to avoid racing with other nodes
 <% if not @is_primary_node %>#<% end %>sleep 30
 <% if not @is_primary_node %>#<% end %>/usr/bin/wget -nv -i /htsolr/lss/prep/cacheWarm169Common.txt -O - 2>/tmp/cache-warming-lss.log 1>/dev/null
-<% if not @is_primary_node %>#<% end %>rm -f /htapps/babel/flags/web/lss-warming-*
-<% if not @is_primary_node %>#<% end %>touch /htapps/babel/flags/web/lss-warming-${TODAY}
+<% if not @is_primary_node %>#<% end %>rm -f /htapps/babel/flags/web/NEWlss-warming-*
+<% if not @is_primary_node %>#<% end %>touch /htapps/babel/flags/web/NEWlss-warming-${TODAY}
 
 exit ${INITQUERY}
