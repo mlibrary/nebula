@@ -11,7 +11,10 @@ fixtures:
   #
   #repositories:
   #  module_name:
-  #    repo: "git://github.com/mlibrary/repo_name"
+  #    repo: "https://github.com/mlibrary/repo_name"
+  repositories:
+    apache:
+      repo: "https://github.com/mlibrary/puppetlabs-apache"
   forge_modules:
     rbenv:        {"repo": "jdowning/rbenv",          "ref": "3.0.0"}
     archive:      {"repo": "puppet/archive",          "ref": "7.0.0"}
@@ -20,7 +23,6 @@ fixtures:
     logrotate:    {"repo": "puppet/logrotate",        "ref": "7.0.0"}
     nginx:        {"repo": "puppet/nginx",            "ref": "5.0.0"}
     php:          {"repo": "puppet/php",              "ref": "9.0.0"}
-    apache:       {"repo": "puppetlabs/apache",       "ref": "7.0.0"} # 8.x breaks, blocking Puppet 8
     apt:          {"repo": "puppetlabs/apt",          "ref": "9.0.0"} # 9.0.1+ breaks, needs updated stdlib
     augeas_core:  {"repo": "puppetlabs/augeas_core",  "ref": "1.4.0"}
     concat:       {"repo": "puppetlabs/concat",       "ref": "7.4.0"} # blocked on apache, blocking Puppet 8
