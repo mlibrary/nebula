@@ -19,24 +19,24 @@ fixtures:
     rbenv:        {"repo": "jdowning/rbenv",          "ref": "3.0.0"}
     archive:      {"repo": "puppet/archive",          "ref": "7.0.0"}
     kmod:         {"repo": "puppet/kmod",             "ref": "4.0.0"}
-    letsencrypt:  {"repo": "puppet/letsencrypt",      "ref": "9.2.0"}
+    letsencrypt:  {"repo": "puppet/letsencrypt",      "ref": "10.1.0"}
     logrotate:    {"repo": "puppet/logrotate",        "ref": "7.0.0"}
     nginx:        {"repo": "puppet/nginx",            "ref": "5.0.0"}
     php:          {"repo": "puppet/php",              "ref": "9.0.0"}
     apt:          {"repo": "puppetlabs/apt",          "ref": "9.0.0"} # 9.0.1+ breaks, needs updated stdlib
     augeas_core:  {"repo": "puppetlabs/augeas_core",  "ref": "1.4.0"}
-    concat:       {"repo": "puppetlabs/concat",       "ref": "7.4.0"} # blocked on apache, blocking Puppet 8
+    concat:       {"repo": "puppetlabs/concat",       "ref": "7.4.0"} # held back by postgres (and in turn by puppetdb v7.13)
     cron_core:    {"repo": "puppetlabs/cron_core",    "ref": "1.2.0"}
     docker:       {"repo": "puppetlabs/docker",       "ref": "7.0.0"} # 8.0.0 breaks
-    firewall:     {"repo": "puppetlabs/firewall",     "ref": "3.6.0"} # 5 breaks puppetdb, 6.0.0 needs stdlib 9, 7.0.0 breaks tests
+    firewall:     {"repo": "puppetlabs/firewall",     "ref": "3.6.0"} # 5 breaks puppetdb v7.13, 6.0.0 needs stdlib 9, 7.0.0 breaks tests
     host_core:    {"repo": "puppetlabs/host_core",    "ref": "1.2.0"}
-    inifile:      {"repo": "puppetlabs/inifile",      "ref": "5.4.1"} # blocked on letsencrypt, blocking Puppet 8
+    inifile:      {"repo": "puppetlabs/inifile",      "ref": "5.4.1"} # held back by puppetdb v7.13
     java:         {"repo": "puppetlabs/java",         "ref": "10.1.2"}
     lvm:          {"repo": "puppetlabs/lvm",          "ref": "2.0.3"}
     mount_core:   {"repo": "puppetlabs/mount_core",   "ref": "1.2.0"}
     mysql:        {"repo": "puppetlabs/mysql",        "ref": "14.0.0"} # 15.0.0 breaks
     ntp:          {"repo": "puppetlabs/ntp",          "ref": "10.1.0"}
-    postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "8.3.0"} # 9.x blocked on puppetdb, blocks Puppet 8!?
+    postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "8.3.0"} # 9.x blocked on puppetdb v7.13, blocks Puppet 8!?
     puppetdb:     {"repo": "puppetlabs/puppetdb",     "ref": "7.13.0"}
     reboot:       {"repo": "puppetlabs/reboot",       "ref": "5.0.0"}
     sshkeys_core: {"repo": "puppetlabs/sshkeys_core", "ref": "2.4.0"}

@@ -10,7 +10,7 @@
     {"name": "jdowning/rbenv",          "version_requirement": ">= 3.0.0  < 4.0.0"},
     {"name": "puppet/archive",          "version_requirement": ">= 7.0.0  < 8.0.0"},
     {"name": "puppet/kmod",             "version_requirement": ">= 4.0.0  < 5.0.0"},
-    {"name": "puppet/letsencrypt",      "version_requirement": ">= 9.2.0  < 10.0.0"},
+    {"name": "puppet/letsencrypt",      "version_requirement": ">= 10.1.0 < 11.0.0"},
     {"name": "puppet/logrotate",        "version_requirement": ">= 7.0.0  < 8.0.0"},
     {"name": "puppet/nginx",            "version_requirement": ">= 5.0.0  < 6.0.0"},
     {"name": "puppet/php",              "version_requirement": ">= 9.0.0  < 10.0.0"},
