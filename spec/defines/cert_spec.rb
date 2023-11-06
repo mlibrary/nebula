@@ -20,6 +20,7 @@ describe 'nebula::cert' do
             .with_domains(['example.invalid'])
             .with_plugin('standalone')
             .with_manage_cron(true)
+            .with_cron_output('log')
         end
 
         it do
@@ -48,6 +49,7 @@ describe 'nebula::cert' do
               .with_plugin('webroot')
               .with_webroot_paths(['/var/www'])
               .with_manage_cron(true)
+              .with_cron_output('log')
           end
         end
 

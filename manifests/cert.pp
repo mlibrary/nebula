@@ -39,6 +39,7 @@ define nebula::cert (
     letsencrypt::certonly { $title:
       domains     => [$title] + $additional_domains,
       manage_cron => true,
+      cron_output => 'log',
     }
 
   } else {
@@ -52,6 +53,7 @@ define nebula::cert (
     letsencrypt::certonly { $title:
       domains       => [$title] + $additional_domains,
       manage_cron   => true,
+      cron_output   => 'log',
       plugin        => 'webroot',
       webroot_paths => $webroot_paths,
     }
