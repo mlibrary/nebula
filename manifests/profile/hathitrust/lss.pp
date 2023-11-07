@@ -3,9 +3,9 @@
 # @example
 #   include nebula::profile::hathitrust::lss
 class nebula::profile::hathitrust::lss (
-  String $jdk_version = '11',
+  String $jdk_version = '17',
   String $solr_home = '/var/lib/solr',
-  String $java_home = '/usr/lib/jvm/default-java',
+  String $java_home = "/usr/lib/jvm/java-${jdk_version}-openjdk-amd64",
   String $heap = '32G',
   String $timezone = 'America/Detroit',
   String $port = '8081',
