@@ -12,6 +12,13 @@ describe 'nebula::profile::kubernetes::kubelet' do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
+      it { is_expected.to contain_kmod__load('br_netfilter') }
+
+      it do
+        is_expected.to contain_file('/etc/sysctl.d/kubelet.conf')
+          .with_content(/^net.bridge.bridge-nf-call-ip6tables = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1/)
+          .that_notifies('Service[procps]')
+      end
 
       context 'with cluster unset' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/default_config.yaml' }

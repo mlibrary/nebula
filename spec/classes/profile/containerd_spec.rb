@@ -14,6 +14,8 @@ describe 'nebula::profile::containerd' do
       it { is_expected.to contain_apt__source('docker') }
       it { is_expected.to contain_package('containerd.io').that_requires('Apt::Source[docker]') }
       it { is_expected.to contain_service('containerd').that_requires('Package[containerd.io]') }
+      it { is_expected.to contain_file('/etc/containerd/config.toml').with_content(/^disabled_plugins = \[\]$/) }
+      it { is_expected.to contain_file('/etc/containerd/config.toml').with_content(/^\s*SystemdCgroup = true$/) }
     end
   end
 end
