@@ -32,6 +32,8 @@ class nebula::profile::fulcrum::app (
     'shared-mime-info',
     'unzip',
     'zip',
+    'screen',
+    'poppler-utils',
   ])
 
   class { 'nebula::profile::nodejs':
