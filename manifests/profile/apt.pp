@@ -101,13 +101,7 @@ class nebula::profile::apt (
     }
 
     apt::source { 'adoptopenjdk':
-      location => 'https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/',
-      release  => $::lsbdistcodename,
-      repos    => 'main',
-      key      => {
-        'id'     => '8ED17AF5D7E675EB3EE3BCE98AC3B29174885C03',
-        'source' => 'https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public'
-      }
+      ensure => 'absent'
     }
 
     apt::source { 'puppet':
