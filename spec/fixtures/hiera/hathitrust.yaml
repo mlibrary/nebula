@@ -141,7 +141,9 @@ nebula::profile::hathitrust::secure_rsync::datasets:
     path: "/datasets/secure_dataset"
 
 nebula::profile::hathitrust::lss::solr_home: "/s0lr/h0me"
-nebula::profile::hathitrust::lss::solr_core: "foobar9000"
+nebula::profile::hathitrust::lss::solr_cores:
+  - "66"
+  - "99"
 nebula::profile::hathitrust::lss::port: "2525"
 nebula::profile::hathitrust::lss::mirror_site_ip: "5.4.3.2"
 nebula::profile::hathitrust::lss::mail_recipient: nobody@default.invalid

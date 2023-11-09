@@ -3,7 +3,7 @@
 # @example
 #   include nebula::profile::hathitrust::lss
 class nebula::profile::hathitrust::lss (
-  String $jdk_version = '17',
+  String $jdk_version = '11',
   String $solr_home = '/var/lib/solr',
   String $java_home = "/usr/lib/jvm/java-${jdk_version}-openjdk-amd64",
   String $heap = '32G',
@@ -13,7 +13,7 @@ class nebula::profile::hathitrust::lss (
   String $snapshot_name = 'htsolr-lss',
   Boolean $is_primary_site = false,
   Boolean $is_primary_node = false,
-  String $solr_core,
+  Array[String] $solr_cores,
   String $mirror_site_ip,
   String $mail_recipient,
 ){
@@ -31,6 +31,17 @@ class nebula::profile::hathitrust::lss (
     ;
     "/htsolr":;
     "/htsolr/serve":;
+    "/htsolr/lss":;
+    "/htsolr/lss/cores":;
+  }
+  $solr_cores.each |$core| {
+    nebula::nfs_mount { "/htsolr/lss/cores/${core}":
+      tag             => "smartconnect",
+      private_network => true,
+      monitored       => true,
+      before          => Service["solr"],
+      remote_target   => "nas-${::datacenter}.sc:/ifs/htsolr/lss/cores/${core}";
+    }
   }
   nebula::nfs_mount {
     default:
@@ -39,17 +50,10 @@ class nebula::profile::hathitrust::lss (
       monitored       => true,
       before          => Service["solr"],
     ;
-    "/htsolr/lss": remote_target => "nas-${::datacenter}.sc:/ifs/htsolr/lss";
-    "/htapps":     remote_target => "nas-${::datacenter}.sc:/ifs/htapps";
-  }
-  # symlinks into solr nfs mount expected by core configs
-  file {
-    default:
-      ensure => "link",
-      before => Service["solr"],
-    ;
-    "/htsolr/serve/lss-shared":       target => "/htsolr/current_snap/shared";
-    "/htsolr/serve/lss-${solr_core}": target => "/htsolr/current_snap/cores/${solr_core}";
+    "/htsolr/lss/flags":  remote_target => "nas-${::datacenter}.sc:/ifs/htsolr/lss/flags";
+    "/htsolr/lss/prep":   remote_target => "nas-${::datacenter}.sc:/ifs/htsolr/lss/prep";
+    "/htsolr/lss/shared": remote_target => "nas-${::datacenter}.sc:/ifs/htsolr/lss/shared";
+    "/htapps":            remote_target => "nas-${::datacenter}.sc:/ifs/htapps";
   }
 
   include nebula::profile::users
@@ -77,18 +81,19 @@ class nebula::profile::hathitrust::lss (
     "${solr_home}/solr.in.sh":       content => template("nebula/profile/hathitrust/solr_lss/solr.in.sh.erb");
     "${solr_home}/solr.xml":         content => template("nebula/profile/hathitrust/solr_lss/solr.xml.erb");
   }
-  # core configs appear to require jars to be available at ../lib; this is otherwise redundant with `/htsolr/serve/lss-shared`
+  # core configs require jars to be available in solr home as well as /htsolr/serve
   file { "${solr_home}/lib":
     ensure => "link",
-    target => "/htsolr/current_snap/shared/lib",
+    target => "/htsolr/serve/lss-shared/lib",
     before => Service["solr"],
   }
-  # core served by _this host_
-  file { "Solr LSS Core":
-    path   => "${solr_home}/${solr_core}",
-    ensure => "link",
-    target => "/htsolr/current_snap/cores/${solr_core}",
-    notify => Service["solr"],
+  # link to cores in solr home
+  $solr_cores.each |$core| {
+    file { "${solr_home}/${core}":
+      ensure => "link",
+      target => "/htsolr/serve/lss-${core}",
+      notify => Service["solr"],
+    }
   }
 
   # lss service
