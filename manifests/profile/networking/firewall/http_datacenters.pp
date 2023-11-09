@@ -25,24 +25,4 @@ class nebula::profile::networking::firewall::http_datacenters (
       *      => $params
     }
   }
-
-  $datacenters = $networks.flatten.map |$network| { $network['datacenter'] }.sort.unique
-
-  $other_dc_nodes_query = ['from','facts',
-    ['extract', ['certname','value'],
-      ['and',
-        ['=','name','ipaddress'],
-        ['in','certname',
-          ['extract', ['certname'], ['select_facts',
-            ['and',
-              ['=','name','datacenter'],
-              ['not', ['in','value',
-              ['array', $datacenters]]]]]]]]]]
-
-  puppetdb_query($other_dc_nodes_query).each |$node| {
-    firewall { "200 HTTP: ${node['certname']}":
-      source => $node['value'],
-      *      => $params
-    }
-  }
 }

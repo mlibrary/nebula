@@ -49,10 +49,6 @@ describe 'nebula::profile::networking::firewall::http_datacenters' do
         it { is_expected.to contain_firewall('200 HTTP: test range 1-2').with_source('10.1.2.0/24').with_dport([80, 443]) }
         it { is_expected.to contain_firewall('200 HTTP: test range 2-1').with_source('10.2.1.0/24').with_dport([80, 443]) }
         it { is_expected.to contain_firewall('200 HTTP: test range 2-2').with_source('10.2.2.0/24').with_dport([80, 443]) }
-
-        othernodes.each do |name, ip|
-          it { is_expected.to contain_firewall("200 HTTP: #{name}").with_source(ip).with_dport([80, 443]) }
-        end
       end
     end
   end
