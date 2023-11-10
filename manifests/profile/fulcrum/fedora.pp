@@ -16,6 +16,23 @@ class nebula::profile::fulcrum::fedora (
     content => template('nebula/profile/fulcrum/sudoers-fedora.erb'),
   }
 
+  exec { 'create fedora tomcat':
+    command => '/usr/bin/tomcat9-instance-create fedora',
+    cwd     => '/opt',
+    creates => '/opt/fedora',
+    require => [
+      User['fulcrum'],
+      Package['tomcat9-user'],
+    ],
+  }
+
+  file { '/opt/fedora':
+    ensure => 'directory',
+    owner => 'fulcrum',
+    group => 'fulcrum',
+    require => Exec['create fedora tomcat'],
+  }
+
   file {
     ['/var/lib/fedora', '/var/log/fedora', '/opt/fedora', '/tmp/fedora']:
       ensure => directory,
@@ -23,17 +40,6 @@ class nebula::profile::fulcrum::fedora (
       group  => 'fulcrum',
       require => Exec['create fedora tomcat'],
     ;
-  }
-
-  exec { 'create fedora tomcat':
-    command => '/usr/bin/tomcat9-instance-create fedora',
-    cwd     => '/opt',
-    user    => 'fulcrum',
-    creates => '/opt/fedora',
-    require => [
-      User['fulcrum'],
-      Package['tomcat9-user'],
-    ],
   }
 
   file { '/opt/fedora/logs':
