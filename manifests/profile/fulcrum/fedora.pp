@@ -39,6 +39,7 @@ class nebula::profile::fulcrum::fedora (
     ensure  => 'symlink',
     owner   => 'fulcrum',
     group   => 'fulcrum',
+    force   => true,
     target  => '/var/log/fedora',
     require => Exec['create fedora tomcat'],
   }
