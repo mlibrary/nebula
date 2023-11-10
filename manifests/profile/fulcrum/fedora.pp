@@ -26,13 +26,6 @@ class nebula::profile::fulcrum::fedora (
     ],
   }
 
-  file { '/opt/fedora':
-    ensure => 'directory',
-    owner => 'fulcrum',
-    group => 'fulcrum',
-    require => Exec['create fedora tomcat'],
-  }
-
   file {
     ['/var/lib/fedora', '/var/log/fedora', '/opt/fedora', '/tmp/fedora']:
       ensure => directory,
