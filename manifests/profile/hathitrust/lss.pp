@@ -6,7 +6,7 @@ class nebula::profile::hathitrust::lss (
   String $jdk_version = '11',
   String $solr_home = '/var/lib/solr',
   String $java_home = "/usr/lib/jvm/java-${jdk_version}-openjdk-amd64",
-  String $heap = '32G',
+  String $heap = '16G',
   String $timezone = 'America/Detroit',
   String $port = '8081',
   String $solr_bin = '/opt/solr/bin/solr',
