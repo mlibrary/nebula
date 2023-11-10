@@ -3,20 +3,11 @@ SOLR_JAVA_HOME="<%= @java_home %>"
 SOLR_HEAP="<%= @heap %>"
 
 GC_LOG_OPTS=""
-#
-#GC_TUNE="-XX:+UseG1GC \
-#-XX:+PerfDisableSharedMem \
-#-XX:+ParallelRefProcEnabled \
-#-XX:MaxGCPauseMillis=250 \
-#-XX:+UseLargePages \
-#-XX:+AlwaysPreTouch \
-#-XX:+ExplicitGCInvokesConcurrent"
-
-###### solr 8 only
 #GC_LOG_OPTS="-verbose:gc -XX:+PrintHeapAtGC -XX:+PrintGCDetails \
 #-XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime"
 
 # These GC settings have shown to work well for a number of common Solr workloads
+# They will not work with Java > 8
 GC_TUNE="-XX:NewRatio=3 \
 -XX:SurvivorRatio=4 \
 -XX:TargetSurvivorRatio=90 \
@@ -31,7 +22,6 @@ GC_TUNE="-XX:NewRatio=3 \
 -XX:CMSMaxAbortablePrecleanTime=6000 \
 -XX:+CMSParallelRemarkEnabled \
 -XX:+ParallelRefProcEnabled"
-######
 
 SOLR_TIMEZONE="<%= @timezone %>"
 ENABLE_REMOTE_JMX_OPTS="true"

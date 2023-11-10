@@ -9,7 +9,7 @@ describe 'nebula::profile::hathitrust::lss' do
 
       it { is_expected.to compile }
       # solr and dependencies
-      it { is_expected.to contain_package('openjdk-11-jre-headless') }
+      it { is_expected.to contain_package('openjdk-8-jre-headless') }
       it { is_expected.to contain_package('solr') }
       it { is_expected.to contain_user('solr') }
       it { is_expected.to contain_service('solr') }
@@ -65,7 +65,10 @@ describe 'nebula::profile::hathitrust::lss' do
         let(:params) do
           { is_primary_node: false }
         end
-#        it { is_expected.to contain_file('/usr/local/bin/index-release-lss').with_content(%r{^#touch /htapps/babel/flags/web/lss-release-\$\{TODAY\}$}) }
+        it {
+          pending("revert temp new flag")
+          is_expected.to contain_file('/usr/local/bin/index-release-lss').with_content(%r{^#touch /htapps/babel/flags/web/lss-release-\$\{TODAY\}$})
+        }
       end
 
       it { is_expected.to contain_firewall('200 Solr - Private: foobar net').with(source: '192.168.99.0/24') }
