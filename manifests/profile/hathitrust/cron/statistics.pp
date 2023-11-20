@@ -19,6 +19,7 @@ class nebula::profile::hathitrust::cron::statistics (
 
   cron {
     default:
+      ensure      => 'absent',
       user        => $user,
       environment => ["MAILTO=${mail_recipient}","SDRROOT=${sdr_root}"];
 
