@@ -186,6 +186,14 @@ groups:
     labels:
       severity: ticket
 
+  - alert: ApacheHttpdDown
+    annotations:
+      summary: 'Apache httpd service down on {{$labels.hostname}}'
+    expr: 'node_systemd_unit_state{name="apache2.service",state="failed"} == 1'
+    for: 10m
+    labels:
+      severity: ticket
+
   - alert: WwwLibPressFcgiUnreachable
     annotations:
       summary: 'Cannot reach press on node {{$labels.hostname}}.'
