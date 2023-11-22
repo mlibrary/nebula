@@ -13,6 +13,7 @@ class nebula::role::sysadmin_box {
   include nebula::profile::users
   include nebula::profile::ruby
   include nebula::profile::root_ssh_private_keys
+  include nebula::profile::kubelet
 
   class { 'nebula::profile::puppet::query':
     ssl_group => 'sudo',

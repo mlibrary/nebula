@@ -16,6 +16,8 @@ describe 'nebula::profile::containerd' do
       it { is_expected.to contain_service('containerd').that_requires('Package[containerd.io]') }
       it { is_expected.to contain_file('/etc/containerd/config.toml').with_content(/^disabled_plugins = \[\]$/) }
       it { is_expected.to contain_file('/etc/containerd/config.toml').with_content(/^\s*SystemdCgroup = true$/) }
+      it { is_expected.to contain_file('/etc/containerd').with_ensure("directory") }
+      it { is_expected.to contain_file('/etc/containerd').that_comes_before("File[/etc/containerd/config.toml]") }
     end
   end
 end

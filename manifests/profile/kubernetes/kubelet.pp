@@ -3,9 +3,6 @@
 # BSD License. See LICENSE.txt for details.
 
 class nebula::profile::kubernetes::kubelet {
-  include nebula::profile::containerd
-  include nebula::profile::kubernetes::apt
-
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
   $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
 
@@ -36,29 +33,10 @@ class nebula::profile::kubernetes::kubelet {
     fail("You must set a kube api IP address for the cluster's gateway")
   }
 
-  kmod::load { 'br_netfilter': }
-
-  include nebula::profile::networking::sysctl
-  file { '/etc/sysctl.d/kubelet.conf':
-    content => template('nebula/profile/kubernetes/kubelet_sysctl.conf.erb'),
-    notify  => Service['procps'],
-  }
-
-  service { 'kubelet':
-    ensure  => 'running',
-    enable  => true,
-    require => Package['kubelet'],
-  }
-
-  package { 'kubelet':
-    ensure  => "${kubernetes_version}-00",
-    require => [Apt::Source['kubernetes']],
-  }
-
-  apt::pin { 'kubelet':
-    packages => ['kubelet'],
-    version  => "${kubernetes_version}-00",
-    priority => 999,
+  class { "nebula::profile::kubelet":
+    kubelet_version       => "${kubernetes_version}-00",
+    pod_manifest_path     => "/etc/kubernetes/manifests",
+    use_pod_manifest_path => false,
   }
 
   firewall {

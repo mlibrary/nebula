@@ -44,6 +44,31 @@ describe 'nebula::profile::prometheus::exporter::node' do
           .that_requires('File[/var/lib/prometheus/node-exporter]')
       end
 
+      context "with no version set" do
+        it { is_expected.not_to contain_apt__pin('prometheus-node-exporter') }
+
+        it do
+          is_expected.to contain_package('prometheus-node-exporter')
+            .with_ensure("installed")
+        end
+      end
+
+      context "with version set to v1.2.3" do
+        let(:params) { { version: "v1.2.3" } }
+
+        it do
+          is_expected.to contain_package('prometheus-node-exporter')
+            .with_ensure("v1.2.3")
+        end
+
+        it do
+          is_expected.to contain_apt__pin('prometheus-node-exporter')
+            .with_packages(["prometheus-node-exporter"])
+            .with_version("v1.2.3")
+            .with_priority(999)
+        end
+      end
+
       it do
         is_expected.to contain_file('/var/lib/prometheus/node-exporter')
           .with_ensure('directory')
