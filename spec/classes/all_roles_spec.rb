@@ -63,15 +63,10 @@ def test_roles(slice_number = 1, slice_count = 1)
               %w[nebula::role::hathitrust hathitrust],
               %w[nebula::role::chipmunk chipmunk],
               %w[nebula::role::app_host::standalone chipmunk],
-              %w[nebula::role::app_host::hyrax chipmunk],
               %w[nebula::role::deb_server deb_server],
-              %w[nebula::role::deploy_host named_instances],
               %w[nebula::role::kubernetes kubernetes/first_cluster],
-              %w[nebula::role::log_host log_host],
               %w[nebula::role::webhost::www_lib_vm www_lib],
               %w[nebula::role::webhost::fulcrum_www_and_app fulcrum],
-              %w[nebula::role::docker_registry docker_registry],
-              %w[nebula::role::fulcrum fulcrum],
               %w[nebula default],
             ].select { |role_base, _| role_name.start_with? role_base }.first[1]
           end
