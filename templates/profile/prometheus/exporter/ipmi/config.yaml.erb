@@ -1,0 +1,33 @@
+# Managed by puppet (nebula/profile/prometheus/exporter/ipmi/ipmi.yaml.erb)
+modules:
+<% @accounts.each do |hostname, account| -%>
+  <%= hostname %>:
+    user: "<%= account["username"] %>"
+    pass: "<%= account["password"] %>"
+    privilege: "<%= account["privilege"] || "user" %>"
+    timeout: <%= account["timeout"] || "20000" %>
+    driver: "<%= account["driver"] || "LAN_2_0" %>"
+<% if account.has_key?("collectors") -%>
+<% if account["collectors"].empty? -%>
+    collectors: []
+<% else -%>
+    collectors:
+<% end -%>
+<% account["collectors"].each do |collector| -%>
+    - "<%= collector %>"
+<% end -%>
+<% else -%>
+    collectors:
+    - "bmc"
+    - "ipmi"
+    - "chassis"
+<% end -%>
+<% if account.has_key?("exclude_sensor_ids") -%>
+<% unless account["exclude_sensor_ids"].empty? -%>
+    exclude_sensor_ids:
+<% account["exclude_sensor_ids"].each do |sensor_id| -%>
+    - <%= sensor_id %>
+<% end -%>
+<% end -%>
+<% end -%>
+<% end -%>

@@ -34,9 +34,9 @@ class nebula::profile::kubernetes::kubelet {
   }
 
   class { "nebula::profile::kubelet":
-    kubelet_version       => "${kubernetes_version}-00",
-    pod_manifest_path     => "/etc/kubernetes/manifests",
-    use_pod_manifest_path => false,
+    kubelet_version         => "${kubernetes_version}-00",
+    pod_manifest_path       => "/etc/kubernetes/manifests",
+    manage_pods_with_puppet => false,
   }
 
   firewall {

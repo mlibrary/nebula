@@ -4,7 +4,7 @@
 class nebula::profile::kubelet (
   String $kubelet_version,
   String $pod_manifest_path = "/etc/kubernetes/manifests",
-  Boolean $use_pod_manifest_path = true,
+  Boolean $manage_pods_with_puppet = true,
 ) {
   include nebula::profile::networking::sysctl
   include nebula::profile::containerd
@@ -35,9 +35,17 @@ class nebula::profile::kubelet (
     require => Package["kubelet"],
   }
 
-  if $use_pod_manifest_path {
+  if $manage_pods_with_puppet {
+    file { $pod_manifest_path:
+      ensure  => "directory",
+      recurse => true,
+      purge   => true,
+      require => Package["kubelet"],
+    }
+
     file { "/etc/systemd/system/kubelet.service.d":
-      ensure => "directory",
+      ensure  => "directory",
+      require => Package["kubelet"],
     }
 
     file { "/etc/systemd/system/kubelet.service.d/20-containerd-and-manifest-dir.conf":

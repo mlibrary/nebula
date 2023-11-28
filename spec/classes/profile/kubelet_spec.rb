@@ -70,8 +70,17 @@ describe 'nebula::profile::kubelet' do
       end
 
       it do
+        is_expected.to contain_file("/etc/kubernetes/manifests")
+          .with_ensure("directory")
+          .with_recurse(true)
+          .with_purge(true)
+          .that_requires("Package[kubelet]")
+      end
+
+      it do
         is_expected.to contain_file("/etc/systemd/system/kubelet.service.d")
           .with_ensure("directory")
+          .that_requires("Package[kubelet]")
       end
 
       it do
@@ -110,18 +119,22 @@ describe 'nebula::profile::kubelet' do
         end
       end
 
-      context "with pod_manifest_path set to /tmp" do
-        let(:params) { { kubelet_version: "123", pod_manifest_path: "/tmp" } }
+      context "with pod_manifest_path set to /tmp/kubelet" do
+        let(:params) { { kubelet_version: "123", pod_manifest_path: "/tmp/kubelet" } }
+
+        it { is_expected.not_to contain_file("/etc/kubernetes/manifests") }
+        it { is_expected.to contain_file("/tmp/kubelet") }
 
         it do
           is_expected.to contain_file("/etc/systemd/system/kubelet.service.d/20-containerd-and-manifest-dir.conf")
-            .with_content(/^ExecStart=.+ --pod-manifest-path=\/tmp/)
+            .with_content(/^ExecStart=.+ --pod-manifest-path=\/tmp\/kubelet/)
         end
       end
 
-      context "with use_pod_manifest_path set to false" do
-        let(:params) { { kubelet_version: "123", use_pod_manifest_path: false } }
+      context "with manage_pods_with_puppet set to false" do
+        let(:params) { { kubelet_version: "123", manage_pods_with_puppet: false } }
 
+        it { is_expected.not_to contain_file("/etc/kubernetes/manifests") }
         it { is_expected.not_to contain_file("/etc/systemd/system/kubelet.service.d") }
         it { is_expected.not_to contain_file("/etc/systemd/system/kubelet.service.d/20-containerd-and-manifest-dir.conf") }
         it { is_expected.not_to contain_exec("kubelet reload daemon") }

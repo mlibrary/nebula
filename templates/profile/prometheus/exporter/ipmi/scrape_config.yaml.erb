@@ -1,0 +1,27 @@
+- job_name: "ipmi"
+  scrape_interval: "60s"
+  scrape_timeout: "30s"
+  metrics_path: "/ipmi"
+  scheme: "http"
+  static_configs:
+  - targets:
+<% @accounts.each do |hostname, account| -%>
+    - "<%= hostname %>"
+<% end -%>
+    labels:
+      datacenter: "<%= @datacenter %>"
+      via: "<%= @hostname %>"
+  # lom.mgmt/ipmi -> <%= @hostname %>:9290/ipmi?module=lom.mgmt&target=lom.mgmt
+  relabel_configs:
+  - action: "replace"
+    target_label: "__param_target"
+    source_labels: ["__address__"]
+  - action: "replace"
+    target_label: "__param_module"
+    source_labels: ["__param_target"]
+  - action: "replace"
+    target_label: "instance"
+    source_labels: ["__param_target"]
+  - action: "replace"
+    target_label: "__address__"
+    replacement: "<%= @ipaddress %>:9290"
