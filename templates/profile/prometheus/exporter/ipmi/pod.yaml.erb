@@ -1,0 +1,28 @@
+# Managed by puppet (nebula/profile/prometheus/exporter/ipmi/pod.yaml.erb)
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  name: "ipmi-exporter"
+spec:
+  hostNetwork: true
+  containers:
+  - name: "ipmi"
+    image: "prometheuscommunity/ipmi-exporter:v1.7.0"
+    args: ["--config.file", "/config.yml"]
+    volumeMounts:
+    - name: "config"
+      subPath: "ipmi.yaml"
+      mountPath: "/config.yml"
+      readOnly: true
+  - name: "configmap-reload"
+    image: "ghcr.io/jimmidyson/configmap-reload:v0.12.0"
+    args: ["--volume-dir=/config", "--webhook-url=http://127.0.0.1:9290/-/reload"]
+    volumeMounts:
+    - name: "config"
+      mountPath: "/config"
+      readOnly: true
+  volumes:
+  - name: "config"
+    hostPath:
+      path: "/etc/prometheus"
+      type: "DirectoryOrCreate"
