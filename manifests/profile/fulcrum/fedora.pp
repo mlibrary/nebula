@@ -47,8 +47,8 @@ class nebula::profile::fulcrum::fedora (
   archive { '/opt/fedora/webapps/fedora.war':
     ensure        => present,
     extract       => false,
-    source        => 'https://github.com/fcrepo/fcrepo/releases/download/fcrepo-4.7.4/fcrepo-webapp-4.7.4.war',
-    checksum      => '11e06c843f40cf2b9f26bda94ddfe6d85d69a591',
+    source        => 'https://github.com/fcrepo/fcrepo/releases/download/fcrepo-4.7.6/fcrepo-webapp-4.7.6.war',
+    checksum      => '5882d8a4dc8b3817374503dff2043be79d9bbd72',
     checksum_type => 'sha1',
     cleanup       => false,
     user          => 'fulcrum',
