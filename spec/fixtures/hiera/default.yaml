@@ -109,10 +109,6 @@ nebula::profile::vmhost::host::netmask: '0.0.0.0'
 nebula::profile::vmhost::host::gateway: '10.1.2.3'
 nebula::profile::vmhost::host::nameservers: "%{alias('nebula::resolv_conf::nameservers')}"
 
-nebula::profile::named_instances::puma_wrapper: "/l/local/bin/profile_puma_wrap"
-nebula::profile::named_instances::pubkey: "somepublickey"
-nebula::profile::named_instances::puma_config: "config/fauxpaas_puma.rb"
-
 nebula::http_files: 'default.http_files.invalid'
 
 nebula::profile::apt::local_repo:
@@ -140,10 +136,6 @@ nebula::virtual::users::all_users:
     gid: docker
     comment: Docker
     home: /var/lib/docker
-
-nebula::named_instance::solr_core::default_config: '/nonexistent/solr/conf'
-nebula::named_instance::solr_core::core_home: '/nonexistent/solr_home'
-nebula::named_instance::solr_core::solr_home: '/var/lib/solr/home'
 
 nebula::profile::www_lib::mounts::prod_target: 'somewhere:/invalid'
 nebula::profile::www_lib::mounts::dev_target: 'elsewhere:/invalid'
