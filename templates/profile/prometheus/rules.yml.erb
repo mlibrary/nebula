@@ -14,7 +14,7 @@ groups:
       summary: 'Node {{$labels.host | reReplaceAll "\\.umdl\\.umich\\.edu" ""}} hasn''t recently synced with puppet.'
       dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
     expr: 'puppet_report{environment="production",host!="ht-web-preview.umdl.umich.edu"} < (time() - (30 * 60))'
-    for: 30m
+    for: 4h
     labels:
       severity: ticket
   - alert: PuppetResourcesFailing
