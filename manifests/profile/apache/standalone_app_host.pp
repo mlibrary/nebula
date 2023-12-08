@@ -4,8 +4,7 @@
 
 # nebula::profile::apache::standalone_app_host
 #
-# Configure Apache to serve applications via mod_proxy
-# This does not configure any virtual hosts.
+# Provides apache for nebula::role::app_host::standalone
 #
 # @example
 #   include nebula::profile::apache::standalone_app_host
