@@ -8,6 +8,7 @@ class nebula::profile::fulcrum::symlinks (
   Hash $config = {},
 ) {
   $config.each |$link, $target| {
+    notify { "building symlink ${$link} to ${$target}": }
     file { $link:
       ensure => 'link',
       target => $target,
