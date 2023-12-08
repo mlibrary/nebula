@@ -5,9 +5,9 @@
 # nebula::profile::fulcrum::symlinks
 
 class nebula::profile::fulcrum::symlinks (
-  Hash $config = {},
+  Hash $symlinks = {},
 ) {
-  $config.each |$link, $target| {
+  $symlinks.each |$link, $target| {
     file { $link:
       ensure => 'link',
       target => $target,
