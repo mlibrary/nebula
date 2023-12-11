@@ -28,6 +28,7 @@ class nebula::profile::prometheus::exporter::node (
   $log_file = '/var/log/prometheus-node-exporter.log'
 
   include nebula::virtual::users
+  include nebula::profile::apt
   include nebula::profile::groups
   include nebula::subscriber::rsyslog
   include nebula::subscriber::systemctl_daemon_reload
@@ -76,6 +77,14 @@ class nebula::profile::prometheus::exporter::node (
   package { 'prometheus-node-exporter':
     ensure  => pick($version, 'installed'),
     require => [User['prometheus'], File['/var/lib/prometheus/node-exporter']],
+  }
+
+  if $version != undef {
+    apt::pin { 'prometheus-node-exporter':
+      packages => ['prometheus-node-exporter'],
+      version  => $version,
+      priority => 999,
+    }
   }
 
   file { '/var/lib/prometheus/node-exporter':

@@ -17,6 +17,5 @@ class nebula::role::app_host::dev {
 
   include nebula::profile::ruby
   include nebula::profile::nodejs
-  include nebula::profile::named_instances
   include nebula::profile::yarn
 }

@@ -21,7 +21,6 @@
 /vendor/
 /convert_report.txt
 .DS_Store
-<<<<<<< HEAD
 /modules/
 Puppetfile.lock
 .tool-versions

@@ -36,6 +36,7 @@ class nebula::profile::prometheus (
       '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
       '/etc/prometheus/haproxy.yml:/etc/prometheus/haproxy.yml',
       '/etc/prometheus/mysql.yml:/etc/prometheus/mysql.yml',
+      '/etc/prometheus/ipmi.yml:/etc/prometheus/ipmi.yml',
       '/etc/prometheus/tls:/tls',
       '/opt/prometheus:/prometheus',
     ],
@@ -89,6 +90,19 @@ class nebula::profile::prometheus (
   }
 
   Concat_fragment <<| tag == "${::datacenter}_prometheus_mysql_service_list" |>>
+
+  concat_file { '/etc/prometheus/ipmi.yml':
+    notify  => Docker::Run['prometheus'],
+    require => File['/etc/prometheus'],
+  }
+
+  concat_fragment { "prometheus ipmi scrape config first line":
+    target  => "/etc/prometheus/ipmi.yml",
+    order   => "01",
+    content => "scrape_configs:\n"
+  }
+
+  Concat_fragment <<| tag == "${::datacenter}_prometheus_ipmi_exporter" |>>
 
   file { '/etc/prometheus':
     ensure => 'directory',
@@ -175,24 +189,44 @@ class nebula::profile::prometheus (
   }
 
   $all_public_addresses.each |$address| {
-    @@firewall { "010 prometheus public node exporter ${::hostname} ${address}":
-      tag    => "${::datacenter}_prometheus_public_node_exporter",
-      proto  => 'tcp',
-      dport  => 9100,
-      source => $address,
-      state  => 'NEW',
-      action => 'accept',
+    @@firewall {
+      default:
+        proto  => 'tcp',
+        source => $address,
+        state  => 'NEW',
+        action => 'accept',
+      ;
+
+      "010 prometheus public node exporter ${::hostname} ${address}":
+        tag    => "${::datacenter}_prometheus_public_node_exporter",
+        dport  => 9100,
+      ;
+
+      "010 prometheus public ipmi exporter ${::hostname} ${address}":
+        tag    => "${::datacenter}_prometheus_public_ipmi_exporter",
+        dport  => 9290,
+      ;
     }
   }
 
   $all_private_addresses.each |$address| {
-    @@firewall { "010 prometheus private node exporter ${::hostname} ${address}":
-      tag    => "${::datacenter}_prometheus_private_node_exporter",
-      proto  => 'tcp',
-      dport  => 9100,
-      source => $address,
-      state  => 'NEW',
-      action => 'accept',
+    @@firewall {
+      default:
+        proto  => 'tcp',
+        source => $address,
+        state  => 'NEW',
+        action => 'accept',
+      ;
+
+      "010 prometheus private node exporter ${::hostname} ${address}":
+        tag    => "${::datacenter}_prometheus_private_node_exporter",
+        dport  => 9100,
+      ;
+
+      "010 prometheus private ipmi exporter ${::hostname} ${address}":
+        tag    => "${::datacenter}_prometheus_private_ipmi_exporter",
+        dport  => 9290,
+      ;
     }
   }
 

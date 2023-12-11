@@ -22,6 +22,7 @@ describe 'nebula::profile::prometheus' do
                          '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
                          '/etc/prometheus/haproxy.yml:/etc/prometheus/haproxy.yml',
                          '/etc/prometheus/mysql.yml:/etc/prometheus/mysql.yml',
+                         '/etc/prometheus/ipmi.yml:/etc/prometheus/ipmi.yml',
                          '/etc/prometheus/tls:/tls',
                          '/opt/prometheus:/prometheus'])
           .that_requires('File[/opt/prometheus]')
@@ -97,6 +98,19 @@ describe 'nebula::profile::prometheus' do
       end
 
       it do
+        is_expected.to contain_concat_file('/etc/prometheus/ipmi.yml')
+          .that_notifies('Docker::Run[prometheus]')
+          .that_requires('File[/etc/prometheus]')
+      end
+
+      it do
+        is_expected.to contain_concat_fragment("prometheus ipmi scrape config first line")
+          .with_target('/etc/prometheus/ipmi.yml')
+          .with_order("01")
+          .with_content("scrape_configs:\n")
+      end
+
+      it do
         is_expected.to contain_file('/etc/prometheus')
           .with_ensure('directory')
       end
@@ -155,6 +169,19 @@ describe 'nebula::profile::prometheus' do
         is_expected.to contain_nebula__exposed_port('010 Prometheus HTTPS')
           .with_port(443)
           .with_block('umich::networks::all_trusted_machines')
+      end
+
+      [["haproxy", 9101],
+       ["mysql", 9104]].each do |exporter, port|
+        it "exports a firewall so that #{exporter} exporters can open #{port}" do
+          expect(exported_resources).to contain_firewall("010 prometheus #{exporter} exporter #{facts[:hostname]}")
+            .with_tag("mydatacenter_prometheus_#{exporter}_exporter")
+            .with_proto('tcp')
+            .with_dport(port)
+            .with_source(facts[:ipaddress])
+            .with_state('NEW')
+            .with_action('accept')
+        end
       end
 
       it 'exports a firewall so that nodes can open 9100' do
@@ -296,34 +323,23 @@ describe 'nebula::profile::prometheus' do
           })
         end
 
-        it do
-          expect(exported_resources).to contain_firewall("010 prometheus public node exporter #{facts[:hostname]} 100.100.100.100")
-            .with_source("100.100.100.100")
-            .with_tag('mydatacenter_prometheus_public_node_exporter')
-        end
-
-        it do
-          expect(exported_resources).to contain_firewall("010 prometheus public node exporter #{facts[:hostname]} 200.200.200.200")
-            .with_source("200.200.200.200")
-            .with_tag('mydatacenter_prometheus_public_node_exporter')
-        end
-
-        it do
-          expect(exported_resources).to contain_firewall("010 prometheus private node exporter #{facts[:hostname]} 10.1.2.3")
-            .with_source("10.1.2.3")
-            .with_tag('mydatacenter_prometheus_private_node_exporter')
-        end
-
-        it do
-          expect(exported_resources).to contain_firewall("010 prometheus private node exporter #{facts[:hostname]} 10.2.3.4")
-            .with_source("10.2.3.4")
-            .with_tag('mydatacenter_prometheus_private_node_exporter')
-        end
-
-        it do
-          expect(exported_resources).to contain_firewall("010 prometheus private node exporter #{facts[:hostname]} 10.3.4.5")
-            .with_source("10.3.4.5")
-            .with_tag('mydatacenter_prometheus_private_node_exporter')
+        [%w[public 100.100.100.100],
+         %w[public 200.200.200.200],
+         %w[private 10.1.2.3],
+         %w[private 10.2.3.4],
+         %w[private 10.3.4.5]].each do |network, ip_address|
+          [["node", 9100],
+           ["ipmi", 9290]].each do |exporter, port|
+            it "exports a firewall so that #{exporter} exporters can open #{network} #{port} to #{ip_address}" do
+              expect(exported_resources).to contain_firewall("010 prometheus #{network} #{exporter} exporter #{facts[:hostname]} #{ip_address}")
+                .with_tag("mydatacenter_prometheus_#{network}_#{exporter}_exporter")
+                .with_proto('tcp')
+                .with_dport(port)
+                .with_source(ip_address)
+                .with_state('NEW')
+                .with_action('accept')
+            end
+          end
         end
 
         it do
@@ -343,16 +359,6 @@ describe 'nebula::profile::prometheus' do
             .with_target('/usr/local/bin/pushgateway_advanced')
             .with_content("PUSHGATEWAY='http://10.1.2.3:9091'\n")
         end
-      end
-
-      it 'exports a firewall so that haproxy nodes can open 9101' do
-        expect(exported_resources).to contain_firewall("010 prometheus haproxy exporter #{facts[:hostname]}")
-          .with_tag('mydatacenter_prometheus_haproxy_exporter')
-          .with_proto('tcp')
-          .with_dport(9101)
-          .with_source(facts[:ipaddress])
-          .with_state('NEW')
-          .with_action('accept')
       end
 
       context 'with some static nodes set' do

@@ -22,6 +22,7 @@ describe 'nebula::profile::kubernetes::kubeadm' do
           is_expected.to contain_apt__pin('kubeadm').with(
             packages: ['kubeadm'],
             version: '1.14.2-00',
+            priority: 999,
           )
         end
       end

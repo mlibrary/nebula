@@ -5,7 +5,7 @@
 # Webhost hosting www.lib.umich.edu
 #
 # @example
-#   include nebula::role::webhost::www_lib
+#   include nebula::role::webhost::www_lib_vm
 class nebula::role::webhost::www_lib_vm (
   String $private_address_template = '192.168.0.%s',
   String $shibboleth_config_source = 'puppet:///shibboleth-www-lib',

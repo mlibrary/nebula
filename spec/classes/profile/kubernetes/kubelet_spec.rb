@@ -70,6 +70,7 @@ describe 'nebula::profile::kubernetes::kubelet' do
           is_expected.to contain_apt__pin('kubelet').with(
             packages: ['kubelet'],
             version: '1.14.2-00',
+            priority: 999,
           )
         end
 

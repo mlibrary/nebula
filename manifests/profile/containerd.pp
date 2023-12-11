@@ -29,4 +29,8 @@ class nebula::profile::containerd {
     content => template('nebula/profile/containerd/config.toml.erb'),
     notify => Service['containerd']
   }
+
+  file { "/etc/containerd":
+    ensure => "directory"
+  }
 }
