@@ -9,30 +9,49 @@ class nebula::profile::fulcrum::mysql (
   String $fulcrum_password,
   String $checkpoint_password,
   String $shibd_password,
+  String $password,
 ) {
-  include nebula::profile::mysql
 
-  mysql::db { 'fedora':
-    user     => 'fedora',
-    password => $fedora_password,
-    host     => 'localhost',
+  # Install and configure mysql server
+  ensure_packages(['mariadb-common','mariadb-server', 'mariadb-client'])
+
+# at some point need to do equivalent to `mysql_install_db --user=mysql --ldata=/var/lib/mysql`
+
+  service { 'mysqld':
+    enable  => true,
+    ensure  => running,
+    require => Package['mariadb-server'],
   }
 
-  mysql::db { 'fulcrum':
-    user     => 'fulcrum',
-    password => $fulcrum_password,
-    host     => 'localhost',
+  file { "/etc/mysql/conf.d":
+    ensure => "directory"
   }
 
-  mysql::db { 'checkpoint':
-    user     => 'checkpoint',
-    password => $checkpoint_password,
-    host     => 'localhost',
+  file { "/etc/mysql/my.cnf":
+    owner => "mysql", group => "mysql",
+    content => template('nebula/mysql/my.cnf.erb'),
+    notify => Service["mysqld"],
+    require => Package["mariadb-server"],
   }
 
-  mysql::db { 'shibd':
-    user     => 'shibd',
-    password => $shibd_password,
-    host     => 'localhost',
+  exec { "set-mysql-password":
+    unless => "mysqladmin -uroot -p$password status",
+    path => ["/bin", "/usr/bin"],
+    command => "mysqladmin -uroot password $password",
+    require => Service["mysqld"],
   }
+
+  $dbs = [['fedora', $fedora_password], ['fulcrum', $fulcrum_password],
+  ['checkpoint', $checkpoint_password], ['shibd', $shibd_password]]
+
+  $dbs.each |$db| {
+    $name = $db[0]
+    $password = $db[1]
+    exec { "create-${name}-db":
+      unless => "/usr/bin/mysql -u${name} -p${password} ${name}",
+      command => "/usr/bin/mysql -uroot -p${mysql_password} -e \"create database ${name}; grant all on ${name}.* to ${name}@localhost identified by '${password}';\"",
+      require => Service["mysqld"],
+    }
+  }
+
 }

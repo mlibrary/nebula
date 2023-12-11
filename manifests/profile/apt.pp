@@ -100,8 +100,14 @@ class nebula::profile::apt (
       repos    => 'main contrib non-free',
     }
 
-    apt::source { 'adoptopenjdk':
-      ensure => 'absent'
+    apt::source { 'adoptium':
+      location => 'https://packages.adoptium.net/artifactory/deb/',
+      release  => $::lsbdistcodename,
+      repos    => 'main',
+      key      => {
+        'id'     => '3B04D753C9050D9A5D343F39843C48A565F8F04B',
+        'source' => 'https://packages.adoptium.net/artifactory/api/gpg/key/public'
+      }
     }
 
     apt::source { 'puppet':
