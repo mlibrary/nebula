@@ -18,7 +18,4 @@ class nebula::role::sysadmin_box {
   class { 'nebula::profile::puppet::query':
     ssl_group => 'sudo',
   }
-
-  # Generate app instance configs; not yet for distribution
-  Nebula::Named_instance::Proxy <<| |>>
 }

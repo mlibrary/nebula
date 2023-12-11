@@ -11,8 +11,6 @@ class nebula::role::chipmunk {
   # CIFS, but it is when on local disk or NFS.
   include nebula::profile::networking::sshd_group_umask
 
-  # should be conditionally included from named_instances::apache when the
-  # vhost config is deployed on the web node
   include apache::mod::xsendfile
 
   include nebula::profile::prometheus::exporter::mysql
