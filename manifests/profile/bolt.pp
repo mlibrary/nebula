@@ -36,14 +36,16 @@ class nebula::profile::bolt {
     require => File["/var/local/bolt_repo_key"],
   }
 
-  # do this if needed; don't just assume
-  #exec { "create /var/local/github-ssh-keys":
-  #  creates => "/var/local/github-ssh-keys",
-  #  command => "/usr/bin/ssh-keyscan github.com > /var/local/github-ssh-keys",
-  #}
+  exec { "create /var/local/github_ssh_keys":
+    creates => "/var/local/github_ssh_keys",
+    command => "/usr/bin/ssh-keyscan github.com > /var/local/github_ssh_keys",
+  }
 
-  #concat_fragment { "github ssh keys":
-  #}
+  concat_fragment { "github ssh keys":
+    target  => "/etc/ssh/ssh_known_hosts",
+    source  => "/var/local/github_ssh_keys",
+    require => Exec["create /var/local/github_ssh_keys"],
+  }
 
   file { "/var/local/bolt_repo_key":
     ensure => "directory",
