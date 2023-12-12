@@ -48,14 +48,14 @@ class nebula::profile::bolt {
   file { "/var/local/bolt_repo_key":
     ensure => "directory",
     owner  => "nobody",
-    group  => "nobody",
+    group  => "nogroup",
     mode   => "0700",
   }
 
   file { "/opt/bolt":
     ensure => "directory",
     owner  => "nobody",
-    group  => "nobody",
+    group  => "nogroup",
     mode   => "0755",
   }
 
