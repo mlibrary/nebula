@@ -29,11 +29,26 @@ class nebula::profile::bolt {
   concat { '/etc/ssh/ssh_known_hosts': }
   Concat_fragment <<| tag == 'known_host_public_keys' |>>
 
-  exec { "create bolt github ssh keypair":
-    creates => "/var/local/bolt_repo_key/id_ecdsa",
-    user    => "nobody",
-    command => "/usr/bin/ssh-keygen -t ecdsa -N '' -C '${::hostname}' -f /var/local/bolt_repo_key/id_ecdsa",
-    require => File["/var/local/bolt_repo_key"],
+  user { "git":
+    ensure     => "present",
+    home       => "/var/lib/autogit",
+    gid        => 100,
+    managehome => true,
+  }
+
+  file { "/var/lib/autogit/.ssh":
+    ensure  => "directory",
+    owner   => "git",
+    group   => 100,
+    mode    => "0700",
+    require => User["git"],
+  }
+
+  exec { "create /var/lib/autogit/.ssh/id_ecdsa":
+    creates => "/var/lib/autogit/.ssh/id_ecdsa",
+    user    => "git",
+    command => "/usr/bin/ssh-keygen -t ecdsa -N '' -C '${::hostname}' -f /var/lib/autogit/.ssh/id_ecdsa",
+    require => File["/var/lib/autogit/.ssh"],
   }
 
   exec { "create /var/local/github_ssh_keys":
@@ -47,17 +62,10 @@ class nebula::profile::bolt {
     require => Exec["create /var/local/github_ssh_keys"],
   }
 
-  file { "/var/local/bolt_repo_key":
-    ensure => "directory",
-    owner  => "nobody",
-    group  => "nogroup",
-    mode   => "0700",
-  }
-
   file { "/opt/bolt":
     ensure => "directory",
-    owner  => "nobody",
-    group  => "nogroup",
+    owner  => "git",
+    group  => 100,
     mode   => "0755",
   }
 
@@ -65,10 +73,9 @@ class nebula::profile::bolt {
     provider => "git",
     ensure   => "latest",
     source   => "ssh://git@github.com/mlibrary/bolt.git",
-    user     => "nobody",
-    identity => "/var/local/bolt_repo_key/id_ecdsa",
+    user     => "git",
     require  => [
-      Exec["create bolt github ssh keypair"],
+      Exec["create /var/local/github_ssh_keys"],
       File["/opt/bolt"],
       Concat_fragment["github ssh keys"],
     ]
