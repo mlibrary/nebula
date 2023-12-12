@@ -28,4 +28,46 @@ class nebula::profile::bolt {
 
   concat { '/etc/ssh/ssh_known_hosts': }
   Concat_fragment <<| tag == 'known_host_public_keys' |>>
+
+  exec { "create bolt github ssh keypair":
+    creates => "/var/local/bolt_repo_key/id_ecdsa",
+    user    => "nobody",
+    command => "/usr/bin/ssh-keygen -t ecdsa -N '' -C '${::hostname}' -f /var/local/bolt_repo_key/id_ecdsa",
+    require => File["/var/local/bolt_repo_key"],
+  }
+
+  # do this if needed; don't just assume
+  #exec { "create /var/local/github-ssh-keys":
+  #  creates => "/var/local/github-ssh-keys",
+  #  command => "/usr/bin/ssh-keyscan github.com > /var/local/github-ssh-keys",
+  #}
+
+  #concat_fragment { "github ssh keys":
+  #}
+
+  file { "/var/local/bolt_repo_key":
+    ensure => "directory",
+    owner  => "nobody",
+    group  => "nobody",
+    mode   => "0700",
+  }
+
+  file { "/opt/bolt":
+    ensure => "directory",
+    owner  => "nobody",
+    group  => "nobody",
+    mode   => "0755",
+  }
+
+  vcsrepo { "/opt/bolt":
+    provider => "git",
+    ensure   => "latest",
+    source   => "ssh://git@github.com/mlibrary/bolt.git",
+    user     => "nobody",
+    identity => "/var/local/bolt_repo_key/id_ecdsa",
+    require  => [
+      Exec["create bolt github ssh keypair"],
+      File["/opt/bolt"],
+    ]
+  }
 }
