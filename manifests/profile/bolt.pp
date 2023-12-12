@@ -70,6 +70,7 @@ class nebula::profile::bolt {
     require  => [
       Exec["create bolt github ssh keypair"],
       File["/opt/bolt"],
+      Concat_fragment["github ssh keys"],
     ]
   }
 }
