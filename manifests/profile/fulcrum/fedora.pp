@@ -36,7 +36,7 @@ class nebula::profile::fulcrum::fedora (
   }
 
   exec { 'chown -r /opt/fedora':
-    command => 'chown -R fulcrum:fulcrum /opt/fedora',
+    command => '/usr/bin/chown -R fulcrum:fulcrum /opt/fedora',
     require => Exec['create fedora tomcat'],
   }
 
