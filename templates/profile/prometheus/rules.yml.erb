@@ -286,15 +286,15 @@ groups:
     annotations:
       summary: 'MySQL is DOWN on {{$labels.hostname}}'
       description: 'MySQL is DOWN'
-  - alert: MysqlReplicaSqlDown
+  - alert: MysqlReplicationNotRunning
     expr: >
       mysql_slave_status_slave_sql_running  == 0
     for: 5m
     labels:
       severity: page
     annotations:
-      summary: 'MySQL Replica SQL is Not Running on {{$labels.hostname}}'
-      description: 'MySQL Replica SQL is not Running'
+      summary: 'MySQL replication is not running on {{$labels.hostname}}'
+      description: 'MySQL replication is not running'
       documentation: 'https://mlit.atlassian.net/wiki/spaces/AE/pages/9339612/MySQL'
   - alert: MysqlMaxPreparedStatment
     expr: >
