@@ -54,7 +54,7 @@ class nebula::profile::solr (
   }
 
   file { "/etc/environment":
-      content => inline_template("JAVA_HOME=/usr/bin/java")
+      content => inline_template("JAVA_HOME=${java_home}")
   }
 
 
