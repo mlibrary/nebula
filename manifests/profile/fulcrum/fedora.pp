@@ -8,6 +8,10 @@ class nebula::profile::fulcrum::fedora (
   String $fedora_username = 'fedora',
   String $fedora_password = lookup('nebula::profile::fulcrum::mysql::fedora_password'),
 ) {
+  $jdk_version = lookup('nebula::jdk_version')
+  # used in erb file
+  $java_home = "/usr/lib/jvm/temurin-${jdk_version}-jre-amd64"
+
   ensure_packages([
     'tomcat9-user',
   ])
