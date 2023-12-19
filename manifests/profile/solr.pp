@@ -21,6 +21,13 @@ class nebula::profile::solr (
 
   ensure_packages(["temurin-${jdk_version}-jre",'solr','lsof'])
 
+  class { 'nebula::profile::openjdk_java':
+    jdk_packages => ["temurin-${jdk_version}-jre"],
+    default_jdk => "temurin-${jdk_version}-jre",
+    base_alternative => "/usr/lib/jvm/temurin-${jdk_version}-jre-amd64/bin/java",
+    java_alternative => "temurin-${jdk_version}-jre-amd64",
+  }
+
   # Note: Along with variables above these are used in erb files also.
   $java_home = "/usr/lib/jvm/temurin-${jdk_version}-jre-amd64"
   $solr_bin = '/opt/solr/bin/solr'
