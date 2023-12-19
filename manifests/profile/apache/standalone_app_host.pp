@@ -10,7 +10,23 @@
 #   include nebula::profile::apache::standalone_app_host
 
 class nebula::profile::apache::standalone_app_host (
+  $ssl_cn = $::fqdn
 ) {
+
+  class { 'nebula::profile::ssl_keypair':
+    common_name => $ssl_cn
+  }
+
+  file { '/etc/ssl/chain':
+    ensure  => 'directory',
+    mode    => '0755',
+    owner   => 'root',
+    group   => 'root',
+    recurse => true,
+    purge   => true,
+    links   => 'manage',
+    source  => 'puppet:///ssl-certs/chain'
+  }
 
   class { 'apache':
     default_mods      => false,
@@ -19,6 +35,16 @@ class nebula::profile::apache::standalone_app_host (
     purge_vhost_dir   => false,
     conf_enabled      => '/etc/apache2/conf-enabled',
   }
+
+  apache::mod { 'access_compat': }
+  include apache::mod::proxy
+  include apache::mod::proxy_http
+  include apache::mod::headers
+  include apache::mod::ssl
+  include apache::mod::rewrite
+  include apache::mod::setenvif
+
+  apache::listen { ['80','443']: }
 
 }
 
