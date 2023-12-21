@@ -115,6 +115,13 @@ class nebula::profile::www_lib::vhosts::apps_lib (
       },
       {
         provider        => 'location',
+        path            => "/cgi/l/login/manage",
+        auth_type       => 'openid-connect',
+        require         => 'valid-user',
+        custom_fragment => 'OIDCUnAuthAction auth true'
+      },
+      {
+        provider        => 'location',
         path            => '/pk',
         auth_type       => 'openid-connect',
         require         => 'valid-user',
