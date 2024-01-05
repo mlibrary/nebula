@@ -92,7 +92,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
         # Block access to the DSpace metadata and DRI services.
         # Per blancoj on 2016-04-21 skorner
         provider => 'locationmatch',
-        path     => '^/(metadata|DRI)(.*)',
+        path     => '^/(metadata|DRI|contact|feedback)(.*)',
         # XXX: Before this allowed a single particular IP address that no
         # longer appears to be in use
         require  => 'all denied'
