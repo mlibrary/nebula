@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018, 2024 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
@@ -251,6 +251,20 @@ describe 'nebula::haproxy::service' do
               .with_command('/usr/bin/ruby /usr/local/bin/set_weights.rb dc1 svc1 > /dev/null 2>&1')
               .with_user('haproxyctl')
               .with_environment(['HAPROXY_SMOOTHING_FACTOR=2'])
+          end
+        end
+
+        it { is_expected.not_to contain_concat_fragment('svc1-dc1-https check_timeout') }
+
+        context 'with check_timeout_milliseconds set to 15000' do
+          let(:params) do
+            super().merge(check_timeout_milliseconds: 15000)
+          end
+
+          it do
+            is_expected.to contain_concat_fragment('svc1-dc1-https check_timeout')
+              .with_target(service_config)
+              .with_content("timeout connect 15000\n")
           end
         end
       end
