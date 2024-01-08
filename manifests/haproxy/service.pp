@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019, 2024 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -45,6 +45,9 @@
 # @param dynamic_weight_smoothing This value is added to the weight for each
 # backend server regardless of server load to help "smooth" the effect of the weighting
 #
+# @param check_timeout_milliseconds How long to wait for http status
+# checks; defaults to 5 seconds
+#
 # @example
 #   nebula::haproxy::service { 'www-whatever':
 #     floating_ip          => '1.2.3.4'
@@ -70,7 +73,8 @@ define nebula::haproxy::service(
   Hash             $whitelists = {},
   Boolean          $custom_503 = false,
   Boolean          $dynamic_weighting = false,
-  Integer          $dynamic_weight_smoothing = 2
+  Integer          $dynamic_weight_smoothing = 2,
+  Optional[Integer] $check_timeout_milliseconds = undef
 ) {
 
   include nebula::profile::haproxy::prereqs
@@ -143,6 +147,14 @@ define nebula::haproxy::service(
         target  => $service_cfg,
         content => "option httpchk GET /monitor/monitor.pl\nhttp-check expect status 200\n",
         order   => '02'
+      }
+
+      if $check_timeout_milliseconds != undef {
+        concat_fragment { "${service_prefix} check_timeout":
+          target  => $service_cfg,
+          content => "timeout connect ${check_timeout_milliseconds}\n",
+          order   => '02'
+        }
       }
     }
 
