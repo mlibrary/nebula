@@ -44,7 +44,7 @@ class nebula::profile::www_lib::apache::misc (
       'www.press.umich.edu',
       'www.publishing.umich.edu',
       'www.theater-historiography.org',
-      'www.heartofdarknessarchive.com',
+      'www.heartofdarknessarchive.org',
     ]:
   }
   # depends on ssl_keypairs above (or delcared in includes like apache::fulcrum)
