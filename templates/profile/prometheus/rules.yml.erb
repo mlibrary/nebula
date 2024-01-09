@@ -286,15 +286,25 @@ groups:
     annotations:
       summary: 'MySQL is DOWN on {{$labels.hostname}}'
       description: 'MySQL is DOWN'
-  - alert: MysqlReplicationNotRunning
+  - alert: MysqlReplicationNotApplyingData
     expr: >
       mysql_slave_status_slave_sql_running  == 0
     for: 5m
     labels:
       severity: page
     annotations:
-      summary: 'MySQL replication is not running on {{$labels.hostname}}'
-      description: 'MySQL replication is not running'
+      summary: 'MySQL replication is not applying data on {{$labels.hostname}}'
+      description: 'MySQL replication is not applying data'
+      documentation: 'https://mlit.atlassian.net/wiki/spaces/AE/pages/9339612/MySQL'
+  - alert: MysqlReplicationNotReceivingData
+    expr: >
+      mysql_slave_status_slave_io_running  == 0
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: 'MySQL replication is not receiving data on {{$labels.hostname}}'
+      description: 'MySQL replication is not receiving data'
       documentation: 'https://mlit.atlassian.net/wiki/spaces/AE/pages/9339612/MySQL'
   - alert: MysqlMaxPreparedStatment
     expr: >
