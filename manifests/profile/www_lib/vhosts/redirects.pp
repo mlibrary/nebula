@@ -35,10 +35,11 @@ class nebula::profile::www_lib::vhosts::redirects(
   }
 
   # Hosted by github pages. We are just redirecting there.
-  nebula::apache::redirect_vhost_https { 'heartofdarknessarchive.com':
+  nebula::apache::redirect_vhost_https { 'heartofdarknessarchive.org':
     target        => 'https://heartofdarknessarchive.org',
-    ssl_cn        => 'www.heartofdarknessarchive.com',
+    ssl_cn        => 'www.heartofdarknessarchive.org',
     serveraliases => [
+      'heartofdarknessarchive.com',
       'heartofdarknessarchive.net',
       'www.heartofdarknessarchive.com',
       'www.heartofdarknessarchive.net'
