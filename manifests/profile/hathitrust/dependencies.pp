@@ -14,6 +14,7 @@ class nebula::profile::hathitrust::dependencies () {
   ensure_packages (
     [
       'awscli',
+      'emacs',
       'geoip-bin',
       'git',
       'kakadu',
