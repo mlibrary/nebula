@@ -8,7 +8,7 @@ class nebula::profile::kubernetes::destination_port::http {
   @@concat_fragment { "haproxy kubernetes http ${::hostname}":
     target  => '/etc/haproxy/services.d/http.cfg',
     order   => '02',
-    content => "  server ${::hostname} ${::ipaddress}:30080 check\n",
+    content => "  server ${::hostname} ${::ipaddress}:30080 check send-proxy\n",
     tag     => "${cluster_name}_haproxy_kubernetes_http",
   }
 }

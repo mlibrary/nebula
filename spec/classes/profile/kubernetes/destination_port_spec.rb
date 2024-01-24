@@ -8,7 +8,6 @@ require 'spec_helper'
 [
   ['api',        6443],
   ['etcd',       2379],
-  ['http',      30080],
   ['https_alt', 31443],
   ['gelf_tcp',  32201],
 ].each do |service, port|
@@ -37,6 +36,7 @@ require 'spec_helper'
 end
 
 [
+  ['http',      30080],
   ['https',     30443],
 ].each do |service, port|
   describe "nebula::profile::kubernetes::destination_port::#{service}" do
