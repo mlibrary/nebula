@@ -61,7 +61,7 @@ groups:
       severity: page
   - alert: PrometheusExporterDown
     annotations:
-      summary: '{{$labels.job}} exporter isn''t responding to Prometheus.'
+      summary: '{{$labels.hostname}} {{$labels.job}} exporter isn''t responding to Prometheus.'
     expr: 'up{job!="node"} == 0'
     for: 30m
     labels:
