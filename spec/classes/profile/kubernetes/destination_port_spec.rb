@@ -6,7 +6,7 @@
 require 'spec_helper'
 
 [
-  ['api',        6443, 'check'],
+  ['api',        6443, 'check ssl verify none'],
   ['etcd',       2379, 'check'],
   ['http',      30080, 'check send-proxy'],
   ['https',     30443, 'check send-proxy'],

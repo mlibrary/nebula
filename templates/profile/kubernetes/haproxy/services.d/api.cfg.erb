@@ -7,5 +7,6 @@ frontend kubernetes-api-front
 
 backend kubernetes-api-back
   mode tcp
-  option tcp-check
   balance roundrobin
+  option httpchk HEAD /
+  http-check expect status 403
