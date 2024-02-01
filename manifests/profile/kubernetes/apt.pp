@@ -1,15 +1,11 @@
-# Copyright (c) 2020 The Regents of the University of Michigan.
-# All Rights Reserved. Licensed according to the terms of the Revised
-# BSD License. See LICENSE.txt for details.
-
 class nebula::profile::kubernetes::apt {
   apt::source { 'kubernetes':
-    location => 'https://apt.kubernetes.io/',
-    release  => 'kubernetes-xenial',
-    repos    => 'main',
+    location => 'https://pkgs.k8s.io/core:/stable:/v1.28/deb/',
+    release  => '/',
+    repos    => '',
     key      => {
-      'id'     => 'A362B822F6DEDC652817EA46B53DC80D13EDEF05',
-      'source' => 'https://packages.cloud.google.com/apt/doc/apt-key.gpg',
+      'id'     => 'DE15B14486CD377B9E876E1A234654DA9A296436',
+      'source' => 'https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key',
     },
   }
 }
