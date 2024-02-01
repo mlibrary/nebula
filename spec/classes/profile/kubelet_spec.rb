@@ -31,8 +31,8 @@ describe 'nebula::profile::kubelet' do
 
       it do
         is_expected.to contain_apt__source("kubernetes")
-          .with_location("https://apt.kubernetes.io/")
-          .with_release("kubernetes-xenial")
+          .with_location("https://pkgs.k8s.io/core:/stable:/v1.28/deb/")
+          .with_release("/")
       end
 
       it do
