@@ -63,25 +63,25 @@ describe 'nebula::profile::kubernetes::kubelet' do
         it { is_expected.to contain_service('kubelet').with_enable(true) }
         it { is_expected.to contain_service('kubelet').that_requires('Package[kubelet]') }
 
-        it { is_expected.to contain_package('kubelet').with_ensure('1.14.2-00') }
+        it { is_expected.to contain_package('kubelet').with_ensure('1.14.2-1.1') }
         it { is_expected.to contain_package('kubelet').that_requires('Apt::Source[kubernetes]') }
 
         it do
           is_expected.to contain_apt__pin('kubelet').with(
             packages: ['kubelet'],
-            version: '1.14.2-00',
+            version: '1.14.2-1.1',
             priority: 999,
           )
         end
 
         it do
           is_expected.to contain_apt__source('kubernetes').with(
-            location: 'https://apt.kubernetes.io/',
-            release: 'kubernetes-xenial',
-            repos: 'main',
+            location: 'https://pkgs.k8s.io/core:/stable:/v1.28/deb/',
+            release: '/',
+            repos: '',
             key: {
-              'id'     => 'A362B822F6DEDC652817EA46B53DC80D13EDEF05',
-              'source' => 'https://packages.cloud.google.com/apt/doc/apt-key.gpg',
+              'id'     => 'DE15B14486CD377B9E876E1A234654DA9A296436',
+              'source' => 'https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key',
             },
           )
         end

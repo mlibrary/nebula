@@ -9,16 +9,32 @@ class nebula::profile::kubernetes::kubeadm {
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
   $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
 
-  $kubernetes_version = $cluster['kubernetes_version']
+  case $cluster['kubernetes_version'] {
+    Hash: {
+      $kubernetes_major_version = $cluster['kubernetes_version']['major']
+      $kubernetes_minor_version = $cluster['kubernetes_version']['minor']
+      $kubernetes_patch_version = $cluster['kubernetes_version']['patch']
+      $kubernetes_revision_version = $cluster['kubernetes_version']['revision']
+      $kubernetes_version = "${kubernetes_major_version}.${kubernetes_minor_version}.${kubernetes_patch_version}"
+    }
+
+    default: {
+      # This branch can be safely deleted once all kubernetes versions
+      # are in hiera as hashes.
+      $kubernetes_version = $cluster['kubernetes_version']
+      $kubernetes_revision_version = '00'
+    }
+  }
+
 
   package { 'kubeadm':
-    ensure  => "${kubernetes_version}-00",
+    ensure  => "${kubernetes_version}-${kubernetes_revision_version}",
     require => [Apt::Source['kubernetes']],
   }
 
   apt::pin { 'kubeadm':
     packages => ['kubeadm'],
-    version  => "${kubernetes_version}-00",
+    version  => "${kubernetes_version}-${kubernetes_revision_version}",
     priority => 999,
   }
 

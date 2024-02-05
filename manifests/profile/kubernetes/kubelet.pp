@@ -6,12 +6,28 @@ class nebula::profile::kubernetes::kubelet {
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
   $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
 
-  $kubernetes_version = $cluster['kubernetes_version']
   $public_address = $cluster['public_address']
   $router_address = $cluster['router_address']
   $etcd_address = $cluster['etcd_address']
   $kube_api_address = $cluster['kube_api_address']
   $node_cidr = pick($cluster['node_cidr'], lookup('nebula::profile::kubernetes::node_cidr'))
+
+  case $cluster['kubernetes_version'] {
+    Hash: {
+      $kubernetes_major_version = $cluster['kubernetes_version']['major']
+      $kubernetes_minor_version = $cluster['kubernetes_version']['minor']
+      $kubernetes_patch_version = $cluster['kubernetes_version']['patch']
+      $kubernetes_revision_version = $cluster['kubernetes_version']['revision']
+      $kubernetes_version = "${kubernetes_major_version}.${kubernetes_minor_version}.${kubernetes_patch_version}"
+    }
+
+    default: {
+      # This branch can be safely deleted once all kubernetes versions
+      # are in hiera as hashes.
+      $kubernetes_version = $cluster['kubernetes_version']
+      $kubernetes_revision_version = '00'
+    }
+  }
 
   if $kubernetes_version == undef {
     fail('You must set a specific kubernetes version')
@@ -34,7 +50,7 @@ class nebula::profile::kubernetes::kubelet {
   }
 
   class { "nebula::profile::kubelet":
-    kubelet_version         => "${kubernetes_version}-00",
+    kubelet_version         => "${kubernetes_version}-${kubernetes_revision_version}",
     pod_manifest_path       => "/etc/kubernetes/manifests",
     manage_pods_with_puppet => false,
   }
