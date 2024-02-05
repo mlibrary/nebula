@@ -16,7 +16,11 @@ nebula::profile::kubernetes::clusters:
     kube_api_address: 172.16.0.7
     private_domain: first.cluster
     control_dns: public.first.cluster
-    kubernetes_version: 1.14.2
+    kubernetes_version:
+      major: "1"
+      minor: "14"
+      patch: "2"
+      revision: "1.1"
     service_cidr: "172.16.0.0/13"
     pod_cidr: "172.24.0.0/14"
     node_cidr: "172.28.0.0/14"

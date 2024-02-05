@@ -63,13 +63,13 @@ describe 'nebula::profile::kubernetes::kubelet' do
         it { is_expected.to contain_service('kubelet').with_enable(true) }
         it { is_expected.to contain_service('kubelet').that_requires('Package[kubelet]') }
 
-        it { is_expected.to contain_package('kubelet').with_ensure('1.14.2-00') }
+        it { is_expected.to contain_package('kubelet').with_ensure('1.14.2-1.1') }
         it { is_expected.to contain_package('kubelet').that_requires('Apt::Source[kubernetes]') }
 
         it do
           is_expected.to contain_apt__pin('kubelet').with(
             packages: ['kubelet'],
-            version: '1.14.2-00',
+            version: '1.14.2-1.1',
             priority: 999,
           )
         end

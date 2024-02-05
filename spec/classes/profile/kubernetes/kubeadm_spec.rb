@@ -15,13 +15,13 @@ describe 'nebula::profile::kubernetes::kubeadm' do
 
         it { is_expected.to compile }
 
-        it { is_expected.to contain_package('kubeadm').with_ensure('1.14.2-00') }
+        it { is_expected.to contain_package('kubeadm').with_ensure('1.14.2-1.1') }
         it { is_expected.to contain_package('kubeadm').that_requires('Apt::Source[kubernetes]') }
 
         it do
           is_expected.to contain_apt__pin('kubeadm').with(
             packages: ['kubeadm'],
-            version: '1.14.2-00',
+            version: '1.14.2-1.1',
             priority: 999,
           )
         end
