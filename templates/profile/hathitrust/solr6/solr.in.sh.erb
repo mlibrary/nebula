@@ -1,9 +1,12 @@
+# Managed by puppet (nebula/profile/hathitrust/solr_lss/solr.in.sh.erb)
 SOLR_JAVA_HOME="<%= @java_home %>"
 SOLR_HEAP="<%= @heap %>"
 
-GC_LOG_OPTS="-verbose:gc -XX:+PrintHeapAtGC -XX:+PrintGCDetails \
--XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime"
+# Clear GC_LOG_OPTS for better compat w/ various jdk versions
+GC_LOG_OPTS=""
 
+# These GC settings have shown to work well for a number of common Solr workloads
+# They will not work with Java > 8
 GC_TUNE="-XX:NewRatio=3 \
 -XX:SurvivorRatio=4 \
 -XX:TargetSurvivorRatio=90 \
@@ -22,18 +25,12 @@ GC_TUNE="-XX:NewRatio=3 \
 SOLR_TIMEZONE="<%= @timezone %>"
 ENABLE_REMOTE_JMX_OPTS="true"
 SOLR_OPTS="$SOLR_OPTS -Xss256k"
-SOLR_PID_DIR="<%= @home %>"
-SOLR_HOME="<%= @home %>"
-LOG4J_PROPS="<%= @log4j_props %>"
-SOLR_LOGS_DIR="<%= @logs %>"
-SOLR_PORT=<%= @port %>
-
-# To address http://lucene.472066.n3.nabble.com/Re-Several-critical-vulnerabilities-discovered-in-Apache-Solr-XXE-amp-RCE-td4358308.html
-# See AEIM-549
-#
-# 2017-10-17 skorner
 SOLR_OPTS="$SOLR_OPTS -Ddisable.configEdit=true"
 
-# tburtonw May 25 2018: prevent rotating logs every time solr is restarted
-SOLR_LOG_PRESTART_ROTATION=false
+SOLR_HOME="<%= @solr_home %>"
+SOLR_PID_DIR=$SOLR_HOME
+LOG4J_PROPS=$SOLR_HOME/log4j.properties
+SOLR_LOGS_DIR=$SOLR_HOME/logs
+SOLR_PORT=<%= @port %>
 
+SOLR_LOG_PRESTART_ROTATION=false

@@ -59,6 +59,10 @@ hathitrust::networks::staff:
   - "%{alias('networks::one')}"
   - "%{alias('networks::two')}"
 
+hathitrust::networks::private_all:
+  - name: 'foobar net'
+    block: '192.168.99.0/24'
+
 nebula::usergroup::membership:
   htprod: ['htingest', 'htweb']
   htingest: ['htingest']
@@ -135,3 +139,6 @@ nebula::profile::hathitrust::secure_rsync::datasets:
   secure_dataset:
     comment: "Secure Dataset"
     path: "/datasets/secure_dataset"
+
+nebula::profile::hathitrust::solr6::solr_home: "/s0lr/h0me"
+nebula::profile::hathitrust::solr6::port: "2525"
