@@ -1,4 +1,4 @@
-# Copyright (c) 2018 The Regents of the University of Michigan.
+# Copyright (c) 2018-2024 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -6,8 +6,12 @@
 #
 # @example
 #   include nebula::role::hathitrust
+#   # you may also want to include:
+#   include nebula::profile::hathitrust::networking
+#   include nebula::profile::hathitrust::hosts
 class nebula::role::hathitrust (
   String $internal_routing = '',
+  Boolean $afs = true,
 ) {
 
   class { 'nebula::role::minimum':
@@ -16,7 +20,9 @@ class nebula::role::hathitrust (
 
   if $facts['os']['family'] == 'Debian' {
     include nebula::profile::krb5
-    include nebula::profile::afs
+    if $afs {
+      include nebula::profile::afs
+    }
     include nebula::profile::duo
     include nebula::profile::exim4
     include nebula::profile::grub
