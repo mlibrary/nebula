@@ -19,11 +19,13 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   String $servername = 'www.fulcrum.org'
 ) {
   $authz_base_requires = {
-    enforce  => 'all',
-    requires => [
+    auth_type       => 'shibboleth',
+    custom_fragment => 'ShibRequestSetting requireSession 0',
+    enforce         => 'all',
+    requires        => [
       'not env badrobot',
       'not env loadbalancer',
-      'all granted'
+      'shibboleth'
     ]
   }
 
@@ -154,12 +156,6 @@ class nebula::profile::www_lib::vhosts::fulcrum (
       XSendFile on
       XSendFilePath ${derivatives_path}
       XSendFilePath ${alt_derivatives_path}
-      # Configure Shibboleth for authentication via InCommon partner login
-      <Location "/">
-        AuthType shibboleth
-        ShibRequestSetting requireSession 0
-        Require shibboleth
-      </Location>
     | EOT
   }
 }
