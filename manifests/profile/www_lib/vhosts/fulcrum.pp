@@ -19,8 +19,6 @@ class nebula::profile::www_lib::vhosts::fulcrum (
   String $servername = 'www.fulcrum.org'
 ) {
   $authz_base_requires = {
-    auth_type       => 'shibboleth',
-    custom_fragment => 'ShibRequestSetting requireSession 0',
     enforce         => 'all',
     requires        => [
       'not env badrobot',
@@ -90,9 +88,11 @@ class nebula::profile::www_lib::vhosts::fulcrum (
 
     directories     => [
       {
-        provider => 'location',
-        path     => '/',
-        require  => $authz_base_requires,
+        provider        => 'location',
+        path            => '/',
+        auth_type       => 'shibboleth',
+        custom_fragment => 'ShibRequestSetting requireSession 0',
+        require         => $authz_base_requires,
       },
       {
         provider       => 'directory',
