@@ -54,6 +54,12 @@ class nebula::profile::kubelet (
       notify  => Exec["kubelet reload daemon"],
     }
 
+    file { "/etc/kubernetes/kubelet.yaml":
+      content => template("nebula/profile/kubelet/config.yaml.erb"),
+      require => Package["kubelet"],
+      notify  => Service["kubelet"],
+    }
+
     exec { 'kubelet reload daemon':
       command     => "/bin/systemctl daemon-reload",
       refreshonly => true,

@@ -105,18 +105,15 @@ describe 'nebula::profile::kubelet' do
 
       it do
         is_expected.to contain_file("/etc/systemd/system/kubelet.service.d/20-containerd-and-manifest-dir.conf")
-          .with_content(/^ExecStart=\/usr\/bin\/kubelet/)
+          .with_content(/^ExecStart=\/usr\/bin\/kubelet --config=\/etc\/kubernetes\/kubelet\.yaml$/)
       end
 
-      ["--address=127.0.0.1",
-       "--pod-manifest-path=/etc/kubernetes/manifests",
-       "--container-runtime=remote",
-       "--container-runtime-endpoint=unix:///run/containerd/containerd.sock",
-       "--cgroup-driver=systemd"].each do |param|
-        it do
-          is_expected.to contain_file("/etc/systemd/system/kubelet.service.d/20-containerd-and-manifest-dir.conf")
-            .with_content(/^ExecStart=.+ #{param}/)
-        end
+      it do
+        is_expected.to contain_file("/etc/kubernetes/kubelet.yaml")
+          .with_content(/address:.*127.0.0.1/)
+          .with_content(/staticPodPath:.*\/etc\/kubernetes\/manifests/)
+          .with_content(/cgroupDriver:.*systemd/)
+          .with_content(/containerRuntimeEndpoint:.*unix:\/\/\/run\/containerd\/containerd.sock/)
       end
 
       context "with pod_manifest_path set to /tmp/kubelet" do
@@ -126,8 +123,8 @@ describe 'nebula::profile::kubelet' do
         it { is_expected.to contain_file("/tmp/kubelet") }
 
         it do
-          is_expected.to contain_file("/etc/systemd/system/kubelet.service.d/20-containerd-and-manifest-dir.conf")
-            .with_content(/^ExecStart=.+ --pod-manifest-path=\/tmp\/kubelet/)
+          is_expected.to contain_file("/etc/kubernetes/kubelet.yaml")
+            .with_content(/staticPodPath:.*\/tmp\/kubelet/)
         end
       end
 
