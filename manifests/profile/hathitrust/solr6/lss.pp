@@ -8,12 +8,12 @@ class nebula::profile::hathitrust::solr6::lss (
   String $port = '8081',
   String $solr_home = '/var/lib/solr',
   String $snapshot_name = 'htsolr-lss',
-  Boolean $is_primary_site = false,
+  Boolean $is_primary_site = lookup('nebula::profile::hathitrust::solr6::is_primary_site', default_value => false),
   Boolean $is_primary_node = false,
-  String $release_flag_prefix = '',
+  String $release_flag_prefix = lookup('nebula::profile::hathitrust::solr6::release_flag_prefix', default_value => ''),
+  String $mirror_site_ip = lookup('nebula::profile::hathitrust::solr6::mirror_site_ip'),
+  String $mail_recipient = lookup('nebula::profile::hathitrust::solr6::mail_recipient'),
   Array[String] $solr_cores,
-  String $mirror_site_ip,
-  String $mail_recipient,
 ){
   class { 'nebula::profile::hathitrust::solr6':
     port => $port,

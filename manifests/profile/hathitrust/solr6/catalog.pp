@@ -8,10 +8,10 @@ class nebula::profile::hathitrust::solr6::catalog (
   String $port = '9033',
   String $solr_home = '/var/lib/solr',
   String $snapshot_name = 'htsolr-catalog',
-  Boolean $is_primary_site = false,
-  String $release_flag_prefix = '',
-  String $mirror_site_ip,
-  String $mail_recipient,
+  Boolean $is_primary_site = lookup('nebula::profile::hathitrust::solr6::is_primary_site', default_value => false),
+  String $release_flag_prefix = lookup('nebula::profile::hathitrust::solr6::release_flag_prefix', default_value => ''),
+  String $mirror_site_ip = lookup('nebula::profile::hathitrust::solr6::mirror_site_ip'),
+  String $mail_recipient = lookup('nebula::profile::hathitrust::solr6::mail_recipient'),
 ){
   class { 'nebula::profile::hathitrust::solr6':
     port => $port,
