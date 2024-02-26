@@ -19,6 +19,10 @@ describe 'nebula::profile::hathitrust::solr6' do
       it { is_expected.to contain_file('/s0lr/h0me/log4j.properties').with_content(%r{solr.log=/s0lr/h0me/logs}) }
       it { is_expected.to contain_file('/s0lr/h0me/solr.xml') }
       it { is_expected.to contain_file('/s0lr/h0me/solr.in.sh').with_content(/SOLR_PORT=2525/).with_content(%r{SOLR_HOME="/s0lr/h0me"}) }
+
+      # firewall
+      it { is_expected.to contain_firewall('200 Solr - Private: foobar net').with(source: '192.168.99.0/24') }
+      it { is_expected.to contain_firewall('200 Solr - Staff: Net Two').with(source: '10.0.2.0/24') }
     end
   end
 end

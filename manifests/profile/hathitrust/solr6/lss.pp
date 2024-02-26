@@ -1,4 +1,4 @@
-# nebula::profile::hathitrust::solr::lss
+# nebula::profile::hathitrust::solr6::lss
 #
 # HathiTrust solr lss profile
 #
@@ -10,6 +10,7 @@ class nebula::profile::hathitrust::solr6::lss (
   String $snapshot_name = 'htsolr-lss',
   Boolean $is_primary_site = false,
   Boolean $is_primary_node = false,
+  String $release_flag_prefix = '',
   Array[String] $solr_cores,
   String $mirror_site_ip,
   String $mail_recipient,
@@ -57,22 +58,26 @@ class nebula::profile::hathitrust::solr6::lss (
   }
 
   # lss release script
-  file { "/usr/local/bin/index-release-lss":
+  $solr_name = "lss"
+  $solr_stop_flag = "STOPLSSRELEASE"
+  $core_data_dir_template = 'core-${s}x/data'
+  $core_link_prefix = "lss-"
+  $is_lss = true
+  file { "/usr/local/bin/index-release":
     owner   => "root",
     mode    => "755",
-    content => template("nebula/profile/hathitrust/solr6/lss/index-release-lss.sh.erb"),
+    content => template("nebula/profile/hathitrust/solr6/index-release.sh.erb"),
   }
   if ($is_primary_site) {
-    cron { "lss solr index release":
-      hour    => 6,
-      minute  => 0,
-      command => "/usr/local/bin/index-release-lss > /tmp/index-release-lss.log 2>&1 || /usr/bin/mail -s '${facts['networking']['hostname']} lss index release problem' ${mail_recipient} < /tmp/index-release-lss.log",
-    }
+    $cron_h = 6
+    $cron_m = 0
   } else {
-    cron { "lss solr index release":
-      hour    => 5,
-      minute  => 55,
-      command => "/usr/local/bin/index-release-lss > /tmp/index-release-lss.log 2>&1 || /usr/bin/mail -s '${facts['networking']['hostname']} lss index release problem' ${mail_recipient} < /tmp/index-release-lss.log",
-    }
+    $cron_h = 5
+    $cron_m = 55
+  }
+  cron { "lss solr index release":
+    hour    => $cron_h,
+    minute  => $cron_m,
+    command => "/usr/local/bin/index-release > /tmp/index-release.log 2>&1 || /usr/bin/mail -s '${facts['networking']['hostname']} lss index release problem' ${mail_recipient} < /tmp/index-release.log",
   }
 }

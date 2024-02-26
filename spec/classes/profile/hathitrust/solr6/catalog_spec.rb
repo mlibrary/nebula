@@ -8,8 +8,44 @@ describe 'nebula::profile::hathitrust::solr6::catalog' do
       let(:hiera_config) { 'spec/fixtures/hiera/hathitrust_config.yaml' }
 
       it { is_expected.to compile }
-      it { is_expected.to contain_package('solr') }
+      it { is_expected.to contain_class('nebula::profile::hathitrust::solr6') }
       it { is_expected.to contain_file('/var/lib/solr/solr.in.sh').with_content(/SOLR_PORT=9033/) }
+      it { is_expected.to contain_file('/usr/local/bin/index-release')
+        .with_content(%r|BASE=/htsolr/catalog|)
+        .with_content(%r|^SNAP=".snapshot/htsolr-catalog_\${TODAY}"$|)
+        .with_content(%r|CORES="catalog"|)
+        .with_content(%r|/flags/STOPCATALOGRELEASE|)
+        .with_content(%r|/bin/echo "STOPCATALOGRELEASE flag present|)
+        .with_content(%r|curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/catalog-release-|)
+        .with_content(%r{babel.hathitrust.org:443:6.5.4.3})
+        .with_content(%r|SEGMENTS=`ls \${BASE}/cores/\${s}/\${SNAP}/data/index/|)
+        .with_content(%r|rm -f \${SYMLINKBASE}/\${s} && ln -s \${BASE}/cores/\${s}/\${SNAP} \${SYMLINKBASE}/\${s}$|)
+        .with_content(/^# run the first query to initialize catalog solr$/)
+        .with_content(/^## run the first query to initialize lss solr$/)
+      }
+      it { is_expected.to contain_cron('catalog solr index release')
+        .with(command: "/usr/local/bin/index-release > /tmp/index-release.log 2>&1 || /usr/bin/mail -s 'foo catalog index release problem' anybody@default.invalid < /tmp/index-release.log")
+      }
+
+      context 'on primary site' do
+        let(:params) do
+          { is_primary_site: true }
+        end
+        it { is_expected.to contain_file('/usr/local/bin/index-release').with_content(%r{^if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org}) }
+        it { is_expected.to contain_cron('catalog solr index release')
+          .with(hour: 6, minute: 30)
+        }
+      end
+      context 'on mirror site' do
+        let(:params) do
+          { is_primary_site: false }
+        end
+        it { is_expected.to contain_file('/usr/local/bin/index-release').with_content(%r{^#if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org}) }
+        it { is_expected.to contain_cron('catalog solr index release')
+          .with(hour: 6, minute: 25)
+        }
+      end
+
     end
   end
 end

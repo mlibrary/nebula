@@ -143,6 +143,9 @@ nebula::profile::hathitrust::secure_rsync::datasets:
 nebula::profile::hathitrust::solr6::solr_home: "/s0lr/h0me"
 nebula::profile::hathitrust::solr6::port: "2525"
 
+nebula::profile::hathitrust::solr6::catalog::mirror_site_ip: "6.5.4.3"
+nebula::profile::hathitrust::solr6::catalog::mail_recipient: anybody@default.invalid
+
 nebula::profile::hathitrust::solr6::lss::mirror_site_ip: "5.4.3.2"
 nebula::profile::hathitrust::solr6::lss::mail_recipient: nobody@default.invalid
 nebula::profile::hathitrust::solr6::lss::solr_cores:
