@@ -26,6 +26,7 @@ SOLR_TIMEZONE="<%= @timezone %>"
 ENABLE_REMOTE_JMX_OPTS="true"
 SOLR_OPTS="$SOLR_OPTS -Xss256k"
 SOLR_OPTS="$SOLR_OPTS -Ddisable.configEdit=true"
+SOLR_OPTS="$SOLR_OPTS -Dsolr.lock.type=single"
 
 SOLR_HOME="<%= @solr_home %>"
 SOLR_PID_DIR=$SOLR_HOME
