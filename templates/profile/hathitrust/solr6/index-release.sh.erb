@@ -36,7 +36,8 @@ fi
 
 for s in $CORES; do
   SEGMENTS=`ls ${BASE}/cores/${s}/${SNAP}/<%= @core_data_dir_template %>/index/*.fdt | wc -l`
-  if [ ${SEGMENTS} -lt 1 ] || [ ${SEGMENTS} -gt 2 ]; then
+  <% if @is_catalog %>if [ ${SEGMENTS} -eq 0 ]; then<% end %>
+  <% if @is_lss     %>if [ ${SEGMENTS} -lt 1 ] || [ ${SEGMENTS} -gt 2 ]; then<% end %>
     /bin/echo "at least one core served by `hostname -s` has an improper number of segments...aborting release"
     exit 1
   fi

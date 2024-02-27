@@ -19,6 +19,8 @@ describe 'nebula::profile::hathitrust::solr6::lss' do
         .with_content(%r|curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/lss-release-|)
         .with_content(%r{babel.hathitrust.org:443:5.4.3.2})
         .with_content(%r|SEGMENTS=`ls \${BASE}/cores/\${s}/\${SNAP}/core-\${s}x/data/index/|)
+        .without_content(%r|if \[ \${SEGMENTS} -eq 0 \];|)
+           .with_content(%r(if \[ \${SEGMENTS} -lt 1 \] \|\| \[ \${SEGMENTS} -gt 2 \];))
         .with_content(%r|rm -f \${SYMLINKBASE}/lss-\${s} && ln -s \${BASE}/cores/\${s}/\${SNAP} \${SYMLINKBASE}/lss-\${s}$|)
         .with_content(/^## run the first query to initialize catalog solr$/)
         .with_content(/^# run the first query to initialize lss solr$/)
