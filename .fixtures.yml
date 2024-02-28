@@ -20,7 +20,7 @@ fixtures:
     archive:      {"repo": "puppet/archive",          "ref": "7.0.0"}
     kmod:         {"repo": "puppet/kmod",             "ref": "4.0.0"}
     letsencrypt:  {"repo": "puppet/letsencrypt",      "ref": "10.1.0"}
-    logrotate:    {"repo": "puppet/logrotate",        "ref": "7.0.0"}
+    logrotate:    {"repo": "puppet/logrotate",        "ref": "7.0.1"} # 7.0.2 updates systemd, conflicts with postgres
     nginx:        {"repo": "puppet/nginx",            "ref": "5.0.0"}
     php:          {"repo": "puppet/php",              "ref": "9.0.0"}
     apt:          {"repo": "puppetlabs/apt",          "ref": "9.0.0"} # 9.0.1+ breaks, needs updated stdlib
