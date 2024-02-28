@@ -8,7 +8,7 @@
 class nebula::profile::hathitrust::solr6 (
   String $jdk_version = '8',
   String $solr_home = '/var/lib/solr',
-  String $java_home = "/usr/lib/jvm/java-${jdk_version}-openjdk-amd64",
+  String $java_home = "/usr/lib/jvm/temurin-${jdk_version}-jre-${::os['architecture']}",
   String $heap = '16G',
   String $timezone = 'America/Detroit',
   String $solr_bin = '/opt/solr/bin/solr',
@@ -17,8 +17,10 @@ class nebula::profile::hathitrust::solr6 (
   include nebula::profile::hathitrust::networking
   include nebula::profile::hathitrust::hosts
 
-  package { "openjdk-${jdk_version}-jre-headless": }
-  package { "solr": }
+  ensure_packages([
+    "temurin-${jdk_version}-jre",
+    'solr',
+  ])
 
   include nebula::profile::dns::smartconnect;
 
