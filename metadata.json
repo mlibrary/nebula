@@ -23,7 +23,6 @@
     {"name": "puppetlabs/firewall",     "version_requirement": "3.6.0"},
     {"name": "puppetlabs/host_core",    "version_requirement": ">= 1.2.0  < 2.0.0"},
     {"name": "puppetlabs/inifile",      "version_requirement": ">= 5.4.1  < 6.0.0"},
-    {"name": "puppetlabs/java",         "version_requirement": ">= 10.1.2 < 11.0.0"},
     {"name": "puppetlabs/lvm",          "version_requirement": ">= 2.0.3  < 3.0.0"},
     {"name": "puppetlabs/mount_core",   "version_requirement": ">= 1.2.0  < 2.0.0"},
     {"name": "puppetlabs/mysql",        "version_requirement": ">= 14.0.0 < 15.0.0"},
