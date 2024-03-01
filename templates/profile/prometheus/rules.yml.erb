@@ -315,6 +315,15 @@ groups:
     annotations:
       summary: 'MySQL Prepared Statement Count is approaching MAX on {{$labels.hostname}}'
       description: 'MySQL Prepared Statement Count is approaching MAX'
+  - alert: MysqlTooManyConnections
+    expr: >
+      max_over_time(mysql_global_status_threads_connected[1m]) / mysql_global_variables_max_connections > 0.8
+    for: 5m
+    labels:
+      severity: ticket
+    annotations:
+      summary: 'MySQL Connection Count is approaching MAX on {{$labels.hostname}}'
+      description: 'MySQL Connection Count is approaching MAX'
 
   # These are aggregate rules for federated collection across our full
   # system. By putting them here, we essentially precompile them.
