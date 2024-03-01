@@ -1,0 +1,6 @@
+# Managed by puppet (nebula/profile/kubernetes/etcdctl.sh)
+export ETCDCTL_API=3
+export ETCDCTL_ENDPOINTS="<%= @etcdctl_endpoints %>"
+export ETCDCTL_CACERT="/etc/etcd/ca.crt"
+export ETCDCTL_CERT="/etc/etcd/peer.crt"
+export ETCDCTL_KEY="/etc/etcd/peer.key"

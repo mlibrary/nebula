@@ -10,5 +10,6 @@ class nebula::role::kubernetes::backup_gateway {
   include nebula::profile::kubernetes::haproxy
   include nebula::profile::kubernetes::router
   include nebula::profile::kubernetes::bootstrap::source
+  include nebula::profile::kubernetes::etcdctl
   include nebula::profile::kubernetes::keepalived
 }

@@ -10,6 +10,7 @@ class nebula::role::kubernetes::primary_gateway {
   include nebula::profile::kubernetes::haproxy
   include nebula::profile::kubernetes::router
   include nebula::profile::kubernetes::bootstrap::source
+  include nebula::profile::kubernetes::etcdctl
 
   class { 'nebula::profile::kubernetes::keepalived':
     master => true,
