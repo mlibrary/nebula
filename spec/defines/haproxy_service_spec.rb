@@ -115,6 +115,25 @@ describe 'nebula::haproxy::service' do
           end
         end
 
+        describe 'with no block_paths' do
+          it 'contains no reference to block_path acl' do
+            is_expected.to contain_concat_fragment('svc1-dc1-https frontend').without_content(/block_path/)
+          end
+        end
+
+        describe 'with block_paths' do
+          let(:params) do
+            super().merge(block_paths: ['/some/path','/another/path'])
+          end
+
+          it 'contains block_path acl' do
+            is_expected.to contain_concat_fragment('svc1-dc1-https frontend')
+              .with_content(%r|acl block_path path_beg -i /some/path
+acl block_path path_beg -i /another/path
+http-request deny if block_path|)
+          end
+        end
+
         describe 'with throttling parameters' do
           let(:params) do
             super().merge(max_requests_per_sec: 2,

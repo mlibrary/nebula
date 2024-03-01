@@ -32,6 +32,9 @@
 #   haproxy "acl -f" functionality; see
 #   https://cbonte.github.io/haproxy-dconv/1.7/configuration.html#7
 #
+# @param block_paths Array of paths that should be blocked with 400 without
+#   forwarding the request to web server
+#
 # @param dynamic_weighting Use dynamic weighting for servers in the pool based
 # on checking the load in each member server. Weight is set to the inverse
 # proportion of the maximum load plus the smoothing factor.
@@ -55,6 +58,7 @@
 #     throttle_condition   => 'path_beg /should_be_throttled',
 #     max_requests_per_sec => '4',
 #     max_requests_burst   => '200',
+#     block_paths          => ['/block/me','/block/this']
 #     whitelists           => {
 #       path_beg           => ['/dont_throttle_this','/or_this'],
 #       path_sub           => ['in_the_middle'],
@@ -71,6 +75,7 @@ define nebula::haproxy::service(
   Integer          $max_requests_per_sec = 0,
   Integer          $max_requests_burst = 0,
   Hash             $whitelists = {},
+  Array[String]    $block_paths = [],
   Boolean          $custom_503 = false,
   Boolean          $dynamic_weighting = false,
   Integer          $dynamic_weight_smoothing = 2,

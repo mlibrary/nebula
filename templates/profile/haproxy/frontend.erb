@@ -22,6 +22,11 @@ acl whitelist_<%= whitelist %> <%= whitelist %> -n -f /etc/haproxy/<%= @service 
 <% if @throttle_condition -%>
 acl throttle_condition <%= @throttle_condition %>
 <% end -%>
+<% if @block_paths.length > 0 -%><% @block_paths.each do |block_path| -%>
+acl block_path path_beg -i <%= block_path %>
+<% end -%>
+http-request deny if block_path
+<% end -%>
 <% if @nonempty_whitelists.size() > 0 or @throttle_condition -%>
 use_backend <%= @service_prefix %>-back-exempt if <%= exemption_condition %>
 <% end -%>
