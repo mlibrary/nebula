@@ -36,6 +36,7 @@ nebula::profile::kubernetes::clusters:
       - name: smartconnect
         domain: 'sc.default.invalid'
         resolver: '192.0.2.7'
+    etcdctl_endpoints: "10.1.2.3:2379,10.2.4.6:2379,10.3.6.9:2379"
   second_cluster:
     public_address: 10.0.0.2
     router_address: 172.16.1.1
@@ -43,6 +44,7 @@ nebula::profile::kubernetes::clusters:
     kube_api_address: 172.16.1.7
     private_domain: second.cluster
     control_dns: public.second.cluster
+    etcdctl_endpoints: "192.168.2.3:2379,192.168.4.6:2379,192.168.6.9:2379"
     kubernetes_version: 1.11.9
   implicit_kubernetes_version:
     public_address: 10.0.0.4
