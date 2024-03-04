@@ -285,7 +285,7 @@ GEM
     unf_ext (0.0.8.2)
     unicode-display_width (1.8.0)
     unicode_utils (1.4.0)
-    yard (0.9.34)
+    yard (0.9.36)
 
 PLATFORMS
   ruby
@@ -302,7 +302,7 @@ DEPENDENCIES
   rake (>= 13.0.6)
   rspec-puppet-utils
   semantic_puppet
-  yard (>= 0.9.34)
+  yard (>= 0.9.36)
 
 BUNDLED WITH
    2.1.4
