@@ -141,27 +141,6 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction auth true'
       },
-      {
-        provider        => 'locationmatch',
-        path            => '^/instruction/request',
-        custom_fragment => @(EOT)
-          # Set remote user header to allow app to use http header auth.
-          RequestHeader set X-Remote-User     "expr=%{REMOTE_USER}"
-          RequestHeader set X-Authzd-Coll     %{AUTHZD_COLL}e
-          RequestHeader set X-Public-Coll     %{PUBLIC_COLL}e
-          RequestHeader set X-Forwarded-Proto 'https'
-          RequestHeader unset X-Forwarded-For
-          Header set "Strict-Transport-Security" "max-age=3600"
-        | EOT
-      },
-      # This must be declared after the above block or it will be superseded. 
-      {
-        provider        => 'location',
-        path            => '/instruction/request/login',
-        auth_type       => 'openid-connect',
-        require         => 'valid-user',
-        custom_fragment => 'OIDCUnAuthAction auth true'
-      },
     ],
 
     # TODO: hopefully these can all be removed
@@ -191,8 +170,8 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         rewrite_rule => '^/islamic	http://guides.lib.umich.edu/islamicmss/find 	[redirect=permanent,last]'
       },
       {
-        rewrite_cond => '%{REQUEST_URI} !^/openid-connect',
-        rewrite_rule => '^(/instruction/request.*)$ https://sali1.lib.umich.edu:8443$1 [P]',
+        # SALI redirect to stand-alone drupal app
+        rewrite_rule => '^(/instruction/request.*)$ https://sali.lib.umich.edu/ [redirect=permanent,last]'
       },
 
       { rewrite_rule => '^/my-account/favorites - [last]' },
@@ -225,13 +204,5 @@ class nebula::profile::www_lib::vhosts::apps_lib (
       },
     ],
 
-    ssl_proxyengine               => true,
-    ssl_proxy_check_peer_name     => 'on',
-    ssl_proxy_check_peer_expire   => 'on',
-    ssl_proxy_machine_cert        => $client_cert,
-
-    custom_fragment               => @(EOT)
-      ProxyPassReverse / https://sali1.lib.umich.edu:8443/
-    | EOT
   }
 }
