@@ -65,21 +65,21 @@ describe 'nebula::profile::vmhost::host' do
         it { is_expected.to contain_vm('vmname').with_nameservers(['5.5.5.5', '4.4.4.4']) }
 
         context 'and given a random number of cpus' do
-          let(:cpus)   { Faker::Number.between(1, 12).to_i }
+          let(:cpus)   { Faker::Number.between(from: 1, to: 12).to_i }
           let(:params) { super().merge(cpus: cpus) }
 
           it { is_expected.to contain_vm('vmname').with_cpus(cpus) }
         end
 
         context 'and given a random amount of disk space' do
-          let(:disk)   { Faker::Number.between(8, 200).to_i }
+          let(:disk)   { Faker::Number.between(from: 8, to: 200).to_i }
           let(:params) { super().merge(disk: disk) }
 
           it { is_expected.to contain_vm('vmname').with_disk(disk) }
         end
 
         context 'and given a random amount of ram' do
-          let(:ram)    { Faker::Number.between(1, 64).to_i }
+          let(:ram)    { Faker::Number.between(from: 1, to: 64).to_i }
           let(:params) { super().merge(ram: ram) }
 
           it { is_expected.to contain_vm('vmname').with_ram(ram) }
@@ -120,7 +120,7 @@ describe 'nebula::profile::vmhost::host' do
         end
 
         context 'and given some random nameservers' do
-          let(:nameservers) { Array.new(Faker::Number.between(2, 4)) { Faker::Internet.ip_v4_address } }
+          let(:nameservers) { Array.new(Faker::Number.between(from: 2, to: 4)) { Faker::Internet.ip_v4_address } }
           let(:params)      { super().merge(nameservers: nameservers) }
 
           it { is_expected.to contain_vm('vmname').with_nameservers(nameservers) }
