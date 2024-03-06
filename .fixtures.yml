@@ -30,7 +30,7 @@ fixtures:
     cron_core:           {"repo": "puppetlabs/cron_core",       "ref": "1.3.0" }
     docker:              {"repo": "puppetlabs/docker",          "ref": "10.0.1" }
     # TODO: Upgrading to 7 requires nuking PuppetDB. https://forge.puppet.com/modules/puppetlabs/firewall/8.0.3/changelog
-    firewall:            {"repo": "puppetlabs/firewall",        "ref": "6.0.0" }
+    firewall:            {"repo": "puppetlabs/firewall",        "ref": "8.0.0" }
     host_core:           {"repo": "puppetlabs/host_core",       "ref": "1.3.0" }
     inifile:             {"repo": "puppetlabs/inifile",         "ref": "6.1.1" }
     lvm:                 {"repo": "puppetlabs/lvm",             "ref": "2.3.0" }
