@@ -15,6 +15,17 @@ describe 'nebula::profile::dns::standard' do
           ['5.5.5.5', '4.4.4.4'],
         ).with_searchpath(['searchpath.default.invalid'])
       end
+
+      it 'removes resolvconf package if present' do
+        is_expected.to contain_package('resolvconf').with_ensure('absent')
+      end
+      it 'contains expected resolv.conf file' do
+        is_expected.to contain_file('/etc/resolv.conf')
+          .with_content(/^#.*puppet/)
+          .with_content(/^search searchpath\.default\.invalid$/)
+          .with_content(/^nameserver 5.5.5.5$/)
+          .with_content(/^nameserver 4.4.4.4$/)
+      end
     end
   end
 end
