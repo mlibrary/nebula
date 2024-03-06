@@ -29,7 +29,7 @@ fixtures:
     concat:              {"repo": "puppetlabs/concat",          "ref": "9.0.2" }
     cron_core:           {"repo": "puppetlabs/cron_core",       "ref": "1.2.1" }
     docker:              {"repo": "puppetlabs/docker",          "ref": "9.1.0" }
-    firewall:            {"repo": "puppetlabs/firewall",        "ref": "6.0.0" }
+    firewall:            {"repo": "puppetlabs/firewall",        "ref": "8.0.0" }
     host_core:           {"repo": "puppetlabs/host_core",       "ref": "1.2.0" }
     inifile:             {"repo": "puppetlabs/inifile",         "ref": "6.1.0" }
     lvm:                 {"repo": "puppetlabs/lvm",             "ref": "2.1.0" }

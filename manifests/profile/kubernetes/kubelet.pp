@@ -49,7 +49,7 @@ class nebula::profile::kubernetes::kubelet {
       proto  => 'tcp',
       source => $node_cidr,
       state  => 'NEW',
-      action => 'accept',
+      jump   => 'accept',
     ;
 
     '200 Cluster ssh':
