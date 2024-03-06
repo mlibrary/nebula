@@ -11,7 +11,7 @@ describe 'nebula::profile::dns::standard' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_class('resolv_conf').with_nameservers(
+        is_expected.to contain_class('nebula::resolv_conf').with_nameservers(
           ['5.5.5.5', '4.4.4.4'],
         ).with_searchpath(['searchpath.default.invalid'])
       end
