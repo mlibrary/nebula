@@ -1,0 +1,8 @@
+# Managed by puppet (nebula/resolv_conf/resolv.conf.erb)
+
+<% if !@searchpath.empty? -%>
+search <%= @searchpath.join(" ") %>
+<% end -%>
+<% @nameservers.each do |ns| -%>
+nameserver <%= ns %>
+<% end -%>

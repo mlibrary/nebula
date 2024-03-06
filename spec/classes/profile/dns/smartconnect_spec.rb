@@ -21,7 +21,7 @@ describe 'nebula::profile::dns::smartconnect' do
       end
 
       it do
-        is_expected.to contain_class('resolv_conf').with_nameservers(
+        is_expected.to contain_class('nebula::resolv_conf').with_nameservers(
           [
             '127.0.0.1',  # localhost
             '5.5.5.5',    # nebula::resolv_conf::nameservers[0]
@@ -79,7 +79,7 @@ describe 'nebula::profile::dns::smartconnect' do
         let(:params) { { other_ns_ips: ['3.3.3.3', '2.2.2.2', '1.1.1.1'] } }
 
         it do
-          is_expected.to contain_class('resolv_conf').with_nameservers(
+          is_expected.to contain_class('nebula::resolv_conf').with_nameservers(
             [
               '127.0.0.1',
               '3.3.3.3',
