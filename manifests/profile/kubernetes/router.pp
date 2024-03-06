@@ -20,7 +20,7 @@ class nebula::profile::kubernetes::router {
   firewall { '001 Do not NAT internal requests':
     table       => 'nat',
     chain       => 'POSTROUTING',
-    action      => 'accept',
+    jump        => 'accept',
     proto       => 'all',
     source      => $node_cidr,
     destination => $node_cidr,

@@ -76,7 +76,7 @@ class nebula::profile::kubernetes::dns_server {
       dport  => 53,
       source => $node_cidr,
       state  => 'NEW',
-      action => 'accept',
+      jump   => 'accept',
     ;
 
     '200 Nameserver (TCP)':

@@ -133,7 +133,7 @@ class nebula::profile::haproxy(
     dport  => [80, 443],
     source => $::ipaddress,
     state  => 'NEW',
-    action => 'accept',
+    jump   => 'accept',
     tag    => 'haproxy'
   }
 
