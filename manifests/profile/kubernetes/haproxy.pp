@@ -52,7 +52,7 @@ class nebula::profile::kubernetes::haproxy {
     default:
       proto  => 'tcp',
       state  => 'NEW',
-      action => 'accept',
+      jump   => 'accept',
     ;
 
     '200 private api':

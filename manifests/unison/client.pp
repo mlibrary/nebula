@@ -39,7 +39,7 @@ define nebula::unison::client (
     dport  => [$port],
     source => $::ipaddress,
     state  => 'NEW',
-    action => 'accept',
+    jump   => 'accept',
     tag    =>  "unison-client-${title}"
   }
 

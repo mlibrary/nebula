@@ -154,7 +154,7 @@ class nebula::profile::prometheus::exporter::node (
       dport  => 9091,
       source => $address,
       state  => 'NEW',
-      action => 'accept',
+      jump   => 'accept',
     }
   }
 

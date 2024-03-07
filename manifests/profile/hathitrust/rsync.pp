@@ -48,7 +48,7 @@ class nebula::profile::hathitrust::rsync (
         dport  => 873,
         source => $user['ip'],
         state  => 'NEW',
-        action => 'accept'
+        jump   => 'accept'
       }
     }
   }

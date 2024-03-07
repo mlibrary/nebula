@@ -153,7 +153,7 @@ class nebula::profile::prometheus (
     dport  => 9100,
     source => $::ipaddress,
     state  => 'NEW',
-    action => 'accept',
+    jump   => 'accept',
   }
 
   case $facts["mlibrary_ip_addresses"] {
@@ -194,7 +194,7 @@ class nebula::profile::prometheus (
         proto  => 'tcp',
         source => $address,
         state  => 'NEW',
-        action => 'accept',
+        jump   => 'accept',
       ;
 
       "010 prometheus public node exporter ${::hostname} ${address}":
@@ -215,7 +215,7 @@ class nebula::profile::prometheus (
         proto  => 'tcp',
         source => $address,
         state  => 'NEW',
-        action => 'accept',
+        jump   => 'accept',
       ;
 
       "010 prometheus private node exporter ${::hostname} ${address}":
@@ -236,7 +236,7 @@ class nebula::profile::prometheus (
     dport  => 9101,
     source => $::ipaddress,
     state  => 'NEW',
-    action => 'accept',
+    jump   => 'accept',
   }
 
   @@firewall { "010 prometheus mysql exporter ${::hostname}":
@@ -245,7 +245,7 @@ class nebula::profile::prometheus (
     dport  => 9104,
     source => $::ipaddress,
     state  => 'NEW',
-    action => 'accept',
+    jump   => 'accept',
   }
 
   Firewall <<| tag == "${::datacenter}_pushgateway_node" |>>
