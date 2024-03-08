@@ -21,4 +21,5 @@ class nebula::role::hathitrust::solr::lss {
   include nebula::profile::elastic::filebeat::prospectors::ulib
 
   include nebula::profile::hathitrust::lss
+  include nebula::profile::grafana_agent
 }
