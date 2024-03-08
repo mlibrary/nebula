@@ -11,6 +11,8 @@ describe 'nebula::profile::grafana_agent' do
       it { is_expected.to contain_apt__source('grafana') }
       it { is_expected.to contain_package('grafana-agent-flow') }
       it { is_expected.to contain_service('grafana-agent-flow') }
+
+      it { is_expected.to contain_class('nebula::profile::puppet::client_cert') }
     end
   end
 end

@@ -30,6 +30,8 @@ class nebula::profile::grafana_agent () {
         name   => 'grafana-agent-flow',
         enable => true,
       }
+
+      include nebula::profile::puppet::client_cert
     }
     default: {
       fail("Unsupported OS family: (${$::os['family']})")
