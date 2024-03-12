@@ -36,9 +36,7 @@ class nebula::profile::fulcrum::app (
     'poppler-utils',
   ])
 
-  class { 'nebula::profile::nodejs':
-    version => '14',
-  }
+  include nebula::profile::nodejs
 
   exec { 'npm install -g yarn':
     path    => '/bin:/usr/bin',
