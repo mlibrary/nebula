@@ -45,4 +45,7 @@ class nebula::role::webhost::www_lib_vm (
     config_source    => $shibboleth_config_source,
     watchdog_minutes => '*/30',
   }
+
+  include nebula::profile::prometheus::exporter::webserver::vhost
+  include nebula::profile::prometheus::exporter::webserver::www_lib
 }

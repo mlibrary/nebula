@@ -17,4 +17,5 @@ class nebula::role::app_host::quod_prod {
   include nebula::profile::quod::prod::perl
   include nebula::profile::quod::prod::haproxy
   include nebula::profile::networking::firewall::http
+  include nebula::profile::prometheus::exporter::webserver::quod
 }

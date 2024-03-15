@@ -19,4 +19,5 @@ class nebula::role::app_host::quod_dev {
   include nebula::profile::quod::dev::perl
   include nebula::profile::prometheus::exporter::mysql
   include nebula::profile::tesseract
+  include nebula::profile::prometheus::exporter::webserver::quod
 }

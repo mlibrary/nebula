@@ -39,4 +39,7 @@ class nebula::role::webhost::htvm (
 
   # for HathiTrust deployment scripts
   package { 'rdist': }
+
+  include nebula::profile::prometheus::exporter::webserver::vhost
+  include nebula::profile::prometheus::exporter::webserver::hathitrust
 }

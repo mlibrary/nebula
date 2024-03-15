@@ -60,4 +60,7 @@ class nebula::role::webhost::fulcrum_www_and_app (
   }
 
   ensure_packages(['pigz'])
+
+  include nebula::profile::prometheus::exporter::webserver::vhost
+  include nebula::profile::prometheus::exporter::webserver::fulcrum
 }
