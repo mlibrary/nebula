@@ -47,7 +47,7 @@ class nebula::profile::www_lib::vhosts::redirects(
   }
 
   nebula::apache::redirect_vhost_https { 'digitalculture.org':
-    ssl_cn        => 'www.digitalculture.org',
+    ssl_cn        => 'digitalculture.org',
     serveraliases => [
       'www.digitalculturebooks.com',
       'digitalculturebooks.com',

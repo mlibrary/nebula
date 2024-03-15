@@ -165,7 +165,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
           .with_servername('blog.press.umich.edu')
           .with_serveraliases([
                                 'www.theater-historiography.org',
-                                'www.digitalculture.org',
+                                'digitalculture.org',
                                 'www.digitalrhetoriccollaborative.org',
                               ])
       end
