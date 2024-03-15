@@ -40,7 +40,7 @@ class nebula::profile::www_lib::apache::misc (
       'med.lib.umich.edu',
       'staff.lib.umich.edu',
       'search.lib.umich.edu',
-      'www.digitalculture.org',
+      'digitalculture.org',
       'www.lib.umich.edu',
       'www.press.umich.edu',
       'www.publishing.umich.edu',
