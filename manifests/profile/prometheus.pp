@@ -102,7 +102,9 @@ class nebula::profile::prometheus (
     content => "scrape_configs:\n"
   }
 
-  Concat_fragment <<| tag == "${::datacenter}_prometheus_ipmi_exporter" |>>
+  nebula::discovery::configure_targets { "prometheus_ipmi_${::datacenter}":
+    port => 9290,
+  }
 
   file { '/etc/prometheus':
     ensure => 'directory',
@@ -201,11 +203,6 @@ class nebula::profile::prometheus (
         tag    => "${::datacenter}_prometheus_public_node_exporter",
         dport  => 9100,
       ;
-
-      "010 prometheus public ipmi exporter ${::hostname} ${address}":
-        tag    => "${::datacenter}_prometheus_public_ipmi_exporter",
-        dport  => 9290,
-      ;
     }
   }
 
@@ -221,11 +218,6 @@ class nebula::profile::prometheus (
       "010 prometheus private node exporter ${::hostname} ${address}":
         tag    => "${::datacenter}_prometheus_private_node_exporter",
         dport  => 9100,
-      ;
-
-      "010 prometheus private ipmi exporter ${::hostname} ${address}":
-        tag    => "${::datacenter}_prometheus_private_ipmi_exporter",
-        dport  => 9290,
       ;
     }
   }
