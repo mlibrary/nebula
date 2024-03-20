@@ -28,11 +28,13 @@ if [ -f $BASE/flags/${SNAP}/busy ]; then
   exit 1
 fi
 
-<% if not @is_primary_site %>#<% end %># check whether release happened at mirror site
-<% if not @is_primary_site %>#<% end %>if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/<%= @solr_name %>-release-${TODAY} --resolve "babel.hathitrust.org:443:<%= @mirror_site_ip %>" >& /dev/null; then
-<% if not @is_primary_site %>#<% end %>  /bin/echo "Mirror site index release appears to have failed...skip release today"
-<% if not @is_primary_site %>#<% end %>  exit 1
-<% if not @is_primary_site %>#<% end %>fi
+<% if @is_primary_site %>
+# check whether release happened at mirror site
+if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/<%= @solr_name %>-release-${TODAY} --resolve "babel.hathitrust.org:443:<%= @mirror_site_ip %>" >& /dev/null; then
+  /bin/echo "Mirror site index release appears to have failed...skip release today"
+  exit 1
+fi
+<% end %>
 
 for s in $CORES; do
   SEGMENTS=`ls ${BASE}/cores/${s}/${SNAP}/<%= @core_data_dir_template %>/index/*.fdt | wc -l`
@@ -51,11 +53,13 @@ if [ $? -ne 0 ]; then
 fi
 
 # replace the snapshot symlinks
-<% if not @is_lss %>#<% end %>rm -f ${SYMLINKBASE}/lss-shared && ln -s ${BASE}/shared/${SNAP} ${SYMLINKBASE}/lss-shared
-<% if not @is_lss %>#<% end %>if [ $? -ne 0 ]; then
-<% if not @is_lss %>#<% end %>    /bin/echo "error removing or creating /htsolr/serve/lss-shared symlink...solr-current-lss WILL NOT be started on `hostname -s`"
-<% if not @is_lss %>#<% end %>    exit 1
-<% if not @is_lss %>#<% end %>fi
+<% if @is_lss %>
+rm -f ${SYMLINKBASE}/lss-shared && ln -s ${BASE}/shared/${SNAP} ${SYMLINKBASE}/lss-shared
+if [ $? -ne 0 ]; then
+    /bin/echo "error removing or creating /htsolr/serve/lss-shared symlink...solr-current-lss WILL NOT be started on `hostname -s`"
+    exit 1
+fi
+<% end %>
 for s in ${CORES}; do
   rm -f ${SYMLINKBASE}/<%= @core_link_prefix %>${s} && ln -s ${BASE}/cores/${s}/${SNAP} ${SYMLINKBASE}/<%= @core_link_prefix %>${s}
   if [ $? -ne 0 ]; then
@@ -71,35 +75,43 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-<% if not @is_primary_node %>#<% end %># touch release flag (only on first core/node, so it happens once per datacenter)
-<% if not @is_primary_node %>#<% end %>rm -f /htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-*
-<% if not @is_primary_node %>#<% end %>touch /htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-${TODAY}
+<% if @is_primary_node %>
+# touch release flag (only on first core/node, so it happens once per datacenter)
+rm -f /htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-*
+touch /htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-${TODAY}
+<% end %>
 
-<% if not @is_lss %>#<% end %># run the first query to initialize lss solr
-<% if not @is_lss %>#<% end %>INITQUERY=0
-<% if not @is_lss %>#<% end %>for s in $CORES; do
-<% if not @is_lss %>#<% end %>  sleep 5
-<% if not @is_lss %>#<% end %>  if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-${s}:8081/solr/core-${s}x/select/?q=aardvark&version=2.2&start=0&rows=10&indent=on" >& /dev/null; then
-<% if not @is_lss %>#<% end %>    /bin/echo "WARN: failed to perform initial query against core ${s}x after successful release"
-<% if not @is_lss %>#<% end %>    INITQUERY=1
-<% if not @is_lss %>#<% end %>  fi
-<% if not @is_lss %>#<% end %>  if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-${s}:8081/solr/core-${s}y/select?indent=on&q=*:*&rows=0" >& /dev/null; then
-<% if not @is_lss %>#<% end %>    /bin/echo "WARN: failed to perform initial query against core ${s}y after successful release"
-<% if not @is_lss %>#<% end %>    INITQUERY=1
-<% if not @is_lss %>#<% end %>  fi
-<% if not @is_lss %>#<% end %>done
-<% if not @is_lss %>#<% end %>
-<% if not @is_lss %>#<% end %><% if not @is_primary_node %>#<% end %># cache warming, after delay to avoid racing with other nodes
-<% if not @is_lss %>#<% end %><% if not @is_primary_node %>#<% end %>sleep 30
-<% if not @is_lss %>#<% end %><% if not @is_primary_node %>#<% end %>/usr/bin/wget -nv -i ${BASE}/prep/cacheWarm169Common.txt -O - 2>/tmp/cache-warming-lss.log 1>/dev/null
-<% if not @is_lss %>#<% end %><% if not @is_primary_node %>#<% end %>rm -f /htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-*
-<% if not @is_lss %>#<% end %><% if not @is_primary_node %>#<% end %>touch /htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-${TODAY}
-<% if not @is_lss %>#<% end %>
-<% if not @is_lss %>#<% end %>exit ${INITQUERY}
+<% if @is_lss %>
+# run the first query to initialize lss solr
+INITQUERY=0
+for s in $CORES; do
+  sleep 5
+  if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-${s}:8081/solr/core-${s}x/select/?q=aardvark&version=2.2&start=0&rows=10&indent=on" >& /dev/null; then
+    /bin/echo "WARN: failed to perform initial query against core ${s}x after successful release"
+    INITQUERY=1
+  fi
+  if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-${s}:8081/solr/core-${s}y/select?indent=on&q=*:*&rows=0" >& /dev/null; then
+    /bin/echo "WARN: failed to perform initial query against core ${s}y after successful release"
+    INITQUERY=1
+  fi
+done
 
-<% if not @is_catalog %>#<% end %># run the first query to initialize catalog solr
-<% if not @is_catalog %>#<% end %>sleep 5
-<% if not @is_catalog %>#<% end %>if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-catalog:9033/solr/catalog/select?q=*:*" >& /dev/null; then
-<% if not @is_catalog %>#<% end %>  /bin/echo "WARN: failed to perform initial query after successful release"
-<% if not @is_catalog %>#<% end %>  exit 1
-<% if not @is_catalog %>#<% end %>fi
+<% if @is_primary_node %>
+# cache warming, after delay to avoid racing with other nodes
+sleep 30
+/usr/bin/wget -nv -i ${BASE}/prep/cacheWarm169Common.txt -O - 2>/tmp/cache-warming-lss.log 1>/dev/null
+rm -f /htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-*
+touch /htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-${TODAY}
+<% end %>
+
+exit ${INITQUERY}
+<% end %>
+
+<% if @is_catalog %>
+# run the first query to initialize catalog solr
+sleep 5
+if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-catalog:9033/solr/catalog/select?q=*:*" >& /dev/null; then
+  /bin/echo "WARN: failed to perform initial query after successful release"
+  exit 1
+fi
+<% end %>
