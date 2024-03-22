@@ -60,7 +60,7 @@ class nebula::profile::www_lib::vhosts::redirects(
   }
 
   nebula::apache::redirect_vhost_https { 'theater-historiography.org':
-    ssl_cn        => 'www.theater-historiography.org',
+    ssl_cn        => 'theater-historiography.org',
     serveraliases => [
       'www.theater-historiography.com',
       'theater-historiography.com',

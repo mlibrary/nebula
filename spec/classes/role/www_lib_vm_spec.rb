@@ -113,7 +113,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it do
         is_expected.to contain_apache__vhost('theater-historiography.org-redirect-https')
-          .with_ssl_cert('/etc/ssl/certs/www.theater-historiography.org.crt')
+          .with_ssl_cert('/etc/ssl/certs/theater-historiography.org.crt')
           .with_redirect_dest('https://www.theater-historiography.org/')
           .with_serveraliases(%w[www.theater-historiography.com
                                  theater-historiography.com
