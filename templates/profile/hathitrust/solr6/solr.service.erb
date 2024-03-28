@@ -1,0 +1,16 @@
+# Managed by puppet (nebula/profile/hathitrust/solr6/solr.service.erb)
+[Unit]
+Description=HahtiTrust Solr 6
+After=network.target htsolr-lss.mount htsolr-catalog.mount
+
+[Service]
+User=solr
+Type=forking
+Environment="SOLR_INCLUDE=<%= @solr_home %>/solr.in.sh"
+Environment="UMASK=002"
+ExecStart=<%= @solr_bin %> start
+ExecStop=<%= @solr_bin %> stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

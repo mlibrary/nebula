@@ -1,4 +1,0 @@
-replaced lucene-umich-solr-filters-4.10.2-SNAPSHOT.jar with 
-lucene-umich-solr-filters-6.0.0-SNAPSHOT.jar.  Note all three large
-indexes were built with the 4.10.2 version.  Moved the 4.10jar into common for convenience
-

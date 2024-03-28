@@ -1,0 +1,117 @@
+#! /bin/bash
+
+TODAY=`date +%Y-%m-%d`
+#TODAY="2019-08-31"
+
+BASE=/htsolr/<%= @solr_name %>
+SYMLINKBASE=/htsolr/serve
+SNAP=".snapshot/<%= @snapshot_name %>_${TODAY}"
+CORES="<%= @solr_cores.join(' ') %>"
+
+# check if the administrative release stop flag is set
+if [ -f ${BASE}/flags/<%= @solr_stop_flag %> ]; then
+  /bin/echo "<%= @solr_stop_flag %> flag present...skip release today"
+  exit 1
+fi
+
+# check that today's snap exists
+for s in $CORES; do
+  if [ ! -d $BASE/cores/${s}/${SNAP} ]; then
+    /bin/echo "missing today's snapshot...aborting release"
+    exit 1
+  fi
+done
+
+# check today's snap for 'busy' flag
+if [ -f $BASE/flags/${SNAP}/busy ]; then
+  /bin/echo "indexing and/or optimization ocurring...skip release today"
+  exit 1
+fi
+
+<% if @is_primary_site %>
+# check whether release happened at mirror site
+if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/<%= @solr_name %>-release-${TODAY} --resolve "babel.hathitrust.org:443:<%= @mirror_site_ip %>" >& /dev/null; then
+  /bin/echo "Mirror site index release appears to have failed...skip release today"
+  exit 1
+fi
+<% end %>
+
+for s in $CORES; do
+  SEGMENTS=`ls ${BASE}/cores/${s}/${SNAP}/<%= @core_data_dir_template %>/index/*.fdt | wc -l`
+  <% if @is_catalog %>if [ ${SEGMENTS} -eq 0 ]; then<% end %>
+  <% if @is_lss     %>if [ ${SEGMENTS} -lt 1 ] || [ ${SEGMENTS} -gt 2 ]; then<% end %>
+    /bin/echo "at least one core served by `hostname -s` has an improper number of segments...aborting release"
+    exit 1
+  fi
+done
+
+# stop solr
+systemctl stop solr
+if [ $? -ne 0 ]; then
+  /bin/echo "error stopping lss solr on `hostname -s`"
+  exit 1
+fi
+
+# replace the snapshot symlinks
+<% if @is_lss %>
+rm -f ${SYMLINKBASE}/lss-shared && ln -s ${BASE}/shared/${SNAP} ${SYMLINKBASE}/lss-shared
+if [ $? -ne 0 ]; then
+    /bin/echo "error removing or creating /htsolr/serve/lss-shared symlink...solr-current-lss WILL NOT be started on `hostname -s`"
+    exit 1
+fi
+<% end %>
+for s in ${CORES}; do
+  rm -f ${SYMLINKBASE}/<%= @core_link_prefix %>${s} && ln -s ${BASE}/cores/${s}/${SNAP} ${SYMLINKBASE}/<%= @core_link_prefix %>${s}
+  if [ $? -ne 0 ]; then
+    /bin/echo "error removing or creating symlink for core ${s}...solr-current-lss WILL NOT be started on `hostname -s`"
+    exit 1
+  fi
+done
+
+# if all went well, start solr
+systemctl start solr
+if [ $? -ne 0 ]; then
+  /bin/echo "error starting solr on `hostname -s`"
+  exit 1
+fi
+
+<% if @is_primary_node %>
+# touch release flag (only on first core/node, so it happens once per datacenter)
+rm -f /htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-*
+touch /htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-${TODAY}
+<% end %>
+
+<% if @is_lss %>
+# run the first query to initialize lss solr
+INITQUERY=0
+for s in $CORES; do
+  sleep 5
+  if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-${s}:8081/solr/core-${s}x/select/?q=aardvark&version=2.2&start=0&rows=10&indent=on" >& /dev/null; then
+    /bin/echo "WARN: failed to perform initial query against core ${s}x after successful release"
+    INITQUERY=1
+  fi
+  if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-${s}:8081/solr/core-${s}y/select?indent=on&q=*:*&rows=0" >& /dev/null; then
+    /bin/echo "WARN: failed to perform initial query against core ${s}y after successful release"
+    INITQUERY=1
+  fi
+done
+
+<% if @is_primary_node %>
+# cache warming, after delay to avoid racing with other nodes
+sleep 30
+/usr/bin/wget -nv -i ${BASE}/prep/cacheWarm169Common.txt -O - 2>/tmp/cache-warming-lss.log 1>/dev/null
+rm -f /htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-*
+touch /htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-${TODAY}
+<% end %>
+
+exit ${INITQUERY}
+<% end %>
+
+<% if @is_catalog %>
+# run the first query to initialize catalog solr
+sleep 5
+if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-catalog:9033/solr/catalog/select?q=*:*" >& /dev/null; then
+  /bin/echo "WARN: failed to perform initial query after successful release"
+  exit 1
+fi
+<% end %>
