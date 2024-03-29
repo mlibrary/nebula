@@ -18,6 +18,7 @@
 /spec/fixtures/modules/
 /spec/examples.txt
 /tmp/
+/vendor
 /vendor/
 /convert_report.txt
 .DS_Store
