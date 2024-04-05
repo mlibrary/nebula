@@ -164,3 +164,5 @@ nebula::profile::tsm::serveraddress: tsm.default.invalid
 nebula::jdk_version: '8'
 
 nebula::profile::kubelet::kubelet_version: default.invalid
+
+nebula::profile::kubernetes::apt::location: 'https://pkgs.k8s.io/core:/stable:/vX.YZ/deb/'

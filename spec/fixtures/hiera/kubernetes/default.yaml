@@ -74,3 +74,5 @@ nebula::profile::kubernetes::clusters:
 
 nebula::cifs::credentials::users:
 - kubernetes
+
+nebula::profile::kubernetes::apt::location: 'https://pkgs.k8s.io/core:/stable:/v1.29/deb/'
