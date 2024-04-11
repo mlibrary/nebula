@@ -45,7 +45,11 @@ nebula::profile::kubernetes::clusters:
     private_domain: second.cluster
     control_dns: public.second.cluster
     etcdctl_endpoints: "192.168.2.3:2379,192.168.4.6:2379,192.168.6.9:2379"
-    kubernetes_version: 1.11.9
+    kubernetes_version:
+      major: "1"
+      minor: "11"
+      patch: "9"
+      revision: "1.2"
   implicit_kubernetes_version:
     public_address: 10.0.0.4
     router_address: 172.16.3.1
@@ -74,3 +78,5 @@ nebula::profile::kubernetes::clusters:
 
 nebula::cifs::credentials::users:
 - kubernetes
+
+nebula::profile::kubernetes::apt::location: 'https://pkgs.k8s.io/core:/stable:/v1.29/deb/'

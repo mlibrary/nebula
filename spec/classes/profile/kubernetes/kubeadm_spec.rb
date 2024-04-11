@@ -30,8 +30,8 @@ describe 'nebula::profile::kubernetes::kubeadm' do
       context 'with cluster set to second_cluster' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
 
-        it { is_expected.to contain_package('kubeadm').with_ensure('1.11.9-00') }
-        it { is_expected.to contain_apt__pin('kubeadm').with_version('1.11.9-00') }
+        it { is_expected.to contain_package('kubeadm').with_ensure('1.11.9-1.2') }
+        it { is_expected.to contain_apt__pin('kubeadm').with_version('1.11.9-1.2') }
 
         it do
           is_expected.to contain_file('/etc/sysctl.d/kubernetes_cluster.conf')

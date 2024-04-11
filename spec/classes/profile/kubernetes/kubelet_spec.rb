@@ -76,12 +76,12 @@ describe 'nebula::profile::kubernetes::kubelet' do
 
         it do
           is_expected.to contain_apt__source('kubernetes').with(
-            location: 'https://pkgs.k8s.io/core:/stable:/v1.28/deb/',
+            location: 'https://pkgs.k8s.io/core:/stable:/v1.29/deb/',
             release: '/',
             repos: '',
             key: {
               'id'     => 'DE15B14486CD377B9E876E1A234654DA9A296436',
-              'source' => 'https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key',
+              'source' => 'https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key',
             },
           )
         end
@@ -110,8 +110,8 @@ describe 'nebula::profile::kubernetes::kubelet' do
       context 'with cluster set to second_cluster' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
 
-        it { is_expected.to contain_package('kubelet').with_ensure('1.11.9-00') }
-        it { is_expected.to contain_apt__pin('kubelet').with_version('1.11.9-00') }
+        it { is_expected.to contain_package('kubelet').with_ensure('1.11.9-1.2') }
+        it { is_expected.to contain_apt__pin('kubelet').with_version('1.11.9-1.2') }
         it { is_expected.to contain_firewall('200 Cluster BGP').with_source('10.123.234.0/24') }
       end
     end
