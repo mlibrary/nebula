@@ -48,6 +48,8 @@ describe 'nebula::profile::hathitrust::solr6::catalog' do
         }
       end
 
+      it { is_expected.to contain_class('nebula::profile::loki') }
+
     end
   end
 end

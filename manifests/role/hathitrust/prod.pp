@@ -4,9 +4,12 @@
 
 # HathiTrust production
 #
+# DEPRECATED - only for "classic" solr servers
+#
 # @example
 #   include nebula::role::hathitrust::prod
 class nebula::role::hathitrust::prod {
   include nebula::role::hathitrust
   include nebula::profile::hathitrust::slip
+  include nebula::profile::hathitrust::solr6::classic
 }
