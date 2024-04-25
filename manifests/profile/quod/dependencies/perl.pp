@@ -79,6 +79,7 @@ class nebula::profile::quod::dependencies::perl () {
     'libfile-slurp-perl',
     'libfont-afm-perl',
     'libfont-freetype-perl',
+    'libgeo-ip-perl',
     'libgssapi-perl',
     'libhtml-format-perl',
     'libhtml-form-perl',
@@ -202,6 +203,7 @@ class nebula::profile::quod::dependencies::perl () {
     'File::Namaste',
     'File::Pairtree',
     'File::Value',
+    'IP::Geolocation::MMDB',
     'Mail::Sender',
     'Net::IDN::Encode',
     'OAuth::Lite']:

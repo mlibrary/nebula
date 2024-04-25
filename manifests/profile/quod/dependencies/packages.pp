@@ -13,6 +13,7 @@ class nebula::profile::quod::dependencies::packages () {
     [
       'curl',
       'emacs',
+      'geoip-bin',
       'git',
       'imagemagick',
       'libapache2-mod-authz-umichlib',
@@ -22,4 +23,7 @@ class nebula::profile::quod::dependencies::packages () {
       'oracle-instantclient12.1-devel',
     ]
   )
+  file { '/usr/share/GeoIP':
+    target =>  '/quod/misc/g/geoip'
+  }
 }
