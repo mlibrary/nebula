@@ -6,7 +6,7 @@
 # 
 # Create a volume to use for kubernetes local storage on a worker node
 ##
-# @param volume_name The (conventionally "${UUID}-pvc") name of the volume
+# @param volume_name The name of the volume (conventionally the UUID of the PVC)
 # @param capacity The disk capacity in MB
 
 define nebula::local_storage_volume (
@@ -28,10 +28,10 @@ define nebula::local_storage_volume (
     unless => "/usr/bin/file /mnt/local-pvs/disks/${volume_name} | grep ext4"
   }
 
-  mount { "/mnt/local-pvs/mounts/${volume_name}":
+  mount { "/mnt/local-pvs/mounts/${volume_name}-pvc":
     ensure  => 'mounted',
     device  => "/mnt/local-pvs/disks/${volume_name}",
-    options => "loop,rw,usrquote,grpquota",
+    options => "loop,rw,usrquota,grpquota",
     fstype  => 'ext4',
   }
 }
