@@ -28,7 +28,7 @@ define nebula::local_storage_volume (
     unless => "/usr/bin/file /mnt/local-pvs/disks/${volume_name} | grep ext4"
   }
 
-  mount { "/mnt/local-pvs/mounts/${volume_name}-pvc":
+  mount { "/mnt/local-pvs/mounts/${volume_name}":
     ensure  => 'mounted',
     device  => "/mnt/local-pvs/disks/${volume_name}",
     options => "loop,rw,usrquota,grpquota",
