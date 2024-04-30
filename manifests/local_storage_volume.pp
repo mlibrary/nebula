@@ -18,12 +18,12 @@ define nebula::local_storage_volume (
     ensure => 'directory'
   }
 
-  exec { "make disk file":
+  exec { "make $volume_name disk file":
     command => "dd if=/dev/zero of=/mnt/local-pvs/disks/${volume_name} bs=1048576 count=${mib_capacity}",
     creates => "/mnt/local-pvs/disks/${volume_name}"
   }
 
-  exec { "make it a filesystem":
+  exec { "make $volume_name a filesystem":
     command => "mkfs.ext4 -m 0 /mnt/local-pvs/disks/${volume_name}",
     unless => "file /mnt/local-pvs/disks/${volume_name} | grep ext4"
   }
