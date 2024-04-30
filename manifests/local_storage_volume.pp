@@ -25,7 +25,7 @@ define nebula::local_storage_volume (
 
   exec { "make $volume_name a filesystem":
     command => "/sbin/mkfs.ext4 -m 0 /mnt/local-pvs/disks/${volume_name}",
-    unless => "file /mnt/local-pvs/disks/${volume_name} | grep ext4"
+    unless => "/usr/bin/file /mnt/local-pvs/disks/${volume_name} | grep ext4"
   }
 
   mount { "/mnt/local-pvs/mounts/${volume_name}":
