@@ -1,0 +1,19 @@
+#!/bin/bash
+
+pid=$1
+
+# ensure given a numeric process ID
+[[ "$pid" =~ ^[0-9]+$ ]] || exit 1
+
+# ensure running via sudo
+[[ "$(readlink /proc/$PPID/exe)" == "/usr/bin/sudo" ]] || exit 2
+
+# the grandparent of this process (i.e. the parent of sudo) must be the same as
+# the parent of the process we're checking
+
+parent=$(cut -f 4 -d ' ' "/proc/$pid/stat")
+this_grandpid=$(cut -f 4 -d ' ' "/proc/$PPID/stat")
+
+[[ "$parent" == "$this_grandpid" ]] || exit 3
+
+cat "/proc/$pid/io"
