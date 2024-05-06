@@ -13,7 +13,7 @@ class nebula::role::webhost::htvm::test {
       dport  => [80,443],
       source => $network['block'],
       state  => 'NEW',
-      action => 'accept',
+      jump   => 'accept',
     }
   }
 
