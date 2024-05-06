@@ -27,6 +27,8 @@
     {"name": "puppetlabs/mount_core",      "version_requirement": ">= 1.2.0  < 2.0.0" },
     {"name": "puppetlabs/mysql",           "version_requirement": ">= 15.0.0 < 16.0.0"},
     {"name": "puppetlabs/ntp",             "version_requirement": ">= 10.1.0 < 11.0.0"},
+    {"name": "puppetlabs/postgresql",      "version_requirement": ">= 10.2.0 < 11.0.0"},
+    {"name": "puppetlabs/puppetdb",        "version_requirement": ">= 8.0.1  < 9.0.0" },
     {"name": "puppetlabs/reboot",          "version_requirement": ">= 5.0.0  < 6.0.0" },
     {"name": "puppetlabs/sshkeys_core",    "version_requirement": ">= 2.4.0  < 3.0.0" },
     {"name": "puppetlabs/stdlib",          "version_requirement": ">= 9.4.1  < 10.0.0"},
