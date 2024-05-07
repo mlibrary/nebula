@@ -35,8 +35,8 @@ fixtures:
     mount_core:   {"repo": "puppetlabs/mount_core",   "ref": "1.2.0"}
     mysql:        {"repo": "puppetlabs/mysql",        "ref": "14.0.0"} # 15.0.0 breaks
     ntp:          {"repo": "puppetlabs/ntp",          "ref": "10.1.0"}
-    postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "8.3.0"} # 9.x blocked on puppetdb v7.13, blocks Puppet 8!?
-    puppetdb:     {"repo": "puppetlabs/puppetdb",     "ref": "7.13.0"}
+    #postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "8.3.0"} # 9.x blocked on puppetdb v7.13, blocks Puppet 8!?
+    #puppetdb:     {"repo": "puppetlabs/puppetdb",     "ref": "7.13.0"}
     reboot:       {"repo": "puppetlabs/reboot",       "ref": "5.0.0"}
     sshkeys_core: {"repo": "puppetlabs/sshkeys_core", "ref": "2.4.0"}
     stdlib:       {"repo": "puppetlabs/stdlib",       "ref": "8.6.0"} # ?! dragons...
