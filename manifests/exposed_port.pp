@@ -66,7 +66,7 @@ define nebula::exposed_port(
       dport  => $port,
       source => $cidr['block'],
       state  => 'NEW',
-      jump   => 'accept',
+      action => 'accept',
     }
   }
 }

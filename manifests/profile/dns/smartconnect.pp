@@ -44,7 +44,7 @@ class nebula::profile::dns::smartconnect (
     $nameservers = $other_ns_ips
   }
 
-  class { 'nebula::resolv_conf':
+  class { 'resolv_conf':
     nameservers => concat(['127.0.0.1'], $nameservers),
     searchpath  => lookup('nebula::resolv_conf::searchpath'),
     require     => Service['bind9']

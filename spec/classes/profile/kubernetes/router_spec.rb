@@ -23,7 +23,7 @@ describe 'nebula::profile::kubernetes::router' do
         is_expected.to contain_firewall('001 Do not NAT internal requests')
           .with_table('nat')
           .with_chain('POSTROUTING')
-          .with_jump('accept')
+          .with_action('accept')
           .with_proto('all')
           .with_source('172.28.0.0/14')
           .with_destination('172.28.0.0/14')

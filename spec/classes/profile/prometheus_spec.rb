@@ -180,7 +180,7 @@ describe 'nebula::profile::prometheus' do
             .with_dport(port)
             .with_source(facts[:ipaddress])
             .with_state('NEW')
-            .with_jump('accept')
+            .with_action('accept')
         end
       end
 
@@ -191,7 +191,7 @@ describe 'nebula::profile::prometheus' do
           .with_dport(9100)
           .with_source(facts[:ipaddress])
           .with_state('NEW')
-          .with_jump('accept')
+          .with_action('accept')
       end
 
       context 'with no mlibrary_ip_addresses fact' do
@@ -337,7 +337,7 @@ describe 'nebula::profile::prometheus' do
                 .with_dport(port)
                 .with_source(ip_address)
                 .with_state('NEW')
-                .with_jump('accept')
+                .with_action('accept')
             end
           end
         end

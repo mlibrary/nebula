@@ -138,7 +138,7 @@ class nebula::profile::networking::firewall (
   $firewall_defaults = {
     proto  => 'tcp',
     state  => 'NEW',
-    jump   => 'accept'
+    action => 'accept'
   }
 
   create_resources(firewall,$rules,$firewall_defaults)
@@ -148,18 +148,18 @@ class nebula::profile::networking::firewall (
   firewall { '001 accept related established rules':
     proto  => 'all',
     state  => ['RELATED', 'ESTABLISHED'],
-    jump   => 'accept',
+    action => 'accept',
   }
 
   firewall { '001 accept all to lo interface':
     proto   => 'all',
     iniface => 'lo',
-    jump    => 'accept',
+    action  => 'accept',
   }
 
   firewall { '999 drop all':
     proto  => 'all',
-    jump   => 'drop',
+    action => 'drop',
     before => undef,
   }
 
@@ -167,22 +167,22 @@ class nebula::profile::networking::firewall (
   firewall { '001 accept related established rules (v6)':
     proto    => 'all',
     state    => ['RELATED', 'ESTABLISHED'],
-    jump     => 'accept',
-    protocol => 'ip6tables',
+    action   => 'accept',
+    provider => 'ip6tables',
   }
 
   firewall { '001 accept all to lo interface (v6)':
     proto    => 'all',
     iniface  => 'lo',
-    jump     => 'accept',
-    protocol => 'ip6tables',
+    action   => 'accept',
+    provider => 'ip6tables',
   }
 
   firewall { '999 drop all (v6)':
     proto    => 'all',
-    jump     => 'drop',
+    action   => 'drop',
     before   => undef,
-    protocol => 'ip6tables',
+    provider => 'ip6tables',
   }
 
 }

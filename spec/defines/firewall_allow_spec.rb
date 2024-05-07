@@ -23,7 +23,7 @@ describe 'nebula::firewall_allow' do
             dport: 1234,
             source: '10.0.0.0/32',
             state: 'NEW',
-            jump: 'accept',
+            action: 'accept',
           )
         end
 
@@ -59,7 +59,7 @@ describe 'nebula::firewall_allow' do
             dport: [123, 456, 789],
             source: '10.255.255.255/32',
             state: 'NEW',
-            jump: 'accept',
+            action: 'accept',
           )
         end
       end

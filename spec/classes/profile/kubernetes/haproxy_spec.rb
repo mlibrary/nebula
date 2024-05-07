@@ -66,7 +66,7 @@ describe 'nebula::profile::kubernetes::haproxy' do
                 is_expected.to contain_firewall("200 public #{service}")
                   .with_proto('tcp')
                   .with_state('NEW')
-                  .with_jump('accept')
+                  .with_action('accept')
                   .with_dport(port)
                   .without_source
               end
@@ -81,7 +81,7 @@ describe 'nebula::profile::kubernetes::haproxy' do
                 is_expected.to contain_firewall("200 private #{service}")
                   .with_proto('tcp')
                   .with_state('NEW')
-                  .with_jump('accept')
+                  .with_action('accept')
                   .with_dport(port)
                   .with_source('172.28.0.0/14')
               end

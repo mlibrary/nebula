@@ -23,7 +23,7 @@ describe 'nebula::exposed_port' do
             dport: 22,
             source: '10.0.0.0/16',
             state: 'NEW',
-            jump: 'accept',
+            action: 'accept',
           )
         end
 

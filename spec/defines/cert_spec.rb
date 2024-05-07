@@ -28,7 +28,7 @@ describe 'nebula::cert' do
             .with_proto('tcp')
             .with_dport(80)
             .with_state('NEW')
-            .with_jump('accept')
+            .with_action('accept')
         end
 
         context 'and with additional_domains set to sub.example.invalid' do

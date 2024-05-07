@@ -43,7 +43,7 @@ class nebula::profile::haproxy(
   }
 
   $services.filter |$service, $params| {
-    'floating_ip' in $params
+    $params.has_key('floating_ip')
   }.each |$service, $params| {
     @nebula::haproxy::service { $service :
       cert_source => $cert_source,
@@ -133,7 +133,7 @@ class nebula::profile::haproxy(
     dport  => [80, 443],
     source => $::ipaddress,
     state  => 'NEW',
-    jump   => 'accept',
+    action => 'accept',
     tag    => 'haproxy'
   }
 

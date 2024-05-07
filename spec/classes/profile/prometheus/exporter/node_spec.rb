@@ -110,7 +110,7 @@ describe 'nebula::profile::prometheus::exporter::node' do
           .with_dport(9091)
           .with_source(facts[:ipaddress])
           .with_state('NEW')
-          .with_jump('accept')
+          .with_action('accept')
       end
 
       context 'with both public and private mlibrary_ip_addresses' do
