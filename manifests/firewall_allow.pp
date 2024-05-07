@@ -76,7 +76,7 @@ define nebula::firewall_allow (
       dport  => $port,
       source => $cidr,
       state  => 'NEW',
-      jump   => 'accept',
+      action => 'accept',
     }
   }
 }

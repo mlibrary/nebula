@@ -22,6 +22,6 @@ class nebula::profile::letsencrypt (
     proto  => 'tcp',
     dport  => 80,
     state  => 'NEW',
-    jump   => 'accept',
+    action => 'accept',
   }
 }

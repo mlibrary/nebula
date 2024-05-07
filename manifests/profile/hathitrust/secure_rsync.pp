@@ -69,7 +69,7 @@ class nebula::profile::hathitrust::secure_rsync (
       source    => $network['block'],
       src_range => $network['range'],
       state     => 'NEW',
-      jump      => 'accept',
+      action    => 'accept',
     }
   }
 }

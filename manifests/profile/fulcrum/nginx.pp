@@ -197,6 +197,6 @@ class nebula::profile::fulcrum::nginx (
     proto  => 'tcp',
     dport  => 443,
     state  => 'NEW',
-    jump   => 'accept',
+    action => 'accept',
   }
 }

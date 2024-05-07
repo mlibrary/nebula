@@ -36,7 +36,7 @@ describe 'nebula::profile::kubernetes::dns_server' do
               .with_dport(53)
               .with_source('172.28.0.0/14')
               .with_state('NEW')
-              .with_jump('accept')
+              .with_action('accept')
           end
         end
 

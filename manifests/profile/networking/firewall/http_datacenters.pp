@@ -16,7 +16,7 @@ class nebula::profile::networking::firewall::http_datacenters (
     proto  => 'tcp',
     dport  => [80, 443],
     state  => 'NEW',
-    jump   => 'accept'
+    action => 'accept'
   }
 
   $networks.flatten.each |$network| {

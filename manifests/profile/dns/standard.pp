@@ -9,5 +9,8 @@
 # @example
 #   include nebula::profile::dns::standard
 class nebula::profile::dns::standard {
-  include nebula::resolv_conf
+  class { 'resolv_conf':
+    nameservers => lookup('nebula::resolv_conf::nameservers'),
+    searchpath  => lookup('nebula::resolv_conf::searchpath'),
+  }
 }

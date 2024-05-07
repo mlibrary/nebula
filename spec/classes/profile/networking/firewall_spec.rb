@@ -16,7 +16,7 @@ describe 'nebula::profile::networking::firewall' do
         is_expected.to contain_firewall('001 accept related established rules').with(
           proto: 'all',
           state: %w[RELATED ESTABLISHED],
-          jump: 'accept',
+          action: 'accept',
         )
       end
 
@@ -24,8 +24,8 @@ describe 'nebula::profile::networking::firewall' do
         is_expected.to contain_firewall('001 accept related established rules (v6)').with(
           proto: 'all',
           state: %w[RELATED ESTABLISHED],
-          jump: 'accept',
-          protocol: 'ip6tables',
+          action: 'accept',
+          provider: 'ip6tables',
         )
       end
 
@@ -33,7 +33,7 @@ describe 'nebula::profile::networking::firewall' do
         is_expected.to contain_firewall('001 accept all to lo interface').with(
           proto: 'all',
           iniface: 'lo',
-          jump: 'accept',
+          action: 'accept',
         )
       end
 
@@ -41,8 +41,8 @@ describe 'nebula::profile::networking::firewall' do
         is_expected.to contain_firewall('001 accept all to lo interface (v6)').with(
           proto: 'all',
           iniface: 'lo',
-          jump: 'accept',
-          protocol: 'ip6tables',
+          action: 'accept',
+          provider: 'ip6tables',
         )
       end
 
@@ -53,7 +53,7 @@ describe 'nebula::profile::networking::firewall' do
           dport: %w[8081 8082],
           source: '10.2.3.4',
           state: 'NEW',
-          jump: 'accept',
+          action: 'accept',
         )
       end
 
@@ -63,7 +63,7 @@ describe 'nebula::profile::networking::firewall' do
           dport: 123,
           source: '10.4.5.6',
           state: 'NEW',
-          jump: 'accept',
+          action: 'accept',
         )
       end
 
@@ -77,7 +77,7 @@ describe 'nebula::profile::networking::firewall' do
           toports: '1234',
         )
         is_expected.not_to contain_firewall('900 port forwarding: an advanced rule').with(
-          jump: 'accept',
+          action: 'accept',
           state: 'NEW',
         )
       end
@@ -85,15 +85,15 @@ describe 'nebula::profile::networking::firewall' do
       it do
         is_expected.to contain_firewall('999 drop all').with(
           proto: 'all',
-          jump: 'drop',
+          action: 'drop',
         )
       end
 
       it do
         is_expected.to contain_firewall('999 drop all (v6)').with(
           proto: 'all',
-          jump: 'drop',
-          protocol: 'ip6tables',
+          action: 'drop',
+          provider: 'ip6tables',
         )
       end
 
