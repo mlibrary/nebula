@@ -28,7 +28,7 @@ fixtures:
     concat:       {"repo": "puppetlabs/concat",       "ref": "7.4.0"} # held back by postgres (and in turn by puppetdb v7.13)
     cron_core:    {"repo": "puppetlabs/cron_core",    "ref": "1.2.0"}
     docker:       {"repo": "puppetlabs/docker",       "ref": "7.0.0"} # 8.0.0 breaks
-    firewall:     {"repo": "puppetlabs/firewall",     "ref": "3.6.0"} # 5 breaks puppetdb v7.13, 6.0.0 needs stdlib 9, 7.0.0 breaks tests
+    firewall:     {"repo": "puppetlabs/firewall",     "ref": "5.0.0"}
     host_core:    {"repo": "puppetlabs/host_core",    "ref": "1.2.0"}
     inifile:      {"repo": "puppetlabs/inifile",      "ref": "5.4.1"} # held back by puppetdb v7.13
     lvm:          {"repo": "puppetlabs/lvm",          "ref": "2.0.3"}

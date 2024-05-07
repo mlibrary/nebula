@@ -20,7 +20,7 @@
     {"name": "puppetlabs/concat",       "version_requirement": ">= 7.4.0  < 8.0.0"},
     {"name": "puppetlabs/cron_core",    "version_requirement": ">= 1.2.0  < 2.0.0"},
     {"name": "puppetlabs/docker",       "version_requirement": ">= 7.0.0  < 8.0.0"},
-    {"name": "puppetlabs/firewall",     "version_requirement": "3.6.0"},
+    {"name": "puppetlabs/firewall",     "version_requirement": "5.0.0"},
     {"name": "puppetlabs/host_core",    "version_requirement": ">= 1.2.0  < 2.0.0"},
     {"name": "puppetlabs/inifile",      "version_requirement": ">= 5.4.1  < 6.0.0"},
     {"name": "puppetlabs/lvm",          "version_requirement": ">= 2.0.3  < 3.0.0"},
