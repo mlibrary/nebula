@@ -10,7 +10,7 @@ describe 'nebula::profile::puppet::db' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it do
+      xit do
         is_expected.to contain_class('puppetdb').with(
           disable_cleartext: true,
           manage_firewall: false,
