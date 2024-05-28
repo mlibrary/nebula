@@ -52,14 +52,6 @@ class nebula::profile::apt (
     Apt::Source <| |> -> Package <| tag != 'package-preinstalled' |>
     Class['apt::update'] -> Package <| |>
 
-    # delete this after 2018-04-19
-    cron { 'apt-get update':
-      ensure  => 'absent',
-      command => '/usr/bin/apt-get update -qq',
-      hour    => '1',
-      minute  => '0',
-    }
-
     class { 'apt':
       purge  => {
         'sources.list'   => $purge,
