@@ -25,8 +25,8 @@ class nebula::profile::elastic (
     release  => 'stable',
     repos    => 'main',
     key      => {
-      'id'     => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-      'server' => 'keyserver.ubuntu.com',
+      'name'   => 'elastic.co.asc',
+      'source' => 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
     },
     include  => {
       'src' => false,

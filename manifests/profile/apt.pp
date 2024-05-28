@@ -31,7 +31,7 @@ class nebula::profile::apt (
         release  => "${::lsbdistcodename}/current",
         repos    => 'non-free',
         key      => {
-          'id'     => '57446EFDE098E5C934B69C7DC208ADDE26C2B797',
+          'name'   => 'hpe.asc',
           'source' => 'https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub',
         },
       }
@@ -97,7 +97,7 @@ class nebula::profile::apt (
       release  => $::lsbdistcodename,
       repos    => 'main',
       key      => {
-        'id'     => '3B04D753C9050D9A5D343F39843C48A565F8F04B',
+        'name'   => 'adoptium.asc',
         'source' => 'https://packages.adoptium.net/artifactory/api/gpg/key/public'
       }
     }
@@ -106,8 +106,8 @@ class nebula::profile::apt (
       location => 'http://apt.puppetlabs.com',
       repos    => $puppet_repo,
       key      => {
-        'id'     => 'D6811ED3ADEEB8441AF5AA8F4528B6CD9E61EF26',
-        'source' => 'https://apt.puppetlabs.com/DEB-GPG-KEY-puppet-20250406'
+        'name'   => 'puppetlabs.gpg',
+        'source' => 'https://apt.puppetlabs.com/keyring.gpg'
       }
     }
 

@@ -6,6 +6,8 @@
 #
 # @example
 #   include nebula::profile::apt::mono
+# THIS IS BROKEN ON BULLSEYE, latest supported dists are buster and focal
+# see: https://download.mono-project.com/repo/debian/index.html
 class nebula::profile::apt::mono {
   apt::source { 'mono-official-stable':
     location => 'http://download.mono-project.com/repo/debian',

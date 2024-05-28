@@ -16,10 +16,6 @@ describe 'nebula::profile::elastic' do
           location: 'https://artifacts.elastic.co/packages/5.x/apt',
           release: 'stable',
           repos: 'main',
-          key: {
-            'id'     => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-            'server' => 'keyserver.ubuntu.com',
-          },
           include: {
             'src' => false,
             'deb' => true,

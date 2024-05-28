@@ -11,7 +11,7 @@ class nebula::profile::tesseract (
   apt::source { 'tesseract':
     location     => 'https://notesalexp.org/debian/bullseye/',
     key          =>  {
-      id     => '882DCDF8BE9972B21933BA8282F409933771AC78',
+      name   => 'tesseract-notesalexp.org.asc',
       source => 'https://notesalexp.org/debian/alexp_key.asc'
     },
     release      => 'bullseye',
