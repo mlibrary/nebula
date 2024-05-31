@@ -36,6 +36,15 @@ class nebula::profile::apt (
         },
       }
     }
+
+    apt::source { 'puppet':
+      location => 'http://apt.puppetlabs.com',
+      repos    => $puppet_repo,
+      key      => {
+        'name'   => 'puppetlabs.gpg',
+        'source' => 'https://apt.puppetlabs.com/keyring.gpg'
+      }
+    }
   }
 
   if($::operatingsystem == 'Debian') {
@@ -99,15 +108,6 @@ class nebula::profile::apt (
       key      => {
         'name'   => 'adoptium.asc',
         'source' => 'https://packages.adoptium.net/artifactory/api/gpg/key/public'
-      }
-    }
-
-    apt::source { 'puppet':
-      location => 'http://apt.puppetlabs.com',
-      repos    => $puppet_repo,
-      key      => {
-        'name'   => 'puppetlabs.gpg',
-        'source' => 'https://apt.puppetlabs.com/keyring.gpg'
       }
     }
 
