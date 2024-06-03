@@ -130,7 +130,9 @@ class nebula::profile::apt (
       repos    => 'main',
       key      => {
         'name'   => 'adoptium.asc',
-        'source' => 'https://packages.adoptium.net/artifactory/api/gpg/key/public'
+        # Real source. Mirrored in files so we don't touch mtime on every puppet run.
+        # 'source' => 'https://packages.adoptium.net/artifactory/api/gpg/key/public',
+        'source' => 'puppet:///modules/nebula/apt/keyrings/adoptium.asc',
       }
     }
 
