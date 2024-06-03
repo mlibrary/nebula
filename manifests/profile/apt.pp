@@ -55,6 +55,19 @@ class nebula::profile::apt (
 
     # not used for os packages, and all added repos should use /etc/apt/keyrings
     file { '/etc/apt/trusted.gpg': ensure => absent }
+
+    # run apt update and cleanup sources on Ubuntu too
+    # TODO: merge Debian and Ubuntu codepaths
+    if($::operatingsystem != 'Debian') {
+      class { 'apt':
+        purge  => {
+          'sources.list.d' => $purge,
+        },
+        update => {
+          frequency => 'daily',
+        },
+      }
+    }
   }
 
   if($::operatingsystem == 'Debian') {
