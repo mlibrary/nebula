@@ -45,6 +45,16 @@ class nebula::profile::apt (
         'source' => 'https://apt.puppetlabs.com/keyring.gpg'
       }
     }
+
+    # replaced by /etc/apt/keyrings/puppetlabs.gpg, but still automatically created on new vms
+    # remove this once vm creation no longer adds these files
+    tidy { '/etc/apt/trusted.gpg.d/':
+      recurse => true,
+      matches => [ 'puppet*.gpg' ],
+    }
+
+    # not used for os packages, and all added repos should use /etc/apt/keyrings
+    file { '/etc/apt/trusted.gpg': ensure => absent }
   }
 
   if($::operatingsystem == 'Debian') {
