@@ -13,6 +13,10 @@ class nebula::profile::apt::yaz {
     include  => {
       'src' => true,
       'deb' => true,
-    }
+    },
+    key      => {
+      'name'   => 'yaz-indexdata.dk.gpg',
+      'source' => 'https://download.indexdata.com/debian/indexdata.gpg',
+    },
   }
 }

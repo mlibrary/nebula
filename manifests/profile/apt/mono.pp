@@ -13,5 +13,9 @@ class nebula::profile::apt::mono {
     location => 'http://download.mono-project.com/repo/debian',
     release  => "stable-${::lsbdistcodename}",
     repos    => 'main',
+    key      => {
+      'name'   => 'mono-project.asc',
+      'source' => 'https://download.mono-project.com/repo/xamarin.gpg',
+    },
   }
 }
