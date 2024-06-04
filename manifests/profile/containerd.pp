@@ -17,7 +17,7 @@ class nebula::profile::containerd {
     release      => $::lsbdistcodename,
     repos        => 'stable',
     key          => {
-      id     => '9DC858229FC7DD38854AE2D88D81803C0EBFCD88',
+      name   => 'docker.asc',
       source => 'https://download.docker.com/linux/debian/gpg',
     },
     include      => {

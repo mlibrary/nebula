@@ -31,8 +31,40 @@ class nebula::profile::apt (
         release  => "${::lsbdistcodename}/current",
         repos    => 'non-free',
         key      => {
-          'id'     => '57446EFDE098E5C934B69C7DC208ADDE26C2B797',
+          'name'   => 'hpe.asc',
           'source' => 'https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub',
+        },
+      }
+    }
+
+    apt::source { 'puppet':
+      location => 'http://apt.puppetlabs.com',
+      repos    => $puppet_repo,
+      key      => {
+        'name'   => 'puppetlabs.gpg',
+        'source' => 'https://apt.puppetlabs.com/keyring.gpg'
+      }
+    }
+
+    # replaced by /etc/apt/keyrings/puppetlabs.gpg, but still automatically created on new vms
+    # remove this once vm creation no longer adds these files
+    tidy { '/etc/apt/trusted.gpg.d/':
+      recurse => true,
+      matches => [ 'puppet*.gpg' ],
+    }
+
+    # not used for os packages, and all added repos should use /etc/apt/keyrings
+    file { '/etc/apt/trusted.gpg': ensure => absent }
+
+    # run apt update and cleanup sources on Ubuntu too
+    # TODO: merge Debian and Ubuntu codepaths
+    if($::operatingsystem != 'Debian') {
+      class { 'apt':
+        purge  => {
+          'sources.list.d' => $purge,
+        },
+        update => {
+          frequency => 'daily',
         },
       }
     }
@@ -51,14 +83,6 @@ class nebula::profile::apt (
 
     Apt::Source <| |> -> Package <| tag != 'package-preinstalled' |>
     Class['apt::update'] -> Package <| |>
-
-    # delete this after 2018-04-19
-    cron { 'apt-get update':
-      ensure  => 'absent',
-      command => '/usr/bin/apt-get update -qq',
-      hour    => '1',
-      minute  => '0',
-    }
 
     class { 'apt':
       purge  => {
@@ -105,17 +129,10 @@ class nebula::profile::apt (
       release  => $::lsbdistcodename,
       repos    => 'main',
       key      => {
-        'id'     => '3B04D753C9050D9A5D343F39843C48A565F8F04B',
-        'source' => 'https://packages.adoptium.net/artifactory/api/gpg/key/public'
-      }
-    }
-
-    apt::source { 'puppet':
-      location => 'http://apt.puppetlabs.com',
-      repos    => $puppet_repo,
-      key      => {
-        'id'     => 'D6811ED3ADEEB8441AF5AA8F4528B6CD9E61EF26',
-        'source' => 'https://apt.puppetlabs.com/DEB-GPG-KEY-puppet-20250406'
+        'name'   => 'adoptium.asc',
+        # Real source. Mirrored in files so we don't touch mtime on every puppet run.
+        # 'source' => 'https://packages.adoptium.net/artifactory/api/gpg/key/public',
+        'source' => 'puppet:///modules/nebula/apt/keyrings/adoptium.asc',
       }
     }
 

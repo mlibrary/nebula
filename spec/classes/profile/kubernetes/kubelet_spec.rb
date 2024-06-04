@@ -80,7 +80,7 @@ describe 'nebula::profile::kubernetes::kubelet' do
             release: '/',
             repos: '',
             key: {
-              'id'     => 'DE15B14486CD377B9E876E1A234654DA9A296436',
+              'name'   => 'k8s.io.asc',
               'source' => 'https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key',
             },
           )

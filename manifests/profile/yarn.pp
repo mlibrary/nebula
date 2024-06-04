@@ -11,7 +11,7 @@ class nebula::profile::yarn (
   apt::source { 'yarn':
     location     => 'https://dl.yarnpkg.com/debian/',
     key          =>  {
-      id     => '72ECF46A56B4AD39C907BBB71646B01B86E50310',
+      name   => 'yarnpkg.asc',
       source => 'https://dl.yarnpkg.com/debian/pubkey.gpg'
     },
     release      => 'stable',
