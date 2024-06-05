@@ -67,7 +67,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
       {
         comment      => 'Deep Blue Data',
         rewrite_cond => '%{ENV:badrobot} !(^true$)',
-        rewrite_rule => '^(/data.*)$ https://app-deepbluedata.deepblue.lib.umich.edu:30060$1 [P]',
+        rewrite_rule => '^(/data.*)$ http://app-deepbluedata:30060$1 [P]',
       },
       {
         comment      => 'Deep Blue Documents; dont proxy auth_oidc',
