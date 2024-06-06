@@ -244,7 +244,7 @@ groups:
   - alert: DeepBlueDataProdFedoraDown
     annotations:
       summary: 'Fedora is unresponsive on node {{$labels.hostname}}.'
-    expr: 'time() - dbd_fedora_check_last_success > 65'
+    expr: 'time() - dbd_fedora_check_last_success > 300'
     for: 15m
     labels:
       severity: page
