@@ -183,6 +183,10 @@ describe 'nebula::profile::haproxy' do
         end
       end
 
+      describe 'haproxy errors' do
+        it { is_expected.to contain_file('/etc/haproxy/errors/hsts400.http').with_source('puppet:///modules/nebula/haproxy/errors/hsts400.http') }
+      end
+
       describe 'base keepalived config file' do
         let(:file) { keepalived_conf }
 

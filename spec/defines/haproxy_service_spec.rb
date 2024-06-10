@@ -71,6 +71,7 @@ describe 'nebula::haproxy::service' do
               bind 1.2.3.4:443 ssl crt /etc/ssl/private/svc1
               stats uri /haproxy?stats
               http-response set-header "Strict-Transport-Security" "max-age=31536000"
+              errorfile 400 /etc/haproxy/errors/hsts400.http
               http-request set-header X-Client-IP %ci
               http-request set-header X-Forwarded-Proto https
               default_backend svc1-dc1-https-back
