@@ -13,6 +13,7 @@ bind <%= @floating_ip %>:<%= @protocol_options['port'] %><%= @protocol_options['
 stats uri /haproxy?stats
 <% if @protocol == "https" -%>
 http-response set-header "Strict-Transport-Security" "max-age=31536000"
+errorfile 400 /etc/haproxy/errors/hsts400.http
 <% end -%>
 http-request set-header X-Client-IP %ci
 http-request set-header X-Forwarded-Proto <%= @protocol %>

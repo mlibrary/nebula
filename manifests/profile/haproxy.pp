@@ -19,20 +19,19 @@ class nebula::profile::haproxy(
     master => $master
   }
 
-  file { '/etc/haproxy/haproxy.cfg':
-    ensure  => 'present',
-    mode    => '0644',
-    content => template('nebula/profile/haproxy/haproxy.cfg.erb'),
-    require => Package['haproxy'],
-    notify  => Service['haproxy'],
-  }
-
-  file { '/etc/default/haproxy':
-    ensure  => 'present',
-    mode    => '0644',
-    content => template('nebula/profile/haproxy/default.erb'),
-    require => Package['haproxy'],
-    notify  => Service['haproxy'],
+  file {
+    default:
+      ensure  => 'present',
+      mode    => '0644',
+      require => Package['haproxy'],
+      notify  => Service['haproxy'],
+    ;
+    '/etc/haproxy/haproxy.cfg':
+      content => template('nebula/profile/haproxy/haproxy.cfg.erb');
+    '/etc/default/haproxy':
+      content => template('nebula/profile/haproxy/default.erb');
+    '/etc/haproxy/errors/hsts400.http':
+      source  => 'puppet:///modules/nebula/haproxy/errors/hsts400.http';
   }
 
   file { '/etc/ssl/private' :
