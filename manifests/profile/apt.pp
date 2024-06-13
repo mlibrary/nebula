@@ -17,6 +17,8 @@ class nebula::profile::apt (
 ) {
 
   if($facts['os']['family'] == 'Debian') {
+    package { 'aptitude': }
+
     # Ensure that apt knows to never ever install recommended packages
     # before it installs any packages.
     File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
