@@ -210,4 +210,7 @@ class nebula::profile::hathitrust::apache (
     order  =>  2
   }
 
+  nebula::log { 'apache':
+    files => ["/var/log/apache2/babel/access.log","/var/log/apache2/babel/error.log"]
+  }
 }

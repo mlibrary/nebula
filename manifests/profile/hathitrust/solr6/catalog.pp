@@ -59,4 +59,8 @@ class nebula::profile::hathitrust::solr6::catalog (
     minute  => $cron_m,
     command => "/usr/local/bin/index-release > /tmp/index-release.log 2>&1 || /usr/bin/mail -s '${facts['networking']['hostname']} catalog index release problem' ${mail_recipient} < /tmp/index-release.log",
   }
+
+  nebula::log { 'catalog_solr':
+    files => ["/var/lib/solr/logs/solr.log"],
+  }
 }

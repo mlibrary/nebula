@@ -1,0 +1,30 @@
+// This file is managed by Puppet (templates/profile/loki/config.alloy.erb)
+//
+// For a full configuration reference, see https://grafana.com/docs/alloy/latest/
+//
+
+logging {
+  level    = "warn"
+  format   = "logfmt"
+  write_to = [loki.process.service__alloy.receiver]
+}
+
+loki.process "service__alloy" {
+  stage.static_labels {values = {"service" = "alloy"}}
+  forward_to = [loki.process.hostname.receiver]
+}
+
+loki.process "hostname" {
+  stage.static_labels {values = {"hostname" = "<%= @hostname %>",}}
+  forward_to = [loki.write.loki.receiver]
+}
+
+loki.write "loki" {
+  endpoint {
+    url = "<%= @endpoint_url %>"
+    tls_config {
+      cert_file = "/var/lib/alloy/crt.pem"
+      key_file  = "/var/lib/alloy/crt.key"
+    }
+  }
+}
