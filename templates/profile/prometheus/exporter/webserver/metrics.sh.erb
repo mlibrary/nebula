@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+# Managed by puppet (nebula/profile/prometheus/exporter/webserver/metrics.sh.erb)
+set -eo pipefail
+IFS=$'\n\t'
+PROG="$0"
+USAGE="[-h]"
+<% if @target_mariadb.empty? -%>
+ENABLE_MARIADB_CHECK="false"
+<% else -%>
+ENABLE_MARIADB_CHECK="true"
+DB_HOST="<%= @target_mariadb["hostname"] %>"
+DB_NAME="<%= @target_mariadb["database"] %>"
+DB_USER="<%= @target_mariadb["username"] %>"
+DB_PASS="<%= @target_mariadb["password"] %>"
+<% end -%>
+<% if @target_nfs.empty? -%>
+NFS_MOUNTS=()
+<% else -%>
+NFS_MOUNTS=("<%= @target_nfs.join('" "') %>")
+<% end -%>
+<% if @target_solr.empty? -%>
+SOLR_INSTANCES=()
+<% else -%>
+SOLR_INSTANCES=("<%= @target_solr.join('" "') %>")
+<% end -%>
+ENABLE_SHIBD_CHECK="<%= @target_shibd %>"
+
+errorout() {
+  echo "usage: $PROG $USAGE" >&2
+  [ -n "$1" ] && echo "${PROG}: error: $@" >&2
+  exit 1
+}
+
+printhelp() {
+  cat <<EOF
+usage: $PROG $USAGE
+
+optional arguments:
+ -h               Show this help message and exit
+EOF
+}
+
+if [ "$1" = "--help" ]; then
+  printhelp
+  exit 0
+fi
+
+while getopts ':h' opt; do
+  case "$opt" in
+    h)
+      printhelp
+      exit 0
+      ;;
+
+    ?)
+      errorout "unrecognized argument: \`-$opt'"
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+main() {
+  print_headers
+  $ENABLE_MARIADB_CHECK && check_mariadb
+  [ -n "${NFS_MOUNTS[0]}" ] && check_nfs_mounts
+  [ -n "${SOLR_INSTANCES[0]}" ] && check_solr_instances
+  $ENABLE_SHIBD_CHECK && check_shibd
+}
+
+print_headers() {
+  echo "Content-Type: text/plain; charset=utf-8"
+  echo ""
+}
+
+check_mariadb() {
+  echo "# HELP mlibrary_webserver_mariadb_up Check whether mariadb is up"
+  echo "# TYPE mlibrary_webserver_mariadb_up gauge"
+  if mariadb_is_ok; then
+    echo "mlibrary_webserver_mariadb_up 1"
+  else
+    echo "mlibrary_webserver_mariadb_up 0"
+  fi
+}
+
+mariadb_is_ok() {
+  MYSQL_PWD="$DB_PASS" mariadb-check -c -h "$DB_HOST" -u "$DB_USER" "$DB_NAME" > /dev/null 2> /dev/null
+}
+
+check_nfs_mounts() {
+  echo "# HELP mlibrary_webserver_nfs_mount_up Check whether NFS mount is up"
+  echo "# TYPE mlibrary_webserver_nfs_mount_up gauge"
+  for mount in "${NFS_MOUNTS[@]}"; do
+    if nfs_mount_is_ok "$mount"; then
+      echo "mlibrary_webserver_nfs_mount_up{mountpoint=\"$mount\"} 1"
+    else
+      echo "mlibrary_webserver_nfs_mount_up{mountpoint=\"$mount\"} 0"
+    fi
+  done
+}
+
+nfs_mount_is_ok() {
+  grep -qs " $1 " "/proc/mounts" && timeout 1 ls "$1" > /dev/null 2> /dev/null
+}
+
+check_solr_instances() {
+  echo "# HELP mlibrary_webserver_solr_instance_up Check whether Solr instance is up"
+  echo "# TYPE mlibrary_webserver_solr_instance_up gauge"
+  for solr in "${SOLR_INSTANCES[@]}"; do
+    if solr_instance_is_ok "$solr"; then
+      echo "mlibrary_webserver_solr_instance_up{url=\"$solr\"} 1"
+    else
+      echo "mlibrary_webserver_solr_instance_up{url=\"$solr\"} 0"
+    fi
+  done
+}
+
+solr_instance_is_ok() {
+  wget -q -T 1 -t 5 -O - "$1/admin/ping" > /dev/null 2> /dev/null
+}
+
+check_shibd() {
+  echo "# HELP mlibrary_webserver_shibd_up Check whether shibd is up"
+  echo "# TYPE mlibrary_webserver_shibd_up gauge"
+  if shibd_is_ok; then
+    echo "mlibrary_webserver_shibd_up 1"
+  else
+    echo "mlibrary_webserver_shibd_up 0"
+  fi
+}
+
+shibd_is_ok() {
+  timeout 1 pgrep -x "shibd" > /dev/null 2> /dev/null
+}
+
+main "$@"
