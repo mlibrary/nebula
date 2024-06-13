@@ -80,12 +80,7 @@ describe 'nebula::profile::apt' do
       it { is_expected.to contain_apt__source('local').with_architecture('amd64') }
 
       case os
-      when 'debian-8-x86_64'
-        it do
-          is_expected.to contain_apt__source('security')
-            .with_location('http://security.debian.org/')
-        end
-      when 'debian-9-x86_64'
+      when /^debian/
         it do
           is_expected.to contain_apt__source('security')
             .with_location('http://security.debian.org/debian-security')
@@ -109,7 +104,7 @@ describe 'nebula::profile::apt' do
           it do
             is_expected.to contain_apt__source('local').with(location: 'http://somehost.example.invalid/debs',
                                                              architecture: 'amd64',
-                                                             release: 'stretch',
+                                                             release: "#{facts[:lsbdistcodename]}",
                                                              key: params[:local_repo]['key'],
                                                              repos: 'main')
           end
@@ -124,6 +119,25 @@ describe 'nebula::profile::apt' do
             is_expected.to contain_class('apt::backports')
               .with_location('http://ftp.us.debian.org/debian/')
           end
+        end
+      when /^ubuntu/
+        it do
+          is_expected.to contain_apt__source('main')
+            .with_location('http://us.archive.ubuntu.com/ubuntu')
+            .with_repos('main restricted universe')
+            .with_release("#{facts[:lsbdistcodename]}")
+          is_expected.to contain_apt__source('updates')
+            .with_location('http://us.archive.ubuntu.com/ubuntu')
+            .with_repos('main restricted universe')
+            .with_release("#{facts[:lsbdistcodename]}-updates")
+          is_expected.to contain_apt__source('security')
+            .with_location('http://us.archive.ubuntu.com/ubuntu')
+            .with_repos('main restricted universe')
+            .with_release("#{facts[:lsbdistcodename]}-security")
+          is_expected.to contain_apt__source('backports')
+            .with_location('http://us.archive.ubuntu.com/ubuntu')
+            .with_repos('main restricted universe')
+            .with_release("#{facts[:lsbdistcodename]}-backports")
         end
       end
 

@@ -10,12 +10,46 @@
 #   include nebula::profile::apt
 class nebula::profile::apt (
   String $mirror,
+  String $ubuntu_mirror = "http://us.archive.ubuntu.com/ubuntu",
   String $puppet_repo,
   Boolean $purge = true,
   Optional[Hash] $local_repo = undef,
 ) {
 
   if($facts['os']['family'] == 'Debian') {
+    # Ensure that apt knows to never ever install recommended packages
+    # before it installs any packages.
+    File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
+
+    # Ensure that apt repos are set up and updated before attempting to install a
+    # new package. Tag some packages as 'preinstalled' to avoid dependency cycles.
+    ensure_packages(['apt-transport-https','dirmngr'], {
+      tag => 'package-preinstalled'
+    })
+
+    Apt::Source <| |> -> Package <| tag != 'package-preinstalled' |>
+    Class['apt::update'] -> Package <| |>
+
+    class { 'apt':
+      purge  => {
+        'sources.list'   => $purge,
+        'sources.list.d' => $purge,
+        'preferences'    => $purge,
+        'preferences.d'  => $purge,
+      },
+      update => {
+        frequency => 'daily',
+      },
+    }
+
+    file { '/etc/apt/apt.conf.d/99no-recommends':
+      content => template('nebula/profile/apt/apt_no_recommends.erb'),
+    }
+
+    file { '/etc/apt/apt.conf.d/99force-ipv4':
+      content => template('nebula/profile/apt/apt_no_ipv6.erb'),
+    }
+
     if $local_repo {
       apt::source { 'local':
         *            => $local_repo,
@@ -55,47 +89,10 @@ class nebula::profile::apt (
 
     # not used for os packages, and all added repos should use /etc/apt/keyrings
     file { '/etc/apt/trusted.gpg': ensure => absent }
-
-    # run apt update and cleanup sources on Ubuntu too
-    # TODO: merge Debian and Ubuntu codepaths
-    if($::operatingsystem != 'Debian') {
-      class { 'apt':
-        purge  => {
-          'sources.list.d' => $purge,
-        },
-        update => {
-          frequency => 'daily',
-        },
-      }
-    }
   }
 
   if($::operatingsystem == 'Debian') {
-    # Ensure that apt knows to never ever install recommended packages
-    # before it installs any packages.
-    File['/etc/apt/apt.conf.d/99no-recommends'] -> Package<| |>
-
-    # Ensure that apt repos are set up and updated before attempting to install a
-    # new package. Tag some packages as 'preinstalled' to avoid dependency cycles.
-    ensure_packages(['apt-transport-https','dirmngr'], {
-      tag => 'package-preinstalled'
-    })
-
-    Apt::Source <| |> -> Package <| tag != 'package-preinstalled' |>
-    Class['apt::update'] -> Package <| |>
-
-    class { 'apt':
-      purge  => {
-        'sources.list'   => $purge,
-        'sources.list.d' => $purge,
-        'preferences'    => $purge,
-        'preferences.d'  => $purge,
-      },
-      update => {
-        frequency => 'daily',
-      },
-    }
-
+    # port to DEB822 before upgrade to Debian 12
     apt::source { 'main':
       location => $mirror,
       repos    => 'main contrib non-free',
@@ -135,13 +132,18 @@ class nebula::profile::apt (
         'source' => 'puppet:///modules/nebula/apt/keyrings/adoptium.asc',
       }
     }
-
-    file { '/etc/apt/apt.conf.d/99no-recommends':
-      content => template('nebula/profile/apt/apt_no_recommends.erb'),
+  } elsif($::operatingsystem == 'Ubuntu') {
+    # port to DEB822 before upgrade to 24.04
+    apt::source {
+      default:
+        location => $ubuntu_mirror,
+        repos    => 'main restricted universe',
+      ;
+      'main'     : release => "${::lsbdistcodename}";
+      'updates'  : release => "${::lsbdistcodename}-updates";
+      'backports': release => "${::lsbdistcodename}-backports";
+      'security' : release => "${::lsbdistcodename}-security";
     }
 
-    file { '/etc/apt/apt.conf.d/99force-ipv4':
-      content => template('nebula/profile/apt/apt_no_ipv6.erb'),
-    }
   }
 }
