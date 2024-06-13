@@ -151,5 +151,3 @@ nebula::profile::hathitrust::solr6::lss::mail_recipient: nobody@default.invalid
 nebula::profile::hathitrust::solr6::lss::solr_cores:
   - "66"
   - "99"
-
-nebula::profile::hathitrust::loki_endpoint_url: "https://fake.domain.invalid/loki/api/v1/push"

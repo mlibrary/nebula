@@ -23,6 +23,11 @@ describe 'nebula::profile::hathitrust::apache' do
 
       it { is_expected.to contain_file('/usr/local/lib/cgi-bin/monitor/monitor.pl') }
 
+      it 'sends logs to loki' do
+        is_expected.to contain_class('nebula::profile::loki')
+        is_expected.to contain_file('/etc/alloy/apache.alloy')
+      end
+
       snippets = [
         <<~EOT,
           <Directory "/htapps/babel/imgsrv/cgi">

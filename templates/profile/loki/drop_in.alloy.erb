@@ -1,0 +1,16 @@
+// This file is managed by Puppet (templates/profile/loki/drop_in.alloy.erb)
+//
+// For a full configuration reference, see https://grafana.com/docs/alloy/latest/
+//
+
+<% @files.each_with_index { |file,i| -%>
+loki.source.file "<%= "#{@service}_#{i}" -%>" {
+  targets    = [{"__path__" = "<%= file -%>"}]
+  forward_to = [loki.process.service__<%= @service -%>.receiver]
+}
+<% } -%>
+
+loki.process "service__<%= @service -%>" {
+  stage.static_labels {values = {"service" = "<%= @service -%>"}}
+  forward_to = [loki.process.hostname.receiver]
+}

@@ -12,7 +12,6 @@ class nebula::profile::hathitrust::solr6::catalog (
   String $release_flag_prefix = lookup('nebula::profile::hathitrust::solr6::release_flag_prefix', default_value => ''),
   String $mirror_site_ip = lookup('nebula::profile::hathitrust::solr6::mirror_site_ip'),
   String $mail_recipient = lookup('nebula::profile::hathitrust::solr6::mail_recipient'),
-  String $loki_endpoint_url = lookup('nebula::profile::hathitrust::loki_endpoint_url'),
 ){
   class { 'nebula::profile::hathitrust::solr6':
     port => $port,
@@ -61,11 +60,7 @@ class nebula::profile::hathitrust::solr6::catalog (
     command => "/usr/local/bin/index-release > /tmp/index-release.log 2>&1 || /usr/bin/mail -s '${facts['networking']['hostname']} catalog index release problem' ${mail_recipient} < /tmp/index-release.log",
   }
 
-  class { 'nebula::profile::loki':
-    log_files => {
-      "catalog_solr" => ["/var/lib/solr/logs/solr.log"],
-    },
-    loki_endpoint_url => $loki_endpoint_url,
+  nebula::log { 'catalog_solr':
+    files => ["/var/lib/solr/logs/solr.log"],
   }
-
 }

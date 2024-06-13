@@ -13,7 +13,6 @@ class nebula::profile::hathitrust::apache (
   String $domain = 'hathitrust.org',
   String $sdrroot = '/htapps/babel',
   String $monitoring_user = 'haproxyctl',
-  String $loki_endpoint_url = lookup('nebula::profile::hathitrust::loki_endpoint_url'),
   Optional[Hash] $monitoring_pubkey = undef
 ) {
 
@@ -211,11 +210,7 @@ class nebula::profile::hathitrust::apache (
     order  =>  2
   }
 
-  class { 'nebula::profile::loki':
-    log_files => {
-      "apache" => ["/var/log/apache2/babel/access.log","/var/log/apache2/babel/error.log"],
-    },
-    loki_endpoint_url => $loki_endpoint_url,
+  nebula::log { 'apache':
+    files => ["/var/log/apache2/babel/access.log","/var/log/apache2/babel/error.log"]
   }
-
 }

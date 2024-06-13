@@ -5,24 +5,8 @@
 # @example
 #   include nebula::profile::loki
 #
-#   class { 'nebula::profile::loki':
-#     log_files => {
-#       # service name becomes a tag in loki
-#       "service_name" => ["/path/to/log/file.log","/another/log/path.log"]
-#     }
-#   }
-#
-#   class { 'nebula::profile::loki':
-#     log_files => {
-#       "apache" => ["/var/log/apache.log", "/var/log/apache.err"],
-#       "solr" => ["/var/log/solr.log"],
-#     }
-#   }
-#
-#
 class nebula::profile::loki (
-  String $loki_endpoint_url = 'https://loki-gateway.loki/loki/api/v1/push',
-  Hash[String, Array[String]] $log_files = {},
+  String $endpoint_url = 'https://loki-gateway.loki/loki/api/v1/push',
 ){
   $certname = $trusted['certname']
   $hostname = $trusted['hostname']
@@ -65,8 +49,24 @@ class nebula::profile::loki (
       source => "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem",
       mode   => '0600',
     ;
-    '/etc/alloy/config.alloy':
+  }
+
+  file {
+    default:
       owner   => 'root',
-      content => template("nebula/profile/loki/config.alloy.erb")
+      group   => 'root',
+      mode    => '0644',
+      require => Package['alloy'],
+      notify  => Service['alloy'],
+    ;
+    '/etc/alloy':
+      ensure => 'directory',
+      mode   => '0755',
+    ;
+    '/etc/alloy/config.alloy':
+      content => template("nebula/profile/loki/config.alloy.erb"),
+    ;
+    '/etc/default/alloy':
+      content => template("nebula/profile/loki/alloy.env.erb"),
   }
 }
