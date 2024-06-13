@@ -147,5 +147,8 @@ class nebula::profile::apt (
       'security' : release => "${::lsbdistcodename}-security";
     }
 
+    package { 'landscape-common': ensure => purged }
+    package { 'open-vm-tools': ensure => purged }
+    file { '/etc/apt/apt.conf.d/20apt-esm-hook.conf': ensure => absent }
   }
 }
