@@ -80,4 +80,8 @@ class nebula::profile::hathitrust::solr6::lss (
     minute  => $cron_m,
     command => "/usr/local/bin/index-release > /tmp/index-release.log 2>&1 || /usr/bin/mail -s '${facts['networking']['hostname']} lss index release problem' ${mail_recipient} < /tmp/index-release.log",
   }
+
+  nebula::log { 'lss_solr':
+    files => ["/var/lib/solr/logs/solr.log"],
+  }
 }
