@@ -19,7 +19,7 @@ describe 'nebula::profile::base' do
       it { is_expected.to contain_service('puppet').with_enable(true) }
 
       case os
-      when 'debian-9-x86_64'
+      when /^debian/, /^ubuntu/
         it { is_expected.to contain_package('dselect') }
         it { is_expected.to contain_package('ifenslave') }
         it { is_expected.to contain_package('vlan') }
