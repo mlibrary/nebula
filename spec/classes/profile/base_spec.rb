@@ -88,6 +88,17 @@ describe 'nebula::profile::base' do
         end
       end
 
+      case os
+      when /^ubuntu/
+        it "disables ubuntu motd spam" do
+          is_expected.to contain_file('/var/lib/update-notifier/hide-esm-in-motd')
+        end
+      else
+        it "does not manage ubuntu specific motd files" do
+          is_expected.not_to contain_file('/var/lib/update-notifier/hide-esm-in-motd')
+        end
+      end
+
       it do
         is_expected.to contain_service('mcollective').with(
           ensure: 'stopped',

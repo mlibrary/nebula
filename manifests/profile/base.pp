@@ -48,11 +48,11 @@ class nebula::profile::base (
     exec { "/bin/hostname ${::fqdn}":
       refreshonly => true,
     }
+  }
 
-    file { '/etc/motd':
-      content => template('nebula/profile/base/motd.erb'),
-    }
-
+  class { 'nebula::profile::base::motd':
+    contact_email => $contact_email,
+    sysadmin_dept => $sysadmin_dept,
   }
 
   include nebula::profile::base::stop_mcollective
