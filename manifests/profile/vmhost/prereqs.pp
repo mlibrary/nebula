@@ -32,14 +32,6 @@ class nebula::profile::vmhost::prereqs {
     ensure => 'installed'
   }
 
-  package { 'qemu':
-    ensure => 'installed'
-  }
-
-  package { 'qemu-kvm':
-    ensure => 'installed'
-  }
-
   # virt-resize
   package { 'libguestfs-tools':
     ensure => 'installed'

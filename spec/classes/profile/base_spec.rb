@@ -19,7 +19,7 @@ describe 'nebula::profile::base' do
       it { is_expected.to contain_service('puppet').with_enable(true) }
 
       case os
-      when 'debian-9-x86_64'
+      when /^debian/, /^ubuntu/
         it { is_expected.to contain_package('dselect') }
         it { is_expected.to contain_package('ifenslave') }
         it { is_expected.to contain_package('vlan') }
@@ -85,6 +85,17 @@ describe 'nebula::profile::base' do
             is_expected.to contain_file('/etc/motd')
               .with_content(%r{administered by The Cool Team\.$})
           end
+        end
+      end
+
+      case os
+      when /^ubuntu/
+        it "disables ubuntu motd spam" do
+          is_expected.to contain_file('/var/lib/update-notifier/hide-esm-in-motd')
+        end
+      else
+        it "does not manage ubuntu specific motd files" do
+          is_expected.not_to contain_file('/var/lib/update-notifier/hide-esm-in-motd')
         end
       end
 

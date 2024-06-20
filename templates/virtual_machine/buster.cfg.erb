@@ -337,7 +337,7 @@ d-i apt-setup/local0/key string https://<%= @filehost %>/puppetlabs-pc1-keyring.
 tasksel tasksel/first multiselect standard, ssh-server
 
 # Individual additional packages to install
-d-i pkgsel/include string puppet-agent iptables-persistent apt-transport-https dirmngr
+d-i pkgsel/include string puppet-agent iptables-persistent dirmngr
 
 # Supress silly questions
 iptables-persistent iptables-persistent/autosave_v4 boolean false

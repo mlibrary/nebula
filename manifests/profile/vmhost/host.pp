@@ -90,4 +90,9 @@ class nebula::profile::vmhost::host (
       ;
     }
   }
+
+  if($::operatingsystem == 'Ubuntu') {
+    package { 'command-not-found': ensure => purged }
+    package { 'python3-commandnotfound': ensure => purged }
+  }
 }
