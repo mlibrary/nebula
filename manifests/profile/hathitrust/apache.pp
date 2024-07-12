@@ -211,6 +211,13 @@ class nebula::profile::hathitrust::apache (
   }
 
   nebula::log { 'apache':
-    files => ["/var/log/apache2/babel/access.log","/var/log/apache2/babel/error.log"]
+    files => [
+                '/var/log/apache2/babel/access.log',
+                '/var/log/apache2/babel/error.log',
+                '/var/log/apache2/catalog/access.log',
+                '/var/log/apache2/catalog/error.log',
+                '/var/log/apache2/www/access.log',
+                '/var/log/apache2/www/error.log'
+    ]
   }
 }
