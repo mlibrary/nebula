@@ -56,7 +56,6 @@ class nebula::profile::hathitrust::imgsrv (
   }
 
   package { 'libfcgi-bin': }
-  nebula::cpan { 'Prometheus::Tiny::Shared': }
 
   cron { 'imgsrv responsiveness check':
     command => '/usr/local/bin/check_imgsrv > /dev/null 2>&1',

@@ -73,6 +73,8 @@ describe 'nebula::role::webhost::htvm' do
       # not specified explicitly - realized through Nebula::Usergroup[htprod]
       it { is_expected.to contain_user('htingest') }
       it { is_expected.to contain_user('htweb') }
+
+      it { is_expected.to contain_nebula__cpan('Prometheus::Tiny::Shared') }
     end
   end
 end
