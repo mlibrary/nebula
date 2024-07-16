@@ -11,4 +11,9 @@
 class nebula::profile::hathitrust::slip (
 ) {
   nebula::usergroup { 'slip': }
+
+  file { '/etc/sudoers.d/slip-catprocio':
+    ensure  => 'present',
+    content => 'slip ALL=(root) NOPASSWD: /usr/local/bin/catprocio'
+  }
 }

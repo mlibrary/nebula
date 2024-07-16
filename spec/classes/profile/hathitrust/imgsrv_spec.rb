@@ -28,7 +28,6 @@ describe 'nebula::profile::hathitrust::imgsrv' do
 
       it { is_expected.to contain_file('/etc/systemd/system/imgsrv.service').with_content(%r{ExecStart=/usr/local/bin/startup_imgsrv}) }
 
-      it { is_expected.to contain_file('/usr/local/bin/catprocio') }
       it { is_expected.to contain_file('/etc/sudoers.d/imgsrv-catprocio') }
     end
   end

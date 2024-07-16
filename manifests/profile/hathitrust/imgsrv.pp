@@ -77,12 +77,6 @@ class nebula::profile::hathitrust::imgsrv (
     source => "https://${http_files}/ae-utils/bins/startup_app"
   }
 
-  file { '/usr/local/bin/catprocio':
-    ensure  => 'present',
-    content => file('nebula/imgsrv/catprocio'),
-    mode    => '0755',
-  }
-
   file { '/etc/sudoers.d/imgsrv-catprocio':
     ensure  => 'present',
     content => 'nobody ALL=(root) NOPASSWD: /usr/local/bin/catprocio'
