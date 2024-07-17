@@ -159,6 +159,12 @@ class nebula::profile::hathitrust::apache::babel (
       # FROM SSL
 
       {
+        # Data API retirement notice. Retain until 2025-07-17 (one year after
+        # retirement); verify with azaytsev. See HathiTrust DEV-1238.
+        rewrite_rule => ['  ^/cgi/(htd|htdc|kgs)        https://www.hathitrust.org/press-post/retirement-data-api/ [redirect=permanent,last]']
+      },
+
+      {
         # Fold ptsearch into pageturner. Remove after 12/31/2011
         #
         # 2010-04-26 aelkiss per roger
