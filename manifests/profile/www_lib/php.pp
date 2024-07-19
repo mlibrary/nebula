@@ -49,6 +49,7 @@ class nebula::profile::www_lib::php (
       "php${default_php_version}-msgpack",
       "php${default_php_version}-redis",
       "php${default_php_version}-xdebug",
+      "php${default_php_version}-bcmath",
       "php${default_php_version}-curl",
       "php${default_php_version}-gd",
       "php${default_php_version}-ldap",
