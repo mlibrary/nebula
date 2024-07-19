@@ -28,6 +28,7 @@ class nebula::profile::php73 (
       #  'php-pear',
       'php7.3-redis',
       'php7.3-xdebug',
+      'php7.3-bcmath',
       'php7.3-cli',
       'php7.3-common',
       'php7.3-curl',
