@@ -13,6 +13,8 @@ describe 'nebula::profile::hathitrust::slip' do
       it { is_expected.to compile }
 
       it { is_expected.to contain_nebula__usergroup('slip') }
+
+      it { is_expected.to contain_file('/etc/sudoers.d/slip-catprocio') }
     end
   end
 end

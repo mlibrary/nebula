@@ -18,6 +18,7 @@ describe 'nebula::profile::hathitrust::dependencies' do
         it { is_expected.to contain_package('mariadb-client') }
       end
 
+      it { is_expected.to contain_file('/usr/local/bin/catprocio') }
     end
   end
 end

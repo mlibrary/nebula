@@ -56,7 +56,6 @@ class nebula::profile::hathitrust::imgsrv (
   }
 
   package { 'libfcgi-bin': }
-  nebula::cpan { 'Prometheus::Tiny::Shared': }
 
   cron { 'imgsrv responsiveness check':
     command => '/usr/local/bin/check_imgsrv > /dev/null 2>&1',
@@ -76,12 +75,6 @@ class nebula::profile::hathitrust::imgsrv (
     ensure => 'present',
     mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/startup_app"
-  }
-
-  file { '/usr/local/bin/catprocio':
-    ensure  => 'present',
-    content => file('nebula/imgsrv/catprocio'),
-    mode    => '0755',
   }
 
   file { '/etc/sudoers.d/imgsrv-catprocio':

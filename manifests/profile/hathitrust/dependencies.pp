@@ -65,4 +65,10 @@ class nebula::profile::hathitrust::dependencies () {
 
   ensure_packages(['mariadb-client'])
 
+  file { '/usr/local/bin/catprocio':
+    ensure  => 'present',
+    content => file('nebula/imgsrv/catprocio'),
+    mode    => '0755',
+  }
+
 }

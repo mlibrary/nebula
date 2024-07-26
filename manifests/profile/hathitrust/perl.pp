@@ -150,7 +150,8 @@ class nebula::profile::hathitrust::perl () {
     'Noid',
     'MARC::Record',
     'MARC::File::XML',
-    'MARC::File::MiJ']:
+    'MARC::File::MiJ',
+    'Prometheus::Tiny::Shared']:
   }
 
 }
