@@ -104,7 +104,7 @@ groups:
       ) < 0
     for: 60m
     labels:
-      severity: info
+      severity: "page"
   - alert: DiskPressure
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
