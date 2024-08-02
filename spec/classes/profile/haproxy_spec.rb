@@ -149,6 +149,12 @@ describe 'nebula::profile::haproxy' do
         end
       end
 
+      describe 'global_badrobots.txt file' do
+        it 'lists ips to block' do
+          is_expected.to contain_file('/etc/haproxy/global_badrobots.txt').with_content("1.2.3.0/24\n5.6.7.8\n")
+        end
+      end
+
       describe 'base haproxy config file' do
         let(:file) { haproxy_conf }
 

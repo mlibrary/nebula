@@ -75,6 +75,8 @@ describe 'nebula::haproxy::service' do
               http-request set-header X-Client-IP %ci
               http-request set-header X-Forwarded-Proto https
               default_backend svc1-dc1-https-back
+              acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
+              http-request deny if blocked-ip
             EOT
           )
         end
@@ -288,6 +290,8 @@ describe 'nebula::haproxy::service' do
               http-request set-header X-Client-IP %ci
               http-request set-header X-Forwarded-Proto http
               default_backend svc1-dc1-http-back
+              acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
+              http-request deny if blocked-ip
             EOT
           )
         end

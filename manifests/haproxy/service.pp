@@ -74,6 +74,7 @@ define nebula::haproxy::service(
   Boolean          $custom_503 = false,
   Boolean          $dynamic_weighting = false,
   Integer          $dynamic_weight_smoothing = 2,
+  String           $badrobots = '/etc/haproxy/global_badrobots.txt',
   Optional[Integer] $check_timeout_milliseconds = undef
 ) {
 
