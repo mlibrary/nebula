@@ -312,6 +312,18 @@ describe 'nebula::profile::haproxy' do
           is_expected.to contain_file('/usr/local/bin/set_weights.rb')
         end
       end
+
+      describe 'log rotation' do
+        let(:rotate_logs) { contain_logrotate__rule("haproxy") }
+
+        it { is_expected.to rotate_logs.with_path("/var/log/haproxy.log") }
+        it { is_expected.to rotate_logs.with_rotate_every("day") }
+        it { is_expected.to rotate_logs.with_rotate(5) }
+        it { is_expected.to rotate_logs.with_missingok(true) }
+        it { is_expected.to rotate_logs.with_ifempty(false) }
+        it { is_expected.to rotate_logs.with_compress(true) }
+        it { is_expected.to rotate_logs.with_postrotate(["/usr/lib/rsyslog/rsyslog-rotate", "/bin/systemctl restart filebeat"]) }
+      end
     end
   end
 end

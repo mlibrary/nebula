@@ -148,4 +148,14 @@ class nebula::profile::haproxy(
     content => template('nebula/profile/haproxy/stats_frontend.cfg.erb'),
   }
 
+  logrotate::rule { 'haproxy':
+    path         => '/var/log/haproxy.log',
+    rotate_every => 'day',
+    rotate       => 5,
+    missingok    => true,
+    ifempty      => false,
+    compress     => true,
+    postrotate   => ['/usr/lib/rsyslog/rsyslog-rotate', '/bin/systemctl restart filebeat'],
+  }
+
 }
