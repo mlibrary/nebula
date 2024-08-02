@@ -12,6 +12,7 @@ class nebula::profile::haproxy(
   Boolean $master = false,
   Optional[String] $cert_source = undef,
   Hash $extra_floating_ips = {},
+  String $global_badrobots = "",
 ) {
   include nebula::profile::haproxy::prereqs
   include nebula::profile::networking::sysctl
@@ -32,6 +33,8 @@ class nebula::profile::haproxy(
       content => template('nebula/profile/haproxy/default.erb');
     '/etc/haproxy/errors/hsts400.http':
       source  => 'puppet:///modules/nebula/haproxy/errors/hsts400.http';
+    '/etc/haproxy/global_badrobots.txt':
+      content => $global_badrobots;
   }
 
   file { '/etc/ssl/private' :

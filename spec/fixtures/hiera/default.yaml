@@ -33,6 +33,9 @@ nebula::profile::haproxy::monitoring_user:
     type: ecdsa-sha2-nistp256
     data: CCCCCCCCCCCC
     comment: 'haproxyctl@default.invalid'
+nebula::profile::haproxy::global_badrobots: |
+  1.2.3.0/24
+  5.6.7.8
 nebula::profile::ruby::install_dir: '/opt/rbenv'
 nebula::profile::ruby::plugins:
 - rbenv/rbenv-vars

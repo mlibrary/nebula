@@ -27,3 +27,5 @@ acl throttle_condition <%= @throttle_condition %>
 use_backend <%= @service_prefix %>-back-exempt if <%= exemption_condition %>
 <% end -%>
 default_backend <%= @service_prefix %>-back
+acl blocked-ip src -f <%= @badrobots %>
+http-request deny if blocked-ip
