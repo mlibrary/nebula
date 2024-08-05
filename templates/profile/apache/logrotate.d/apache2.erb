@@ -14,6 +14,7 @@
 	postrotate
                 if /etc/init.d/apache2 status > /dev/null ; then \
                     /etc/init.d/apache2 reload > /dev/null; \
+                    /bin/systemctl restart filebeat > /dev/null; \
                 fi;
 	endscript
 	prerotate
