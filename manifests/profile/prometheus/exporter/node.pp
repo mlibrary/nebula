@@ -24,6 +24,7 @@ class nebula::profile::prometheus::exporter::node (
   Optional[String] $version = undef,
   Array $covered_datacenters = [],
   String $default_datacenter = 'default',
+  String $promfile_owner = 'prometheus',
 ) {
   $log_file = '/var/log/prometheus-node-exporter.log'
 
@@ -90,7 +91,7 @@ class nebula::profile::prometheus::exporter::node (
   file { '/var/lib/prometheus/node-exporter':
     ensure => 'directory',
     mode   => '2775',
-    owner  => 'prometheus',
+    owner  => $promfile_owner,
     group  => 'prometheus',
   }
 

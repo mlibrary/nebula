@@ -79,6 +79,13 @@ describe 'nebula::profile::prometheus::exporter::node' do
           .that_requires('File[/var/lib/prometheus]')
       end
 
+      context 'with promfile_owner set to brlglph' do
+        let(:params) { { promfile_owner: 'brlglph' } }
+
+        it { is_expected.to contain_file('/var/lib/prometheus/node-exporter').with_owner('brlglph') }
+        it { is_expected.to contain_file('/var/lib/prometheus/node-exporter').with_group('prometheus') }
+      end
+
       it do
         is_expected.to contain_file('/var/lib/prometheus')
           .with_ensure('directory')
