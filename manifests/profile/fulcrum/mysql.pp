@@ -7,9 +7,8 @@
 class nebula::profile::fulcrum::mysql (
   String $fedora_password,
   String $fulcrum_password,
-  String $checkpoint_password,
   String $shibd_password,
-  String $password,
+  String $root_password,
 ) {
 
   # Install and configure mysql server
@@ -35,21 +34,21 @@ class nebula::profile::fulcrum::mysql (
   }
 
   exec { "set-mysql-password":
-    unless => "mysqladmin -uroot -p$password status",
+    unless => "mysqladmin -uroot -p$root_password status",
     path => ["/bin", "/usr/bin"],
-    command => "mysqladmin -uroot password $password",
+    command => "mysqladmin -uroot password $root_password",
     require => Service["mysqld"],
   }
 
   $dbs = [['fedora', $fedora_password], ['fulcrum', $fulcrum_password],
-  ['checkpoint', $checkpoint_password], ['shibd', $shibd_password]]
+  ['checkpoint', $fulcrum_password], ['shibd', $shibd_password]]
 
   $dbs.each |$db| {
     $name = $db[0]
     $password = $db[1]
     exec { "create-${name}-db":
       unless => "/usr/bin/mysql -u${name} -p${password} ${name}",
-      command => "/usr/bin/mysql -uroot -p${mysql_password} -e \"create database ${name}; grant all on ${name}.* to ${name}@localhost identified by '${password}';\"",
+      command => "/usr/bin/mysql -uroot -p${root_password} -e \"create database ${name}; grant all on ${name}.* to ${name}@localhost identified by '${password}';\"",
       require => Service["mysqld"],
     }
   }
