@@ -17,4 +17,10 @@ class nebula::role::app_host::quod_prod {
   include nebula::profile::quod::prod::perl
   include nebula::profile::quod::prod::haproxy
   include nebula::profile::networking::firewall::http
+
+  # We put the machine certificate in a statically named file because the rdist
+  # config is static and it would be more difficult to refer it by hostname.
+  class { 'nebula::profile::machine_cert':
+    client_cert => '/etc/ssl/private/machine-cert-quod.lib.pem',
+  }
 }
