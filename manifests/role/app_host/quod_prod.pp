@@ -14,6 +14,7 @@ class nebula::role::app_host::quod_prod {
   include nebula::profile::afs
   include nebula::profile::users
   include nebula::profile::tsm
+  include nebula::profile::machine_cert
   include nebula::profile::quod::prod::perl
   include nebula::profile::quod::prod::haproxy
   include nebula::profile::networking::firewall::http
