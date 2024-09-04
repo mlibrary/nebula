@@ -12,10 +12,10 @@
 #
 # @example
 #   include nebula::profile::machine_cert
-class nebula::profile::machine_cert () {
-  $certname = $trusted['certname'];
-  $client_cert = "/etc/ssl/private/${certname}.pem";
-
+class nebula::profile::machine_cert (
+  String $certname = $trusted['certname'],
+  String $client_cert = "/etc/ssl/private/${certname}.pem"
+) {
   concat { $client_cert:
     ensure => 'present',
     mode   => '0600',
