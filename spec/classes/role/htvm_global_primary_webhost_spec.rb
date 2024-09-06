@@ -14,7 +14,6 @@ describe 'nebula::role::webhost::htvm::global_primary' do
       it { is_expected.to compile }
 
       # includes cron jobs that run on only one node in cluster
-      it { is_expected.to contain_class('nebula::profile::hathitrust::cron::statistics') }
       it { is_expected.to contain_class('nebula::profile::hathitrust::cron::catalog') }
       it { is_expected.to contain_class('nebula::role::webhost::htvm::site_primary') }
 

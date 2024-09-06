@@ -106,7 +106,6 @@ nebula::profile::hathitrust::apache::babel::cache_paths:
   - /elsewhere/whatever:3:4
 
 nebula::profile::hathitrust::cron::mdp_misc::mail_recipient: nobody@default.invalid
-nebula::profile::hathitrust::cron::statistics::mail_recipient: nobody@default.invalid
 nebula::profile::hathitrust::cron::catalog::mail_recipient: nobody@default.invalid
 
 
