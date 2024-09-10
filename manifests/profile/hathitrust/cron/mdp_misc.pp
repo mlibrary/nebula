@@ -35,12 +35,6 @@ class nebula::profile::hathitrust::cron::mdp_misc (
       minute  => [15,30,45,59],
       command => "eval ${sdr_root}/mdp-misc/scripts/email-monitor.pl";
 
-    'data api log monitor':
-      minute      => 59,
-      hour        => 23,
-      environment => $sdr_environment + ["MAILTO=''"],
-      command     => "${sdr_root}/htd/scripts/htdmonitor 2>&1 || /usr/bin/mail -s '${::hostname} htdmonitor problems' ${mail_recipient}";
-
     'manage mbook sessions':
       minute      => $mdp_sessions_minute,
       environment => $sdr_environment + ["MAILTO=''"],
