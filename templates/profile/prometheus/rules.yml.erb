@@ -78,10 +78,7 @@ groups:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} will fill up in a few days.'
     expr: >
       predict_linear(
-        node_filesystem_avail_bytes{mountpoint!="/aspace",
-                                    device!~".*/aspace",
-                                    mountpoint!="/var/lockss",
-                                    mountpoint!="/htdataden",
+        node_filesystem_avail_bytes{mountpoint!="/htdataden",
                                     fstype=~"nfs|cifs"}[1d],
         4 * 60 * 60 * 24
       ) < 0
@@ -93,10 +90,9 @@ groups:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is filling up fast.'
     expr: >
       predict_linear(
-        node_filesystem_avail_bytes{mountpoint!="/aspace",
-                                    device!~".*/aspace",
-                                    mountpoint!="/var/lockss",
-                                    mountpoint!="/htdataden",
+        node_filesystem_avail_bytes{mountpoint!="/htdataden",
+                                    mountpoint!~"prep",
+                                    device!="ulib-deepbluedata.dataden.arc-ts.umich.edu:/gpfs/locker0/ces/dataden-aa/g/ulib-deepbluedata",
                                     fstype!="afs",
                                     fstype!="tmpfs",
                                     device!="rootfs"}[10m],
@@ -112,7 +108,7 @@ groups:
       (
         (
           avg_over_time(
-            node_filesystem_size_bytes{mountpoint!="/usr", mountpoint!="/aspace", fstype!="afs", fstype!="nfs", fstype!="tmpfs", fstype!="cifs", device!="rootfs"}[1m]
+            node_filesystem_size_bytes{mountpoint!="/usr", fstype!="afs", fstype!="nfs", fstype!="tmpfs", fstype!="cifs", device!="rootfs"}[1m]
           ) - avg_over_time(
             node_filesystem_avail_bytes[1m]
           )
@@ -130,7 +126,7 @@ groups:
       (
         (
           avg_over_time(
-            node_filesystem_size_bytes{mountpoint!="/usr", mountpoint!="/aspace", fstype!="afs", fstype!="nfs", fstype!="tmpfs", fstype!="cifs", device!="rootfs"}[1m]
+            node_filesystem_size_bytes{mountpoint!="/usr", fstype!="afs", fstype!="nfs", fstype!="tmpfs", fstype!="cifs", device!="rootfs"}[1m]
           ) - avg_over_time(
             node_filesystem_avail_bytes[1m]
           )
