@@ -14,6 +14,7 @@
 class nebula::profile::networking::sshd (
   Array[String] $whitelist,
   String $addon_directives = '',
+  Integer $port = 22,
 ) {
 
   # This will do nothing if the keytab doesn't exist

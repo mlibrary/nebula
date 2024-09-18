@@ -41,6 +41,7 @@ fixtures:
     reboot:              {"repo": "puppetlabs/reboot",          "ref": "5.0.0" }
     sshkeys_core:        {"repo": "puppetlabs/sshkeys_core",    "ref": "2.5.0" }
     stdlib:              {"repo": "puppetlabs/stdlib",          "ref": "9.6.0" }
+    vcsrepo:             {"repo": "puppetlabs/vcsrepo",         "ref": "6.1.0" }
     debconf:             {"repo": "stm/debconf",                "ref": "6.0.0" }
     #postgresql:   {"repo": "puppetlabs/postgresql",   "ref": "8.3.0"}
     #puppetdb:     {"repo": "puppetlabs/puppetdb",     "ref": "7.13.0"}
