@@ -32,7 +32,11 @@ class nebula::profile::networking::sshd (
     notify  => Service['sshd'],
   }
 
-  file { '/etc/ssh/ssh_config':
+  concat { '/etc/ssh/ssh_config': }
+
+  concat_fragment { 'main ssh client config':
+    target  => '/etc/ssh/ssh_config',
+    order   => '01',
     content => template('nebula/profile/networking/ssh_config.erb'),
   }
 

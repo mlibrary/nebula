@@ -85,7 +85,9 @@ describe 'nebula::profile::networking::sshd' do
       end
 
       it do
-        is_expected.to contain_file('/etc/ssh/ssh_config')
+        is_expected.to contain_concat('/etc/ssh/ssh_config')
+        is_expected.to contain_concat_fragment('main ssh client config')
+          .with_target('/etc/ssh/ssh_config')
           .with_content(%r{^\s*SendEnv LANG LC_\*$})
       end
 
