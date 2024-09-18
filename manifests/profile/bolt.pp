@@ -46,4 +46,18 @@ class nebula::profile::bolt {
       Package["git"],
     ]
   }
+
+  lookup("nebula::profile::kubernetes::clusters", default_value => {}).each |$id, $cluster| {
+    $host = $cluster["control_dns"]
+
+    concat_fragment { "configure ssh client for ${id}":
+      target  => '/etc/ssh/ssh_config',
+      order   => '10',
+      content => @("SSH_CONFIG")
+        Host ${host}
+        UserKnownHostsFile /dev/null
+        LogLevel ERROR
+        | SSH_CONFIG
+    }
+  }
 }
