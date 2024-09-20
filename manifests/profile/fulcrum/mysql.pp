@@ -48,8 +48,8 @@ class nebula::profile::fulcrum::mysql (
     $user = $db[1]
     $password = $db[2]
     exec { "create-${name}-db":
-      unless => "/usr/bin/mysql -u${name} -p${password} ${name}",
-      command => "/usr/bin/mysql -uroot -p${root_password} -e \"create database ${name}; grant all on ${name}.* to ${name}@localhost identified by '${password}';\"",
+      unless => "/usr/bin/mysql -u${user} -p${password} ${name}",
+      command => "/usr/bin/mysql -uroot -p${root_password} -e \"create database ${name}; grant all on ${name}.* to ${user}@localhost identified by '${password}';\"",
       require => Service["mysqld"],
     }
   }
