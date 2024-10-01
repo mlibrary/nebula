@@ -7,14 +7,12 @@
 # @summary A short summary of the purpose of this class
 #
 # @example
-#   include nebula::profile::elastic::filebeat::prospectors::mgetit
-class nebula::profile::elastic::filebeat::prospectors::mgetit (
-  String $log_path,
-) {
+#   include nebula::profile::elastic::filebeat::configs::clickstream
+class nebula::profile::elastic::filebeat::configs::clickstream {
   include nebula::profile::elastic::filebeat
 
-  file { '/etc/filebeat/prospectors/mgetit.yml':
-    content => template('nebula/profile/elastic/filebeat/prospectors/mgetit.yml.erb'),
+  file { '/etc/filebeat/configs/clickstream.yml':
+    content => template('nebula/profile/elastic/filebeat/configs/clickstream.yml.erb'),
     notify  => Service['filebeat'],
   }
 }

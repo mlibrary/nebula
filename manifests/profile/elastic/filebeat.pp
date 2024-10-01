@@ -23,7 +23,7 @@ class nebula::profile::elastic::filebeat {
     notify  => Service['filebeat'],
   }
 
-  file { '/etc/filebeat/prospectors':
+  file { '/etc/filebeat/configs':
     ensure  => 'directory',
     require => Package['filebeat'],
   }

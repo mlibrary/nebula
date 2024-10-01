@@ -5,7 +5,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::elastic::filebeat::prospectors::mgetit' do
+describe 'nebula::profile::elastic::filebeat::configs::mgetit' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
@@ -13,7 +13,7 @@ describe 'nebula::profile::elastic::filebeat::prospectors::mgetit' do
       it { is_expected.to contain_service('filebeat') }
 
       it do
-        is_expected.to contain_file('/etc/filebeat/prospectors/mgetit.yml')
+        is_expected.to contain_file('/etc/filebeat/configs/mgetit.yml')
           .that_notifies('Service[filebeat]')
       end
 
@@ -22,7 +22,7 @@ describe 'nebula::profile::elastic::filebeat::prospectors::mgetit' do
         %r{paths:\n\s*- /var/log/mgetit\.default\.invalid}m,
       ].each do |line|
         it do
-          is_expected.to contain_file('/etc/filebeat/prospectors/mgetit.yml')
+          is_expected.to contain_file('/etc/filebeat/configs/mgetit.yml')
             .with_content(line)
         end
       end
@@ -31,7 +31,7 @@ describe 'nebula::profile::elastic::filebeat::prospectors::mgetit' do
         let(:params) { { log_path: '/opt/mgetit.log' } }
 
         it do
-          is_expected.to contain_file('/etc/filebeat/prospectors/mgetit.yml')
+          is_expected.to contain_file('/etc/filebeat/configs/mgetit.yml')
             .with_content(%r{paths:\n\s*- /opt/mgetit\.log}m)
         end
       end

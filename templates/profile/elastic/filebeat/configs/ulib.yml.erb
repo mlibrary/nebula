@@ -1,0 +1,12 @@
+# Managed by puppet (nebula/profile/elastic/filebeat/configs/ulib.yml.erb)
+- type: filestream
+  id: ulib
+  enabled: true
+  paths:
+  <% @files.each do |file| -%>
+  - "<%= file %>"
+  <% end %>
+
+  fields_under_root: true
+  fields:
+    ulib_type: 90_day

@@ -7,12 +7,14 @@
 # @summary A short summary of the purpose of this class
 #
 # @example
-#   include nebula::profile::elastic::filebeat::prospectors::clickstream
-class nebula::profile::elastic::filebeat::prospectors::clickstream {
+#   include nebula::profile::elastic::filebeat::configs::ulib
+class nebula::profile::elastic::filebeat::configs::ulib (
+  Array $files = [],
+) {
   include nebula::profile::elastic::filebeat
 
-  file { '/etc/filebeat/prospectors/clickstream.yml':
-    content => template('nebula/profile/elastic/filebeat/prospectors/clickstream.yml.erb'),
+  file { '/etc/filebeat/configs/ulib.yml':
+    content => template('nebula/profile/elastic/filebeat/configs/ulib.yml.erb'),
     notify  => Service['filebeat'],
   }
 }

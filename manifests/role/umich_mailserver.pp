@@ -29,6 +29,6 @@ class nebula::role::umich_mailserver (
 
   include nebula::profile::dns::standard
   include nebula::profile::elastic::metricbeat
-  include nebula::profile::elastic::filebeat::prospectors::ulib
+  include nebula::profile::elastic::filebeat::configs::ulib
 
 }

@@ -35,6 +35,6 @@ class nebula::role::hathitrust (
 
   include nebula::profile::dns::smartconnect
   include nebula::profile::elastic::metricbeat
-  include nebula::profile::elastic::filebeat::prospectors::ulib
+  include nebula::profile::elastic::filebeat::configs::ulib
 
 }

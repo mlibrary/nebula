@@ -1,7 +1,0 @@
-# Managed by puppet (nebula/profile/elastic/filebeat/prospectors/clickstream.yml.erb)
-
-# Apache logs for clickstream; the JSON is parsed at the logstash level
-filebeat.prospectors:
-- paths:
-    - "/var/log/apache2/clickstream.log"
-  document_type: clickstream

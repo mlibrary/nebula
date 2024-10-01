@@ -5,7 +5,7 @@
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
-describe 'nebula::profile::elastic::filebeat::prospectors::clickstream' do
+describe 'nebula::profile::elastic::filebeat::configs::clickstream' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
@@ -13,7 +13,7 @@ describe 'nebula::profile::elastic::filebeat::prospectors::clickstream' do
       it { is_expected.to contain_service('filebeat') }
 
       it do
-        is_expected.to contain_file('/etc/filebeat/prospectors/clickstream.yml')
+        is_expected.to contain_file('/etc/filebeat/configs/clickstream.yml')
           .that_notifies('Service[filebeat]')
           .with_content(%r{^\s+document_type: clickstream$})
       end
