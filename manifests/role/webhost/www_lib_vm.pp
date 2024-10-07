@@ -12,7 +12,6 @@ class nebula::role::webhost::www_lib_vm (
   Hash $hosts = {}
 ) {
   include nebula::role::umich
-  include nebula::profile::elastic::filebeat::configs::clickstream
   include nebula::profile::www_lib::register_for_load_balancing
 
   class { 'nebula::profile::networking::private':

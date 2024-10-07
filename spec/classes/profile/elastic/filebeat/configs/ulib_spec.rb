@@ -19,7 +19,7 @@ describe 'nebula::profile::elastic::filebeat::configs::ulib' do
         it do
           is_expected.to contain_file(file)
             .that_notifies('Service[filebeat]')
-            .with_content(%r{^\s+document_type: ulib$})
+            .with_content(%r{^\s+ulib_type: 90_day$})
         end
         it { is_expected.to contain_file(file).with_content(%r{^    \- "/var/log/1.log"$}) }
         it { is_expected.to contain_file(file).with_content(%r{^    \- "/var/log/logger/2.txt"$}) }

@@ -29,7 +29,7 @@ describe 'nebula::profile::elastic::filebeat' do
       end
 
       [
-        %r{^\s*config_dir: configs$},
+        %r{^\s*path: configs/\*.yml$},
         %r{^\s*hosts:.*"logstash.umdl.umich.edu:5044"},
       ].each do |content|
         it { is_expected.to contain_file('/etc/filebeat/filebeat.yml').with_content(content) }
