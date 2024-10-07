@@ -7,6 +7,7 @@ class nebula::role::bastion {
 
   include nebula::profile::bolt
   include nebula::profile::root_ssh_private_keys
+  include nebula::profile::interactive
 
   # These three are effectively the requirements for getting user login
   # with kerberos and duo.
