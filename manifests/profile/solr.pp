@@ -19,10 +19,17 @@ class nebula::profile::solr (
 ) {
   $jdk_version = lookup('nebula::jdk_version')
 
-  ensure_packages(["openjdk-${jdk_version}-jre-headless",'solr','lsof'])
+  ensure_packages(["temurin-${jdk_version}-jre",'solr','lsof'])
+
+  class { 'nebula::profile::openjdk_java':
+    jdk_packages => ["temurin-${jdk_version}-jre"],
+    default_jdk => "temurin-${jdk_version}-jre",
+    base_alternative => "/usr/lib/jvm/temurin-${jdk_version}-jre-amd64/bin/java",
+    java_alternative => "temurin-${jdk_version}-jre-amd64",
+  }
 
   # Note: Along with variables above these are used in erb files also.
-  $java_home = "/usr/lib/jvm/java-${jdk_version}-openjdk-amd64/jre"
+  $java_home = "/usr/lib/jvm/temurin-${jdk_version}-jre-amd64"
   $solr_bin = '/opt/solr/bin/solr'
 
   nebula::usergroup { 'solr': }
@@ -52,6 +59,11 @@ class nebula::profile::solr (
       content => template('nebula/profile/solr/solr.xml.erb'),
     ;
   }
+
+  file { "/etc/environment":
+      content => inline_template("JAVA_HOME=${java_home}")
+  }
+
 
   file { '/etc/systemd/system/solr.service':
     owner   => 'root',

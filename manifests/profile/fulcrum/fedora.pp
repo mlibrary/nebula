@@ -8,12 +8,26 @@ class nebula::profile::fulcrum::fedora (
   String $fedora_username = 'fedora',
   String $fedora_password = lookup('nebula::profile::fulcrum::mysql::fedora_password'),
 ) {
+  $jdk_version = lookup('nebula::jdk_version')
+  # used in erb file
+  $java_home = "/usr/lib/jvm/temurin-${jdk_version}-jre-amd64"
+
   ensure_packages([
-    'tomcat8-user',
+    'tomcat9-user',
   ])
 
   file { '/etc/sudoers.d/fedora':
     content => template('nebula/profile/fulcrum/sudoers-fedora.erb'),
+  }
+
+  exec { 'create fedora tomcat':
+    command => '/usr/bin/tomcat9-instance-create fedora',
+    cwd     => '/opt',
+    creates => '/opt/fedora',
+    require => [
+      User['fulcrum'],
+      Package['tomcat9-user'],
+    ],
   }
 
   file {
@@ -21,24 +35,20 @@ class nebula::profile::fulcrum::fedora (
       ensure => directory,
       owner  => 'fulcrum',
       group  => 'fulcrum',
+      require => Exec['create fedora tomcat'],
     ;
   }
 
-  exec { 'create fedora tomcat':
-    command => '/usr/bin/tomcat8-instance-create fedora',
-    cwd     => '/opt',
-    user    => 'fulcrum',
-    creates => '/opt/fedora',
-    require => [
-      User['fulcrum'],
-      Package['tomcat8-user'],
-    ],
+  exec { 'chown -r /opt/fedora':
+    command => '/usr/bin/chown -R fulcrum:fulcrum /opt/fedora',
+    require => Exec['create fedora tomcat'],
   }
 
   file { '/opt/fedora/logs':
     ensure  => 'symlink',
     owner   => 'fulcrum',
     group   => 'fulcrum',
+    force   => true,
     target  => '/var/log/fedora',
     require => Exec['create fedora tomcat'],
   }
@@ -46,8 +56,8 @@ class nebula::profile::fulcrum::fedora (
   archive { '/opt/fedora/webapps/fedora.war':
     ensure        => present,
     extract       => false,
-    source        => 'https://github.com/fcrepo/fcrepo/releases/download/fcrepo-4.7.4/fcrepo-webapp-4.7.4.war',
-    checksum      => '11e06c843f40cf2b9f26bda94ddfe6d85d69a591',
+    source        => 'https://github.com/fcrepo/fcrepo/releases/download/fcrepo-4.7.6/fcrepo-webapp-4.7.6.war',
+    checksum      => '5882d8a4dc8b3817374503dff2043be79d9bbd72',
     checksum_type => 'sha1',
     cleanup       => false,
     user          => 'fulcrum',
@@ -81,7 +91,7 @@ class nebula::profile::fulcrum::fedora (
       File['/etc/systemd/system/fedora.service'],
       File['/var/lib/fedora'],
       Archive['/opt/fedora/webapps/fedora.war'],
-      Mysql::Db['fedora'],
+      Service['mysqld'],
     ],
   }
 }
