@@ -33,4 +33,12 @@ class nebula::role::webhost::htvm::test {
   include nebula::role::webhost::htvm
   include nebula::profile::hathitrust::apache::test
 
+  file { '/etc/sudoers.d/htprod-systemctl-imgsrv':
+    ensure  => 'present',
+    content => @("SUDOERS")
+      %htprod  ALL=(root) NOPASSWD: /bin/journalctl
+      %htprod  ALL=(root) NOPASSWD: /bin/systemctl start imgsrv,/bin/systemctl stop imgsrv,/bin/systemctl restart imgsrv,/bin/systemctl status imgsrv
+    | SUDOERS
+  }
+
 }
