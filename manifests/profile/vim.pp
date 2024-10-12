@@ -15,4 +15,11 @@ class nebula::profile::vim {
     content => template('nebula/profile/vim/vimrc.vim.erb'),
     require => Package['vim'],
   }
+
+  # Write an empty /root/.vimrc to prevent vim from automatically
+  # loading /usr/share/vim/vim*/defaults.vim
+  file { '/root/.vimrc':
+    ensure => 'file',
+    mode   => '0644',
+  }
 }
