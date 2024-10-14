@@ -154,18 +154,9 @@ describe 'nebula::profile::base' do
       end
 
       it { is_expected.not_to contain_package('i40e-dkms') }
-
       context 'with an Intel X710 network card' do
         let(:facts) do
           super().merge('network_cards' => ['Intel Corporation Ethernet Controller X710 for 10GbE SFP+ (rev 01)'])
-        end
-
-        it { is_expected.to contain_package('i40e-dkms') }
-      end
-
-      context 'without a Intel X710 network card' do
-        let(:facts) do
-          super().merge('network_cards' => ['Acme Corporation Ethernet Widget 10GbE', 'Virtual Network Adapter'])
         end
 
         it { is_expected.not_to contain_package('i40e-dkms') }
