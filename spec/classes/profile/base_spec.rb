@@ -122,6 +122,8 @@ describe 'nebula::profile::base' do
             file: '/etc/modprobe.d/acpi_power_meter-blacklist.conf',
           )
         end
+
+        # it { is_expected.to is_expected.to contain_class('ipmi') }
       end
 
       context 'on an HPE machine' do
@@ -142,6 +144,7 @@ describe 'nebula::profile::base' do
         end
 
         it { is_expected.to contain_package('ssacli') }
+        it { is_expected.to contain_class('ipmi') }
       end
 
       context 'on an Dell machine' do
@@ -151,6 +154,7 @@ describe 'nebula::profile::base' do
 
         it { is_expected.not_to contain_kmod__blacklist('hpwdt') }
         it { is_expected.not_to contain_kmod__blacklist('acpi_power_meter') }
+        it { is_expected.to contain_class('ipmi') }
       end
 
       it { is_expected.not_to contain_package('i40e-dkms') }
