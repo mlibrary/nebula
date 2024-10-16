@@ -20,6 +20,7 @@ class nebula::role::minimum (
       internal_routing => $internal_routing,
     }
 
+    include nebula::profile::networking::firewall::private_ssh
     include nebula::profile::apt
     include nebula::profile::vim
   }

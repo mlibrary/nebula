@@ -1,0 +1,15 @@
+local.file_match "babel_logs" {
+  path_targets = [
+  {__path__ = "<%= @log_path %>/*.log"},
+  ]
+}
+
+loki.source.file "babel_logs_files" {
+  targets    = local.file_match.babel_logs.targets
+  forward_to = [loki.process.service__babel.receiver]
+}
+
+loki.process "service__babel" {
+  stage.static_labels {values = {"service" = "babel"}}
+  forward_to = [loki.process.hostname.receiver]
+}

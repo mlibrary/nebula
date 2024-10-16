@@ -13,6 +13,7 @@ class nebula::profile::hathitrust::apache::babel (
   String $sdremail,
   Hash $default_access,
   Array[String] $haproxy_ips,
+  Array[String] $prometheus_ips,
   Hash $ssl_params,
   String $prefix,
   String $domain,
@@ -46,6 +47,11 @@ class nebula::profile::hathitrust::apache::babel (
   $monitor_requires = {
     enforce  => 'any',
     requires => [ 'local' ] + $haproxy_ips.map |String $ip| { "ip ${ip}" }
+  }
+
+  $metrics_requires = {
+    enforce => 'any',
+    requires => [ 'local' ] + $prometheus_ips.map |String $ip| { "ip ${ip}" }
   }
 
   class { 'nebula::profile::monitor_pl':
@@ -120,7 +126,7 @@ class nebula::profile::hathitrust::apache::babel (
       "ASSERTION_EMAIL ${sdremail}",
       "PTSEARCH_SOLR ${ptsearch_solr}",
       "PTSEARCH_SOLR_BASIC_AUTH ${ptsearch_solr_basic_auth}",
-      "USE_CATPROCIO 1"
+      'USE_CATPROCIO 1'
     ] + if($prod_crms_instance) {
       ['CRMS_INSTANCE production']
     } else{ [] },
@@ -322,6 +328,11 @@ class nebula::profile::hathitrust::apache::babel (
         provider => 'location',
         path     => '/monitor',
         require  => $monitor_requires
+      },
+      {
+        provider => 'location',
+        path     => '/cgi/imgsrv/metrics',
+        require  => $metrics_requires
       },
       {
         provider              => 'location',

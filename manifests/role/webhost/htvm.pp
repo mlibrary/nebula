@@ -21,6 +21,7 @@ class nebula::role::webhost::htvm (
   include nebula::profile::hathitrust::dependencies
   include nebula::profile::hathitrust::perl
   include nebula::profile::hathitrust::php
+  include nebula::profile::hathitrust::babel_logs
 
   class { 'nebula::profile::hathitrust::imgsrv':
     sdrview  => 'full'

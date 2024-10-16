@@ -15,6 +15,9 @@ nebula::profile::hathitrust::apache::babel::dex_endpoint: 'https://dex.default.i
 nebula::profile::hathitrust::apache::matomo::matomo_endpoint: 'https://matomo.default.invalid:3000/'
 nebula::profile::hathitrust::apache::babel::ptsearch_solr: 'http://ptsearch.default.invalid:8983'
 nebula::profile::hathitrust::apache::babel::ptsearch_solr_basic_auth: 'ZmFrZV91c2VyOmZha2VfcGFzc3dvcmQ='
+nebula::profile::hathitrust::apache::babel::prometheus_ips:
+  - '6.7.8.9'
+  - '10.11.12.13'
 
 nebula::profile::hathitrust::hosts::mysql_sdr: '10.1.2.4'
 nebula::profile::hathitrust::hosts::mysql_htdev: '2.2.2.2'
