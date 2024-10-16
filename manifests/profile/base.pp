@@ -61,6 +61,4 @@ class nebula::profile::base (
   if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
     include nebula::profile::base::hp
   }
-
-  include nebula::profile::base::i40e
 }
