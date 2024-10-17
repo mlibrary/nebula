@@ -1,26 +1,30 @@
 # Managed by puppet (nebula/profile/elastic/filebeat/filebeat.yml.erb)
 
 ############################# Filebeat ######################################
-filebeat:
-  # All prospectors are in role- or service-specific files under prospectors/
-  config_dir: prospectors
-  registry_file: /var/lib/filebeat/registry
+filebeat.config.inputs:
+  enabled: true
+  path: configs/*.yml
+
+filebeat.registry.path: /var/lib/filebeat/registry
+
+filebeat.config.modules:
+  enabled: true
+  path: ${path.config}/modules.d/*.yml
 
 ############################# Output ##########################################
-output:
-  logstash:
+output.logstash:
     hosts: ["logstash.umdl.umich.edu:5044"]
     bulk_max_size: 1024
     ssl:
       certificate_authorities: ["/etc/ssl/certs/logstash-forwarder.crt"]
 
 ############################# Logging #########################################
+#
+logging.level: warning
 
-logging:
-  level: warning
-  files:
-    path: /var/log/filebeat
-    name: filebeat.log
-    keepfiles: 2
-    rotateeverybytes: 10485760 # = 10MB
-
+# Skip file-based logging config, given the documentation says:
+#
+# When Filebeat is running on a Linux system with systemd, it uses by default 
+# the -e command line option, that makes it write all the logging output to stderr 
+# so it can be captured by journald. Other outputs are disabled. See Filebeat 
+# and systemd to know more and learn how to change this.

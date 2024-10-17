@@ -13,7 +13,7 @@ describe 'nebula::profile::elastic' do
       it do
         is_expected.to contain_apt__source('elastic.co').with(
           comment: 'Elastic.co apt source for beats and elastic search',
-          location: 'https://artifacts.elastic.co/packages/5.x/apt',
+          location: 'https://artifacts.elastic.co/packages/7.x/apt',
           release: 'stable',
           repos: 'main',
           include: {

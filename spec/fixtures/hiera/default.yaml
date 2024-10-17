@@ -23,7 +23,6 @@ nebula::profile::dns::smartconnect::nameserver: 1.2.3.4
 nebula::profile::elastic::logstash_auth_cert: ''
 nebula::profile::elastic::logstash_hosts:
 - logstash.default.invalid:1234
-nebula::profile::elastic::filebeat::prospectors::mgetit::log_path: /var/log/mgetit.default.invalid
 nebula::profile::elastic::period: 90
 nebula::profile::haproxy::services: {}
 nebula::profile::haproxy::monitoring_user:

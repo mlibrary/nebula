@@ -21,7 +21,7 @@ class nebula::profile::elastic (
 
   apt::source { 'elastic.co':
     comment  => 'Elastic.co apt source for beats and elastic search',
-    location => 'https://artifacts.elastic.co/packages/5.x/apt',
+    location => 'https://artifacts.elastic.co/packages/7.x/apt',
     release  => 'stable',
     repos    => 'main',
     key      => {
