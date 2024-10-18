@@ -6,5 +6,6 @@
 class nebula::role::prometheus ()
 {
   include nebula::role::minimal_docker
+  include nebula::profile::ntp
   include nebula::profile::prometheus
 }
