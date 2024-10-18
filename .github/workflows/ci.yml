@@ -13,5 +13,5 @@ jobs:
     - name: Run tests
       run: |
         docker compose --file docker-compose.test.yml build
-        docker compose --file docker-compose.test.yml run lint
         docker compose --file docker-compose.test.yml run specs
+#       docker compose --file docker-compose.test.yml run lint

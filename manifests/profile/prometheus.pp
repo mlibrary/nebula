@@ -19,6 +19,7 @@ class nebula::profile::prometheus (
   Array $alert_managers = [],
   Array $static_nodes = [],
   Array $static_wmi_nodes = [],
+  Boolean $manage_https = true,
   Hash $rules_variables = {},
   String $version = 'latest',
   String $pushgateway_version = 'latest',
@@ -136,13 +137,15 @@ class nebula::profile::prometheus (
     group  => 65534,
   }
 
-  class { 'nebula::profile::https_to_port':
-    port => 9090,
-  }
+  if $manage_https {
+    class { 'nebula::profile::https_to_port':
+      port => 9090,
+    }
 
-  nebula::exposed_port { '010 Prometheus HTTPS':
-    port  => 443,
-    block => 'umich::networks::all_trusted_machines',
+    nebula::exposed_port { '010 Prometheus HTTPS':
+      port  => 443,
+      block => 'umich::networks::all_trusted_machines',
+    }
   }
 
   # Delete this once nothing is importing it. It's only here for the
