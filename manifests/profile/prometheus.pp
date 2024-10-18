@@ -137,7 +137,7 @@ class nebula::profile::prometheus (
     group  => 65534,
   }
 
-  if $managed_https {
+  if $manage_https {
     class { 'nebula::profile::https_to_port':
       port => 9090,
     }
