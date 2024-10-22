@@ -2,7 +2,9 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-class nebula::profile::kubernetes::kubelet {
+class nebula::profile::kubernetes::kubelet ( 
+  Boolean $install_kubelet = true,
+) {
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
   $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
 
@@ -38,10 +40,12 @@ class nebula::profile::kubernetes::kubelet {
     fail("You must set a kube api IP address for the cluster's gateway")
   }
 
-  class { "nebula::profile::kubelet":
-    kubelet_version         => "${kubernetes_version}-${kubernetes_revision_version}",
-    pod_manifest_path       => "/etc/kubernetes/manifests",
-    manage_pods_with_puppet => false,
+  if $install_kubelet { 
+    class { "nebula::profile::kubelet":
+      kubelet_version         => "${kubernetes_version}-${kubernetes_revision_version}",
+      pod_manifest_path       => "/etc/kubernetes/manifests",
+      manage_pods_with_puppet => false,
+    }
   }
 
   firewall {
