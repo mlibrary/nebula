@@ -34,7 +34,7 @@ class nebula::profile::kubernetes::haproxy {
     notify  => Service['haproxy'],
   }
 
-  ['api', 'etcd', 'gelf_tcp', 'http', 'https', 'https_alt'].each |$service| {
+  ['api', 'etcd', 'gelf_tcp', 'http', 'https', 'https_alt', 'prometheus'].each |$service| {
     concat { "/etc/haproxy/services.d/${service}.cfg":
       notify => Service['haproxy'],
     }
@@ -71,6 +71,10 @@ class nebula::profile::kubernetes::haproxy {
 
     '200 public https':
       dport => 443,
+    ;
+
+    '200 client cert prometheus https':
+      dport => 9090,
     ;
   }
 

@@ -1,0 +1,11 @@
+# Managed by puppet (nebula/profile/kubernetes/haproxy/services.d/prometheus.cfg.erb)
+frontend kubernetes-prometheus-front
+  bind <%= @public_address %>:9090
+  mode tcp
+  option tcplog
+  default_backend kubernetes-prometheus-back
+
+backend kubernetes-prometheus-back
+  mode tcp
+  option tcp-check
+  balance roundrobin
