@@ -188,7 +188,8 @@ groups:
                                  fstype!="vfat",
                                  fstype!="fuse.lxcfs",
                                  fstype!="fuse.s3fs",
-                                 fstype!="rpc_pipefs"} < 10000
+                                 fstype!="rpc_pipefs",
+                                 mountpoint!="/mnt/local-pvs"} < 10000
     for: 30m
     labels:
       severity: page
