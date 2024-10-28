@@ -17,6 +17,7 @@ fixtures:
       repo: "https://github.com/mlibrary/puppetlabs-apache"
   forge_modules:
     rbenv:               {"repo": "jdowning/rbenv",             "ref": "3.0.0" }
+    ipmi:                {"repo": "jhoblitt/ipmi",              "ref": "6.1.0" }
     archive:             {"repo": "puppet/archive",             "ref": "7.1.0" }
     kmod:                {"repo": "puppet/kmod",                "ref": "4.0.1" }
     # TODO: Puppet 8 requires version 11.  11 requires lens changes. https://forge.puppet.com/modules/puppet/letsencrypt/changelog
