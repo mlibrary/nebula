@@ -80,6 +80,11 @@ class nebula::profile::www_lib::vhosts::fulcrum (
         rewrite_rule => "^/metrics$ http://${app_host}:9394/metrics [P]",
       },
       {
+        comment      => 'Proxy WebSocket requests to Puma',
+        rewrite_cond => ['%{HTTP:Upgrade} =websocket [NC]', '%{HTTP:Connection} upgrade [NC]'],
+        rewrite_rule => "^/(.*)$ ws://${app_host}:${app_port}/\$1 [P]",
+      },
+      {
         comment      => 'Reverse proxy application to app hostname and port',
         rewrite_cond => ['%{REQUEST_URI} !^/Shibboleth.sso'],
         rewrite_rule => "^(/.*)$ http://${app_host}:${app_port}\$1 [P]",
