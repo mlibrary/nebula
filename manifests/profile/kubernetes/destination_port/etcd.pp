@@ -11,4 +11,10 @@ class nebula::profile::kubernetes::destination_port::etcd {
     content => "  server ${::hostname} ${::ipaddress}:2379 check\n",
     tag     => "${cluster_name}_haproxy_kubernetes_etcd",
   }
+
+  @@concat_fragment { "prometheus etcd service ${::hostname}":
+    tag     => "${::datacenter}_prometheus_etcd_service_list",
+    target  => '/etc/prometheus/etcd.yml',
+    content => template('nebula/profile/prometheus/exporter/etcd/target.yaml.erb')
+  }
 }
