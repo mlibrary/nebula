@@ -38,6 +38,7 @@ class nebula::profile::prometheus (
       '/etc/prometheus/haproxy.yml:/etc/prometheus/haproxy.yml',
       '/etc/prometheus/mysql.yml:/etc/prometheus/mysql.yml',
       '/etc/prometheus/ipmi.yml:/etc/prometheus/ipmi.yml',
+      '/etc/prometheus/etcd.yml:/etc/prometheus/etcd.yml',
       '/etc/prometheus/tls:/tls',
       '/opt/prometheus:/prometheus',
     ],
@@ -104,6 +105,13 @@ class nebula::profile::prometheus (
   }
 
   Concat_fragment <<| tag == "${::datacenter}_prometheus_ipmi_exporter" |>>
+
+  concat_file { '/etc/prometheus/etcd.yml':
+    notify  => Docker::Run['prometheus'],
+    require => File['/etc/prometheus'],
+  }
+
+  Concat_fragment <<| tag == "${::datacenter}_prometheus_etcd_service_list" |>>
 
   file { '/etc/prometheus':
     ensure => 'directory',

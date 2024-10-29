@@ -50,5 +50,8 @@ scrape_configs:
 <% end -%>
 <% end -%>
 <% end -%>
+- job_name: etcd
+  file_sd_configs:
+  - files: [ etcd.yml ]
 scrape_config_files:
 - "ipmi.yml"

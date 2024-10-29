@@ -70,7 +70,7 @@ class nebula::profile::kubernetes::kubelet (
     ;
 
     '200 Cluster etcd':
-      dport => ['2379', '2380'],
+      dport => ['2379', '2380', '2381'],
     ;
 
     '200 Cluster kubelet':

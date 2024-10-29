@@ -31,6 +31,14 @@ require 'spec_helper'
               .with_content("  server #{facts[:hostname]} #{facts[:ipaddress]}:#{port} #{options}\n")
               .with_tag("first_cluster_haproxy_kubernetes_#{service}")
           end
+
+          if service == 'etcd'
+            it do
+              is_expected.to contain_concat_fragment("prometheus #{service.tr('_', ' ')} service #{facts[:hostname]}")
+                .with_target("/etc/prometheus/#{service}.yml")
+                .with_tag("mydatacenter_prometheus_etcd_service_list")
+            end
+          end
         end
       end
     end

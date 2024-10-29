@@ -87,14 +87,14 @@ describe 'nebula::profile::kubernetes::kubelet' do
         end
 
         [
-          [22,            'ssh',            'tcp'],
-          [179,           'BGP',            'tcp'],
-          [4789,          'VXLAN',          'udp'],
-          [%w[2379 2380], 'etcd',           'tcp'],
-          [10250,         'kubelet',        'tcp'],
-          [6443,          'kubernetes API', 'tcp'],
-          ['30000-32767', 'NodePorts',      'tcp'],
-          [9100,          'Prometheus',     'tcp'],
+          [22,                 'ssh',            'tcp'],
+          [179,                'BGP',            'tcp'],
+          [4789,               'VXLAN',          'udp'],
+          [%w[2379 2380 2381], 'etcd',           'tcp'],
+          [10250,              'kubelet',        'tcp'],
+          [6443,               'kubernetes API', 'tcp'],
+          ['30000-32767',      'NodePorts',      'tcp'],
+          [9100,               'Prometheus',     'tcp'],
         ].each do |ports, purpose, proto|
           it do
             is_expected.to contain_firewall("200 Cluster #{purpose}")
