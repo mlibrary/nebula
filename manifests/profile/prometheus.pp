@@ -241,6 +241,16 @@ class nebula::profile::prometheus (
         tag    => "${::datacenter}_prometheus_public_ipmi_exporter",
         dport  => 9290,
       ;
+
+      "010 prometheus public node exporter firewall6 ${::hostname} ${address}":
+        tag    => "firewall6-${::datacenter}_prometheus_public_node_exporter",
+        dport  => 9100,
+      ;
+
+      "010 prometheus public ipmi exporter firewall6 ${::hostname} ${address}":
+        tag    => "firewall6-${::datacenter}_prometheus_public_ipmi_exporter",
+        dport  => 9290,
+      ;
     }
   }
 

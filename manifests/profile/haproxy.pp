@@ -139,6 +139,15 @@ class nebula::profile::haproxy(
     tag    => 'haproxy'
   }
 
+  @@firewall { "200 HTTP firewall6: HAProxy ${::hostname}":
+    proto  => 'tcp',
+    dport  => [80, 443],
+    source => $::ipaddress,
+    state  => 'NEW',
+    action => 'accept',
+    tag    => 'firewall6-haproxy'
+  }
+
   # HAProxy should listen for kubernetes connections.
   nebula::exposed_port { '200 kubectl':
     port  => 6443,
