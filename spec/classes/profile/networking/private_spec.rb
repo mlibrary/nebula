@@ -24,14 +24,14 @@ describe 'nebula::profile::networking::private' do
         end
 
         it do
-          is_expected.to contain_file('/etc/network/interfaces.d/private').with_content(<<~EOT)
+          expect(subject).to contain_file('/etc/network/interfaces.d/private').with_content(<<~IFACE)
             auto eth1
             iface eth1 inet static
               address 10.0.2.123
               netmask 255.255.0.0
               network 10.0.0.0
               broadcast 10.0.255.255
-          EOT
+          IFACE
         end
       end
 
@@ -52,7 +52,7 @@ describe 'nebula::profile::networking::private' do
           end
 
           it do
-            is_expected.to contain_file('/etc/network/interfaces.d/private')
+            expect(subject).to contain_file('/etc/network/interfaces.d/private')
               .with_content(%r{auto ens4\niface ens4 inet static}m)
           end
         end

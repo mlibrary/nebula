@@ -13,7 +13,7 @@ describe 'nebula::profile::prometheus' do
       it { is_expected.to compile }
 
       it do
-        is_expected.to contain_docker__run('prometheus')
+        expect(subject).to contain_docker__run('prometheus')
           .with_image('prom/prometheus:latest')
           .with_net('host')
           .with_extra_parameters(%w[--restart=always])
@@ -33,13 +33,13 @@ describe 'nebula::profile::prometheus' do
         let(:params) { { version: 'v2.11.1' } }
 
         it do
-          is_expected.to contain_docker__run('prometheus')
+          expect(subject).to contain_docker__run('prometheus')
             .with_image('prom/prometheus:v2.11.1')
         end
       end
 
       it do
-        is_expected.to contain_docker__run('pushgateway')
+        expect(subject).to contain_docker__run('pushgateway')
           .with_image('prom/pushgateway:latest')
           .with_command('--persistence.file=/archive/pushgateway')
           .with_net('host')
@@ -52,13 +52,13 @@ describe 'nebula::profile::prometheus' do
         let(:params) { { pushgateway_version: 'v2.11.1' } }
 
         it do
-          is_expected.to contain_docker__run('pushgateway')
+          expect(subject).to contain_docker__run('pushgateway')
             .with_image('prom/pushgateway:v2.11.1')
         end
       end
 
       it do
-        is_expected.to contain_file('/etc/prometheus/prometheus.yml')
+        expect(subject).to contain_file('/etc/prometheus/prometheus.yml')
           .that_notifies('Docker::Run[prometheus]')
           .that_requires('File[/etc/prometheus]')
       end
@@ -73,7 +73,7 @@ describe 'nebula::profile::prometheus' do
         end
 
         it do
-          is_expected.to contain_file('/etc/prometheus/rules.yml')
+          expect(subject).to contain_file('/etc/prometheus/rules.yml')
             .that_notifies('Docker::Run[prometheus]')
             .that_requires('File[/etc/prometheus]')
             .with_content(%r{device="//storage.invalid/volume"})
@@ -81,107 +81,107 @@ describe 'nebula::profile::prometheus' do
       end
 
       it do
-        is_expected.to contain_concat_file('/etc/prometheus/nodes.yml')
+        expect(subject).to contain_concat_file('/etc/prometheus/nodes.yml')
           .that_notifies('Docker::Run[prometheus]')
           .that_requires('File[/etc/prometheus]')
       end
 
       it do
-        is_expected.to contain_concat_file('/etc/prometheus/haproxy.yml')
+        expect(subject).to contain_concat_file('/etc/prometheus/haproxy.yml')
           .that_notifies('Docker::Run[prometheus]')
           .that_requires('File[/etc/prometheus]')
       end
 
       it do
-        is_expected.to contain_concat_file('/etc/prometheus/mysql.yml')
+        expect(subject).to contain_concat_file('/etc/prometheus/mysql.yml')
           .that_notifies('Docker::Run[prometheus]')
           .that_requires('File[/etc/prometheus]')
       end
 
       it do
-        is_expected.to contain_concat_file('/etc/prometheus/ipmi.yml')
+        expect(subject).to contain_concat_file('/etc/prometheus/ipmi.yml')
           .that_notifies('Docker::Run[prometheus]')
           .that_requires('File[/etc/prometheus]')
       end
 
       it do
-        is_expected.to contain_concat_fragment("prometheus ipmi scrape config first line")
+        expect(subject).to contain_concat_fragment('prometheus ipmi scrape config first line')
           .with_target('/etc/prometheus/ipmi.yml')
-          .with_order("01")
+          .with_order('01')
           .with_content("scrape_configs:\n")
       end
 
       it do
-        is_expected.to contain_file('/etc/prometheus')
+        expect(subject).to contain_file('/etc/prometheus')
           .with_ensure('directory')
       end
 
       it do
-        is_expected.to contain_file('/etc/prometheus/tls')
+        expect(subject).to contain_file('/etc/prometheus/tls')
           .with_ensure('directory')
           .that_requires('File[/etc/prometheus]')
       end
 
       it do
-        is_expected.to contain_file('/etc/prometheus/tls/ca.crt')
+        expect(subject).to contain_file('/etc/prometheus/tls/ca.crt')
           .with_source('puppet:///ssl-certs/prometheus-pki/ca.crt')
           .that_requires('File[/etc/prometheus/tls]')
       end
 
       it do
-        is_expected.to contain_file('/etc/prometheus/tls/client.crt')
+        expect(subject).to contain_file('/etc/prometheus/tls/client.crt')
           .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:fqdn]}.crt")
           .that_requires('File[/etc/prometheus/tls]')
       end
 
       it do
-        is_expected.to contain_file('/etc/prometheus/tls/client.key')
+        expect(subject).to contain_file('/etc/prometheus/tls/client.key')
           .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:fqdn]}.key")
           .that_requires('File[/etc/prometheus/tls]')
       end
 
       %w[ca.crt client.crt client.key].each do |filename|
         it do
-          is_expected.to contain_docker__run('prometheus')
+          expect(subject).to contain_docker__run('prometheus')
             .that_requires("File[/etc/prometheus/tls/#{filename}]")
         end
       end
 
       it do
-        is_expected.to contain_file('/opt/prometheus')
+        expect(subject).to contain_file('/opt/prometheus')
           .with_ensure('directory')
           .with_owner(65_534)
           .with_group(65_534)
       end
 
       it do
-        is_expected.to contain_file('/opt/pushgateway')
+        expect(subject).to contain_file('/opt/pushgateway')
           .with_ensure('directory')
           .with_owner(65_534)
           .with_group(65_534)
       end
 
       it do
-        is_expected.to contain_class('nebula::profile::https_to_port')
+        expect(subject).to contain_class('nebula::profile::https_to_port')
           .with_port(9090)
       end
-      
-      context 'manage_https = false' do 
-        let(:params) { { manage_https: false } } 
+
+      context 'with manage_https = false' do
+        let(:params) { { manage_https: false } }
 
         it do
-          is_expected.not_to contain_class('nebula::profile::https_to_port')
+          expect(subject).not_to contain_class('nebula::profile::https_to_port')
         end
       end
 
       it do
-        is_expected.to contain_nebula__exposed_port('010 Prometheus HTTPS')
+        expect(subject).to contain_nebula__exposed_port('010 Prometheus HTTPS')
           .with_port(443)
           .with_block('umich::networks::all_trusted_machines')
       end
 
-      [["haproxy", 9101],
-       ["mysql", 9104]].each do |exporter, port|
+      [['haproxy', 9101],
+       ['mysql', 9104]].each do |exporter, port|
         it "exports a firewall so that #{exporter} exporters can open #{port}" do
           expect(exported_resources).to contain_firewall("010 prometheus #{exporter} exporter #{facts[:hostname]}")
             .with_tag("mydatacenter_prometheus_#{exporter}_exporter")
@@ -230,14 +230,14 @@ describe 'nebula::profile::prometheus' do
       context 'with a single public ip address in mlibrary_ip_addresses' do
         let(:facts) do
           os_facts.merge(mlibrary_ip_addresses: {
-            "public"  => ["100.100.100.100"],
-            "private" => []
-          })
+                           'public' => ['100.100.100.100'],
+                           'private' => [],
+                         })
         end
 
         it do
           expect(exported_resources).to contain_firewall("010 prometheus public node exporter #{facts[:hostname]} 100.100.100.100")
-            .with_source("100.100.100.100")
+            .with_source('100.100.100.100')
             .with_tag('mydatacenter_prometheus_public_node_exporter')
         end
 
@@ -261,20 +261,20 @@ describe 'nebula::profile::prometheus' do
       context 'with two public ip addresses in mlibrary_ip_addresses' do
         let(:facts) do
           os_facts.merge(mlibrary_ip_addresses: {
-            "public"  => ["100.100.100.100", "200.200.200.200"],
-            "private" => []
-          })
+                           'public' => ['100.100.100.100', '200.200.200.200'],
+                           'private' => [],
+                         })
         end
 
         it do
           expect(exported_resources).to contain_firewall("010 prometheus public node exporter #{facts[:hostname]} 100.100.100.100")
-            .with_source("100.100.100.100")
+            .with_source('100.100.100.100')
             .with_tag('mydatacenter_prometheus_public_node_exporter')
         end
 
         it do
           expect(exported_resources).to contain_firewall("010 prometheus public node exporter #{facts[:hostname]} 200.200.200.200")
-            .with_source("200.200.200.200")
+            .with_source('200.200.200.200')
             .with_tag('mydatacenter_prometheus_public_node_exporter')
         end
 
@@ -298,14 +298,14 @@ describe 'nebula::profile::prometheus' do
       context 'with a single private ip address in mlibrary_ip_addresses' do
         let(:facts) do
           os_facts.merge(mlibrary_ip_addresses: {
-            "public"  => [],
-            "private" => ["10.1.2.3"]
-          })
+                           'public' => [],
+                           'private' => ['10.1.2.3'],
+                         })
         end
 
         it do
           expect(exported_resources).to contain_firewall("010 prometheus private node exporter #{facts[:hostname]} 10.1.2.3")
-            .with_source("10.1.2.3")
+            .with_source('10.1.2.3')
             .with_tag('mydatacenter_prometheus_private_node_exporter')
         end
 
@@ -327,9 +327,9 @@ describe 'nebula::profile::prometheus' do
       context 'with too many ip addresses in mlibrary_ip_addresses' do
         let(:facts) do
           os_facts.merge(mlibrary_ip_addresses: {
-            "public"  => ["100.100.100.100", "200.200.200.200"],
-            "private" => ["10.1.2.3", "10.2.3.4", "10.3.4.5"]
-          })
+                           'public' => ['100.100.100.100', '200.200.200.200'],
+                           'private' => ['10.1.2.3', '10.2.3.4', '10.3.4.5'],
+                         })
         end
 
         [%w[public 100.100.100.100],
@@ -337,8 +337,8 @@ describe 'nebula::profile::prometheus' do
          %w[private 10.1.2.3],
          %w[private 10.2.3.4],
          %w[private 10.3.4.5]].each do |network, ip_address|
-          [["node", 9100],
-           ["ipmi", 9290]].each do |exporter, port|
+          [['node', 9100],
+           ['ipmi', 9290]].each do |exporter, port|
             it "exports a firewall so that #{exporter} exporters can open #{network} #{port} to #{ip_address}" do
               expect(exported_resources).to contain_firewall("010 prometheus #{network} #{exporter} exporter #{facts[:hostname]} #{ip_address}")
                 .with_tag("mydatacenter_prometheus_#{network}_#{exporter}_exporter")
@@ -376,11 +376,11 @@ describe 'nebula::profile::prometheus' do
           {
             static_nodes: [
               {
-                'targets'      => ['10.9.9.99:1234'],
-                'labels'       => {
+                'targets' => ['10.9.9.99:1234'],
+                'labels' => {
                   'datacenter' => 'static_datacenter',
-                  'hostname'   => 'static_host',
-                  'role'       => 'static::role',
+                  'hostname' => 'static_host',
+                  'role' => 'static::role',
                 },
               },
             ],
@@ -388,7 +388,7 @@ describe 'nebula::profile::prometheus' do
         end
 
         it do
-          is_expected.to contain_concat_fragment(fragment)
+          expect(subject).to contain_concat_fragment(fragment)
             .with_tag('mydatacenter_prometheus_node_service_list')
             .with_target('/etc/prometheus/nodes.yml')
         end
@@ -405,7 +405,7 @@ describe 'nebula::profile::prometheus' do
       end
 
       it do
-        is_expected.to contain_file('/etc/prometheus/prometheus.yml')
+        expect(subject).to contain_file('/etc/prometheus/prometheus.yml')
           .without_content(%r{job_name: wmi})
       end
 
@@ -431,7 +431,7 @@ describe 'nebula::profile::prometheus' do
           "role: 'windows::role'",
         ].each do |label|
           it do
-            is_expected.to contain_file('/etc/prometheus/prometheus.yml')
+            expect(subject).to contain_file('/etc/prometheus/prometheus.yml')
               .with_content(%r{job_name: wmi\n.*labels:\n.*#{label}}m)
           end
         end

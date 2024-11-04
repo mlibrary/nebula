@@ -18,11 +18,11 @@ class nebula::profile::www_lib::vhosts::www_lib (
 ) {
 
   nebula::apache::www_lib_vhost { 'www.lib-ssl':
-    servername                    => "${prefix}www.${domain}",
-    ssl                           => true,
-    usertrack                     => true,
-    docroot                       => $docroot,
-    directories                   => [
+    servername  => "${prefix}www.${domain}",
+    ssl         => true,
+    usertrack   => true,
+    docroot     => $docroot,
+    directories => [
       {
         provider       => 'directory',
         path           => $docroot,

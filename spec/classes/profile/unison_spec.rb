@@ -13,7 +13,7 @@ describe 'nebula::profile::unison' do
 
       shared_examples_for 'logrotated unison' do
         it do
-          is_expected.to contain_logrotate__rule('unison').with(
+          expect(subject).to contain_logrotate__rule('unison').with(
             path: '/var/log/unison*.log',
             rotate: 7,
             rotate_every: 'day',
@@ -27,15 +27,16 @@ describe 'nebula::profile::unison' do
         it { is_expected.to contain_class('nebula::profile::logrotate') }
       end
 
-      context 'server' do
+      context 'when on server' do
         let(:params) { { servers: %w[instance1 instance2] } }
 
         it { is_expected.to compile }
+
         it_behaves_like 'logrotated unison'
 
         # both instances are configured via hiera
         it do
-          is_expected.to contain_nebula__unison__server('instance1').with(
+          expect(subject).to contain_nebula__unison__server('instance1').with(
             port: 2647,
             root: '/somewhere',
             paths: %w[something somethingelse],
@@ -44,7 +45,7 @@ describe 'nebula::profile::unison' do
         end
 
         it do
-          is_expected.to contain_nebula__unison__server('instance2').with(
+          expect(subject).to contain_nebula__unison__server('instance2').with(
             port: 2648,
             root: '/elsewhere',
             paths: %w[otherthing yetanotherthing],
@@ -53,10 +54,11 @@ describe 'nebula::profile::unison' do
         end
       end
 
-      context 'client' do
+      context 'when on client' do
         let(:params) { { clients: %w[instance1 instance2] } }
 
         it { is_expected.to compile }
+
         it_behaves_like 'logrotated unison'
 
         # can't test importing exported resources

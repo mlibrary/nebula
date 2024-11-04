@@ -3,24 +3,24 @@
 # BSD License. See LICENSE.txt for details.
 
 class nebula::profile::github_pull_account (
-  String $git_username = "git",
+  String $git_username = 'git',
   Integer $git_gid = 100,
-  String $git_homedir = "/var/lib/autogit",
+  String $git_homedir = '/var/lib/autogit',
 ) {
-  package { "git": }
+  package { 'git': }
 
   user { $git_username:
-    ensure     => "present",
+    ensure     => 'present',
     home       => $git_homedir,
     gid        => $git_gid,
     managehome => true,
   }
 
   file { "${git_homedir}/.ssh":
-    ensure  => "directory",
+    ensure  => 'directory',
     owner   => $git_username,
     group   => $git_gid,
-    mode    => "0700",
+    mode    => '0700',
     require => User[$git_username],
   }
 
@@ -33,18 +33,18 @@ class nebula::profile::github_pull_account (
     require => File["${git_homedir}/.ssh"],
   }
 
-  exec { "create /var/local/github_ssh_keys":
-    creates => "/var/local/github_ssh_keys",
-    command => "/usr/bin/ssh-keyscan github.com > /var/local/github_ssh_keys",
+  exec { 'create /var/local/github_ssh_keys':
+    creates => '/var/local/github_ssh_keys',
+    command => '/usr/bin/ssh-keyscan github.com > /var/local/github_ssh_keys',
   }
 
   include nebula::profile::managed_known_hosts
 
   # Without this, the git user will not be able to pull from private
   # repos using ssh.
-  concat_fragment { "github ssh keys":
-    target  => "/etc/ssh/ssh_known_hosts",
-    source  => "/var/local/github_ssh_keys",
-    require => Exec["create /var/local/github_ssh_keys"],
+  concat_fragment { 'github ssh keys':
+    target  => '/etc/ssh/ssh_known_hosts',
+    source  => '/var/local/github_ssh_keys',
+    require => Exec['create /var/local/github_ssh_keys'],
   }
 }

@@ -4,7 +4,7 @@
 
 # Fulcrum
 #
-# This is desiged to manage a Debian Server that hosts the Fulcrum project, with all of the dependencies and services included. 
+# This is desiged to manage a Debian Server that hosts the Fulcrum project, with all of the dependencies and services included.
 
 class nebula::role::fulcrum::standalone {
   include nebula::role::minimum

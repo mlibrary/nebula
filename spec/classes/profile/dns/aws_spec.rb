@@ -14,8 +14,9 @@ describe 'nebula::profile::dns::aws' do
       it { is_expected.to contain_exec('restart_networking') }
       it { is_expected.to contain_file_line('domain_name') }
       # search_domain should match content of nebula::resolv_conf::searchpath
+
       it do
-        is_expected.to contain_file_line('search_domain').with_line(
+        expect(subject).to contain_file_line('search_domain').with_line(
           'supersede domain-search "searchpath.default.invalid";',
         )
       end

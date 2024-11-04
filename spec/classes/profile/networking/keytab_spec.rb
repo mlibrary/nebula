@@ -16,7 +16,7 @@ describe 'nebula::profile::networking::keytab' do
         let(:params) { { keytab: 'nebula/keytab.fake' } }
 
         it do
-          is_expected.to contain_file('/etc/krb5.keytab').with(
+          expect(subject).to contain_file('/etc/krb5.keytab').with(
             mode: '0600',
             content: %r{^This is not a real keytab.},
           )
@@ -55,7 +55,7 @@ describe 'nebula::profile::networking::keytab' do
         end
 
         it do
-          is_expected.to contain_file('/etc/krb5.keytab').with(
+          expect(subject).to contain_file('/etc/krb5.keytab').with(
             mode: '0600',
             source: 'alternate source',
           )

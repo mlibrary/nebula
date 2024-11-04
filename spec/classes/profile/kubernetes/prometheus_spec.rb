@@ -16,7 +16,7 @@ describe 'nebula::profile::kubernetes::prometheus' do
       it { is_expected.to contain_file('/var/local/prometheus').with_ensure('directory') }
 
       it do
-        is_expected.to contain_concat_file('/etc/prometheus/nodes.yml')
+        expect(subject).to contain_concat_file('/etc/prometheus/nodes.yml')
           .with_path('/var/local/prometheus/nodes.yml')
           .with_require('File[/var/local/prometheus]')
       end

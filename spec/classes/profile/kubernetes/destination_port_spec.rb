@@ -25,7 +25,7 @@ require 'spec_helper'
           subject { exported_resources }
 
           it do
-            is_expected.to contain_concat_fragment("haproxy kubernetes #{service.tr('_', ' ')} #{facts[:hostname]}")
+            expect(subject).to contain_concat_fragment("haproxy kubernetes #{service.tr('_', ' ')} #{facts[:hostname]}")
               .with_target("/etc/haproxy/services.d/#{service}.cfg")
               .with_order('02')
               .with_content("  server #{facts[:hostname]} #{facts[:ipaddress]}:#{port} #{options}\n")
@@ -34,9 +34,9 @@ require 'spec_helper'
 
           if service == 'etcd'
             it do
-              is_expected.to contain_concat_fragment("prometheus #{service.tr('_', ' ')} service #{facts[:hostname]}")
+              expect(subject).to contain_concat_fragment("prometheus #{service.tr('_', ' ')} service #{facts[:hostname]}")
                 .with_target("/etc/prometheus/#{service}.yml")
-                .with_tag("mydatacenter_prometheus_etcd_service_list")
+                .with_tag('mydatacenter_prometheus_etcd_service_list')
             end
           end
         end

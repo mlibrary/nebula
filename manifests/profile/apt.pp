@@ -10,9 +10,9 @@
 #   include nebula::profile::apt
 class nebula::profile::apt (
   String $mirror,
-  String $ubuntu_mirror = "http://us.archive.ubuntu.com/ubuntu",
   String $puppet_repo,
   Boolean $purge = true,
+  String $ubuntu_mirror = 'http://us.archive.ubuntu.com/ubuntu',
   Optional[Hash] $local_repo = undef,
 ) {
 
@@ -141,7 +141,7 @@ class nebula::profile::apt (
         location => $ubuntu_mirror,
         repos    => 'main restricted universe',
       ;
-      'main'     : release => "${::lsbdistcodename}";
+      'main'     : release => $::lsbdistcodename;
       'updates'  : release => "${::lsbdistcodename}-updates";
       'backports': release => "${::lsbdistcodename}-backports";
       'security' : release => "${::lsbdistcodename}-security";

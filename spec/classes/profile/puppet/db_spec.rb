@@ -11,7 +11,7 @@ describe 'nebula::profile::puppet::db' do
       let(:facts) { os_facts }
 
       xit do
-        is_expected.to contain_class('puppetdb').with(
+        expect(subject).to contain_class('puppetdb').with(
           disable_cleartext: true,
           manage_firewall: false,
         )

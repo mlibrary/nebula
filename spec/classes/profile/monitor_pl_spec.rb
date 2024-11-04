@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # Copyright (c) 2018 The Regents of the University of Michigan.
@@ -17,19 +16,22 @@ describe 'nebula::profile::monitor_pl' do
 
       context 'with default parameters' do
         it {
-          is_expected.to contain_concat_fragment('monitor nfs mounts')
+          expect(subject).to contain_concat_fragment('monitor nfs mounts')
             .with(tag: 'monitor_config', content: %r{nfs: \[\]})
         }
+
         it {
-          is_expected.to contain_concat_fragment('monitor solr cores')
+          expect(subject).to contain_concat_fragment('monitor solr cores')
             .with(tag: 'monitor_config', content: %r{solr: \[\]})
         }
+
         it {
-          is_expected.to contain_concat_fragment('monitor mysql')
+          expect(subject).to contain_concat_fragment('monitor mysql')
             .with(tag: 'monitor_config', content: %r{mysql:})
         }
+
         it {
-          is_expected.to contain_concat_fragment('monitor shibboleth')
+          expect(subject).to contain_concat_fragment('monitor shibboleth')
             .with(tag: 'monitor_config', content: %r{shibd: false})
         }
       end
@@ -47,19 +49,22 @@ describe 'nebula::profile::monitor_pl' do
         end
 
         it {
-          is_expected.to contain_concat_fragment('monitor nfs mounts')
+          expect(subject).to contain_concat_fragment('monitor nfs mounts')
             .with(tag: 'monitor_config', content: YAML.dump('nfs' => params[:nfs_mounts]))
         }
+
         it {
-          is_expected.to contain_concat_fragment('monitor solr cores')
+          expect(subject).to contain_concat_fragment('monitor solr cores')
             .with(tag: 'monitor_config', content: YAML.dump('solr' => params[:solr_cores]))
         }
+
         it {
-          is_expected.to contain_concat_fragment('monitor mysql')
+          expect(subject).to contain_concat_fragment('monitor mysql')
             .with(tag: 'monitor_config', content: YAML.dump('mysql' => params[:mysql]))
         }
+
         it {
-          is_expected.to contain_concat_fragment('monitor shibboleth')
+          expect(subject).to contain_concat_fragment('monitor shibboleth')
             .with(tag: 'monitor_config', content: YAML.dump('shibd' => params[:shibboleth]))
         }
       end

@@ -15,7 +15,7 @@ describe 'nebula::profile::users' do
       it { is_expected.to contain_group('invalid_special_group').with_gid(2468) }
 
       it do
-        is_expected.to contain_user('invalid_normal_admin').with(
+        expect(subject).to contain_user('invalid_normal_admin').with(
           comment: 'Invalid normal admin',
           gid: 'invalid_default_group',
           uid: 123_456,
@@ -27,7 +27,7 @@ describe 'nebula::profile::users' do
       end
 
       it do
-        is_expected.to contain_user('invalid_special_admin').with(
+        expect(subject).to contain_user('invalid_special_admin').with(
           comment: 'Invalid special admin',
           gid: 'invalid_special_group',
           uid: 123_457,
@@ -39,7 +39,7 @@ describe 'nebula::profile::users' do
       end
 
       it do
-        is_expected.to contain_user('invalid_noauth_admin').with(
+        expect(subject).to contain_user('invalid_noauth_admin').with(
           comment: 'Invalid no-authorization admin',
           gid: 'invalid_default_group',
           uid: 123_458,

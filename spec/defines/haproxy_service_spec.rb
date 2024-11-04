@@ -25,7 +25,7 @@ describe 'nebula::haproxy::service' do
       end
 
       let :pre_condition do
-        <<~EOT
+        <<~RESOURCES
           nebula::haproxy::binding { 'scotch svc1':
             service    => 'svc1',
             datacenter => 'dc1',
@@ -39,7 +39,7 @@ describe 'nebula::haproxy::service' do
             hostname   => 'soda',
             ipaddress  => '222.222.222.234'
           }
-        EOT
+        RESOURCES
       end
 
       describe 'https service config' do
@@ -47,7 +47,7 @@ describe 'nebula::haproxy::service' do
         let(:service_config) { '/etc/haproxy/services.d/svc1-https.cfg' }
 
         it do
-          is_expected.to contain_concat(service_config).with(
+          expect(subject).to contain_concat(service_config).with(
             ensure: 'present',
             notify: 'Service[haproxy]',
             mode: '0644',
@@ -55,7 +55,7 @@ describe 'nebula::haproxy::service' do
         end
 
         it do
-          is_expected.to contain_concat_fragment('svc1-dc1-https backend').with(
+          expect(subject).to contain_concat_fragment('svc1-dc1-https backend').with(
             target: service_config,
             content: "backend svc1-dc1-https-back\n",
           )
@@ -64,9 +64,9 @@ describe 'nebula::haproxy::service' do
         it { is_expected.to contain_concat_fragment('svc1-dc1-https check').with_target(service_config) }
 
         it do
-          is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with(
+          expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with(
             target: service_config,
-            content: <<~EOT
+            content: <<~HAPROXY,
               frontend svc1-dc1-https-front
               bind 1.2.3.4:443 ssl crt /etc/ssl/private/svc1
               stats uri /haproxy?stats
@@ -77,7 +77,7 @@ describe 'nebula::haproxy::service' do
               default_backend svc1-dc1-https-back
               acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
               http-request deny if blocked-ip
-            EOT
+            HAPROXY
           )
         end
 
@@ -87,7 +87,7 @@ describe 'nebula::haproxy::service' do
           end
 
           it do
-            is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with(
+            expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with(
               target: service_config,
               content: %r{^maxconn 999$},
             )
@@ -95,7 +95,7 @@ describe 'nebula::haproxy::service' do
         end
 
         it do
-          is_expected.not_to contain_file('/etc/haproxy/errors/svc1503.http')
+          expect(subject).not_to contain_file('/etc/haproxy/errors/svc1503.http')
         end
 
         describe 'with custom 503' do
@@ -104,16 +104,16 @@ describe 'nebula::haproxy::service' do
           end
 
           it do
-            is_expected.to contain_file('/etc/haproxy/errors/svc1503.http')
+            expect(subject).to contain_file('/etc/haproxy/errors/svc1503.http')
               .with_source('https://default.http_files.invalid/errorfiles/svc1503.http')
           end
 
           it do
-            is_expected.to contain_concat_fragment('svc1-dc1-https custom 503').with(
+            expect(subject).to contain_concat_fragment('svc1-dc1-https custom 503').with(
               target: service_config,
-              content: <<~EOT
+              content: <<~HAPROXY,
                 errorfile 503 /etc/haproxy/errors/svc1503.http
-              EOT
+              HAPROXY
             )
           end
         end
@@ -127,9 +127,9 @@ describe 'nebula::haproxy::service' do
           end
 
           it do
-            is_expected.to contain_concat_fragment('svc1-dc1-https throttling').with(
+            expect(subject).to contain_concat_fragment('svc1-dc1-https throttling').with(
               target: service_config,
-              content: <<~EOT
+              content: <<~HAPROXY,
                 stick-table type ip size 200k expire 200s store http_req_rate(200s),bytes_out_rate(200s)
                 tcp-request content track-sc2 src
                 http-request set-var(req.http_rate) src_http_req_rate(svc1-dc1-http-back)
@@ -137,12 +137,12 @@ describe 'nebula::haproxy::service' do
                 acl http_req_rate_abuse var(req.http_rate),add(req.https_rate) gt 400
                 errorfile 403 /etc/haproxy/errors/svc1429.http
                 http-request deny deny_status 403 if http_req_rate_abuse
-              EOT
+              HAPROXY
             )
           end
 
           it do
-            is_expected.to contain_file('/etc/haproxy/errors/svc1429.http')
+            expect(subject).to contain_file('/etc/haproxy/errors/svc1429.http')
               .with_source('https://default.http_files.invalid/errorfiles/svc1429.http')
           end
 
@@ -152,10 +152,11 @@ describe 'nebula::haproxy::service' do
             it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt') }
 
             it 'does not reference any whitelists' do
-              is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{(?!whitelist)})
+              expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{(?!whitelist)})
             end
+
             it 'does not reference the exemption backend' do
-              is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{(?!svc1-dc1-https?-back-exempt)})
+              expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{(?!svc1-dc1-https?-back-exempt)})
             end
           end
 
@@ -167,24 +168,25 @@ describe 'nebula::haproxy::service' do
             it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_src.txt').with_content("10.0.0.1\n10.2.32.0/24\n") }
 
             it do
-              is_expected.to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{#{<<~EOT}}m)
+              expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{#{<<~HAPROXY}}m)
                 acl whitelist_src src -n -f /etc/haproxy/svc1_whitelist_src.txt
                 use_backend svc1-dc1-https-back-exempt if whitelist_src
                 default_backend svc1-dc1-https-back
-              EOT
+              HAPROXY
             end
 
             it do
-              is_expected.to contain_concat_fragment('svc1-dc1-https back-exempt')
+              expect(subject).to contain_concat_fragment('svc1-dc1-https back-exempt')
                 .with_content("backend svc1-dc1-https-back-exempt\n")
             end
 
             it do
-              is_expected.to contain_concat_fragment('svc1-dc1-https scotch binding')
+              expect(subject).to contain_concat_fragment('svc1-dc1-https scotch binding')
                 .with_content("server scotch 111.111.111.123:443 check cookie s123\n")
             end
+
             it do
-              is_expected.to contain_concat_fragment('svc1-dc1-https soda binding')
+              expect(subject).to contain_concat_fragment('svc1-dc1-https soda binding')
                 .with_content("server soda 222.222.222.234:443 check cookie s234\n")
             end
           end
@@ -200,23 +202,23 @@ describe 'nebula::haproxy::service' do
              'use_backend svc1-dc1-https-back-exempt if whitelist_path_beg OR whitelist_path_end']
               .each do |fragment|
               it do
-                is_expected.to contain_concat_fragment('svc1-dc1-https frontend')
+                expect(subject).to contain_concat_fragment('svc1-dc1-https frontend')
                   .with_content(%r{#{fragment}})
               end
             end
 
             it do
-              is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_beg.txt').with_content(<<~EOT)
+              expect(subject).to contain_file('/etc/haproxy/svc1_whitelist_path_beg.txt').with_content(<<~PATHS)
                 /some/where
                 /another/path
-              EOT
+              PATHS
             end
 
             it do
-              is_expected.to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt').with_content(<<~EOT)
+              expect(subject).to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt').with_content(<<~PATHS)
                 .abc
                 .def
-              EOT
+              PATHS
             end
           end
 
@@ -228,17 +230,18 @@ describe 'nebula::haproxy::service' do
             ['acl throttle_condition path_beg /whatever',
              'use_backend svc1-dc1-https-back-exempt if !throttle_condition'].each do |fragment|
               it do
-                is_expected.to contain_concat_fragment('svc1-dc1-https frontend')
+                expect(subject).to contain_concat_fragment('svc1-dc1-https frontend')
                   .with_content(%r{#{fragment}})
               end
             end
 
             it do
-              is_expected.to contain_concat_fragment('svc1-dc1-https scotch exempt binding')
+              expect(subject).to contain_concat_fragment('svc1-dc1-https scotch exempt binding')
                 .with_content("server scotch 111.111.111.123:443 track svc1-dc1-https-back/scotch cookie s123\n")
             end
+
             it do
-              is_expected.to contain_concat_fragment('svc1-dc1-https soda exempt binding')
+              expect(subject).to contain_concat_fragment('svc1-dc1-https soda exempt binding')
                 .with_content("server soda 222.222.222.234:443 track svc1-dc1-https-back/soda cookie s234\n")
             end
           end
@@ -250,7 +253,7 @@ describe 'nebula::haproxy::service' do
           end
 
           it do
-            is_expected.to contain_cron('dynamic weighting for svc1')
+            expect(subject).to contain_cron('dynamic weighting for svc1')
               .with_command('/usr/bin/ruby /usr/local/bin/set_weights.rb dc1 svc1 > /dev/null 2>&1')
               .with_user('haproxyctl')
               .with_environment(['HAPROXY_SMOOTHING_FACTOR=2'])
@@ -265,7 +268,7 @@ describe 'nebula::haproxy::service' do
           end
 
           it do
-            is_expected.to contain_concat_fragment('svc1-dc1-https check_timeout')
+            expect(subject).to contain_concat_fragment('svc1-dc1-https check_timeout')
               .with_target(service_config)
               .with_content("timeout connect 15000\n")
           end
@@ -281,9 +284,9 @@ describe 'nebula::haproxy::service' do
         it { is_expected.to contain_concat(service_config).with(mode: '0644') }
 
         it do
-          is_expected.to contain_concat_fragment('svc1-dc1-http frontend').with(
+          expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
             target: service_config,
-            content: <<~EOT
+            content: <<~HAPROXY,
               frontend svc1-dc1-http-front
               bind 1.2.3.4:80
               stats uri /haproxy?stats
@@ -292,23 +295,24 @@ describe 'nebula::haproxy::service' do
               default_backend svc1-dc1-http-back
               acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
               http-request deny if blocked-ip
-            EOT
+            HAPROXY
           )
         end
 
         it do
-          is_expected.to contain_concat_fragment('svc1-dc1-http backend').with(
+          expect(subject).to contain_concat_fragment('svc1-dc1-http backend').with(
             target: service_config,
             content: "backend svc1-dc1-http-back\n",
           )
         end
 
         it do
-          is_expected.to contain_concat_fragment('svc1-dc1-http scotch binding')
+          expect(subject).to contain_concat_fragment('svc1-dc1-http scotch binding')
             .with_content("server scotch 111.111.111.123:80 track svc1-dc1-https-back/scotch cookie s123\n")
         end
+
         it do
-          is_expected.to contain_concat_fragment('svc1-dc1-http soda binding')
+          expect(subject).to contain_concat_fragment('svc1-dc1-http soda binding')
             .with_content("server soda 222.222.222.234:80 track svc1-dc1-https-back/soda cookie s234\n")
         end
       end
@@ -329,7 +333,7 @@ describe 'nebula::haproxy::service' do
           end
 
           it do
-            is_expected.to contain_file(dest).with(
+            expect(subject).to contain_file(dest).with(
               ensure: 'directory',
               notify: 'Service[haproxy]',
               require: 'Package[haproxy]',

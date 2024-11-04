@@ -14,14 +14,14 @@ describe 'nebula::profile::kubernetes::bootstrap::source' do
       it { is_expected.to compile }
 
       it do
-        is_expected.to contain_file('/var/lib/kubeadm_bootstrap/.ssh/id_rsa.pub')
+        expect(subject).to contain_file('/var/lib/kubeadm_bootstrap/.ssh/id_rsa.pub')
           .with_owner('kubeadm_bootstrap')
           .with_content("first cluster public key value\n")
           .that_requires('File[/var/lib/kubeadm_bootstrap/.ssh]')
       end
 
       it do
-        is_expected.to contain_file('/var/lib/kubeadm_bootstrap/.ssh/id_rsa')
+        expect(subject).to contain_file('/var/lib/kubeadm_bootstrap/.ssh/id_rsa')
           .with_owner('kubeadm_bootstrap')
           .with_mode('0600')
           .with_content("first cluster private key value\n")
@@ -32,12 +32,12 @@ describe 'nebula::profile::kubernetes::bootstrap::source' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
 
         it do
-          is_expected.to contain_file('/var/lib/kubeadm_bootstrap/.ssh/id_rsa.pub')
+          expect(subject).to contain_file('/var/lib/kubeadm_bootstrap/.ssh/id_rsa.pub')
             .with_content("general public key value\n")
         end
 
         it do
-          is_expected.to contain_file('/var/lib/kubeadm_bootstrap/.ssh/id_rsa')
+          expect(subject).to contain_file('/var/lib/kubeadm_bootstrap/.ssh/id_rsa')
             .with_content("general private key value\n")
         end
       end

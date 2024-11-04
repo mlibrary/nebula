@@ -11,7 +11,7 @@ describe 'nebula::profile::puppet::master' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_service('puppetserver').with(
+        expect(subject).to contain_service('puppetserver').with(
           ensure: 'running',
           enable: true,
           hasrestart: true,
@@ -20,7 +20,7 @@ describe 'nebula::profile::puppet::master' do
       end
 
       it do
-        is_expected.to contain_exec(
+        expect(subject).to contain_exec(
           '/opt/rbenv/shims/r10k deploy environment production',
         ).with_creates('/etc/puppetlabs/code/environments/production')
           .that_requires('File[/etc/puppetlabs/r10k/r10k.yaml]')
@@ -28,32 +28,32 @@ describe 'nebula::profile::puppet::master' do
       end
 
       it do
-        is_expected.to contain_exec('/opt/rbenv/shims/librarian-puppet update')
+        expect(subject).to contain_exec('/opt/rbenv/shims/librarian-puppet update')
           .with_refreshonly(true)
           .with_cwd('/etc/puppetlabs/code/environments/production')
       end
 
       it do
-        is_expected.to contain_file('/etc/puppetlabs/r10k/r10k.yaml')
+        expect(subject).to contain_file('/etc/puppetlabs/r10k/r10k.yaml')
           .that_requires('File[/etc/puppetlabs/r10k]')
           .with_content(%r{^cachedir: /var/cache/r10k$})
       end
 
       it do
-        is_expected.to contain_file('/etc/puppetlabs/r10k')
+        expect(subject).to contain_file('/etc/puppetlabs/r10k')
           .with_ensure('directory')
           .that_requires('Package[puppetserver]')
       end
 
       it do
-        is_expected.to contain_file('/etc/puppetlabs/puppet/fileserver.conf')
+        expect(subject).to contain_file('/etc/puppetlabs/puppet/fileserver.conf')
           .with_content(%r{\[ssl-certs\]\n *path /default_invalid/etc/ssl}m)
           .with_content(%r{\[repos\]\n *path /default_invalid/opt/repos}m)
           .that_requires('Package[puppetserver]')
       end
 
       it do
-        is_expected.to contain_file('/etc/puppetlabs/puppet/autosign.conf')
+        expect(subject).to contain_file('/etc/puppetlabs/puppet/autosign.conf')
           .that_requires('Package[puppetserver]')
           .without_content(%r{^[^#]})
       end
@@ -62,19 +62,19 @@ describe 'nebula::profile::puppet::master' do
         let(:params) { { autosign_whitelist: %w[aaa bbb] } }
 
         it do
-          is_expected.to contain_file('/etc/puppetlabs/puppet/autosign.conf')
+          expect(subject).to contain_file('/etc/puppetlabs/puppet/autosign.conf')
             .with_content(%r{^aaa$})
             .with_content(%r{^bbb$})
         end
       end
 
       it do
-        is_expected.to contain_package('puppetserver')
+        expect(subject).to contain_package('puppetserver')
           .that_requires(['Rbenv::Gem[r10k]', 'Rbenv::Gem[librarian-puppet]'])
       end
 
       it do
-        is_expected.to contain_rbenv__gem('r10k').with(
+        expect(subject).to contain_rbenv__gem('r10k').with(
           ruby_version: '2.4.3',
           require: [
             'Class[Nebula::Profile::Ruby]',
@@ -84,7 +84,7 @@ describe 'nebula::profile::puppet::master' do
       end
 
       it do
-        is_expected.to contain_rbenv__gem('librarian-puppet').with(
+        expect(subject).to contain_rbenv__gem('librarian-puppet').with(
           ruby_version: '2.4.3',
           require: [
             'Class[Nebula::Profile::Ruby]',
@@ -94,7 +94,7 @@ describe 'nebula::profile::puppet::master' do
       end
 
       it do
-        is_expected.to contain_tidy(
+        expect(subject).to contain_tidy(
           '/opt/puppetlabs/server/data/puppetserver/reports',
         ).with(
           age: '1h',

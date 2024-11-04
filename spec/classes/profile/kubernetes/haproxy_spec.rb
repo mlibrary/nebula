@@ -17,14 +17,14 @@ describe 'nebula::profile::kubernetes::haproxy' do
       it { is_expected.to contain_package('haproxyctl') }
 
       it do
-        is_expected.to contain_service('haproxy')
+        expect(subject).to contain_service('haproxy')
           .with_ensure('running')
           .with_enable(true)
           .that_requires('Package[haproxy]')
       end
 
       it do
-        is_expected.to contain_nebula__authzd_user('haproxyctl')
+        expect(subject).to contain_nebula__authzd_user('haproxyctl')
           .with_gid('haproxy')
           .with_home('/var/haproxyctl')
       end
@@ -33,7 +33,7 @@ describe 'nebula::profile::kubernetes::haproxy' do
         let(:file) { '/etc/default/haproxy' }
 
         it do
-          is_expected.to contain_file(file)
+          expect(subject).to contain_file(file)
             .with_content(%r{^CONFIG="/etc/haproxy/haproxy\.cfg"$})
             .with_content(%r{^EXTRAOPTS="-f /etc/haproxy/services\.d"$})
             .that_notifies('Service[haproxy]')
@@ -60,25 +60,21 @@ describe 'nebula::profile::kubernetes::haproxy' do
           [:private,  12201, 'gelf_tcp'],
         ].each do |ip, port, service|
           describe 'the firewall' do
-            case ip
-            when :public
-              it do
-                is_expected.to contain_firewall("200 public #{service}")
+            it do
+              case ip
+              when :public
+                expect(subject).to contain_firewall("200 public #{service}")
                   .with_proto('tcp')
                   .with_state('NEW')
                   .with_action('accept')
                   .with_dport(port)
                   .without_source
-              end
-            when :private
-              it do
-                is_expected.to contain_nebula__exposed_port("200 private #{service}")
+              when :private
+                expect(subject).to contain_nebula__exposed_port("200 private #{service}")
                   .with_port(port)
                   .with_block('umich::networks::datacenter')
-              end
-            else
-              it do
-                is_expected.to contain_firewall("200 private #{service}")
+              else
+                expect(subject).to contain_firewall("200 private #{service}")
                   .with_proto('tcp')
                   .with_state('NEW')
                   .with_action('accept')
@@ -113,7 +109,7 @@ describe 'nebula::profile::kubernetes::haproxy' do
             end
 
             it do
-              is_expected.to contain_concat_fragment(fragment)
+              expect(subject).to contain_concat_fragment(fragment)
                 .with_content(%r{^  bind #{ip_address}:#{port}$})
             end
 
@@ -129,7 +125,7 @@ describe 'nebula::profile::kubernetes::haproxy' do
               end
 
               it do
-                is_expected.to contain_concat_fragment(fragment)
+                expect(subject).to contain_concat_fragment(fragment)
                   .with_content(%r{^  bind #{ip_address}:#{port}$})
               end
             end

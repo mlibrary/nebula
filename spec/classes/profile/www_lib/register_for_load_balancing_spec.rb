@@ -18,7 +18,7 @@ describe 'nebula::profile::www_lib::register_for_load_balancing' do
           let(:params) { { services: ['www-lib'] } }
 
           it do
-            is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} www-lib")
+            expect(subject).to contain_nebula__haproxy__binding("#{facts[:hostname]} www-lib")
               .with_service('www-lib')
           end
 

@@ -15,8 +15,8 @@ describe 'nebula::profile::kubernetes::kubelet' do
       it { is_expected.to contain_kmod__load('br_netfilter') }
 
       it do
-        is_expected.to contain_file('/etc/sysctl.d/kubelet.conf')
-          .with_content(/^net.bridge.bridge-nf-call-ip6tables = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1/)
+        expect(subject).to contain_file('/etc/sysctl.d/kubelet.conf')
+          .with_content(%r{^net.bridge.bridge-nf-call-ip6tables = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1})
           .that_notifies('Service[procps]')
       end
 
@@ -67,7 +67,7 @@ describe 'nebula::profile::kubernetes::kubelet' do
         it { is_expected.to contain_package('kubelet').that_requires('Apt::Source[kubernetes]') }
 
         it do
-          is_expected.to contain_apt__pin('kubelet').with(
+          expect(subject).to contain_apt__pin('kubelet').with(
             packages: ['kubelet'],
             version: '1.14.2-1.1',
             priority: 999,
@@ -75,12 +75,12 @@ describe 'nebula::profile::kubernetes::kubelet' do
         end
 
         it do
-          is_expected.to contain_apt__source('kubernetes').with(
+          expect(subject).to contain_apt__source('kubernetes').with(
             location: 'https://pkgs.k8s.io/core:/stable:/v1.29/deb/',
             release: '/',
             repos: '',
             key: {
-              'name'   => 'k8s.io.asc',
+              'name' => 'k8s.io.asc',
               'source' => 'https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key',
             },
           )
@@ -93,11 +93,11 @@ describe 'nebula::profile::kubernetes::kubelet' do
           [%w[2379 2380 2381], 'etcd',           'tcp'],
           [10250,              'kubelet',        'tcp'],
           [6443,               'kubernetes API', 'tcp'],
-          ['30000-32767',      'NodePorts',      'tcp'],
-          [9100,               'Prometheus',     'tcp'],
+          %w[30000-32767 NodePorts tcp],
+          [9100, 'Prometheus', 'tcp'],
         ].each do |ports, purpose, proto|
           it do
-            is_expected.to contain_firewall("200 Cluster #{purpose}")
+            expect(subject).to contain_firewall("200 Cluster #{purpose}")
               .with_proto(proto)
               .with_dport(ports)
               .with_source('172.28.0.0/14')

@@ -27,11 +27,11 @@ describe 'nebula::authzd_user' do
 
       describe 'users' do
         it {
-          is_expected.to contain_user(title).with(name: title,
-                                                  gid: params[:gid],
-                                                  home: home,
-                                                  shell: '/bin/bash',
-                                                  managehome: true)
+          expect(subject).to contain_user(title).with(name: title,
+                                                      gid: params[:gid],
+                                                      home: home,
+                                                      shell: '/bin/bash',
+                                                      managehome: true)
         }
 
         it { is_expected.to contain_file("#{home}/.ssh").with(ensure: 'directory', mode: '0700') }
@@ -39,7 +39,7 @@ describe 'nebula::authzd_user' do
         it { is_expected.to contain_file("#{home}/.ssh/authorized_keys").with(owner: title, group: params[:gid]) }
 
         it 'creates authorized_keys with the given key' do
-          is_expected.to contain_file("#{home}/.ssh/authorized_keys")
+          expect(subject).to contain_file("#{home}/.ssh/authorized_keys")
             .with_content(%r{^#{params[:key][:type]} #{params[:key][:data]} #{params[:key][:comment]}$})
         end
       end

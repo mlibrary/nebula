@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # Copyright (c) 2018 The Regents of the University of Michigan.
@@ -34,7 +33,7 @@ describe 'nebula::profile::hathitrust::mounts' do
         end
 
         it do
-          is_expected.to contain_mount('/htapps').with(
+          expect(subject).to contain_mount('/htapps').with(
             device: 'somehost:/htapps',
             fstype: 'nfs',
           )

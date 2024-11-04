@@ -28,13 +28,13 @@ describe 'nebula::unison::client' do
         'ExecStart=/usr/local/bin/unisonsync myinstance',
       ].each do |line|
         it do
-          is_expected.to contain_file('/etc/systemd/system/unison-client-myinstance.service')
+          expect(subject).to contain_file('/etc/systemd/system/unison-client-myinstance.service')
             .with_content(%r{^#{line}$}m)
         end
       end
 
       it 'generates a prf file for unison clients' do
-        is_expected.to contain_file('/root/.unison/myinstance.prf')
+        expect(subject).to contain_file('/root/.unison/myinstance.prf')
           .with_content(%r{root\s+=\s+/myroot})
           .with_content(%r{root\s+=\s+socket://somehost.default.invalid:12345/myroot})
           .with_content(%r{path\s+=\s+path1})
@@ -51,7 +51,7 @@ describe 'nebula::unison::client' do
       end
 
       it do
-        is_expected.to contain_service('unison-client-myinstance')
+        expect(subject).to contain_service('unison-client-myinstance')
           .with(enable: true, ensure: 'running')
           .that_requires('Package[unison]')
       end
@@ -78,7 +78,7 @@ describe 'nebula::unison::client' do
         end
 
         it 'generates a prf file for unison clients' do
-          is_expected.to contain_file('/root/.unison/myinstance.prf')
+          expect(subject).to contain_file('/root/.unison/myinstance.prf')
             .with_content(%r{root\s+=\s+/myroot})
             .with_content(%r{root\s+=\s+socket://somehost.default.invalid:12345/myroot})
             .with_content(%r{path\s+=\s+path1})

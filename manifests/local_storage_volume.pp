@@ -3,7 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 
 # nebula::local_storage_volume
-# 
+#
 # Create a volume to use for kubernetes local storage on a worker node
 ##
 # @param volume_name The name of the volume (conventionally the UUID of the PVC)
@@ -14,24 +14,24 @@ define nebula::local_storage_volume (
   Integer $mib_capacity
 ) {
 
-  file { "/mnt/local-pvs/mounts/$volume_name":
+  file { "/mnt/local-pvs/mounts/${volume_name}":
     ensure => 'directory'
   }
 
-  exec { "make $volume_name disk file":
+  exec { "make ${volume_name} disk file":
     command => "/bin/dd if=/dev/zero of=/mnt/local-pvs/disks/${volume_name} bs=1048576 count=${mib_capacity}",
     creates => "/mnt/local-pvs/disks/${volume_name}"
   }
 
-  exec { "make $volume_name a filesystem":
+  exec { "make ${volume_name} a filesystem":
     command => "/sbin/mkfs.ext4 -m 0 /mnt/local-pvs/disks/${volume_name}",
-    unless => "/usr/bin/file /mnt/local-pvs/disks/${volume_name} | grep ext4"
+    unless  => "/usr/bin/file /mnt/local-pvs/disks/${volume_name} | grep ext4"
   }
 
   mount { "/mnt/local-pvs/mounts/${volume_name}":
     ensure  => 'mounted',
     device  => "/mnt/local-pvs/disks/${volume_name}",
-    options => "loop,rw,usrquota,grpquota",
+    options => 'loop,rw,usrquota,grpquota',
     fstype  => 'ext4',
   }
 }

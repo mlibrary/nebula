@@ -11,7 +11,7 @@ describe 'nebula::profile::networking::sshd_group_umask' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_concat_fragment('/etc/pam.d/sshd: group umask')
+        expect(subject).to contain_concat_fragment('/etc/pam.d/sshd: group umask')
           .with_target('/etc/pam.d/sshd')
           .with_content(%r{session    optional   pam_umask.so umask=0002})
       end

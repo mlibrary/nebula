@@ -11,7 +11,7 @@ describe 'nebula::profile::elastic::filebeat' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_service('filebeat').with(
+        expect(subject).to contain_service('filebeat').with(
           ensure: 'running',
           enable: true,
         )
@@ -20,7 +20,7 @@ describe 'nebula::profile::elastic::filebeat' do
       it { is_expected.to contain_package('filebeat') }
 
       it do
-        is_expected.to contain_file('/etc/filebeat/filebeat.yml').with(
+        expect(subject).to contain_file('/etc/filebeat/filebeat.yml').with(
           ensure: 'present',
           require: 'Package[filebeat]',
           notify: 'Service[filebeat]',
@@ -36,7 +36,7 @@ describe 'nebula::profile::elastic::filebeat' do
       end
 
       it do
-        is_expected.to contain_file('/etc/filebeat/configs').with(
+        expect(subject).to contain_file('/etc/filebeat/configs').with(
           ensure: 'directory',
           require: 'Package[filebeat]',
         )

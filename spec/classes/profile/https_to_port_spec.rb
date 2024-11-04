@@ -20,20 +20,20 @@ describe 'nebula::profile::https_to_port' do
         it { is_expected.to contain_class('nginx') }
 
         it do
-          is_expected.to contain_nginx__resource__server('letsencrypt-webroot')
+          expect(subject).to contain_nginx__resource__server('letsencrypt-webroot')
             .with_server_name([server_name])
             .with_listen_port(80)
             .with_www_root('/var/www')
         end
 
         it do
-          is_expected.to contain_nebula__cert(server_name)
+          expect(subject).to contain_nebula__cert(server_name)
             .with_webroot('/var/www')
             .that_requires('Nginx::Resource::Server[letsencrypt-webroot]')
         end
 
         it do
-          is_expected.to contain_nginx__resource__server('https-forwarder')
+          expect(subject).to contain_nginx__resource__server('https-forwarder')
             .with_server_name([server_name])
             .with_listen_port(443)
             .with_proxy('http://localhost:1234')
@@ -44,27 +44,27 @@ describe 'nebula::profile::https_to_port' do
         end
 
         it do
-          is_expected.to contain_cron('restart nginx weekly to keep SSL keys up to date')
+          expect(subject).to contain_cron('restart nginx weekly to keep SSL keys up to date')
             .with_command('/bin/systemctl restart nginx')
         end
 
-        context 'and server_name is set to example.invalid' do
+        context 'with server_name set to example.invalid' do
           let(:server_name) { 'example.invalid' }
           let(:params) do
             super().merge(server_name: server_name)
           end
 
           it do
-            is_expected.to contain_nginx__resource__server('letsencrypt-webroot')
+            expect(subject).to contain_nginx__resource__server('letsencrypt-webroot')
               .with_server_name([server_name])
           end
 
           it do
-            is_expected.to contain_nebula__cert(server_name)
+            expect(subject).to contain_nebula__cert(server_name)
           end
 
           it do
-            is_expected.to contain_nginx__resource__server('https-forwarder')
+            expect(subject).to contain_nginx__resource__server('https-forwarder')
               .with_server_name([server_name])
               .with_ssl_cert("#{letsencrypt_directory}/fullchain.pem")
               .with_ssl_key("#{letsencrypt_directory}/privkey.pem")
@@ -72,7 +72,7 @@ describe 'nebula::profile::https_to_port' do
           end
         end
 
-        context "and server_name is set to something that doesn't have keys yet" do
+        context "with server_name set to something that doesn't have keys yet" do
           let(:server_name) { 'nokeysyet.invalid' }
           let(:params) do
             super().merge(server_name: server_name)
@@ -81,18 +81,18 @@ describe 'nebula::profile::https_to_port' do
           it { is_expected.not_to contain_nginx__resource__server('https-forwarder') }
         end
 
-        context 'and webroot is set to /opt/html' do
+        context 'with webroot set to /opt/html' do
           let(:params) do
             super().merge(webroot: '/opt/html')
           end
 
           it do
-            is_expected.to contain_nginx__resource__server('letsencrypt-webroot')
+            expect(subject).to contain_nginx__resource__server('letsencrypt-webroot')
               .with_www_root('/opt/html')
           end
 
           it do
-            is_expected.to contain_nebula__cert(server_name)
+            expect(subject).to contain_nebula__cert(server_name)
               .with_webroot('/opt/html')
           end
         end
@@ -102,7 +102,7 @@ describe 'nebula::profile::https_to_port' do
         let(:params) { { port: 2468 } }
 
         it do
-          is_expected.to contain_nginx__resource__server('https-forwarder')
+          expect(subject).to contain_nginx__resource__server('https-forwarder')
             .with_proxy('http://localhost:2468')
         end
       end

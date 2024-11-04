@@ -13,13 +13,13 @@ describe 'nebula::profile::alma_integrations' do
       it { is_expected.to compile }
 
       it do
-        is_expected.to contain_user('alma')
+        expect(subject).to contain_user('alma')
           .with_home('/var/local/alma')
           .with_managehome(true)
       end
 
       it do
-        is_expected.to contain_nebula__file__ssh_keys('/var/local/alma/.ssh/authorized_keys')
+        expect(subject).to contain_nebula__file__ssh_keys('/var/local/alma/.ssh/authorized_keys')
           .with(secret: true)
           .with(owner: 'alma')
           .with(group: 'alma')
@@ -30,7 +30,7 @@ describe 'nebula::profile::alma_integrations' do
         let(:hiera_config) { 'spec/fixtures/hiera/alma_config.yaml' }
 
         it do
-          is_expected.to contain_nebula__file__ssh_keys('/var/local/alma/.ssh/authorized_keys')
+          expect(subject).to contain_nebula__file__ssh_keys('/var/local/alma/.ssh/authorized_keys')
             .with(secret: true)
             .with(owner: 'alma')
             .with(group: 'alma')

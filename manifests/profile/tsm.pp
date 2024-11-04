@@ -27,8 +27,8 @@
 # "/etc" is not its own filesystem)
 #
 # @param exclude_dirs Directories never to back up
-# 
-# @param opt_settings An Array containing node-specific configuration settings 
+#
+# @param opt_settings An Array containing node-specific configuration settings
 # for the dsm.opt file.
 #
 # This does not automate entry of the node password or encryption key (if

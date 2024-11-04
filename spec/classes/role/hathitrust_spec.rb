@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'nebula::role::hathitrust' do
@@ -14,7 +15,7 @@ describe 'nebula::role::hathitrust' do
         let(:params) { { afs: false } }
 
         it { is_expected.not_to contain_package('openafs-client') }
-      end      
+      end
     end
   end
 end

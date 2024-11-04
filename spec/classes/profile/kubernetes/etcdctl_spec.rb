@@ -12,21 +12,21 @@ describe 'nebula::profile::kubernetes::etcdctl' do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
-      it { is_expected.to contain_package("etcd-client") }
-      it { is_expected.to contain_file("/etc/etcd").with_ensure("directory") }
-      it { is_expected.to contain_file("/etc/etcd/README") }
+      it { is_expected.to contain_package('etcd-client') }
+      it { is_expected.to contain_file('/etc/etcd').with_ensure('directory') }
+      it { is_expected.to contain_file('/etc/etcd/README') }
 
       it do
-        is_expected.to contain_file("/etc/profile.d/etcdctl.sh")
-          .with_content(/ETCDCTL_ENDPOINTS="10.1.2.3:2379,10.2.4.6:2379,10.3.6.9:2379"/)
+        expect(subject).to contain_file('/etc/profile.d/etcdctl.sh')
+          .with_content(%r{ETCDCTL_ENDPOINTS="10.1.2.3:2379,10.2.4.6:2379,10.3.6.9:2379"})
       end
 
-      context "in the second cluster" do
+      context 'when in the second cluster' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
 
         it do
-          is_expected.to contain_file("/etc/profile.d/etcdctl.sh")
-            .with_content(/ETCDCTL_ENDPOINTS="192.168.2.3:2379,192.168.4.6:2379,192.168.6.9:2379"/)
+          expect(subject).to contain_file('/etc/profile.d/etcdctl.sh')
+            .with_content(%r{ETCDCTL_ENDPOINTS="192.168.2.3:2379,192.168.4.6:2379,192.168.6.9:2379"})
         end
       end
     end

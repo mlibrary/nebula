@@ -8,13 +8,13 @@ require 'spec_helper'
 require_relative '../../../support/contexts/with_htvm_setup'
 
 describe 'nebula::profile::hathitrust::babel_logs' do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os.each do |os, _os_facts|
     context "on #{os}" do
       it { is_expected.to compile }
 
       it { is_expected.to contain_file('/var/log/babel').with_owner('nobody') }
-      it { is_expected.to contain_file('/etc/alloy/babel.alloy').with_content(%r(/var/log/babel)) }
-      it { is_expected.to contain_file('/etc/logrotate.d/babel').with_content(%r(/var/log/babel)) }
+      it { is_expected.to contain_file('/etc/alloy/babel.alloy').with_content(%r{/var/log/babel}) }
+      it { is_expected.to contain_file('/etc/logrotate.d/babel').with_content(%r{/var/log/babel}) }
     end
   end
 end

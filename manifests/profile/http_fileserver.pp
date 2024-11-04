@@ -20,7 +20,7 @@ class nebula::profile::http_fileserver (
     ensure => 'directory',
   }
 
-  file { "/var/local/http":
+  file { '/var/local/http':
     ensure => 'directory',
   }
 
@@ -56,12 +56,12 @@ class nebula::profile::http_fileserver (
   apache::vhost { "${::fqdn} http":
     servername => $::fqdn,
     port       => 80,
-    docroot    => "/var/local/http",
-    require    => File["/var/local/http"]
+    docroot    => '/var/local/http',
+    require    => File['/var/local/http']
   }
 
   nebula::cert { $::fqdn:
-    webroot => "/var/local/http",
+    webroot => '/var/local/http',
     require => Apache::Vhost["${::fqdn} http"]
   }
 

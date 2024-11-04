@@ -28,12 +28,12 @@ describe 'nebula::role::load_balancer' do
       let(:service) { 'keepalived' }
 
       let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
-      let(:haproxy2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
+      let(:haproxy_2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
       let(:scotch) { { 'ip' => '111.111.111.123', 'hostname' => 'scotch' } }
       let(:soda)   { { 'ip' => '222.222.222.234', 'hostname' => 'soda' } }
       let(:third_server) { { 'ip' => '333.333.333.345', 'hostname' => 'third_server' } }
 
-      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode haproxy2 scotch soda third_server], 'nebula::profile::haproxy' => %w[thisnode haproxy2]
+      include_context 'with mocked puppetdb functions', 'somedc', %w[thisnode haproxy_2 scotch soda third_server], 'nebula::profile::haproxy' => %w[thisnode haproxy2]
 
       before(:each) do
         stub('balanced_frontends') do |d|

@@ -23,7 +23,7 @@ describe 'nebula::profile::solr' do
 
       # Service
       it do
-        is_expected.to contain_service('solr').with(
+        expect(subject).to contain_service('solr').with(
           enable: true,
           ensure: 'running',
         )
@@ -37,7 +37,7 @@ describe 'nebula::profile::solr' do
           '/var/lib/solr/logs',
         ].each do |path|
           it do
-            is_expected.to contain_file(path).with(
+            expect(subject).to contain_file(path).with(
               owner: 'solr',
               group: 'solr',
               ensure: 'directory',
@@ -53,7 +53,7 @@ describe 'nebula::profile::solr' do
           '/var/lib/solr/home/solr.xml',
         ].each do |path|
           it do
-            is_expected.to contain_file(path).with(
+            expect(subject).to contain_file(path).with(
               owner: 'solr',
               group: 'solr',
               ensure: 'file',

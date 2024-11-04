@@ -57,7 +57,7 @@ class nebula::profile::kubernetes::dns_server {
   concat { '/etc/ssh/ssh_known_hosts': }
   Concat_fragment <<| tag == "${cluster_name}_known_host_public_keys" |>>
 
-  file { "/etc/dnsmasq.d/local_domain":
+  file { '/etc/dnsmasq.d/local_domain':
     content => "local=/${private_domain}/\n",
     notify  => Service['dnsmasq']
   }

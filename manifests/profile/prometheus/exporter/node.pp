@@ -107,7 +107,7 @@ class nebula::profile::prometheus::exporter::node (
   $role = lookup_role()
   $datacenter = $::datacenter
 
-  if $::domain == lookup("umich::default_domain", default_value => "prometheus-node-exporter.default.invalid") {
+  if $::domain == lookup('umich::default_domain', default_value => 'prometheus-node-exporter.default.invalid') {
     $hostname = $::hostname
   } else {
     $hostname = $::fqdn
@@ -134,7 +134,7 @@ class nebula::profile::prometheus::exporter::node (
   }
 
   if $all_public_addresses == [] and $all_private_addresses == [] {
-    fail("Host cannot be scraped without a public or private IP address")
+    fail('Host cannot be scraped without a public or private IP address')
   } elsif $all_public_addresses == [] and $monitoring_datacenter != $datacenter {
     fail("${datacenter} host cannot be scraped by ${monitoring_datacenter} prometheus server without a public IP address")
   } elsif $all_private_addresses != [] and $monitoring_datacenter == $datacenter {

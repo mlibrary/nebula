@@ -7,9 +7,9 @@
 class nebula::profile::hathitrust::solr6::classic (
 ){
   nebula::log { 'lss_solr':
-    files => ["/var/lib/solr-current-lss/logs/solr.log"],
+    files => ['/var/lib/solr-current-lss/logs/solr.log'],
   }
   nebula::log { 'catalog_solr':
-    files => ["/var/lib/solr-current-catalog/logs/solr.log"],
+    files => ['/var/lib/solr-current-catalog/logs/solr.log'],
   }
 }

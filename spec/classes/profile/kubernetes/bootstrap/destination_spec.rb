@@ -14,7 +14,7 @@ describe 'nebula::profile::kubernetes::bootstrap::destination' do
       it { is_expected.to compile }
 
       it do
-        is_expected.to contain_file('/var/lib/kubeadm_bootstrap/.ssh/authorized_keys')
+        expect(subject).to contain_file('/var/lib/kubeadm_bootstrap/.ssh/authorized_keys')
           .with_owner('kubeadm_bootstrap')
           .with_content("first cluster public key value\n")
           .that_requires('File[/var/lib/kubeadm_bootstrap/.ssh]')
@@ -24,7 +24,7 @@ describe 'nebula::profile::kubernetes::bootstrap::destination' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
 
         it do
-          is_expected.to contain_file('/var/lib/kubeadm_bootstrap/.ssh/authorized_keys')
+          expect(subject).to contain_file('/var/lib/kubeadm_bootstrap/.ssh/authorized_keys')
             .with_content("general public key value\n")
         end
       end

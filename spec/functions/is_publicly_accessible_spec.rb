@@ -20,7 +20,7 @@ describe 'is_publicly_accessible' do
 
     it { is_expected.to run.and_return(false) }
 
-    context 'and with a nil ip address' do
+    context 'with a nil ip address' do
       let :interfaces do
         super().merge('hfdlksajh' => { 'ip' => nil })
       end
@@ -28,14 +28,14 @@ describe 'is_publicly_accessible' do
       it { is_expected.to run.and_return(false) }
     end
 
-    context 'and with the ip address 12.34.56.78' do
+    context 'with the ip address 12.34.56.78' do
       let :interfaces do
         super().merge('eth1' => { 'ip' => '12.34.56.78' })
       end
 
       it { is_expected.to run.and_return(true) }
 
-      context 'and with a nil ip address' do
+      context 'with a nil ip address' do
         let :interfaces do
           super().merge('hfdlksajh' => { 'ip' => nil })
         end
@@ -44,7 +44,7 @@ describe 'is_publicly_accessible' do
       end
     end
 
-    context 'and with the ip address 21.43.65.87' do
+    context 'with the ip address 21.43.65.87' do
       let :interfaces do
         super().merge('eth1' => { 'ip' => '21.43.65.87' })
       end

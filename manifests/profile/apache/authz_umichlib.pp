@@ -11,19 +11,19 @@
 #
 # @param oracle_home The value for the $ORACLE_HOME environment variable.
 #
-# @param oracle_servers The names of servers (Hash) and their relevant 
+# @param oracle_servers The names of servers (Hash) and their relevant
 #   aliases (String Array). Note servers should be lowercase while aliases
 #   must be uppercase.
 #
-#   e.g. 
+#   e.g.
 #     myserver:
 #       - ORCL.MYSERVER1
-#       - ORCL.MYSERVER2 
+#       - ORCL.MYSERVER2
 #
-# @param oracle_sid The SID for the oracle service. Oracle default is 
+# @param oracle_sid The SID for the oracle service. Oracle default is
 #   set as default here
 #
-# @param oracle_port The port for the oracle service. Oracle default is 
+# @param oracle_port The port for the oracle service. Oracle default is
 #   set as default here
 #
 # @example

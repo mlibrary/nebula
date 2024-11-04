@@ -17,7 +17,7 @@ describe 'nebula::profile::networking::sshd' do
       it { is_expected.to contain_sshd.that_notifies('Service[sshd]') }
 
       it do
-        is_expected.to contain_service('sshd').only_with(
+        expect(subject).to contain_service('sshd').only_with(
           ensure: 'running',
           enable: true,
           hasrestart: true,
@@ -44,7 +44,7 @@ describe 'nebula::profile::networking::sshd' do
       end
 
       it "doesn't contain whitelist settings other than pubkey" do
-        is_expected.to contain_sshd.without_content(
+        expect(subject).to contain_sshd.without_content(
           %r{^Match Address [0-9.,/!]+\n\s*PubkeyAuthentication yes\n.}m,
         )
       end
@@ -53,7 +53,7 @@ describe 'nebula::profile::networking::sshd' do
         let(:params) { { whitelist: [] } }
 
         it do
-          is_expected.to contain_sshd.without_content(
+          expect(subject).to contain_sshd.without_content(
             %r{^Match Address},
           )
         end
@@ -61,7 +61,7 @@ describe 'nebula::profile::networking::sshd' do
 
       context 'with no keytab' do
         it do
-          is_expected.not_to contain_sshd.with_content(
+          expect(subject).not_to contain_sshd.with_content(
             %r{^GSSAPIAuthentication yes$}m,
           )
         end
@@ -69,24 +69,24 @@ describe 'nebula::profile::networking::sshd' do
 
       context 'with a keytab' do
         let(:pre_condition) do
-          <<~EOT
+          <<~KEYTAB
             class { 'nebula::profile::networking::keytab':
               keytab => 'nebula/keytab.fake',
               keytab_source => 'alternate source'
             }
-          EOT
+          KEYTAB
         end
 
         it do
-          is_expected.to contain_sshd.with_content(
+          expect(subject).to contain_sshd.with_content(
             %r{^Match Address [0-9.,/!]+\n\s*PubkeyAuthentication yes\n\s*GSSAPIAuthentication yes$}m,
           )
         end
       end
 
       it do
-        is_expected.to contain_concat('/etc/ssh/ssh_config')
-        is_expected.to contain_concat_fragment('main ssh client config')
+        expect(subject).to contain_concat('/etc/ssh/ssh_config')
+        expect(subject).to contain_concat_fragment('main ssh client config')
           .with_target('/etc/ssh/ssh_config')
           .with_content(%r{^\s*SendEnv LANG LC_\*$})
       end
@@ -96,7 +96,7 @@ describe 'nebula::profile::networking::sshd' do
       it { is_expected.to contain_concat_file('/etc/pam.d/sshd').with_path('/etc/pam.d/sshd') }
 
       it do
-        is_expected.to contain_concat_fragment('/etc/pam.d/sshd: base')
+        expect(subject).to contain_concat_fragment('/etc/pam.d/sshd: base')
           .with_target('/etc/pam.d/sshd')
           .with_content(%r{@include sshd-defaults})
       end

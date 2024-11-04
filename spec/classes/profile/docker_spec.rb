@@ -13,7 +13,7 @@ describe 'nebula::profile::docker' do
       it { is_expected.to compile }
 
       it do
-        is_expected.to contain_concat_file('cri daemon')
+        expect(subject).to contain_concat_file('cri daemon')
           .with_path('/etc/docker/daemon.json')
           .with_format('json')
           .that_notifies('Exec[docker: systemctl daemon-reload]')
@@ -23,13 +23,13 @@ describe 'nebula::profile::docker' do
       it { is_expected.to contain_file('/etc/docker').with_ensure('directory') }
 
       it do
-        is_expected.to contain_file('/etc/systemd/system/docker.service.d')
+        expect(subject).to contain_file('/etc/systemd/system/docker.service.d')
           .with_ensure('directory')
           .that_notifies('Exec[docker: systemctl daemon-reload]')
       end
 
       it do
-        is_expected.to contain_exec('docker: systemctl daemon-reload')
+        expect(subject).to contain_exec('docker: systemctl daemon-reload')
           .with_command('/bin/systemctl daemon-reload')
           .with_refreshonly(true)
           .that_notifies('Service[docker]')
@@ -44,7 +44,7 @@ describe 'nebula::profile::docker' do
         ['storage-driver', '"overlay2"'],
       ].each do |key, value|
         it do
-          is_expected.to contain_concat_fragment("cri daemon #{key}")
+          expect(subject).to contain_concat_fragment("cri daemon #{key}")
             .with_target('cri daemon')
             .with_content("{\"#{key}\":#{value}}")
         end
@@ -63,7 +63,7 @@ describe 'nebula::profile::docker' do
         it { is_expected.to contain_class('docker').with_version('5') }
 
         it do
-          is_expected.to contain_apt__pin('docker-ce').with(
+          expect(subject).to contain_apt__pin('docker-ce').with(
             packages: %w[docker-ce docker-ce-cli],
             version: '5',
           )
@@ -74,7 +74,7 @@ describe 'nebula::profile::docker' do
         let(:params) { { docker_compose_version: '1.7.0' } }
 
         it do
-          is_expected.to contain_class('docker::compose')
+          expect(subject).to contain_class('docker::compose')
             .with_ensure('present')
             .with_version('1.7.0')
         end

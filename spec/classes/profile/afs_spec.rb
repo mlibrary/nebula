@@ -22,7 +22,7 @@ describe 'nebula::profile::afs' do
       it { is_expected.to contain_class('nebula::profile::krb5') }
 
       it do
-        is_expected.to contain_exec('reinstall kernel to enable afs').with(
+        expect(subject).to contain_exec('reinstall kernel to enable afs').with(
           command: '/usr/bin/apt-get -y install --reinstall linux-headers-amd64',
           creates: "/lib/modules/#{kernelrelease}/updates/dkms/openafs.ko",
           timeout: 600,
@@ -42,39 +42,39 @@ describe 'nebula::profile::afs' do
         let(:params) { { allow_auto_reboot_until: tomorrow } }
 
         it do
-          is_expected.to contain_reboot('afs')
+          expect(subject).to contain_reboot('afs')
             .that_subscribes_to('Exec[reinstall kernel to enable afs]')
             .with_apply('finished')
         end
       end
 
       it do
-        is_expected.to contain_debconf('openafs-client/thiscell')
+        expect(subject).to contain_debconf('openafs-client/thiscell')
           .with_type('string')
           .with_value('cell.default.invalid')
       end
 
       it do
-        is_expected.to contain_debconf('openafs-client/cachesize')
+        expect(subject).to contain_debconf('openafs-client/cachesize')
           .with_type('string')
           .with_value('50000')
       end
 
-      context 'given a cell of example.com' do
+      context 'with a cell of example.com' do
         let(:params) { { cell: 'example.com' } }
 
         it do
-          is_expected.to contain_debconf('openafs-client/thiscell')
+          expect(subject).to contain_debconf('openafs-client/thiscell')
             .with_type('string')
             .with_value('example.com')
         end
       end
 
-      context 'given a cache_size of 100' do
+      context 'with a cache_size of 100' do
         let(:params) { { cache_size: 100 } }
 
         it do
-          is_expected.to contain_debconf('openafs-client/cachesize')
+          expect(subject).to contain_debconf('openafs-client/cachesize')
             .with_type('string')
             .with_value('100')
         end
@@ -82,14 +82,14 @@ describe 'nebula::profile::afs' do
 
       %w[login profile].each do |suffix|
         it do
-          is_expected.to contain_file("/usr/local/skel/sys.#{suffix}")
+          expect(subject).to contain_file("/usr/local/skel/sys.#{suffix}")
             .with_source('puppet:///modules/nebula/skel.txt')
             .that_requires('File[/usr/local/skel]')
         end
       end
 
       it do
-        is_expected.to contain_file('/usr/local/skel').with(
+        expect(subject).to contain_file('/usr/local/skel').with(
           ensure: 'directory',
           mode: '0755',
         )

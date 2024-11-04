@@ -5,8 +5,8 @@
 # nebula::profile::solr
 #
 # Install Solr with base configuration.
-# 
-# Note: The variables set are also used by the erb files. 
+#
+# Note: The variables set are also used by the erb files.
 class nebula::profile::solr (
   String $base = '/var/lib/solr',
   String $home = "${base}/home",

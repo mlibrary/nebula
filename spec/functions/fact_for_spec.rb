@@ -24,8 +24,8 @@ describe 'fact_for' do
     let(:fact_value) { 'my_datacenter' }
 
     it do
-      is_expected.to run.with_params('my_node', 'datacenter')
-                        .and_return('my_datacenter')
+      expect(subject).to run.with_params('my_node', 'datacenter')
+                            .and_return('my_datacenter')
     end
   end
 
@@ -35,8 +35,8 @@ describe 'fact_for' do
     let(:fact_value) { { 'ip' => '10.1.2.3' } }
 
     it do
-      is_expected.to run.with_params('node_a', 'networking.ip')
-                        .and_return('10.1.2.3')
+      expect(subject).to run.with_params('node_a', 'networking.ip')
+                            .and_return('10.1.2.3')
     end
   end
 end

@@ -16,8 +16,8 @@ class nebula::profile::www_lib::apache::fulcrum (
 
   nebula::apache::redirect_vhost_https {
     default:
-      ssl_cn        => 'fulcrum.org',
-      priority      => '08',
+      ssl_cn   => 'fulcrum.org',
+      priority => '08',
     ;
 
     'northwestern.fulcrumscholar.org':

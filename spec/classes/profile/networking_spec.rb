@@ -30,7 +30,7 @@ describe 'nebula::profile::networking' do
       # more details about when it might be safe to remove this.
       %w[procps sshd].each do |service|
         it do
-          is_expected.to contain_exec("/bin/systemctl status #{service}")
+          expect(subject).to contain_exec("/bin/systemctl status #{service}")
             .that_subscribes_to(['Service[procps]', 'Service[sshd]'])
             .with_refreshonly(true)
         end

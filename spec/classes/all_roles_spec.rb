@@ -43,7 +43,7 @@ end
 def test_roles(slice_number = 1, slice_count = 1)
   slice_index = slice_number - 1 # number is 1..n, index is 0..n; using "number" for input to be less confusing
   roles = `find manifests/role -name '*.pp'`.each_line.to_a
-  slice = roles.each_slice(roles.size/slice_count + 1).to_a[slice_index]
+  slice = roles.each_slice(roles.size / slice_count + 1).to_a[slice_index]
 
   slice.each do |file_path|
     role_name = puppet_role_name_from(file_path)
@@ -83,7 +83,8 @@ def test_roles(slice_number = 1, slice_count = 1)
 
           it { is_expected.to compile_along_with_all_roles(hiera_fixture) }
           it { is_expected.to contain_class('nebula::role::minimum') }
-          if role_name.match?(/^nebula::role::hathitrust/)
+
+          if role_name.match?(%r{^nebula::role::hathitrust})
             it { is_expected.to contain_class('nebula::role::hathitrust') }
           end
         end

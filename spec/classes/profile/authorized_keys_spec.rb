@@ -16,13 +16,13 @@ describe 'nebula::profile::authorized_keys' do
         %r{^ssh-dsa BBBBBBBBBBBB invalid_special_admin@special\.invalid$},
       ].each do |line|
         it do
-          is_expected.to contain_file('/etc/secretkeys/default.invalid')
+          expect(subject).to contain_file('/etc/secretkeys/default.invalid')
             .with_content(line)
         end
       end
 
       it do
-        is_expected.to contain_file('/etc/secretkeys').with(
+        expect(subject).to contain_file('/etc/secretkeys').with(
           ensure: 'directory',
           mode: '0700',
         )

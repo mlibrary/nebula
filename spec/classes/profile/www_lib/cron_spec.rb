@@ -28,9 +28,9 @@ describe 'nebula::profile::www_lib::cron' do
         let(:params) { { extra_jobs: extra_jobs } }
         let(:extra_jobs) do
           {
-            'my_title'  => {
-              'hour'    => 1,
-              'minute'  => 23,
+            'my_title' => {
+              'hour' => 1,
+              'minute' => 23,
               'command' => 'echo hello',
             },
           }

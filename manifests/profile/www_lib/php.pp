@@ -30,11 +30,11 @@ class nebula::profile::www_lib::php (
     config_root => "/etc/php/${default_php_version}",
   }
 
-  # Install default php packages. Some are implicit as described 
+  # Install default php packages. Some are implicit as described
   # below while rest have to be specified.
   #
-  # php*-cli, php*-common, php*-fpm and php-pear get installed by 
-  # the puppet PHP module by default (if enabled). Devel packages 
+  # php*-cli, php*-common, php*-fpm and php-pear get installed by
+  # the puppet PHP module by default (if enabled). Devel packages
   # are implicit also but we aren't using them.
   #
   # Note: The PHP module doesn't use ensure_packages so if we don't
@@ -117,7 +117,7 @@ class nebula::profile::www_lib::php (
     phpunit      => true,  # Unsure whether this should be system or app-level
 
     # Configure FPM default pool ('www')
-    # 
+    #
     # The 'www' pool is hard-coded in the php module so can't be created here.
     #
     # The php::fpm::pool class is intended to be used to create other pools only.
@@ -127,8 +127,8 @@ class nebula::profile::www_lib::php (
     #   2. Adjust the settings in hiera as:
     #     - php::params::fpm_tools:
     #         www:
-    #   3. Set fpm_pools => {} to disable default 'www' creation and then 
-    #      create it manually using php::fpm::pool class like any pool. This 
+    #   3. Set fpm_pools => {} to disable default 'www' creation and then
+    #      create it manually using php::fpm::pool class like any pool. This
     #      is the option we are choosing.
     #
     #

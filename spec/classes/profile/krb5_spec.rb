@@ -15,16 +15,16 @@ describe 'nebula::profile::krb5' do
       it { is_expected.to contain_class('nebula::profile::networking::keytab') }
 
       it do
-        is_expected.to contain_debconf('krb5-config/default_realm')
+        expect(subject).to contain_debconf('krb5-config/default_realm')
           .with_type('string')
           .with_value('REALM.DEFAULT.INVALID')
       end
 
-      context 'given a realm of EXAMPLE.COM' do
+      context 'with a realm of EXAMPLE.COM' do
         let(:params) { { realm: 'EXAMPLE.COM' } }
 
         it do
-          is_expected.to contain_debconf('krb5-config/default_realm')
+          expect(subject).to contain_debconf('krb5-config/default_realm')
             .with_type('string')
             .with_value('EXAMPLE.COM')
         end

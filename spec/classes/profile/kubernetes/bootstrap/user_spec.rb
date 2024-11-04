@@ -13,19 +13,19 @@ describe 'nebula::profile::kubernetes::bootstrap::user' do
       it { is_expected.to compile }
 
       it do
-        is_expected.to contain_user('kubeadm_bootstrap')
+        expect(subject).to contain_user('kubeadm_bootstrap')
           .with_home('/var/lib/kubeadm_bootstrap')
       end
 
       it do
-        is_expected.to contain_file('/var/lib/kubeadm_bootstrap')
+        expect(subject).to contain_file('/var/lib/kubeadm_bootstrap')
           .with_ensure('directory')
           .with_owner('kubeadm_bootstrap')
           .that_requires('User[kubeadm_bootstrap]')
       end
 
       it do
-        is_expected.to contain_file('/var/lib/kubeadm_bootstrap/.ssh')
+        expect(subject).to contain_file('/var/lib/kubeadm_bootstrap/.ssh')
           .with_ensure('directory')
           .with_owner('kubeadm_bootstrap')
           .with_mode('0700')

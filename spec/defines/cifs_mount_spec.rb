@@ -22,12 +22,12 @@ describe 'nebula::cifs_mount' do
 
       it { is_expected.to compile }
 
-      it { is_expected.to contain_package('cifs-utils').with_ensure(/(present|installed)/) }
+      it { is_expected.to contain_package('cifs-utils').with_ensure(%r{(present|installed)}) }
       it { is_expected.to contain_file(title).with_ensure('directory') }
       it { is_expected.not_to contain_file('/etc/default/an_unused_user-credentials') }
 
       it do
-        is_expected.to contain_file('/etc/default/default_cifs_user-credentials')
+        expect(subject).to contain_file('/etc/default/default_cifs_user-credentials')
           .with_source('puppet:///cifs-credentials/default_cifs_user-credentials')
           .with_mode('0400')
           .with_owner('root')
@@ -35,7 +35,7 @@ describe 'nebula::cifs_mount' do
       end
 
       it do
-        is_expected.to contain_mount(title)
+        expect(subject).to contain_mount(title)
           .with_ensure('mounted')
           .with_device('//default.invalid/path')
           .with_fstype('cifs')
@@ -86,14 +86,14 @@ describe 'nebula::cifs_mount' do
 
       context 'when another cifs_mount is defined with the same user' do
         let(:pre_condition) do
-          <<~EOF
+          <<~RESOURCES
             nebula::cifs_mount { '/mnt/another_mount':
               remote_target => '//another.invalid/another',
               uid           => 'root',
               gid           => 'root',
               user          => 'default_cifs_user',
             }
-          EOF
+          RESOURCES
         end
 
         it { is_expected.to compile }

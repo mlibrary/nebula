@@ -14,10 +14,10 @@ require 'spec_helper'
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/first_cluster_config.yaml' }
         let(:facts) do
           os_facts.merge(
-            'networking'   => {
+            'networking' => {
               'interfaces' => {
-                'ens4'     => {
-                  'ip'     => '10.123.234.5',
+                'ens4' => {
+                  'ip' => '10.123.234.5',
                 },
               },
             },
@@ -41,10 +41,10 @@ end
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/first_cluster_config.yaml' }
         let(:facts) do
           os_facts.merge(
-            'networking'   => {
+            'networking' => {
               'interfaces' => {
-                'ens4'     => {
-                  'ip'     => '10.123.234.5',
+                'ens4' => {
+                  'ip' => '10.123.234.5',
                 },
               },
             },
@@ -56,7 +56,7 @@ end
         it { is_expected.not_to contain_resources('firewall').with_purge(true) }
 
         it do
-          is_expected.to contain_firewallchain('INPUT:filter:IPv4').with(
+          expect(subject).to contain_firewallchain('INPUT:filter:IPv4').with(
             ensure: 'present',
             purge: true,
             ignore: ['-j cali-INPUT',
@@ -67,7 +67,7 @@ end
         end
 
         it do
-          is_expected.to contain_firewallchain('OUTPUT:filter:IPv4').with(
+          expect(subject).to contain_firewallchain('OUTPUT:filter:IPv4').with(
             ensure: 'present',
             purge: true,
             ignore: ['-j cali-OUTPUT',
@@ -77,7 +77,7 @@ end
         end
 
         it do
-          is_expected.to contain_firewallchain('FORWARD:filter:IPv4').with(
+          expect(subject).to contain_firewallchain('FORWARD:filter:IPv4').with(
             ensure: 'present',
             purge: true,
             ignore: ['-j cali-FORWARD',

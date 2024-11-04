@@ -10,7 +10,7 @@ describe 'nebula::profile::grub' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      context 'on a kvm vm' do
+      context 'when on a kvm vm' do
         let(:facts) { super().merge(is_virtual: true, virtual: 'kvm') }
 
         [
@@ -20,7 +20,7 @@ describe 'nebula::profile::grub' do
           ['^#?GRUB_TERMINAL', 'GRUB_TERMINAL=serial'],
         ].each do |match, line|
           it do
-            is_expected.to contain_file_line("/etc/default/grub: #{match}").with(
+            expect(subject).to contain_file_line("/etc/default/grub: #{match}").with(
               path: '/etc/default/grub',
               line: line,
               match: "#{match}=",
@@ -31,7 +31,7 @@ describe 'nebula::profile::grub' do
         end
 
         it do
-          is_expected.to contain_service('getty@hvc0').with(
+          expect(subject).to contain_service('getty@hvc0').with(
             ensure: 'running',
             enable: true,
           )
@@ -52,7 +52,7 @@ describe 'nebula::profile::grub' do
             ['^#?GRUB_TERMINAL', 'GRUB_TERMINAL=console'],
           ].each do |match, line|
             it do
-              is_expected.to contain_file_line("/etc/default/grub: #{match}").with(
+              expect(subject).to contain_file_line("/etc/default/grub: #{match}").with(
                 path: '/etc/default/grub',
                 line: line,
                 match: "#{match}=",
@@ -63,7 +63,7 @@ describe 'nebula::profile::grub' do
           end
 
           it do
-            is_expected.to contain_service('serial-getty@ttyS1').with(
+            expect(subject).to contain_service('serial-getty@ttyS1').with(
               ensure: 'running',
               enable: true,
             )
@@ -72,7 +72,7 @@ describe 'nebula::profile::grub' do
       end
 
       it do
-        is_expected.to contain_exec('/usr/sbin/update-grub')
+        expect(subject).to contain_exec('/usr/sbin/update-grub')
           .with_refreshonly(true)
       end
     end

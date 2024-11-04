@@ -8,16 +8,16 @@ class nebula::profile::prometheus::exporter::ipmi (
   if $accounts != {} {
     include nebula::profile::kubelet
 
-    file { "/etc/kubernetes/manifests/ipmi_exporter.yaml":
-      content => template("nebula/profile/prometheus/exporter/ipmi/pod.yaml.erb")
+    file { '/etc/kubernetes/manifests/ipmi_exporter.yaml':
+      content => template('nebula/profile/prometheus/exporter/ipmi/pod.yaml.erb')
     }
 
-    file { "/etc/prometheus":
-      ensure => "directory"
+    file { '/etc/prometheus':
+      ensure => 'directory'
     }
 
-    file { "/etc/prometheus/ipmi.yaml":
-      content => template("nebula/profile/prometheus/exporter/ipmi/config.yaml.erb")
+    file { '/etc/prometheus/ipmi.yaml':
+      content => template('nebula/profile/prometheus/exporter/ipmi/config.yaml.erb')
     }
 
     # This looks awfully similar to, but not the same as, the code in
@@ -30,7 +30,7 @@ class nebula::profile::prometheus::exporter::ipmi (
     $all_private_addresses = $facts["mlibrary_ip_addresses"]["private"]
 
     if $all_public_addresses == [] and $all_private_addresses == [] {
-      fail("Host cannot be scraped without a public or private IP address")
+      fail('Host cannot be scraped without a public or private IP address')
     } elsif $all_private_addresses != [] {
       $ipaddress = $all_private_addresses[0]
       Firewall <<| tag == "${::datacenter}_prometheus_private_ipmi_exporter" |>>
@@ -41,9 +41,9 @@ class nebula::profile::prometheus::exporter::ipmi (
 
     @@concat_fragment { "prometheus ipmi scrape config ${::hostname}":
       tag     => "${::datacenter}_prometheus_ipmi_exporter",
-      target  => "/etc/prometheus/ipmi.yml",
-      order   => "02",
-      content => template("nebula/profile/prometheus/exporter/ipmi/scrape_config.yaml.erb")
+      target  => '/etc/prometheus/ipmi.yml',
+      order   => '02',
+      content => template('nebula/profile/prometheus/exporter/ipmi/scrape_config.yaml.erb')
     }
   }
 }
