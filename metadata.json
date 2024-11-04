@@ -1,18 +1,18 @@
 {
   "name": "mlibrary-nebula",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "Matthew Alexander LaChance",
   "summary": "Central MLibrary module",
   "license": "BSD-3-Clause",
   "source": "https://github.com/mlibrary/nebula",
   "issues_url": "https://github.com/mlibrary/nebula/issues",
   "dependencies": [
-    {"name": "jdowning/rbenv",             "version_requirement": ">= 3.0.0  < 4.0.0" },
+    {"name": "jdowning/rbenv",             "version_requirement": ">= 3.1.0  < 4.0.0" },
     {"name": "puppet/archive",             "version_requirement": ">= 7.1.0  < 8.0.0" },
     {"name": "puppet/kmod",                "version_requirement": ">= 4.0.1  < 5.0.0" },
     {"name": "puppet/letsencrypt",         "version_requirement": ">= 10.1.0 < 11.0.0"},
     {"name": "puppet/logrotate",           "version_requirement": ">= 7.1.0  < 8.0.0" },
-    {"name": "puppet/nginx",               "version_requirement": ">= 6.0.0  < 7.0.0" },
+    {"name": "puppet/nginx",               "version_requirement": ">= 6.0.1  < 7.0.0" },
     {"name": "puppet/php",                 "version_requirement": ">= 10.2.0 < 11.0.0"},
     {"name": "puppet/unattended_upgrades", "version_requirement": ">= 8.1.0  < 9.0.0" },
     {"name": "puppetlabs/apt",             "version_requirement": ">= 9.4.0  < 10.0.0"},
@@ -30,8 +30,8 @@
     {"name": "puppetlabs/reboot",          "version_requirement": ">= 5.0.0  < 6.0.0" },
     {"name": "puppetlabs/sshkeys_core",    "version_requirement": ">= 2.5.0  < 3.0.0" },
     {"name": "puppetlabs/stdlib",          "version_requirement": ">= 9.6.0  < 10.0.0"},
-    {"name": "puppetlabs/vcsrepo",         "version_requirement": ">= 6.1.0  < 7.0.0"},
-    {"name": "stm/debconf",                "version_requirement": ">= 6.0.0  < 7.0.0" }
+    {"name": "puppetlabs/vcsrepo",         "version_requirement": ">= 6.1.0  < 7.0.0" },
+    {"name": "stm/debconf",                "version_requirement": ">= 6.1.0  < 7.0.0" }
   ],
   "operatingsystem_support": [
     {
