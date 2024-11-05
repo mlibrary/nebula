@@ -275,6 +275,25 @@ class nebula::profile::prometheus (
         dport => 9290,
       ;
     }
+
+    @@firewall {
+      default:
+        proto  => 'tcp',
+        source => $address,
+        state  => 'NEW',
+        action => 'accept',
+      ;
+
+      "010 prometheus firewall6 private node exporter ${::hostname} ${address}":
+        tag   => "firewall6-${::datacenter}_prometheus_private_node_exporter",
+        dport => 9100,
+      ;
+
+      "010 prometheus firewall6 private ipmi exporter ${::hostname} ${address}":
+        tag   => "firewall6-${::datacenter}_prometheus_private_ipmi_exporter",
+        dport => 9290,
+      ;
+    }
   }
 
   @@firewall { "010 prometheus haproxy exporter ${::hostname}":
