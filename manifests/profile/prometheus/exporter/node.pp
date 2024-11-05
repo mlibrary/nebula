@@ -157,6 +157,15 @@ class nebula::profile::prometheus::exporter::node (
       state  => 'NEW',
       action => 'accept',
     }
+
+    @@firewall { "300 pushgateway firewall6 ${::hostname} ${address}":
+      tag    => "firewall6-${monitoring_datacenter}_pushgateway_node",
+      proto  => 'tcp',
+      dport  => 9091,
+      source => $address,
+      state  => 'NEW',
+      action => 'accept',
+    }
   }
 
   ensure_packages(['curl', 'jq'])
