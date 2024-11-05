@@ -306,7 +306,7 @@ describe 'nebula::profile::haproxy' do
       it 'exports a firewall resource tagged haproxy' do
         expect(exported_resources).to contain_firewall('200 HTTP: HAProxy thisnode').with(
           source: my_ip,
-          tag: 'haproxy',
+          tag: 'somedc_haproxy',
         )
       end
 
