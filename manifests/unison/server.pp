@@ -33,6 +33,6 @@ define nebula::unison::server (
     filesystems => $filesystems
   }
 
-  Firewall <<| tag == "unison-client-${title}" |>>
+  Firewall <<| tag == "firewall6-unison-client-${title}" |>>
 
 }

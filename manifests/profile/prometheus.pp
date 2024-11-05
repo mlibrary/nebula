@@ -182,6 +182,8 @@ class nebula::profile::prometheus (
 
   # Delete this once nothing is importing it. It's only here for the
   # sake of hosts that aren't in production.
+  # Referenced in branches: fulcrum_demo, tdx_7298538
+  # ** intentionally retains puppetlabs/firewall v6.0.0 semantics **
   @@firewall { "010 prometheus legacy node exporter ${::hostname}":
     tag    => "${::datacenter}_prometheus_node_exporter",
     proto  => 'tcp',
@@ -284,6 +286,15 @@ class nebula::profile::prometheus (
     action => 'accept',
   }
 
+  @@firewall { "010 prometheus firewall6 haproxy exporter ${::hostname}":
+    tag    => "firewall6-${::datacenter}_prometheus_haproxy_exporter",
+    proto  => 'tcp',
+    dport  => 9101,
+    source => $::ipaddress,
+    state  => 'NEW',
+    action => 'accept',
+  }
+
   @@firewall { "010 prometheus mysql exporter ${::hostname}":
     tag    => "${::datacenter}_prometheus_mysql_exporter",
     proto  => 'tcp',
@@ -293,5 +304,14 @@ class nebula::profile::prometheus (
     action => 'accept',
   }
 
-  Firewall <<| tag == "${::datacenter}_pushgateway_node" |>>
+  @@firewall { "010 prometheus firewall6 mysql exporter ${::hostname}":
+    tag    => "firewall6-${::datacenter}_prometheus_mysql_exporter",
+    proto  => 'tcp',
+    dport  => 9104,
+    source => $::ipaddress,
+    state  => 'NEW',
+    action => 'accept',
+  }
+
+  Firewall <<| tag == "firewall6-${::datacenter}_pushgateway_node" |>>
 }
