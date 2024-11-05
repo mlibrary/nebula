@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # Copyright (c) 2019 The Regents of the University of Michigan.
@@ -19,7 +18,7 @@ describe 'nebula::profile::hathitrust::cron::catalog' do
         end
 
         it do
-          is_expected.to contain_cron('clean sessions')
+          expect(subject).to contain_cron('clean sessions')
             .with(command: %r{.*perl /htapps/catalog/web/derived_data/clean_sessions\.pl},
                   user: 'libadm',
                   environment: ['MAILTO=nobody@default.invalid'])
@@ -36,7 +35,7 @@ describe 'nebula::profile::hathitrust::cron::catalog' do
         end
 
         it do
-          is_expected.to contain_cron('clean sessions')
+          expect(subject).to contain_cron('clean sessions')
             .with(command: %r{.*perl /nowhere/derived_data/clean_sessions\.pl},
                   user: 'cronuser',
                   environment: ['MAILTO=somebody@default.invalid'])

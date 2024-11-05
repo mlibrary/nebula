@@ -18,13 +18,13 @@ describe 'nebula::profile::duo' do
       it { is_expected.to contain_package('libpam-duo') }
 
       it do
-        is_expected.to contain_concat_fragment('/etc/pam.d/sshd: pam_duo')
+        expect(subject).to contain_concat_fragment('/etc/pam.d/sshd: pam_duo')
           .with_target('/etc/pam.d/sshd')
           .with_content(%r{auth required pam_duo.so})
       end
 
       it do
-        is_expected.to contain_file_line('/etc/pam.d/sudo: pam_duo')
+        expect(subject).to contain_file_line('/etc/pam.d/sudo: pam_duo')
           .with_path('/etc/pam.d/sudo')
           .with_line('auth required pam_duo.so')
           .with_after('^@include common-auth')
@@ -32,7 +32,7 @@ describe 'nebula::profile::duo' do
       end
 
       it do
-        is_expected.to contain_pam_duo
+        expect(subject).to contain_pam_duo
           .with_mode('0600')
           .that_requires('Package[libpam-duo]')
       end

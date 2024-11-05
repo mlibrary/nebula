@@ -64,9 +64,9 @@ class nebula::profile::loki (
       mode   => '0755',
     ;
     '/etc/alloy/config.alloy':
-      content => template("nebula/profile/loki/config.alloy.erb"),
+      content => template('nebula/profile/loki/config.alloy.erb'),
     ;
     '/etc/default/alloy':
-      content => template("nebula/profile/loki/alloy.env.erb"),
+      content => template('nebula/profile/loki/alloy.env.erb'),
   }
 }

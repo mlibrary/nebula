@@ -18,7 +18,7 @@ describe 'nebula::profile::kubernetes::keepalived' do
       it { is_expected.to contain_package('ipset') }
 
       it do
-        is_expected.to contain_service('keepalived')
+        expect(subject).to contain_service('keepalived')
           .with_ensure('running')
           .with_enable(true)
           .that_requires(['Package[keepalived]', 'Package[ipset]'])
@@ -28,12 +28,12 @@ describe 'nebula::profile::kubernetes::keepalived' do
         let(:file) { '/etc/keepalived/keepalived.conf' }
 
         it do
-          is_expected.to contain_concat(file)
+          expect(subject).to contain_concat(file)
             .that_notifies('Service[keepalived]')
         end
 
         it do
-          is_expected.to contain_concat_fragment('keepalived preamble')
+          expect(subject).to contain_concat_fragment('keepalived preamble')
             .with_target(file)
             .with_order('01')
         end
@@ -47,7 +47,7 @@ describe 'nebula::profile::kubernetes::keepalived' do
         end
 
         it do
-          is_expected.to contain_concat_fragment('keepalived postamble')
+          expect(subject).to contain_concat_fragment('keepalived postamble')
             .with_target(file)
             .with_order('99')
         end
@@ -75,7 +75,7 @@ describe 'nebula::profile::kubernetes::keepalived' do
           end
 
           it do
-            is_expected.to contain_concat_fragment('keepalived preamble')
+            expect(subject).to contain_concat_fragment('keepalived preamble')
               .with_content(%r{virtual_ipaddress \{[^\}]*10\.0\.0\.2[^\}]*\}}m)
               .with_content(%r{virtual_ipaddress \{[^\}]*172\.16\.1\.1 dev ens4[^\}]*\}}m)
               .with_content(%r{virtual_ipaddress \{[^\}]*172\.16\.1\.6 dev ens4[^\}]*\}}m)
@@ -99,7 +99,7 @@ describe 'nebula::profile::kubernetes::keepalived' do
         let(:file) { '/etc/sysctl.d/keepalived.conf' }
 
         it do
-          is_expected.to contain_file(file)
+          expect(subject).to contain_file(file)
             .with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
             .that_notifies(['Service[keepalived]', 'Service[procps]'])
         end
@@ -108,22 +108,22 @@ describe 'nebula::profile::kubernetes::keepalived' do
       context 'with fqdn of default.invalid and an ssh-rsa public key' do
         let(:facts) do
           {
-            'fqdn' => "default.invalid",
-            "ssh" => {
-              "rsa" => {
-                "type" => "ssh-rsa",
-                "key" => "abc123"
-              }
-            }
+            'fqdn' => 'default.invalid',
+            'ssh' => {
+              'rsa' => {
+                'type' => 'ssh-rsa',
+                'key' => 'abc123',
+              },
+            },
           }
         end
 
         it { is_expected.to compile }
 
-        it "exports an ssh_known_hosts line for its rsa key" do
-          expect(exported_resources).to contain_concat_fragment("known host public.first.cluster default.invalid rsa")
-            .with_target("/etc/ssh/ssh_known_hosts")
-            .with_tag("known_host_public_keys")
+        it 'exports an ssh_known_hosts line for its rsa key' do
+          expect(exported_resources).to contain_concat_fragment('known host public.first.cluster default.invalid rsa')
+            .with_target('/etc/ssh/ssh_known_hosts')
+            .with_tag('known_host_public_keys')
             .with_content("public.first.cluster ssh-rsa abc123\n")
         end
       end

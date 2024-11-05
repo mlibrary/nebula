@@ -18,7 +18,7 @@ describe 'nebula::firewall_allow' do
         let(:params) { { source: 'lowest', port: 1234 } }
 
         it do
-          is_expected.to contain_firewall("300 #{title} 0").with(
+          expect(subject).to contain_firewall("300 #{title} 0").with(
             proto: 'tcp',
             dport: 1234,
             source: '10.0.0.0/32',
@@ -27,13 +27,13 @@ describe 'nebula::firewall_allow' do
           )
         end
 
-        context 'and the title is set to "Cool Firewall"' do
+        context 'when title is set to "Cool Firewall"' do
           let(:title) { 'Cool Firewall' }
 
           it { is_expected.to contain_firewall('300 Cool Firewall 0') }
         end
 
-        context 'and order is set to 500' do
+        context 'when order is set to 500' do
           let(:params) do
             super().merge(order: 500)
           end
@@ -41,7 +41,7 @@ describe 'nebula::firewall_allow' do
           it { is_expected.to contain_firewall("500 #{title} 0") }
         end
 
-        context 'and proto is set to "udp"' do
+        context 'when proto is set to "udp"' do
           let(:params) do
             super().merge(proto: 'udp')
           end
@@ -54,7 +54,7 @@ describe 'nebula::firewall_allow' do
         let(:params) { { source: 'highest', port: [123, 456, 789] } }
 
         it do
-          is_expected.to contain_firewall("300 #{title} 0").with(
+          expect(subject).to contain_firewall("300 #{title} 0").with(
             proto: 'tcp',
             dport: [123, 456, 789],
             source: '10.255.255.255/32',

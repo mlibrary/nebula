@@ -11,7 +11,7 @@ describe 'nebula::profile::elastic' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_apt__source('elastic.co').with(
+        expect(subject).to contain_apt__source('elastic.co').with(
           comment: 'Elastic.co apt source for beats and elastic search',
           location: 'https://artifacts.elastic.co/packages/7.x/apt',
           release: 'stable',
@@ -26,11 +26,11 @@ describe 'nebula::profile::elastic' do
       it { is_expected.not_to contain_file('/etc/ssl/certs') }
       it { is_expected.not_to contain_file('/etc/ssl/certs/logstash-forwarder.crt') }
 
-      context 'given logstash_auth_cert => "/some/file.crt"' do
+      context 'with logstash_auth_cert => "/some/file.crt"' do
         let(:params) { { logstash_auth_cert: '/some/file.crt' } }
 
         it do
-          is_expected.to contain_file('/etc/ssl/certs/logstash-forwarder.crt').with(
+          expect(subject).to contain_file('/etc/ssl/certs/logstash-forwarder.crt').with(
             ensure: 'present',
             require: 'File[/etc/ssl/certs]',
             mode: '0644',
@@ -39,18 +39,18 @@ describe 'nebula::profile::elastic' do
         end
 
         it do
-          is_expected.to contain_file('/etc/ssl/certs').with(
+          expect(subject).to contain_file('/etc/ssl/certs').with(
             ensure: 'directory',
             mode: '0755',
           )
         end
       end
 
-      context 'given logstash_auth_cert => "/another/cert.crt"' do
+      context 'with logstash_auth_cert => "/another/cert.crt"' do
         let(:params) { { logstash_auth_cert: '/another/cert.crt' } }
 
         it do
-          is_expected.to contain_file('/etc/ssl/certs/logstash-forwarder.crt').with(
+          expect(subject).to contain_file('/etc/ssl/certs/logstash-forwarder.crt').with(
             source: 'puppet:///another/cert.crt',
           )
         end

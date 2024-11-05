@@ -12,6 +12,6 @@ class nebula::resolv_conf (
     owner   => 'root',
     group   => 'root',
     mode    => $mode,
-    content => template("nebula/resolv_conf/resolv.conf.erb"),
+    content => template('nebula/resolv_conf/resolv.conf.erb'),
   }
 }

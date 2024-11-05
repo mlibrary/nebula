@@ -14,38 +14,38 @@ class nebula::profile::hathitrust::solr6::catalog (
   String $mail_recipient = lookup('nebula::profile::hathitrust::solr6::mail_recipient'),
 ){
   class { 'nebula::profile::hathitrust::solr6':
-    port => $port,
+    port      => $port,
     solr_home => $solr_home,
   }
 
   # solr nfs mounts
-  nebula::nfs_mount { "/htsolr/catalog":
-    tag             => "smartconnect",
+  nebula::nfs_mount { '/htsolr/catalog':
+    tag             => 'smartconnect',
     private_network => true,
     monitored       => true,
-    before          => Service["solr"],
+    before          => Service['solr'],
     remote_target   => "nas-${::datacenter}.sc:/ifs/htsolr/catalog";
   }
 
   # link to core in solr home
   file { "${solr_home}/catalog":
-    ensure => "link",
-    target => "/htsolr/serve/catalog",
-    notify => Service["solr"],
+    ensure => 'link',
+    target => '/htsolr/serve/catalog',
+    notify => Service['solr'],
   }
 
   # catalog release script
-  $solr_name = "catalog"
-  $solr_stop_flag = "STOPCATALOGRELEASE"
-  $solr_cores = ["catalog"]
+  $solr_name = 'catalog'
+  $solr_stop_flag = 'STOPCATALOGRELEASE'
+  $solr_cores = ['catalog']
   $core_data_dir_template = 'data'
-  $core_link_prefix = ""
+  $core_link_prefix = ''
   $is_catalog = true
   $is_primary_node = true # catalog solr is only one node per site
-  file { "/usr/local/bin/index-release":
-    owner   => "root",
-    mode    => "755",
-    content => template("nebula/profile/hathitrust/solr6/index-release.sh.erb"),
+  file { '/usr/local/bin/index-release':
+    owner   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/hathitrust/solr6/index-release.sh.erb'),
   }
   if ($is_primary_site) {
     $cron_h = 6
@@ -54,13 +54,13 @@ class nebula::profile::hathitrust::solr6::catalog (
     $cron_h = 6
     $cron_m = 25
   }
-  cron { "catalog solr index release":
+  cron { 'catalog solr index release':
     hour    => $cron_h,
     minute  => $cron_m,
     command => "/usr/local/bin/index-release > /tmp/index-release.log 2>&1 || /usr/bin/mail -s '${facts['networking']['hostname']} catalog index release problem' ${mail_recipient} < /tmp/index-release.log",
   }
 
   nebula::log { 'catalog_solr':
-    files => ["/var/lib/solr/logs/solr.log"],
+    files => ['/var/lib/solr/logs/solr.log'],
   }
 }

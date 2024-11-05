@@ -12,35 +12,35 @@ describe 'nebula::profile::fulcrum::base' do
 
       it { is_expected.to compile }
 
-      context "with default uid and gid" do
+      context 'with default uid and gid' do
         it do
-          is_expected.to contain_user('fulcrum')
+          expect(subject).to contain_user('fulcrum')
             .with(uid: 717)
             .with(gid: 717)
         end
 
         it do
-          is_expected.to contain_group('fulcrum')
+          expect(subject).to contain_group('fulcrum')
             .with(gid: 717)
         end
       end
 
-      context "with a uid and gid specified" do
-        let(:params) {
+      context 'with a uid and gid specified' do
+        let(:params) do
           {
             uid: 1001,
-            gid: 1001
+            gid: 1001,
           }
-        }
+        end
 
         it do
-          is_expected.to contain_user('fulcrum')
+          expect(subject).to contain_user('fulcrum')
             .with(uid: 1001)
             .with(gid: 1001)
         end
 
         it do
-          is_expected.to contain_group('fulcrum')
+          expect(subject).to contain_group('fulcrum')
             .with(gid: 1001)
         end
       end

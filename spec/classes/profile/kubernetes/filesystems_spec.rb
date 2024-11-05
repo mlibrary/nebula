@@ -18,11 +18,11 @@ describe 'nebula::profile::kubernetes::filesystems' do
         let(:params) do
           {
             cifs_mounts: {
-              'bad_thing'       => {
+              'bad_thing' => {
                 'remote_target' => '//kubernetes.default.invalid/kubernetes',
-                'uid'           => 'default',
-                'gid'           => 'default',
-                'user'          => 'kubernetes',
+                'uid' => 'default',
+                'gid' => 'default',
+                'user' => 'kubernetes',
               },
             },
           }

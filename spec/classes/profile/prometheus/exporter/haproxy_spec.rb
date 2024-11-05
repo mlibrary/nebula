@@ -15,19 +15,19 @@ describe 'nebula::profile::prometheus::exporter::haproxy' do
       it { is_expected.to contain_package('prometheus-haproxy-exporter') }
 
       it do
-        is_expected.to contain_service('prometheus-haproxy-exporter')
+        expect(subject).to contain_service('prometheus-haproxy-exporter')
           .with_ensure('running')
           .with_enable(true)
       end
 
       it 'defines a systemd service' do
-        is_expected.to contain_file('/etc/systemd/system/prometheus-haproxy-exporter.service')
+        expect(subject).to contain_file('/etc/systemd/system/prometheus-haproxy-exporter.service')
           .that_requires('Package[prometheus-haproxy-exporter]')
           .that_notifies('Service[prometheus-haproxy-exporter]')
       end
 
       it 'defines default file' do
-        is_expected.to contain_file('/etc/default/prometheus-haproxy-exporter')
+        expect(subject).to contain_file('/etc/default/prometheus-haproxy-exporter')
           .that_requires('Package[prometheus-haproxy-exporter]')
           .that_notifies('Service[prometheus-haproxy-exporter]')
       end
@@ -62,7 +62,7 @@ describe 'nebula::profile::prometheus::exporter::haproxy' do
         it { is_expected.not_to compile }
       end
 
-      context 'at datacenter fakedatacenter' do
+      context 'when at datacenter fakedatacenter' do
         let(:facts) { os_facts.merge(datacenter: 'fakedatacenter') }
 
         it do

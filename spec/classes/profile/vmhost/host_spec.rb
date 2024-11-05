@@ -15,7 +15,7 @@ describe 'nebula::profile::vmhost::host' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_file('/etc/default/libvirt-guests')
+        expect(subject).to contain_file('/etc/default/libvirt-guests')
       end
 
       context 'when given nothing' do
@@ -64,74 +64,74 @@ describe 'nebula::profile::vmhost::host' do
         it { is_expected.to contain_vm('vmname').with_gateway('10.1.2.3') }
         it { is_expected.to contain_vm('vmname').with_nameservers(['5.5.5.5', '4.4.4.4']) }
 
-        context 'and given a random number of cpus' do
+        context 'with a random number of cpus' do
           let(:cpus)   { Faker::Number.between(from: 1, to: 12).to_i }
           let(:params) { super().merge(cpus: cpus) }
 
           it { is_expected.to contain_vm('vmname').with_cpus(cpus) }
         end
 
-        context 'and given a random amount of disk space' do
+        context 'with a random amount of disk space' do
           let(:disk)   { Faker::Number.between(from: 8, to: 200).to_i }
           let(:params) { super().merge(disk: disk) }
 
           it { is_expected.to contain_vm('vmname').with_disk(disk) }
         end
 
-        context 'and given a random amount of ram' do
+        context 'with a random amount of ram' do
           let(:ram)    { Faker::Number.between(from: 1, to: 64).to_i }
           let(:params) { super().merge(ram: ram) }
 
           it { is_expected.to contain_vm('vmname').with_ram(ram) }
         end
 
-        context 'and given a random domain' do
+        context 'with a random domain' do
           let(:domain) { Faker::Internet.domain_name }
           let(:params) { super().merge(domain: domain) }
 
           it { is_expected.to contain_vm('vmname').with_domain(domain) }
         end
 
-        context 'and given a random filehost' do
+        context 'with a random filehost' do
           let(:domain) { Faker::Internet.domain_name }
           let(:params) { super().merge(filehost: domain) }
 
           it { is_expected.to contain_vm('vmname').with_filehost(domain) }
         end
 
-        context 'and given a net_interface of eth3' do
+        context 'with a net_interface of eth3' do
           let(:params) { super().merge(net_interface: 'eth3') }
 
           it { is_expected.to contain_vm('vmname').with_net_interface('eth3') }
         end
 
-        context 'and given a random netmask' do
+        context 'with a random netmask' do
           let(:ip)     { Faker::Internet.ip_v4_address }
           let(:params) { super().merge(netmask: ip) }
 
           it { is_expected.to contain_vm('vmname').with_netmask(ip) }
         end
 
-        context 'and given a random gateway' do
+        context 'with a random gateway' do
           let(:ip)     { Faker::Internet.ip_v4_address }
           let(:params) { super().merge(gateway: ip) }
 
           it { is_expected.to contain_vm('vmname').with_gateway(ip) }
         end
 
-        context 'and given some random nameservers' do
+        context 'with some random nameservers' do
           let(:nameservers) { Array.new(Faker::Number.between(from: 2, to: 4)) { Faker::Internet.ip_v4_address } }
           let(:params)      { super().merge(nameservers: nameservers) }
 
           it { is_expected.to contain_vm('vmname').with_nameservers(nameservers) }
         end
 
-        context 'and given an image_dir of /virt_imgs' do
+        context 'with an image_dir of /virt_imgs' do
           let(:params) { super().merge(image_dir: '/virt_imgs') }
 
           it { is_expected.to contain_vm('vmname').with_image_dir('/virt_imgs') }
 
-          context 'and given a vm with an image_dir of /special_img' do
+          context 'with a vm with an image_dir of /special_img' do
             let(:params) do
               super().merge(
                 vms: {
@@ -139,7 +139,7 @@ describe 'nebula::profile::vmhost::host' do
                     'addr' => '1.2.3.2',
                   },
                   'specialvm' => {
-                    'addr'      => '1.2.3.3',
+                    'addr' => '1.2.3.3',
                     'image_dir' => '/special_img',
                   },
                 },

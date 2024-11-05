@@ -14,19 +14,19 @@ describe 'nebula::profile::prometheus::exporter::mysql' do
       it { is_expected.to contain_package('prometheus-mysqld-exporter') }
 
       it do
-        is_expected.to contain_service('prometheus-mysqld-exporter')
+        expect(subject).to contain_service('prometheus-mysqld-exporter')
           .with_ensure('running')
           .with_enable(true)
       end
 
       it 'defines a systemd service' do
-        is_expected.to contain_file('/etc/systemd/system/prometheus-mysqld-exporter.service')
+        expect(subject).to contain_file('/etc/systemd/system/prometheus-mysqld-exporter.service')
           .that_requires('Package[prometheus-mysqld-exporter]')
           .that_notifies('Service[prometheus-mysqld-exporter]')
       end
 
       it 'defines default file' do
-        is_expected.to contain_file('/etc/default/prometheus-mysqld-exporter')
+        expect(subject).to contain_file('/etc/default/prometheus-mysqld-exporter')
           .that_requires('Package[prometheus-mysqld-exporter]')
           .that_notifies('Service[prometheus-mysqld-exporter]')
       end

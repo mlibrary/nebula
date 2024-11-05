@@ -18,14 +18,14 @@ describe 'nebula::profile::kubernetes::kubectl' do
       it { is_expected.to contain_concat('/var/local/generate_pki.sh') }
 
       it do
-        is_expected.to contain_concat_fragment('cluster pki preamble')
+        expect(subject).to contain_concat_fragment('cluster pki preamble')
           .with_target('/var/local/generate_pki.sh')
           .with_order('01')
           .with_content(%r{^KUBE_INTERNAL_IP='172\.16\.0\.1'$})
       end
 
       it do
-        is_expected.to contain_concat_fragment('cluster pki functions')
+        expect(subject).to contain_concat_fragment('cluster pki functions')
           .with_target('/var/local/generate_pki.sh')
           .with_order('03')
       end
@@ -34,7 +34,7 @@ describe 'nebula::profile::kubernetes::kubectl' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
 
         it do
-          is_expected.to contain_concat_fragment('cluster pki preamble')
+          expect(subject).to contain_concat_fragment('cluster pki preamble')
             .with_content(%r{^KUBE_INTERNAL_IP='192\.168\.0\.1'$})
         end
       end

@@ -27,18 +27,18 @@ describe 'nebula::role::webhost::fulcrum_www_and_app' do
       it { is_expected.to contain_class('nebula::profile::apache') }
 
       it 'configures shibboleth' do
-        is_expected.to contain_class('nebula::profile::shibboleth')
+        expect(subject).to contain_class('nebula::profile::shibboleth')
           .with(startup_timeout: 900)
           .with(watchdog_minutes: '*/30')
       end
 
       it do
-        is_expected.to contain_file('/etc/apache2/mods-available/shib2.conf')
+        expect(subject).to contain_file('/etc/apache2/mods-available/shib2.conf')
           .with_content(%r{SetHandler shib-handler})
       end
 
       it do
-        is_expected.to contain_file('/etc/apache2/mods-enabled/shib2.conf')
+        expect(subject).to contain_file('/etc/apache2/mods-enabled/shib2.conf')
           .with_ensure('link')
           .with_target('/etc/apache2/mods-available/shib2.conf')
       end

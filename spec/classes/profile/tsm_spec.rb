@@ -24,7 +24,7 @@ describe 'nebula::profile::tsm' do
       it { is_expected.to contain_package('tivsm-ba') }
 
       it do
-        is_expected.to contain_file(dsm_sys)
+        expect(subject).to contain_file(dsm_sys)
           .with_content(%r{Servername\s+tsmserver1$}i)
           .with_content(%r{VIRTUALMOUNTPOINT /etc})
           .with_content(%r{EXCLUDE.DIR "/afs/"})
@@ -34,7 +34,7 @@ describe 'nebula::profile::tsm' do
       end
 
       it do
-        is_expected.to contain_file(dsm_opt)
+        expect(subject).to contain_file(dsm_opt)
           .with_content(%r{DOMAIN "/etc"})
           .with_content(%r{\* No custom settings})
       end
@@ -42,7 +42,7 @@ describe 'nebula::profile::tsm' do
       it { is_expected.to contain_service('tsm') }
 
       it do
-        is_expected.to contain_service('dsmcad')
+        expect(subject).to contain_service('dsmcad')
           .with_ensure('stopped')
           .with_enable(false)
       end
@@ -70,19 +70,19 @@ describe 'nebula::profile::tsm' do
         end
 
         it 'adds domain settings to dsm.opt config file' do
-          is_expected.to contain_file(dsm_opt)
+          expect(subject).to contain_file(dsm_opt)
             .with_content(%r{^DOMAIN "/baz"$})
             .with_content(%r{^DOMAIN "/quux"$})
         end
 
         it 'adds custom settings to dsm.opt config file' do
-          is_expected.to contain_file(dsm_opt)
+          expect(subject).to contain_file(dsm_opt)
             .with_content(%r{^first_setting first_value$})
             .with_content(%r{^second_setting "second_value"$})
         end
 
         it 'adds custom settings to dsm.sys config file' do
-          is_expected.to contain_file(dsm_sys)
+          expect(subject).to contain_file(dsm_sys)
             .with_content(%r{^Servername otherserver}i)
             .with_content(%r{VIRTUALMOUNTPOINT /vmount})
             .with_content(%r{encryptiontype})
@@ -92,7 +92,7 @@ describe 'nebula::profile::tsm' do
         end
 
         it 'adds custom settings to inclexcl config file' do
-          is_expected.to contain_file(inclexcl)
+          expect(subject).to contain_file(inclexcl)
             .with_content(%r{^exclude.dir /foo$})
             .with_content(%r{^include /bar otherpolicy$})
         end

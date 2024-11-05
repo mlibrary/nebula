@@ -7,17 +7,17 @@ class nebula::profile::kubernetes::etcdctl {
   $cluster = lookup('nebula::profile::kubernetes::clusters')[$cluster_name]
   $etcdctl_endpoints = $cluster["etcdctl_endpoints"]
 
-  package { "etcd-client": }
+  package { 'etcd-client': }
 
-  file { "/etc/etcd":
-    ensure => "directory",
+  file { '/etc/etcd':
+    ensure => 'directory',
   }
 
-  file { "/etc/profile.d/etcdctl.sh":
-    content => template("nebula/profile/kubernetes/etcdctl.sh.erb"),
+  file { '/etc/profile.d/etcdctl.sh':
+    content => template('nebula/profile/kubernetes/etcdctl.sh.erb'),
   }
 
-  file { "/etc/etcd/README":
+  file { '/etc/etcd/README':
     content => @("README")
       You just kind of have to do this yourself whenever etcd certs get renewed:
 

@@ -15,26 +15,26 @@ describe 'nebula::role::webhost::htvm' do
       it { is_expected.to compile }
 
       it do
-        is_expected.to contain_class('nebula::profile::shibboleth')
+        expect(subject).to contain_class('nebula::profile::shibboleth')
           .with(startup_timeout: 1800)
           .with(watchdog_minutes: '*/30')
       end
 
       it do
-        is_expected.to contain_class('nebula::profile::hathitrust::dependencies')
-        is_expected.to contain_class('nebula::profile::hathitrust::hosts')
-        is_expected.to contain_class('nebula::profile::hathitrust::mounts')
-        is_expected.to contain_class('nebula::profile::hathitrust::perl')
-        is_expected.to contain_class('nebula::profile::hathitrust::php')
+        expect(subject).to contain_class('nebula::profile::hathitrust::dependencies')
+        expect(subject).to contain_class('nebula::profile::hathitrust::hosts')
+        expect(subject).to contain_class('nebula::profile::hathitrust::mounts')
+        expect(subject).to contain_class('nebula::profile::hathitrust::perl')
+        expect(subject).to contain_class('nebula::profile::hathitrust::php')
       end
 
       it do
-        is_expected.to contain_concat_fragment('monitor nfs /sdr1')
+        expect(subject).to contain_concat_fragment('monitor nfs /sdr1')
           .with(tag: 'monitor_config', content: { 'nfs' => ['/sdr1'] }.to_yaml)
       end
 
       it do
-        is_expected.to contain_concat_fragment('monitor nfs /htapps')
+        expect(subject).to contain_concat_fragment('monitor nfs /htapps')
           .with(tag: 'monitor_config', content: { 'nfs' => ['/htapps'] }.to_yaml)
       end
 

@@ -16,7 +16,7 @@ describe 'nebula::profile::aws::filesystem' do
 
       it { is_expected.to compile.with_all_deps }
 
-      context '/dev/xvdb present' do
+      context 'with /dev/xvdb present' do
         let(:facts) do
           os_facts.merge('disks' => {
                            'xvdb' => 'some stuff',
@@ -24,16 +24,18 @@ describe 'nebula::profile::aws::filesystem' do
         end
 
         it 'formats the disk' do
-          is_expected.to contain_filesystem('/dev/xvdb')
+          expect(subject).to contain_filesystem('/dev/xvdb')
             .with_ensure('present')
             .with_fs_type('ext4')
         end
+
         it 'creates the mountpoint' do
-          is_expected.to contain_file('/l')
+          expect(subject).to contain_file('/l')
             .with_ensure('directory')
         end
+
         it 'mounts the disk' do
-          is_expected.to contain_mount('/l')
+          expect(subject).to contain_mount('/l')
             .with_ensure('mounted')
             .with_name('/l')
             .with_device('/dev/xvdb')
@@ -41,7 +43,7 @@ describe 'nebula::profile::aws::filesystem' do
         end
       end
 
-      context '/dev/xvdb not present' do
+      context 'without /dev/xvdb present' do
         it { is_expected.not_to contain_filesystem('/dev/xvdb') }
         it { is_expected.not_to contain_file('/l') }
         it { is_expected.not_to contain_mount('/l') }

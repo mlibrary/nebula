@@ -27,13 +27,13 @@ describe 'nebula::virtual_machine' do
 
       context 'with nothing but the title "vmname"' do
         it do
-          is_expected.to contain_file('/tmp/.virtual.vmname').with(
+          expect(subject).to contain_file('/tmp/.virtual.vmname').with(
             ensure: 'directory',
           )
         end
 
         it do
-          is_expected.to contain_preseed.that_requires(
+          expect(subject).to contain_preseed.that_requires(
             'File[/tmp/.virtual.vmname]',
           )
         end
@@ -54,25 +54,25 @@ describe 'nebula::virtual_machine' do
         end
 
         it do
-          is_expected.to contain_package('virtinst').with(
+          expect(subject).to contain_package('virtinst').with(
             ensure: 'installed',
           )
         end
 
         it do
-          is_expected.to contain_package('libvirt-clients').with(
+          expect(subject).to contain_package('libvirt-clients').with(
             ensure: 'installed',
           )
         end
 
         it do
-          is_expected.to contain_install.that_requires(
+          expect(subject).to contain_install.that_requires(
             ['Package[virtinst]',
              'Package[libvirt-clients]'],
           ).with(
             creates: '/var/lib/libvirt/images/vmname.img',
             timeout: 600,
-            path:    [
+            path: [
               '/usr/bin',
               '/usr/sbin',
               '/bin',
@@ -100,7 +100,7 @@ describe 'nebula::virtual_machine' do
         end
 
         it do
-          is_expected.to contain_autostart.that_requires(
+          expect(subject).to contain_autostart.that_requires(
             'Exec[nebula::virtual_machine::vmname::virt-install]',
           ).with(
             creates: '/etc/libvirt/qemu/autostart/vmname.xml',
@@ -128,25 +128,25 @@ describe 'nebula::virtual_machine' do
         let(:title) { 'secondvm' }
 
         it do
-          is_expected.to contain_file('/tmp/.virtual.secondvm').with(
+          expect(subject).to contain_file('/tmp/.virtual.secondvm').with(
             ensure: 'directory',
           )
         end
 
         it do
-          is_expected.to contain_preseed.that_requires(
+          expect(subject).to contain_preseed.that_requires(
             'File[/tmp/.virtual.secondvm]',
           )
         end
 
         it do
-          is_expected.to contain_preseed.with_content(
+          expect(subject).to contain_preseed.with_content(
             %r{^d-i netcfg/get_hostname string secondvm\.default\.invalid$},
           )
         end
 
         it do
-          is_expected.to contain_preseed.with_content(
+          expect(subject).to contain_preseed.with_content(
             %r{^d-i netcfg/hostname string secondvm\.default\.invalid$},
           )
         end
@@ -155,37 +155,37 @@ describe 'nebula::virtual_machine' do
         it { is_expected.to contain_package('libvirt-clients') }
 
         it do
-          is_expected.to contain_install.with_creates(
+          expect(subject).to contain_install.with_creates(
             '/var/lib/libvirt/images/secondvm.img',
           )
         end
 
         it do
-          is_expected.to contain_install.with_command(
+          expect(subject).to contain_install.with_command(
             %r{ -n 'secondvm'},
           )
         end
 
         it do
-          is_expected.to contain_install.with_command(
+          expect(subject).to contain_install.with_command(
             %r{ --disk '/var/lib/libvirt/images/secondvm\.img,size=[0-9]+'},
           )
         end
 
         it do
-          is_expected.to contain_install.with_command(
+          expect(subject).to contain_install.with_command(
             %r{ --initrd-inject '/tmp/\.virtual\.secondvm/preseed\.cfg'},
           )
         end
 
         it do
-          is_expected.to contain_autostart.with_creates(
+          expect(subject).to contain_autostart.with_creates(
             '/etc/libvirt/qemu/autostart/secondvm.xml',
           )
         end
 
         it do
-          is_expected.to contain_autostart.with_command(
+          expect(subject).to contain_autostart.with_command(
             '/usr/bin/virsh autostart secondvm',
           )
         end
@@ -195,7 +195,7 @@ describe 'nebula::virtual_machine' do
         let(:params) { { cpus: 8 } }
 
         it do
-          is_expected.to contain_install.with_command(%r{ --vcpus 8})
+          expect(subject).to contain_install.with_command(%r{ --vcpus 8})
         end
       end
 
@@ -209,13 +209,13 @@ describe 'nebula::virtual_machine' do
         let(:params) { { image_dir: '/libvirt-images' } }
 
         it do
-          is_expected.to contain_install.with_command(
+          expect(subject).to contain_install.with_command(
             %r{ --disk '/libvirt-images/vmname.img,size=[0-9]+'},
           )
         end
 
         it do
-          is_expected.to contain_install.with_creates(
+          expect(subject).to contain_install.with_creates(
             '/libvirt-images/vmname.img',
           )
         end
@@ -225,13 +225,13 @@ describe 'nebula::virtual_machine' do
         let(:params) { { image_path: '/mnt/custom.img' } }
 
         it do
-          is_expected.to contain_install.with_command(
+          expect(subject).to contain_install.with_command(
             %r{ --disk '/mnt/custom.img,size=[0-9]+'},
           )
         end
 
         it do
-          is_expected.to contain_install.with_creates(
+          expect(subject).to contain_install.with_creates(
             '/mnt/custom.img',
           )
         end
@@ -240,11 +240,11 @@ describe 'nebula::virtual_machine' do
       context 'with image_path and image_dir both set' do
         let(:params) do
           { image_path: 'image_path',
-            image_dir:  'image_dir' }
+            image_dir: 'image_dir' }
         end
 
         it do
-          is_expected.to contain_install.with_command(
+          expect(subject).to contain_install.with_command(
             %r{ --disk 'image_path,size=[0-9]+'},
           )
         end
@@ -256,7 +256,7 @@ describe 'nebula::virtual_machine' do
         let(:params) { { disk: 64 } }
 
         it do
-          is_expected.to contain_install.with_command(
+          expect(subject).to contain_install.with_command(
             %r{ --disk '[^,']+,size=64'},
           )
         end
@@ -272,7 +272,7 @@ describe 'nebula::virtual_machine' do
         let(:params) { { autostart_path: '/etc/autostart' } }
 
         it do
-          is_expected.to contain_autostart.with_creates(
+          expect(subject).to contain_autostart.with_creates(
             '/etc/autostart/vmname.xml',
           )
         end
@@ -332,7 +332,7 @@ describe 'nebula::virtual_machine' do
         let(:params) { { netmask: '0.0.0.0' } }
 
         it do
-          is_expected.to contain_preseed.with_content(
+          expect(subject).to contain_preseed.with_content(
             %r{^d-i netcfg/get_netmask string 0\.0\.0\.0$},
           )
         end
@@ -342,7 +342,7 @@ describe 'nebula::virtual_machine' do
         let(:params) { { gateway: '10.0.0.1' } }
 
         it do
-          is_expected.to contain_preseed.with_content(
+          expect(subject).to contain_preseed.with_content(
             %r{^d-i netcfg/get_gateway string 10\.0\.0\.1$},
           )
         end
@@ -352,7 +352,7 @@ describe 'nebula::virtual_machine' do
         let(:params) { { nameservers: ['1.2.3.4', '4.3.2.1'] } }
 
         it do
-          is_expected.to contain_preseed.with_content(
+          expect(subject).to contain_preseed.with_content(
             %r{^d-i netcfg/get_nameservers string 1\.2\.3\.4 4\.3\.2\.1$},
           )
         end
@@ -375,19 +375,19 @@ describe 'nebula::virtual_machine' do
         let(:title) { 'myhost.mysub' }
 
         it do
-          is_expected.to contain_preseed.with_content(
+          expect(subject).to contain_preseed.with_content(
             %r{^d-i netcfg/get_hostname string myhost\.mysub$},
           )
         end
 
         it do
-          is_expected.to contain_preseed.with_content(
+          expect(subject).to contain_preseed.with_content(
             %r{^d-i netcfg/get_domain string mysub$},
           )
         end
 
         it do
-          is_expected.to contain_preseed.with_content(
+          expect(subject).to contain_preseed.with_content(
             %r{^d-i netcfg/hostname string myhost\.mysub$},
           )
         end

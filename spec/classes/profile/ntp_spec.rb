@@ -11,7 +11,7 @@ describe 'nebula::profile::ntp' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_service('ntp').with(
+        expect(subject).to contain_service('ntp').with(
           enable: true,
           ensure: 'running',
         )
@@ -24,7 +24,7 @@ describe 'nebula::profile::ntp' do
 
       it { is_expected.to contain_file('/etc/ntp.conf').that_notifies('Service[ntp]') }
 
-      context 'given ntp[123].realdomain.com' do
+      context 'with ntp[123].realdomain.com' do
         let(:params) do
           {
             servers: [

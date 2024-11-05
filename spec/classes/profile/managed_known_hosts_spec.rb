@@ -17,7 +17,7 @@ describe 'nebula::profile::managed_known_hosts' do
         let(:params) { { static_host_keys: { 'myhost' => { 'ssh-ed25519' => 'abc123==' } } } }
 
         it do
-          is_expected.to contain_concat_fragment('static known host myhost ssh-ed25519')
+          expect(subject).to contain_concat_fragment('static known host myhost ssh-ed25519')
             .with_tag('known_host_public_keys')
             .with_target('/etc/ssh/ssh_known_hosts')
             .with_content("myhost ssh-ed25519 abc123==\n")

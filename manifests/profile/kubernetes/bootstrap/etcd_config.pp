@@ -17,11 +17,11 @@ class nebula::profile::kubernetes::bootstrap::etcd_config {
     notify  => Exec['kubelet reload daemon'],
   }
 
-  $pod_manifest_path = "/etc/kubernetes/manifests"
-  file { "/etc/kubernetes/kubelet.yaml":
-    content => template("nebula/profile/kubelet/config.yaml.erb"),
-    require => Package["kubelet"],
-    notify  => Service["kubelet"],
+  $pod_manifest_path = '/etc/kubernetes/manifests'
+  file { '/etc/kubernetes/kubelet.yaml':
+    content => template('nebula/profile/kubelet/config.yaml.erb'),
+    require => Package['kubelet'],
+    notify  => Service['kubelet'],
   }
 
   file { '/etc/systemd/system/kubelet.service.d':
@@ -30,7 +30,7 @@ class nebula::profile::kubernetes::bootstrap::etcd_config {
 
   if $initial_cluster {
     file { '/tmp/etcd.yaml':
-      ensure => 'file',
+      ensure  => 'file',
       content => template('nebula/profile/kubernetes/etcd/etcd.yaml.erb'),
     }
   }

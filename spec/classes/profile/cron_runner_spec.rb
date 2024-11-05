@@ -15,7 +15,7 @@ describe 'nebula::profile::cron_runner' do
       it { is_expected.not_to contain_cron('delete old backups') }
 
       context 'when given a "delete old backups" cronjob' do
-        let(:params) {
+        let(:params) do
           {
             crons: {
               'delete old backups' => {
@@ -23,11 +23,11 @@ describe 'nebula::profile::cron_runner' do
                 'user' => 'foo',
                 'minute' => 50,
                 'hour' => 5,
-                'environment' => ['MAILTO=default@invalid.example']
-              }
-            }
+                'environment' => ['MAILTO=default@invalid.example'],
+              },
+            },
           }
-        }
+        end
 
         it { is_expected.to compile }
         it { is_expected.to contain_cron('delete old backups') }

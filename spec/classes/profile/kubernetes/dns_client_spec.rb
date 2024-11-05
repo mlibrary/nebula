@@ -11,10 +11,10 @@ describe 'nebula::profile::kubernetes::dns_client' do
       let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/first_cluster_config.yaml' }
       let(:facts) do
         os_facts.merge(
-          'networking'   => {
+          'networking' => {
             'interfaces' => {
-              'ens4'     => {
-                'ip'     => '10.123.234.5',
+              'ens4' => {
+                'ip' => '10.123.234.5',
               },
             },
           },
@@ -31,29 +31,29 @@ describe 'nebula::profile::kubernetes::dns_client' do
       end
 
       it do
-        is_expected.to contain_file('/etc/resolv.conf')
+        expect(subject).to contain_file('/etc/resolv.conf')
           .with_content("search first.cluster\nnameserver 172.16.0.1\n")
       end
 
       context 'with fqdn of default.invalid and an ssh-rsa public key' do
-        let(:node) { "default.invalid" }
+        let(:node) { 'default.invalid' }
         let(:facts) do
           {
-            "ssh" => {
-              "rsa" => {
-                "type" => "ssh-rsa",
-                "key" => "abc123"
-              }
-            }
+            'ssh' => {
+              'rsa' => {
+                'type' => 'ssh-rsa',
+                'key' => 'abc123',
+              },
+            },
           }
         end
 
         it { is_expected.to compile }
 
-        it "exports an ssh_known_hosts line for its rsa key" do
-          expect(exported_resources).to contain_concat_fragment("known first_cluster host default rsa")
-            .with_target("/etc/ssh/ssh_known_hosts")
-            .with_tag("first_cluster_known_host_public_keys")
+        it 'exports an ssh_known_hosts line for its rsa key' do
+          expect(exported_resources).to contain_concat_fragment('known first_cluster host default rsa')
+            .with_target('/etc/ssh/ssh_known_hosts')
+            .with_tag('first_cluster_known_host_public_keys')
             .with_content("default ssh-rsa abc123\n")
         end
       end

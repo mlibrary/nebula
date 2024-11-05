@@ -38,17 +38,17 @@ describe 'nebula::profile::hathitrust::hosts' do
         let(:file) { '/etc/hosts' }
 
         it 'maps the ip, fqdn, and hostname' do
-          is_expected.to contain_host(hostname).with_ip(my_ip)
-          is_expected.to contain_host(hostname).with_host_aliases([fqdn])
+          expect(subject).to contain_host(hostname).with_ip(my_ip)
+          expect(subject).to contain_host(hostname).with_host_aliases([fqdn])
         end
 
         it 'maps 1:1 aliases' do
-          is_expected.to contain_host('mysql-sdr').with_ip(mysql_ip)
+          expect(subject).to contain_host('mysql-sdr').with_ip(mysql_ip)
         end
 
         it 'unpacks the many search aliases' do
-          is_expected.to contain_host('solr-sdr-search-1').with_ip(solr_ips[0])
-          is_expected.to contain_host('solr-sdr-search-2').with_ip(solr_ips[1])
+          expect(subject).to contain_host('solr-sdr-search-1').with_ip(solr_ips[0])
+          expect(subject).to contain_host('solr-sdr-search-2').with_ip(solr_ips[1])
         end
       end
     end

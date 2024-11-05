@@ -17,16 +17,18 @@ describe 'nebula::profile::elastic::filebeat::configs::ulib' do
         it { is_expected.to contain_service('filebeat') }
 
         it do
-          is_expected.to contain_file(file)
+          expect(subject).to contain_file(file)
             .that_notifies('Service[filebeat]')
             .with_content(%r{^\s+ulib_type: 90_day$})
         end
-        it { is_expected.to contain_file(file).with_content(%r{^    \- "/var/log/1.log"$}) }
-        it { is_expected.to contain_file(file).with_content(%r{^    \- "/var/log/logger/2.txt"$}) }
+
+        it { is_expected.to contain_file(file).with_content(%r{^    - "/var/log/1.log"$}) }
+        it { is_expected.to contain_file(file).with_content(%r{^    - "/var/log/logger/2.txt"$}) }
       end
+
       context 'without params' do
         it "doesn't fail with no files specified" do
-          is_expected.to compile
+          expect(subject).to compile
         end
       end
     end

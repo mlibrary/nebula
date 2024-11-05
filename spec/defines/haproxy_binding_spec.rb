@@ -22,16 +22,16 @@ describe 'nebula::haproxy::binding' do
 
       # needs to exist so binding can realize it
       let(:pre_condition) do
-        <<~EOT
+        <<~RESOURCES
           @nebula::haproxy::service { "myservice":
            floating_ip => '10.2.3.124'
           }
           Concat_Fragment <| |>
-         EOT
+        RESOURCES
       end
 
       it do
-        is_expected.to contain_concat_fragment('myservice-dc-http thishost binding').with(
+        expect(subject).to contain_concat_fragment('myservice-dc-http thishost binding').with(
           target: '/etc/haproxy/services.d/myservice-http.cfg',
           order: '04',
           content: "server thishost 10.1.2.123:80 track myservice-dc-https-back/thishost cookie s123\n",
@@ -40,7 +40,7 @@ describe 'nebula::haproxy::binding' do
       end
 
       it do
-        is_expected.to contain_concat_fragment('myservice-dc-https thishost binding').with(
+        expect(subject).to contain_concat_fragment('myservice-dc-https thishost binding').with(
           target: '/etc/haproxy/services.d/myservice-https.cfg',
           order: '04',
           content: "server thishost 10.1.2.123:443 check cookie s123\n",
@@ -49,7 +49,7 @@ describe 'nebula::haproxy::binding' do
       end
 
       it do
-        is_expected.to contain_concat_fragment('myservice-dc-http thishost exempt binding').with(
+        expect(subject).to contain_concat_fragment('myservice-dc-http thishost exempt binding').with(
           target: '/etc/haproxy/services.d/myservice-http.cfg',
           order: '06',
           content: "server thishost 10.1.2.123:80 track myservice-dc-https-back/thishost cookie s123\n",
@@ -58,7 +58,7 @@ describe 'nebula::haproxy::binding' do
       end
 
       it do
-        is_expected.to contain_concat_fragment('myservice-dc-https thishost exempt binding').with(
+        expect(subject).to contain_concat_fragment('myservice-dc-https thishost exempt binding').with(
           target: '/etc/haproxy/services.d/myservice-https.cfg',
           order: '06',
           content: "server thishost 10.1.2.123:443 track myservice-dc-https-back/thishost cookie s123\n",
@@ -68,16 +68,16 @@ describe 'nebula::haproxy::binding' do
 
       it { is_expected.to contain_nebula__haproxy__service('myservice') }
 
-      context 'no https offload' do
+      context 'without https offload' do
         let(:params) { super().merge(https_offload: false) }
 
         it do
-          is_expected.to contain_concat_fragment('myservice-dc-https thishost binding')
+          expect(subject).to contain_concat_fragment('myservice-dc-https thishost binding')
             .with_content("server thishost 10.1.2.123:443 ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt check cookie s123\n")
         end
 
         it do
-          is_expected.to contain_concat_fragment('myservice-dc-https thishost exempt binding')
+          expect(subject).to contain_concat_fragment('myservice-dc-https thishost exempt binding')
             .with_content("server thishost 10.1.2.123:443 ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt track myservice-dc-https-back/thishost cookie s123\n")
         end
       end

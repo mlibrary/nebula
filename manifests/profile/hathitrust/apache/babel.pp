@@ -237,7 +237,7 @@ class nebula::profile::hathitrust::apache::babel (
       {
         # handle entityID hint for dex oidc <-> saml proxy - redirect user to
         # /Shibboleth.sso and consume the entityID parameter on return
-        # 
+        #
         # see explanation: https://github.com/hathitrust/ht_kubernetes/blob/master/htrc-dex/README.md
         rewrite_map  => 'unescape int:unescape',
         rewrite_cond => ['"%{QUERY_STRING}" "(.*(?:^|&))entityID=([^&]*)&?(.*)&?$"'],

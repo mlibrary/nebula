@@ -165,10 +165,10 @@ class nebula::profile::fulcrum::app (
   }
 
   file_line { 'fulcrum-profile-rails-env':
-    ensure => present,
-    path   => '/fulcrum/.profile',
-    line   => 'export RAILS_ENV=production',
-    match  => '^export RAILS_ENV=',
+    ensure  => present,
+    path    => '/fulcrum/.profile',
+    line    => 'export RAILS_ENV=production',
+    match   => '^export RAILS_ENV=',
     require => User['fulcrum'],
   }
 
@@ -181,8 +181,8 @@ class nebula::profile::fulcrum::app (
   }
 
   service { 'fulcrum':
-    name    => 'fulcrum.target',
     ensure  => 'running',
+    name    => 'fulcrum.target',
     enable  => true,
     require => [
       File['/etc/systemd/system/fulcrum.target'],

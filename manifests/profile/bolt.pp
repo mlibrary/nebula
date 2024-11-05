@@ -28,26 +28,26 @@ class nebula::profile::bolt {
     }
   }
 
-  file { "/opt/bolt":
-    ensure => "directory",
-    owner  => "git",
+  file { '/opt/bolt':
+    ensure => 'directory',
+    owner  => 'git',
     group  => 100,
-    mode   => "0755",
+    mode   => '0755',
   }
 
-  vcsrepo { "/opt/bolt":
-    provider => "git",
-    ensure   => "latest",
-    source   => "ssh://git@github.com/mlibrary/bolt.git",
-    user     => "git",
+  vcsrepo { '/opt/bolt':
+    ensure   => 'latest',
+    provider => 'git',
+    source   => 'ssh://git@github.com/mlibrary/bolt.git',
+    user     => 'git',
     require  => [
-      Class["nebula::profile::github_pull_account"],
-      File["/opt/bolt"],
-      Package["git"],
+      Class['nebula::profile::github_pull_account'],
+      File['/opt/bolt'],
+      Package['git'],
     ]
   }
 
-  lookup("nebula::profile::kubernetes::clusters", default_value => {}).each |$id, $cluster| {
+  lookup('nebula::profile::kubernetes::clusters', default_value => {}).each |$id, $cluster| {
     $host = $cluster["control_dns"]
 
     concat_fragment { "configure ssh client for ${id}":

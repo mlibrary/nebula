@@ -12,7 +12,7 @@ class nebula::profile::haproxy(
   Boolean $master = false,
   Optional[String] $cert_source = undef,
   Hash $extra_floating_ips = {},
-  String $global_badrobots = "",
+  String $global_badrobots = '',
 ) {
   include nebula::profile::haproxy::prereqs
   include nebula::profile::networking::sysctl

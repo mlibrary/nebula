@@ -55,27 +55,27 @@ class nebula::profile::www_lib::vhosts::apps_lib (
   }
 
   nebula::apache::www_lib_vhost { 'apps.lib-https':
-    servername                    => $servername,
-    ssl                           => true,
-    usertrack                     => true,
-    auth_openidc                  => true,
-    auth_openidc_redirect_uri     => 'https://apps.lib.umich.edu/openid-connect/callback',
-    docroot                       => $docroot,
+    servername                => $servername,
+    ssl                       => true,
+    usertrack                 => true,
+    auth_openidc              => true,
+    auth_openidc_redirect_uri => 'https://apps.lib.umich.edu/openid-connect/callback',
+    docroot                   => $docroot,
 
-    directories                   => [
+    directories               => [
       {
-        provider        => 'directory',
-        path            => $docroot,
-        options         => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
-        allow_override  => ['AuthConfig','FileInfo','Limit','Options'],
-        require         => $nebula::profile::www_lib::apache::default_access,
+        provider       => 'directory',
+        path           => $docroot,
+        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
+        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
+        require        => $nebula::profile::www_lib::apache::default_access,
       },
       {
-        provider        => 'directory',
-        path            => "${www_lib_root}/cgi",
-        allow_override  => ['None'],
-        options         => ['None'],
-        require         => $nebula::profile::www_lib::apache::default_access,
+        provider       => 'directory',
+        path           => "${www_lib_root}/cgi",
+        allow_override => ['None'],
+        options        => ['None'],
+        require        => $nebula::profile::www_lib::apache::default_access,
       },
       {
         provider       => 'directory',
@@ -100,7 +100,7 @@ class nebula::profile::www_lib::vhosts::apps_lib (
       # Passive authn globally
       {
         provider        => 'location',
-        path            => "/",
+        path            => '/',
         auth_type       => 'openid-connect',
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction pass'
@@ -108,14 +108,14 @@ class nebula::profile::www_lib::vhosts::apps_lib (
       # Force authn for these paths
       {
         provider        => 'location',
-        path            => "/login",
+        path            => '/login',
         auth_type       => 'openid-connect',
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction auth true'
       },
       {
         provider        => 'location',
-        path            => "/cgi/l/login/manage",
+        path            => '/cgi/l/login/manage',
         auth_type       => 'openid-connect',
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction auth true'
@@ -144,7 +144,7 @@ class nebula::profile::www_lib::vhosts::apps_lib (
     ],
 
     # TODO: hopefully these can all be removed
-    rewrites                      => [
+    rewrites                  => [
       {
         # rewrite for wsfh
         #
@@ -197,7 +197,7 @@ class nebula::profile::www_lib::vhosts::apps_lib (
       { rewrite_rule => '^/user/.*/profile                         https://account.lib.umich.edu/settings                             [redirect=permanent,last]' },
     ],
 
-    aliases                       => [
+    aliases                   => [
       {
         scriptalias => '/cgi/',
         path        => "${www_lib_root}/cgi/",

@@ -13,7 +13,7 @@ describe 'nebula::profile::logrotate' do
       it { is_expected.to compile }
 
       it 'sets debian defaults in /etc/logrotate.conf' do
-        is_expected.to contain_logrotate__conf('/etc/logrotate.conf').with(
+        expect(subject).to contain_logrotate__conf('/etc/logrotate.conf').with(
           create: true,
           rotate_every: 'weekly',
           rotate: 4,
@@ -24,7 +24,7 @@ describe 'nebula::profile::logrotate' do
       # reason to stop doing that, although we switched them from
       # monthly to weekly, as they can get very large otherwise.
       it "contains debian's wtmp logrotate config" do
-        is_expected.to contain_logrotate__rule('wtmp').with(
+        expect(subject).to contain_logrotate__rule('wtmp').with(
           path: '/var/log/wtmp',
           missingok: true,
           rotate_every: 'week',
@@ -36,7 +36,7 @@ describe 'nebula::profile::logrotate' do
       end
 
       it "contains debian's btmp logrotate config" do
-        is_expected.to contain_logrotate__rule('btmp').with(
+        expect(subject).to contain_logrotate__rule('btmp').with(
           path: '/var/log/btmp',
           missingok: true,
           rotate_every: 'week',

@@ -28,13 +28,13 @@ describe 'nebula::unison::server' do
         'ExecStart=/usr/bin/unison -socket 12345',
       ].each do |line|
         it do
-          is_expected.to contain_file('/etc/systemd/system/unison-myinstance.service')
+          expect(subject).to contain_file('/etc/systemd/system/unison-myinstance.service')
             .with_content(%r{^#{line}$}m)
         end
       end
 
       it do
-        is_expected.to contain_service('unison-myinstance')
+        expect(subject).to contain_service('unison-myinstance')
           .with(enable: true, ensure: 'running')
           .that_requires('Package[unison]')
       end

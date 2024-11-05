@@ -10,14 +10,14 @@ describe 'nebula::profile::apt' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      if os.start_with? "debian"
+      if os.start_with? 'debian'
         it do
-          is_expected.to contain_class('apt').with(
+          expect(subject).to contain_class('apt').with(
             purge: {
-              'sources.list'   => true,
+              'sources.list' => true,
               'sources.list.d' => true,
-              'preferences'    => true,
-              'preferences.d'  => true,
+              'preferences' => true,
+              'preferences.d' => true,
             },
             update: {
               'frequency' => 'daily',
@@ -26,13 +26,13 @@ describe 'nebula::profile::apt' do
         end
 
         it 'sets apt to never install recommended packages' do
-          is_expected.to contain_file('/etc/apt/apt.conf.d/99no-recommends')
+          expect(subject).to contain_file('/etc/apt/apt.conf.d/99no-recommends')
             .with_content(%r{^APT::Install-Recommends "0";$})
             .with_content(%r{^APT::Install-Suggests "0";$})
         end
 
         it do
-          is_expected.to contain_apt__source('main').with(
+          expect(subject).to contain_apt__source('main').with(
             location: 'http://ftp.us.debian.org/debian/',
             repos: 'main contrib non-free',
           )
@@ -40,24 +40,28 @@ describe 'nebula::profile::apt' do
 
         it { is_expected.to contain_apt__source('security').with_repos('main contrib non-free') }
 
-        case os
-        when 'debian-9-x86_64'
-          it { is_expected.to contain_apt__source('security').with_release("#{facts[:lsbdistcodename]}/updates") }
-        when 'debian-10-x86_64'
-          it { is_expected.to contain_apt__source('security').with_release("#{facts[:lsbdistcodename]}/updates") }
-        else
-          it { is_expected.to contain_apt__source('security').with_release("#{facts[:lsbdistcodename]}-security") }
+        it do
+          expect(subject).to contain_apt__source('security').with_release(
+            case os
+            when 'debian-9-x86_64'
+              "#{facts[:lsbdistcodename]}/updates"
+            when 'debian-10-x86_64'
+              "#{facts[:lsbdistcodename]}/updates"
+            else
+              "#{facts[:lsbdistcodename]}-security"
+            end,
+          )
         end
 
         it do
-          is_expected.to contain_apt__source('puppet').with(
+          expect(subject).to contain_apt__source('puppet').with(
             location: 'http://apt.puppetlabs.com',
             repos: 'puppet5',
           )
         end
 
         it do
-          is_expected.to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
+          expect(subject).to contain_file('/etc/apt/apt.conf.d/99force-ipv4')
             .with_content(%r{^Acquire::ForceIPv4 "true";$})
         end
 
@@ -65,7 +69,7 @@ describe 'nebula::profile::apt' do
           let(:params) { { mirror: 'http://debian.uchicago.edu/' } }
 
           it do
-            is_expected.to contain_apt__source('main')
+            expect(subject).to contain_apt__source('main')
               .with_location('http://debian.uchicago.edu/')
           end
         end
@@ -80,14 +84,14 @@ describe 'nebula::profile::apt' do
       it { is_expected.to contain_apt__source('local').with_architecture('amd64') }
 
       case os
-      when /^debian/
+      when %r{^debian}
         it do
-          is_expected.to contain_apt__source('security')
+          expect(subject).to contain_apt__source('security')
             .with_location('http://security.debian.org/debian-security')
         end
 
         it do
-          is_expected.to contain_apt__source('updates').with(
+          expect(subject).to contain_apt__source('updates').with(
             location: 'http://ftp.us.debian.org/debian/',
             release: "#{facts[:lsbdistcodename]}-updates",
             repos: 'main contrib non-free',
@@ -98,15 +102,15 @@ describe 'nebula::profile::apt' do
           let(:params) do
             { local_repo:
                              { 'location' => 'http://somehost.example.invalid/debs',
-                               'key'      => { 'id' => '12345678', 'source' => 'http://somehost.example.invalid/repo-key.gpg' } } }
+                               'key' => { 'id' => '12345678', 'source' => 'http://somehost.example.invalid/repo-key.gpg' } } }
           end
 
           it do
-            is_expected.to contain_apt__source('local').with(location: 'http://somehost.example.invalid/debs',
-                                                             architecture: 'amd64',
-                                                             release: "#{facts[:lsbdistcodename]}",
-                                                             key: params[:local_repo]['key'],
-                                                             repos: 'main')
+            expect(subject).to contain_apt__source('local').with(location: 'http://somehost.example.invalid/debs',
+                                                                 architecture: 'amd64',
+                                                                 release: facts[:lsbdistcodename].to_s,
+                                                                 key: params[:local_repo]['key'],
+                                                                 repos: 'main')
           end
         end
 
@@ -116,25 +120,25 @@ describe 'nebula::profile::apt' do
           let(:facts) { os_facts.merge(installed_backports: ['abc']) }
 
           it do
-            is_expected.to contain_class('apt::backports')
+            expect(subject).to contain_class('apt::backports')
               .with_location('http://ftp.us.debian.org/debian/')
           end
         end
-      when /^ubuntu/
+      when %r{^ubuntu}
         it do
-          is_expected.to contain_apt__source('main')
+          expect(subject).to contain_apt__source('main')
             .with_location('http://us.archive.ubuntu.com/ubuntu')
             .with_repos('main restricted universe')
-            .with_release("#{facts[:lsbdistcodename]}")
-          is_expected.to contain_apt__source('updates')
+            .with_release(facts[:lsbdistcodename].to_s)
+          expect(subject).to contain_apt__source('updates')
             .with_location('http://us.archive.ubuntu.com/ubuntu')
             .with_repos('main restricted universe')
             .with_release("#{facts[:lsbdistcodename]}-updates")
-          is_expected.to contain_apt__source('security')
+          expect(subject).to contain_apt__source('security')
             .with_location('http://us.archive.ubuntu.com/ubuntu')
             .with_repos('main restricted universe')
             .with_release("#{facts[:lsbdistcodename]}-security")
-          is_expected.to contain_apt__source('backports')
+          expect(subject).to contain_apt__source('backports')
             .with_location('http://us.archive.ubuntu.com/ubuntu')
             .with_repos('main restricted universe')
             .with_release("#{facts[:lsbdistcodename]}-backports")
@@ -143,11 +147,11 @@ describe 'nebula::profile::apt' do
 
       it { is_expected.not_to contain_apt__source('hp') }
 
-      context 'on an HPE machine' do
+      context 'when on an HPE machine' do
         let(:facts) { os_facts.merge('dmi' => { 'manufacturer' => 'HPE' }) }
 
         it do
-          is_expected.to contain_apt__source('hp').with(
+          expect(subject).to contain_apt__source('hp').with(
             location: 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
             release: "#{facts[:lsbdistcodename]}/current",
             repos: 'non-free',
@@ -161,7 +165,7 @@ describe 'nebula::profile::apt' do
           end
 
           it do
-            is_expected.to contain_apt__source('hp').with(
+            expect(subject).to contain_apt__source('hp').with(
               location: 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
               release: "#{facts[:lsbdistcodename]}/current",
               repos: 'non-free',

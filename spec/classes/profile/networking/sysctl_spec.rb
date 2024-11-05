@@ -17,7 +17,7 @@ describe 'nebula::profile::networking::sysctl' do
       it { is_expected.to contain_sysctl.that_notifies('Service[procps]') }
 
       it do
-        is_expected.to contain_service('procps').only_with(
+        expect(subject).to contain_service('procps').only_with(
           ensure: 'running',
           enable: true,
           hasrestart: true,

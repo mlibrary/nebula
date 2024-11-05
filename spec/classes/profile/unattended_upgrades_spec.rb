@@ -11,8 +11,8 @@ describe 'nebula::profile::unattended_upgrades' do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
-      it { is_expected.to contain_class("apt") }
-      it { is_expected.to contain_class("unattended_upgrades") }
+      it { is_expected.to contain_class('apt') }
+      it { is_expected.to contain_class('unattended_upgrades') }
     end
   end
 end

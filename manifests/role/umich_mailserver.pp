@@ -2,9 +2,9 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-# A minimum configuration for a mail server host that logically belongs 
-# the University of Michigan. 
-# 
+# A minimum configuration for a mail server host that logically belongs
+# the University of Michigan.
+#
 #
 # @example
 #   include nebula::role::umich_mailserver

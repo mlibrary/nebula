@@ -11,7 +11,7 @@ describe 'nebula::profile::puppet::master_with_db' do
       let(:facts) { os_facts }
 
       xit do
-        is_expected.to contain_class('puppetdb::master::config').with(
+        expect(subject).to contain_class('puppetdb::master::config').with(
           puppetdb_server: 'puppetdb.default.invalid',
           manage_report_processor: true,
           enable_reports: true,
@@ -22,7 +22,7 @@ describe 'nebula::profile::puppet::master_with_db' do
         let(:params) { { puppetdb_server: 'db.puppet.gov' } }
 
         xit do
-          is_expected.to contain_class('puppetdb::master::config')
+          expect(subject).to contain_class('puppetdb::master::config')
             .with_puppetdb_server('db.puppet.gov')
         end
       end

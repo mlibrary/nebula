@@ -14,8 +14,8 @@
 #   }
 #
 define nebula::log (
-  String $service = $title,
   Array[String] $files,
+  String $service = $title,
 ){
   include nebula::profile::loki
 
@@ -25,6 +25,6 @@ define nebula::log (
     mode    => '0644',
     require => Package['alloy'],
     notify  => Service['alloy'],
-    content => template("nebula/profile/loki/drop_in.alloy.erb"),
+    content => template('nebula/profile/loki/drop_in.alloy.erb'),
   }
 }

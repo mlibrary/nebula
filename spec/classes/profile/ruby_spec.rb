@@ -11,7 +11,7 @@ describe 'nebula::profile::ruby' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_class('rbenv').with(
+        expect(subject).to contain_class('rbenv').with(
           install_dir: '/opt/rbenv',
         )
       end
@@ -27,12 +27,12 @@ describe 'nebula::profile::ruby' do
 
       ['2.4.3', '2.5.0'].each do |version|
         it do
-          is_expected.to contain_rbenv__build(version)
+          expect(subject).to contain_rbenv__build(version)
         end
 
         %w[puma rspec].each do |gem|
           it do
-            is_expected.to contain_rbenv__gem("#{gem} #{version}").with(
+            expect(subject).to contain_rbenv__gem("#{gem} #{version}").with(
               gem: gem,
               ruby_version: version,
               require: "Rbenv::Build[#{version}]",
@@ -42,7 +42,7 @@ describe 'nebula::profile::ruby' do
       end
 
       it do
-        is_expected.to contain_exec('rbenv uninstall 2.4.2')
+        expect(subject).to contain_exec('rbenv uninstall 2.4.2')
           .with_command('rbenv uninstall -f 2.4.2')
           .with_environment(['RBENV_ROOT=/opt/rbenv'])
           .with_path('/opt/rbenv/shims:/opt/rbenv/bin:/usr/bin:/bin')
@@ -67,7 +67,7 @@ describe 'nebula::profile::ruby' do
         let(:params) { { install_dir: '/usr/local/rbenv' } }
 
         it do
-          is_expected.to contain_class('rbenv').with(
+          expect(subject).to contain_class('rbenv').with(
             install_dir: '/usr/local/rbenv',
           )
         end
@@ -109,7 +109,7 @@ describe 'nebula::profile::ruby' do
         let(:params) { { global_version: '2.4.1', bundler_version: '~>1.14' } }
 
         it do
-          is_expected.to contain_rbenv__build('2.4.1').with(
+          expect(subject).to contain_rbenv__build('2.4.1').with(
             bundler_version: '~>1.14',
             global: true,
           )

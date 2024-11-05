@@ -15,7 +15,7 @@ describe 'nebula::profile::fulcrum::logrotate' do
       it { is_expected.to contain_class('Nebula::Profile::Logrotate') }
 
       it do
-        is_expected.to contain_logrotate__rule('fulcrum')
+        expect(subject).to contain_logrotate__rule('fulcrum')
           .with_path('/fulcrum/app/shared/log/*.log')
           .with_rotate(7)
           .with_rotate_every('day')

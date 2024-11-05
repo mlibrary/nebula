@@ -28,7 +28,6 @@ describe 'nebula::profile::haproxy' do
       let(:service) { 'keepalived' }
 
       let(:thisnode) { { 'ip' => facts[:networking][:ip], 'hostname' => facts[:hostname] } }
-      let(:haproxy2) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'haproxy2' } }
       let(:base_params) do
         {
           cert_source: '/some/where',
@@ -59,7 +58,7 @@ describe 'nebula::profile::haproxy' do
         end
 
         it do
-          is_expected.to contain_service('haproxy').with(
+          expect(subject).to contain_service('haproxy').with(
             ensure: 'running',
             enable: true,
             restart: '/bin/systemctl reload haproxy',
@@ -67,13 +66,13 @@ describe 'nebula::profile::haproxy' do
         end
 
         it do
-          is_expected.to contain_exec('check haproxy config').with(
+          expect(subject).to contain_exec('check haproxy config').with(
             command: "/usr/sbin/haproxy -f #{haproxy_conf} -c -q -f /etc/haproxy/services.d",
           )
         end
 
         it do
-          is_expected.to contain_nebula__haproxy__service('svc1').with(
+          expect(subject).to contain_nebula__haproxy__service('svc1').with(
             floating_ip: '12.23.32.22',
             cert_source: '/some/where',
             max_requests_per_sec: 10,
@@ -82,7 +81,7 @@ describe 'nebula::profile::haproxy' do
         end
 
         it do
-          is_expected.to contain_nebula__haproxy__service('svc2').with(
+          expect(subject).to contain_nebula__haproxy__service('svc2').with(
             floating_ip: '12.23.32.23',
             cert_source: '/some/where',
           )
@@ -100,7 +99,7 @@ describe 'nebula::profile::haproxy' do
 
       describe 'users' do
         it do
-          is_expected.to contain_user('haproxyctl').with(
+          expect(subject).to contain_user('haproxyctl').with(
             name: 'haproxyctl',
             gid: 'haproxy',
             managehome: true,
@@ -109,12 +108,12 @@ describe 'nebula::profile::haproxy' do
         end
 
         it do
-          is_expected.to contain_nebula__authzd_user('haproxyctl')
+          expect(subject).to contain_nebula__authzd_user('haproxyctl')
             .that_requires(['Package[haproxy]', 'Package[haproxyctl]'])
         end
 
         it 'grants ssh access to the monitoring user' do
-          is_expected.to contain_file('/var/haproxyctl/.ssh/authorized_keys')
+          expect(subject).to contain_file('/var/haproxyctl/.ssh/authorized_keys')
             .with_content(%r{^ecdsa-sha2-nistp256 CCCCCCCCCCCC haproxyctl@default\.invalid$})
         end
       end
@@ -134,24 +133,25 @@ describe 'nebula::profile::haproxy' do
         it { is_expected.to contain_file(file).with(mode: '0644') }
 
         it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/default\.erb\)\n},
+          expect(subject).to contain_file(file).with_content(
+            %r{\A# Managed by puppet \(nebula/profile/haproxy/default\.erb\)\n},
           )
         end
+
         it 'sets $CONFIG to the base config' do
-          is_expected.to contain_file(file).with_content(%r{^CONFIG="#{haproxy_conf}"\n})
+          expect(subject).to contain_file(file).with_content(%r{^CONFIG="#{haproxy_conf}"\n})
         end
 
         it 'sets $EXTRAOPTS to include the service directory' do
-          is_expected.to contain_file(file).with_content(
-            %r{EXTRAOPTS="-f \/etc\/haproxy\/services.d"\n},
+          expect(subject).to contain_file(file).with_content(
+            %r{EXTRAOPTS="-f /etc/haproxy/services.d"\n},
           )
         end
       end
 
       describe 'global_badrobots.txt file' do
         it 'lists ips to block' do
-          is_expected.to contain_file('/etc/haproxy/global_badrobots.txt').with_content("1.2.3.0/24\n5.6.7.8\n")
+          expect(subject).to contain_file('/etc/haproxy/global_badrobots.txt').with_content("1.2.3.0/24\n5.6.7.8\n")
         end
       end
 
@@ -165,27 +165,33 @@ describe 'nebula::profile::haproxy' do
         it { is_expected.to contain_file('/etc/haproxy/services.d').with(ensure: 'directory') }
 
         it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
-            %r{\A# Managed by puppet \(nebula\/profile\/haproxy\/haproxy\.cfg\.erb\)\n},
+          expect(subject).to contain_file(file).with_content(
+            %r{\A# Managed by puppet \(nebula/profile/haproxy/haproxy\.cfg\.erb\)\n},
           )
         end
+
         it 'has a global section' do
-          is_expected.to contain_file(file).with_content(%r{^global\n})
+          expect(subject).to contain_file(file).with_content(%r{^global\n})
         end
+
         it 'has a defaults section' do
-          is_expected.to contain_file(file).with_content(%r{^defaults\n})
+          expect(subject).to contain_file(file).with_content(%r{^defaults\n})
         end
+
         it 'does not have a backend section' do
-          is_expected.not_to contain_file(file).with_content(%r{^backend\W+.*\n})
+          expect(subject).not_to contain_file(file).with_content(%r{^backend\W+.*\n})
         end
+
         it 'does not have a frontend section' do
-          is_expected.not_to contain_file(file).with_content(%r{^frontend\W+.*\n})
+          expect(subject).not_to contain_file(file).with_content(%r{^frontend\W+.*\n})
         end
+
         it 'configures the admin socket in the correct place with group privileges' do
-          is_expected.to contain_file(file).with_content(%r{stats socket /run/haproxy/admin.sock mode 660 level admin})
+          expect(subject).to contain_file(file).with_content(%r{stats socket /run/haproxy/admin.sock mode 660 level admin})
         end
+
         it 'runs with the haproxy group' do
-          is_expected.to contain_file(file).with_content(%r{group haproxy})
+          expect(subject).to contain_file(file).with_content(%r{group haproxy})
         end
       end
 
@@ -197,7 +203,7 @@ describe 'nebula::profile::haproxy' do
         let(:file) { keepalived_conf }
 
         it do
-          is_expected.to contain_concat(file).with(
+          expect(subject).to contain_concat(file).with(
             ensure: 'present',
             require: 'Package[keepalived]',
             notify: 'Service[keepalived]',
@@ -208,11 +214,11 @@ describe 'nebula::profile::haproxy' do
         it { is_expected.to contain_concat_fragment('keepalived preamble').with_target(keepalived_conf) }
 
         it 'has a vrrp_scripts check_haproxy section' do
-          is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{^vrrp_script check_haproxy})
+          expect(subject).to contain_concat_fragment('keepalived preamble').with_content(%r{^vrrp_script check_haproxy})
         end
 
         it 'has the haproxy floating ip addresses' do
-          is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*12\.23\.32\.23\n\s*}}m)
+          expect(subject).to contain_concat_fragment('keepalived preamble').with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*12\.23\.32\.23\n\s*}}m)
         end
 
         context 'with a floating ip address parameter' do
@@ -224,7 +230,7 @@ describe 'nebula::profile::haproxy' do
           end
 
           it do
-            is_expected.to contain_concat_fragment('keepalived preamble')
+            expect(subject).to contain_concat_fragment('keepalived preamble')
               .with_content(%r{virtual_ipaddress {\n\s*#{params[:services]["svc1"]["floating_ip"]}\n\s*#{params[:services]["svc2"]["floating_ip"]}\n\s*}}m)
           end
         end
@@ -235,7 +241,7 @@ describe 'nebula::profile::haproxy' do
           end
 
           it do
-            is_expected.to contain_concat_fragment('keepalived preamble')
+            expect(subject).to contain_concat_fragment('keepalived preamble')
               .with_content(%r{virtual_ipaddress {\n\s*10\.0\.1\.2\n\s*}}m)
           end
         end
@@ -255,24 +261,26 @@ describe 'nebula::profile::haproxy' do
         it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m) }
         it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{notification_email_from root@default.invalid}) }
 
-        context 'on a master node' do
+        context 'when on a master node' do
           let(:params) { base_params.merge(master: true) }
 
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 101}) }
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state MASTER}) }
+
           it do
-            is_expected.to contain_class('Nebula::Profile::Prometheus::Exporter::Haproxy')
+            expect(subject).to contain_class('Nebula::Profile::Prometheus::Exporter::Haproxy')
               .with_master(true)
           end
         end
 
-        context 'on a backup node' do
+        context 'when on a backup node' do
           let(:params) { base_params.merge(master: false) }
 
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{priority 100}) }
           it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(%r{state BACKUP}) }
+
           it do
-            is_expected.to contain_class('Nebula::Profile::Prometheus::Exporter::Haproxy')
+            expect(subject).to contain_class('Nebula::Profile::Prometheus::Exporter::Haproxy')
               .with_master(false)
           end
         end
@@ -285,13 +293,13 @@ describe 'nebula::profile::haproxy' do
         it { is_expected.to contain_file(file).with(mode: '0644') }
 
         it 'says it is managed by puppet' do
-          is_expected.to contain_file(file).with_content(
+          expect(subject).to contain_file(file).with_content(
             %r{\A# Managed by puppet},
           )
         end
 
         it 'enables ip_nonlocal_bind' do
-          is_expected.to contain_file(file).with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
+          expect(subject).to contain_file(file).with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
         end
       end
 
@@ -304,7 +312,7 @@ describe 'nebula::profile::haproxy' do
 
       describe 'metrics' do
         it 'defines haproxy stats file' do
-          is_expected.to contain_file('/etc/haproxy/services.d/stats.cfg')
+          expect(subject).to contain_file('/etc/haproxy/services.d/stats.cfg')
             .that_requires('Package[haproxy]')
             .that_notifies('Service[haproxy]')
         end
@@ -312,23 +320,24 @@ describe 'nebula::profile::haproxy' do
 
       describe 'server monitoring / dynamic weighting' do
         it 'includes the private key' do
-          is_expected.to contain_file('/var/haproxyctl/.ssh/id_ecdsa')
+          expect(subject).to contain_file('/var/haproxyctl/.ssh/id_ecdsa')
         end
+
         it 'includes the monitoring script' do
-          is_expected.to contain_file('/usr/local/bin/set_weights.rb')
+          expect(subject).to contain_file('/usr/local/bin/set_weights.rb')
         end
       end
 
       describe 'log rotation' do
-        let(:rotate_logs) { contain_logrotate__rule("haproxy") }
+        let(:rotate_logs) { contain_logrotate__rule('haproxy') }
 
-        it { is_expected.to rotate_logs.with_path("/var/log/haproxy.log") }
-        it { is_expected.to rotate_logs.with_rotate_every("day") }
+        it { is_expected.to rotate_logs.with_path('/var/log/haproxy.log') }
+        it { is_expected.to rotate_logs.with_rotate_every('day') }
         it { is_expected.to rotate_logs.with_rotate(5) }
         it { is_expected.to rotate_logs.with_missingok(true) }
         it { is_expected.to rotate_logs.with_ifempty(false) }
         it { is_expected.to rotate_logs.with_compress(true) }
-        it { is_expected.to rotate_logs.with_postrotate(["/usr/lib/rsyslog/rsyslog-rotate", "/bin/systemctl restart filebeat"]) }
+        it { is_expected.to rotate_logs.with_postrotate(['/usr/lib/rsyslog/rsyslog-rotate', '/bin/systemctl restart filebeat']) }
       end
     end
   end

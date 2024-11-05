@@ -18,7 +18,7 @@ describe 'nebula::profile::falcon' do
         it { is_expected.to contain_service('falcon-sensor').with_ensure('running') }
 
         it do
-          is_expected.to contain_exec('set falcon-sensor CID')
+          expect(subject).to contain_exec('set falcon-sensor CID')
             .with_command("/opt/CrowdStrike/falconctl -s '--cid=mycid'")
             .with_unless('/opt/CrowdStrike/falconctl -g --cid')
             .that_requires('Package[falcon-sensor]')
@@ -30,7 +30,7 @@ describe 'nebula::profile::falcon' do
         let(:params) { { cid: 'somethingelse' } }
 
         it do
-          is_expected.to contain_exec('set falcon-sensor CID')
+          expect(subject).to contain_exec('set falcon-sensor CID')
             .with_command("/opt/CrowdStrike/falconctl -s '--cid=somethingelse'")
         end
       end

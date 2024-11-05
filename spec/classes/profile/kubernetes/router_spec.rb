@@ -14,13 +14,13 @@ describe 'nebula::profile::kubernetes::router' do
       it { is_expected.to compile }
 
       it do
-        is_expected.to contain_file('/etc/sysctl.d/router.conf')
+        expect(subject).to contain_file('/etc/sysctl.d/router.conf')
           .with_content(%r{^net\.ipv4\.ip_forward *= *1$})
           .that_notifies('Service[procps]')
       end
 
       it do
-        is_expected.to contain_firewall('001 Do not NAT internal requests')
+        expect(subject).to contain_firewall('001 Do not NAT internal requests')
           .with_table('nat')
           .with_chain('POSTROUTING')
           .with_action('accept')
@@ -30,7 +30,7 @@ describe 'nebula::profile::kubernetes::router' do
       end
 
       it do
-        is_expected.to contain_firewall('002 Give internal requests our private IP')
+        expect(subject).to contain_firewall('002 Give internal requests our private IP')
           .with_table('nat')
           .with_chain('POSTROUTING')
           .with_jump('SNAT')
@@ -41,7 +41,7 @@ describe 'nebula::profile::kubernetes::router' do
       end
 
       it do
-        is_expected.to contain_firewall('003 Give external requests our public IP')
+        expect(subject).to contain_firewall('003 Give external requests our public IP')
           .with_table('nat')
           .with_chain('POSTROUTING')
           .with_jump('SNAT')
@@ -54,7 +54,7 @@ describe 'nebula::profile::kubernetes::router' do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
 
         it do
-          is_expected.to contain_firewall('001 Do not NAT internal requests')
+          expect(subject).to contain_firewall('001 Do not NAT internal requests')
             .with_source('10.123.234.0/24')
             .with_destination('10.123.234.0/24')
         end
@@ -62,7 +62,7 @@ describe 'nebula::profile::kubernetes::router' do
         it { is_expected.not_to contain_firewall('002 Give internal requests our private IP') }
 
         it do
-          is_expected.to contain_firewall('003 Give external requests our public IP')
+          expect(subject).to contain_firewall('003 Give external requests our public IP')
             .with_source('10.123.234.0/24')
             .with_tosource('10.0.0.2')
         end

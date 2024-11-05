@@ -24,12 +24,12 @@ describe 'nebula::profile::hathitrust::apache' do
       it { is_expected.to contain_file('/usr/local/lib/cgi-bin/monitor/monitor.pl') }
 
       it 'sends logs to loki' do
-        is_expected.to contain_class('nebula::profile::loki')
-        is_expected.to contain_file('/etc/alloy/apache.alloy')
+        expect(subject).to contain_class('nebula::profile::loki')
+        expect(subject).to contain_file('/etc/alloy/apache.alloy')
       end
 
       snippets = [
-        <<~EOT,
+        <<~SNIPPET,
           <Directory "/htapps/babel/imgsrv/cgi">
             AllowOverride None
 
@@ -37,13 +37,13 @@ describe 'nebula::profile::hathitrust::apache' do
               SetHandler proxy:fcgi://127.0.0.1:31028
             </Files>
           </Directory>
-        EOT
-        <<~EOT
+        SNIPPET
+        <<~SNIPPET,
           <DirectoryMatch "^/htapps/babel/([^/]+)/cgi">
             Options +ExecCGI
             SetHandler cgi-script
           </DirectoryMatch>
-        EOT
+        SNIPPET
       ]
 
       snippets.each do |snippet|
@@ -51,26 +51,26 @@ describe 'nebula::profile::hathitrust::apache' do
       end
 
       it do
-        is_expected.to contain_file('access_compat.load')
+        expect(subject).to contain_file('access_compat.load')
           .with(path: '/etc/apache2/mods-available/access_compat.load',
                 content: %r{LoadModule access_compat_module /usr/lib/apache2/modules/mod_access_compat.so})
       end
 
       it do
-        is_expected.to contain_file('access_compat.load symlink')
+        expect(subject).to contain_file('access_compat.load symlink')
           .with(ensure: 'link',
                 path: '/etc/apache2/mods-enabled/access_compat.load',
                 target: '/etc/apache2/mods-available/access_compat.load')
       end
 
       it do
-        is_expected.to contain_file('/etc/logrotate.d/apache2')
+        expect(subject).to contain_file('/etc/logrotate.d/apache2')
       end
 
       describe 'Production HT hostnames' do
         %w[babel catalog www crms-training.babel].each do |vhost|
           it {
-            is_expected.to contain_apache__vhost("#{vhost}.hathitrust.org ssl").with(
+            expect(subject).to contain_apache__vhost("#{vhost}.hathitrust.org ssl").with(
               servername: "#{vhost}.hathitrust.org",
               ssl: true,
               ssl_protocol: '+TLSv1.2',
@@ -95,7 +95,7 @@ describe 'nebula::profile::hathitrust::apache' do
         it { is_expected.to contain_apache__vhost('foo.www.example.org ssl').with_servername('foo.www.example.org') }
 
         it {
-          is_expected.to contain_apache__vhost('foo.babel.example.org non-ssl').with(
+          expect(subject).to contain_apache__vhost('foo.babel.example.org non-ssl').with(
             redirect_dest: 'https://foo.babel.example.org/',
             servername: 'foo.babel.example.org',
           )
@@ -112,7 +112,7 @@ describe 'nebula::profile::hathitrust::apache' do
         it { is_expected.to contain_apache__vhost('babel.example.org ssl').with_servername('babel.example.org') }
 
         it {
-          is_expected.to contain_apache__vhost('hathitrust canonical name redirection').with(
+          expect(subject).to contain_apache__vhost('hathitrust canonical name redirection').with(
             servername: 'example.org',
             serveraliases: ['domain.one', 'domain.two', 'www.domain.one', 'www.domain.two'],
             redirect_dest: 'https://www.example.org/',
@@ -121,28 +121,28 @@ describe 'nebula::profile::hathitrust::apache' do
       end
 
       it do
-        is_expected.to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
+        expect(subject).to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
       end
 
       it do
-        is_expected.to contain_concat_fragment('monitor solr cores').with(tag: 'monitor_config',
-                                                                          content: { 'solr' => %w[solrcore1 solrcore2] }.to_yaml)
+        expect(subject).to contain_concat_fragment('monitor solr cores').with(tag: 'monitor_config',
+                                                                              content: { 'solr' => %w[solrcore1 solrcore2] }.to_yaml)
       end
 
       it do
-        is_expected.to contain_concat_fragment('monitor mysql').with(tag: 'monitor_config',
-                                                                     content: { 'mysql' => { 'param1' => 'value1', 'param2' => 'value2' } }.to_yaml)
+        expect(subject).to contain_concat_fragment('monitor mysql').with(tag: 'monitor_config',
+                                                                         content: { 'mysql' => { 'param1' => 'value1', 'param2' => 'value2' } }.to_yaml)
       end
 
       it do
         # set via hiera
-        is_expected.to contain_cron('purge caches')
+        expect(subject).to contain_cron('purge caches')
           .with_command('/htapps/babel/mdp-misc/scripts/managecache.sh /somewhere/whatever:1:2 /elsewhere/whatever:3:4')
       end
 
       describe 'monitoring user' do
         it do
-          is_expected.to have_nebula__authzd_user_resource_count(0)
+          expect(subject).to have_nebula__authzd_user_resource_count(0)
         end
 
         context 'with specified key' do
@@ -153,7 +153,7 @@ describe 'nebula::profile::hathitrust::apache' do
           end
 
           it do
-            is_expected.to contain_nebula__authzd_user('haproxyctl')
+            expect(subject).to contain_nebula__authzd_user('haproxyctl')
           end
         end
       end

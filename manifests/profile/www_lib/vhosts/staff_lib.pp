@@ -27,28 +27,28 @@ class nebula::profile::www_lib::vhosts::staff_lib (
   }
 
   nebula::apache::www_lib_vhost { 'apps.staff.lib ssl':
-    servername                         => "${prefix}apps.staff.${domain}",
-    ssl_cn                             => 'apps.staff.lib.umich.edu',
-    ssl                                => true,
-    usertrack                          => true,
-    auth_openidc                       => true,
-    auth_openidc_redirect_uri          => 'https://apps.staff.lib.umich.edu/openid-connect/callback',
-    docroot                            => $docroot,
-    setenvifnocase                     => ['^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1'],
-    default_allow_override             => ['AuthConfig','FileInfo','Limit','Options'],
+    servername                => "${prefix}apps.staff.${domain}",
+    ssl_cn                    => 'apps.staff.lib.umich.edu',
+    ssl                       => true,
+    usertrack                 => true,
+    auth_openidc              => true,
+    auth_openidc_redirect_uri => 'https://apps.staff.lib.umich.edu/openid-connect/callback',
+    docroot                   => $docroot,
+    setenvifnocase            => ['^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1'],
+    default_allow_override    => ['AuthConfig','FileInfo','Limit','Options'],
 
-    aliases                            => [
+    aliases                   => [
       { scriptalias => '/cgi', path => "${vhost_root}/cgi" }
     ],
 
-    directories                        => [
+    directories               => [
       {
-        provider       => 'directory',
-        path           => $docroot,
-        options        => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
-        allow_override => ['AuthConfig','FileInfo','Limit','Options'],
-        require        => $nebula::profile::www_lib::apache::default_access,
-        addhandlers    => [{
+        provider        => 'directory',
+        path            => $docroot,
+        options         => ['IncludesNOEXEC','Indexes','FollowSymLinks','MultiViews'],
+        allow_override  => ['AuthConfig','FileInfo','Limit','Options'],
+        require         => $nebula::profile::www_lib::apache::default_access,
+        addhandlers     => [{
           extensions => ['.php'],
           # TODO: Extract version or socket path to params/hiera
           handler    => 'proxy:unix:/run/php/php8.1-fpm.sock|fcgi://localhost'
@@ -131,8 +131,8 @@ class nebula::profile::www_lib::vhosts::staff_lib (
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction auth true',
         addhandlers     => [{
-          extensions    => ['.php'],
-          handler       => 'application/x-httpd-php'
+          extensions => ['.php'],
+          handler    => 'application/x-httpd-php'
         }]
       },
       {
@@ -142,8 +142,8 @@ class nebula::profile::www_lib::vhosts::staff_lib (
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction auth true',
         addhandlers     => [{
-          extensions    => ['.php'],
-          handler       => 'application/x-httpd-php'
+          extensions => ['.php'],
+          handler    => 'application/x-httpd-php'
         }]
       },
       {
@@ -153,13 +153,13 @@ class nebula::profile::www_lib::vhosts::staff_lib (
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction auth true',
         addhandlers     => [{
-          extensions    => ['.php'],
-          handler       => 'application/x-httpd-php'
+          extensions => ['.php'],
+          handler    => 'application/x-httpd-php'
         }]
       },
     ],
 
-    request_headers                    => [
+    request_headers           => [
       # Setting remote user for 2.4
       'set X-Remote-User "expr=%{REMOTE_USER}"',
       # Fix redirects being sent to non ssl url (https -> http)

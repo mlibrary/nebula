@@ -34,16 +34,16 @@ class nebula::profile::www_lib::vhosts::datamart (
   }
 
   nebula::apache::www_lib_vhost { 'datamart-https':
-    servername                    => $servername,
-    docroot                       => $docroot,
-    logging_prefix                => 'datamart.lib/',
+    servername                => $servername,
+    docroot                   => $docroot,
+    logging_prefix            => 'datamart.lib/',
 
-    ssl                           => true,
-    ssl_cn                        => $ssl_cn,
-    auth_openidc                  => true,
-    auth_openidc_redirect_uri     => 'https://datamart.lib.umich.edu/openid-connect/callback',
+    ssl                       => true,
+    ssl_cn                    => $ssl_cn,
+    auth_openidc              => true,
+    auth_openidc_redirect_uri => 'https://datamart.lib.umich.edu/openid-connect/callback',
 
-    directories                   => [
+    directories               => [
       {
         provider      => 'directory',
         path          => $docroot,
@@ -68,13 +68,13 @@ class nebula::profile::www_lib::vhosts::datamart (
         | EOT
       },
       {
-        provider        => 'location',
-        path            => '/robots.txt',
-        auth_require    => 'all granted',
+        provider     => 'location',
+        path         => '/robots.txt',
+        auth_require => 'all granted',
       },
     ],
 
-    rewrites                      => [
+    rewrites                  => [
       {
         rewrite_cond => ['%{REQUEST_URI} !^/openid-connect',
                         '%{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-f'],

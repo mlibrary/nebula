@@ -21,8 +21,8 @@ describe 'nodes_for_class' do
     let(:nodes) { %w[node_a node_b] }
 
     it do
-      is_expected.to run.with_params('my_role')
-                        .and_return(%w[node_a node_b])
+      expect(subject).to run.with_params('my_role')
+                            .and_return(%w[node_a node_b])
     end
   end
 
@@ -31,18 +31,18 @@ describe 'nodes_for_class' do
     let(:nodes) { %w[node_1 node_2 node_3] }
 
     it do
-      is_expected.to run.with_params('nebula::default')
-                        .and_return(%w[node_1 node_2 node_3])
+      expect(subject).to run.with_params('nebula::default')
+                            .and_return(%w[node_1 node_2 node_3])
     end
   end
 
-  context 'it returns the nodes sorted by name' do
+  context 'when nodes node_b, node_a, and node_z have the role My_role' do
     let(:class_title) { 'My_role' }
     let(:nodes) { %w[node_b node_a node_z] }
 
-    it do
-      is_expected.to run.with_params('my_role')
-                        .and_return(%w[node_a node_b node_z])
+    it 'returns the nodes sorted by name' do
+      expect(subject).to run.with_params('my_role')
+                            .and_return(%w[node_a node_b node_z])
     end
   end
 end

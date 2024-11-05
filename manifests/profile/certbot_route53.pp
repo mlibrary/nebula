@@ -9,48 +9,48 @@
 class nebula::profile::certbot_route53 (
   Hash[String, Hash[String, Array[String]]] $certs = {},
   Hash[String, Array[String]] $simple_certs = {},
-  String $cert_dir = "/var/local/cert_dir",
-  String $haproxy_cert_dir = "/var/local/haproxy_cert_dir",
-  String $letsencrypt_email = "nope@nope.zone",
-  String $aws_access_key_id = "default.invalid",
-  String $aws_secret_access_key = "default.invalid",
+  String $cert_dir = '/var/local/cert_dir',
+  String $haproxy_cert_dir = '/var/local/haproxy_cert_dir',
+  String $letsencrypt_email = 'nope@nope.zone',
+  String $aws_access_key_id = 'default.invalid',
+  String $aws_secret_access_key = 'default.invalid',
 ) {
   ensure_packages([
-    "certbot",
-    "awscli",
-    "python3-certbot-dns-route53",
+    'certbot',
+    'awscli',
+    'python3-certbot-dns-route53',
   ])
 
-  file { "/root/.aws":
-    ensure => "directory"
+  file { '/root/.aws':
+    ensure => 'directory'
   }
 
-  file { "/root/.aws/config":
-    mode    => "0600",
+  file { '/root/.aws/config':
+    mode    => '0600',
     content => "[default]\nregion = us-east-1\n"
   }
 
-  file { "/root/.aws/credentials":
-    mode    => "0600",
-    content => template("nebula/profile/certbot_route53/credentials.ini.erb")
+  file { '/root/.aws/credentials':
+    mode    => '0600',
+    content => template('nebula/profile/certbot_route53/credentials.ini.erb')
   }
 
-  file { "/tmp/all_cert_commands":
-    content => template("nebula/profile/certbot_route53/commands.erb")
+  file { '/tmp/all_cert_commands':
+    content => template('nebula/profile/certbot_route53/commands.erb')
   }
 
   $certs.each |$service, $domains| {
     $domains.each |$main_domain, $alt_domains| {
       concat { "${cert_dir}/${main_domain}.crt":
-        group  => "puppet",
+        group  => 'puppet',
       }
 
       concat { "${cert_dir}/${main_domain}.key":
-        group  => "puppet",
+        group  => 'puppet',
       }
 
       concat { "${haproxy_cert_dir}/${service}/${main_domain}.pem":
-        group => "puppet",
+        group => 'puppet',
       }
 
       concat_fragment { "${main_domain}.crt cert":
@@ -64,13 +64,13 @@ class nebula::profile::certbot_route53 (
       }
 
       concat_fragment { "${main_domain}.pem cert":
-        order  => "01",
+        order  => '01',
         target => "${haproxy_cert_dir}/${service}/${main_domain}.pem",
         source => "/etc/letsencrypt/live/${main_domain}/fullchain.pem"
       }
 
       concat_fragment { "${main_domain}.pem key":
-        order  => "02",
+        order  => '02',
         target => "${haproxy_cert_dir}/${service}/${main_domain}.pem",
         source => "/etc/letsencrypt/live/${main_domain}/privkey.pem"
       }
@@ -79,11 +79,11 @@ class nebula::profile::certbot_route53 (
 
   $simple_certs.each |$domain, $sans| {
     concat { "${cert_dir}/${domain}.crt":
-      group  => "puppet",
+      group  => 'puppet',
     }
 
     concat { "${cert_dir}/${domain}.key":
-      group  => "puppet",
+      group  => 'puppet',
     }
 
     concat_fragment { "${domain}.crt cert":

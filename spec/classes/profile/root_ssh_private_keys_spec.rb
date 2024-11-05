@@ -12,12 +12,12 @@ describe 'nebula::profile::root_ssh_private_keys' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_file('/var/local/ssh')
+        expect(subject).to contain_file('/var/local/ssh')
           .with_ensure('directory')
       end
 
       it do
-        is_expected.to contain_file('/var/local/ssh/invalid_normal_admin')
+        expect(subject).to contain_file('/var/local/ssh/invalid_normal_admin')
           .with_ensure('directory')
           .with_mode('0700')
           .with_owner('invalid_normal_admin')
@@ -25,7 +25,7 @@ describe 'nebula::profile::root_ssh_private_keys' do
       end
 
       it do
-        is_expected.to contain_file('/var/local/ssh/invalid_normal_admin/id_ecdsa')
+        expect(subject).to contain_file('/var/local/ssh/invalid_normal_admin/id_ecdsa')
           .with_mode('0600')
           .with_owner('invalid_normal_admin')
           .with_source('puppet:///root-ssh-private-keys/invalid_normal_admin/id_ecdsa')
@@ -33,7 +33,7 @@ describe 'nebula::profile::root_ssh_private_keys' do
       end
 
       it do
-        is_expected.to contain_file('/var/local/ssh/invalid_normal_admin/id_ecdsa.pub')
+        expect(subject).to contain_file('/var/local/ssh/invalid_normal_admin/id_ecdsa.pub')
           .with_mode('0644')
           .with_owner('invalid_normal_admin')
           .with_source('puppet:///root-ssh-private-keys/invalid_normal_admin/id_ecdsa.pub')
@@ -41,7 +41,7 @@ describe 'nebula::profile::root_ssh_private_keys' do
       end
 
       it do
-        is_expected.to contain_file('/var/local/ssh/invalid_special_admin')
+        expect(subject).to contain_file('/var/local/ssh/invalid_special_admin')
           .with_ensure('directory')
           .with_mode('0700')
           .with_owner('invalid_special_admin')
@@ -49,7 +49,7 @@ describe 'nebula::profile::root_ssh_private_keys' do
       end
 
       it do
-        is_expected.to contain_file('/var/local/ssh/invalid_special_admin/id_ecdsa')
+        expect(subject).to contain_file('/var/local/ssh/invalid_special_admin/id_ecdsa')
           .with_mode('0600')
           .with_owner('invalid_special_admin')
           .with_source('puppet:///root-ssh-private-keys/invalid_special_admin/id_ecdsa')
@@ -57,7 +57,7 @@ describe 'nebula::profile::root_ssh_private_keys' do
       end
 
       it do
-        is_expected.to contain_file('/var/local/ssh/invalid_special_admin/id_ecdsa.pub')
+        expect(subject).to contain_file('/var/local/ssh/invalid_special_admin/id_ecdsa.pub')
           .with_mode('0644')
           .with_owner('invalid_special_admin')
           .with_source('puppet:///root-ssh-private-keys/invalid_special_admin/id_ecdsa.pub')

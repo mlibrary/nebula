@@ -19,7 +19,7 @@ describe 'nebula::profile::kubernetes::kubeadm' do
         it { is_expected.to contain_package('kubeadm').that_requires('Apt::Source[kubernetes]') }
 
         it do
-          is_expected.to contain_apt__pin('kubeadm').with(
+          expect(subject).to contain_apt__pin('kubeadm').with(
             packages: ['kubeadm'],
             version: '1.14.2-1.1',
             priority: 999,
@@ -34,13 +34,13 @@ describe 'nebula::profile::kubernetes::kubeadm' do
         it { is_expected.to contain_apt__pin('kubeadm').with_version('1.11.9-1.2') }
 
         it do
-          is_expected.to contain_file('/etc/sysctl.d/kubernetes_cluster.conf')
+          expect(subject).to contain_file('/etc/sysctl.d/kubernetes_cluster.conf')
             .with_content(%r{^fs\.inotify\.max_user_instances *= *8192$})
             .that_notifies('Service[procps]')
         end
 
         it do
-          is_expected.to contain_file('/etc/sysctl.d/kubernetes_cluster.conf')
+          expect(subject).to contain_file('/etc/sysctl.d/kubernetes_cluster.conf')
             .with_content(%r{^fs\.inotify\.max_user_watches *= *524288$})
             .that_notifies('Service[procps]')
         end

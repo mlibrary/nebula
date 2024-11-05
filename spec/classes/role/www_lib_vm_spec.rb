@@ -28,24 +28,24 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it { is_expected.to contain_apache__vhost('000-default-ssl').with(ssl: true, ssl_cert: '/etc/ssl/certs/www.lib.umich.edu.crt') }
 
       it 'configures shibboleth' do
-        is_expected.to contain_class('nebula::profile::shibboleth')
+        expect(subject).to contain_class('nebula::profile::shibboleth')
           .with(startup_timeout: 900)
           .with(watchdog_minutes: '*/30')
       end
 
       it do
-        is_expected.to contain_file('/etc/apache2/mods-available/shib2.conf')
+        expect(subject).to contain_file('/etc/apache2/mods-available/shib2.conf')
           .with_content(%r{SetHandler shib-handler})
       end
 
       it do
-        is_expected.to contain_file('/etc/apache2/mods-enabled/shib2.conf')
+        expect(subject).to contain_file('/etc/apache2/mods-enabled/shib2.conf')
           .with_ensure('link')
           .with_target('/etc/apache2/mods-available/shib2.conf')
       end
 
       it do
-        is_expected.to contain_apache__vhost('www.lib-ssl')
+        expect(subject).to contain_apache__vhost('www.lib-ssl')
           .with(servername: 'www.lib.umich.edu',
                 port: 443,
                 ssl: true,
@@ -63,25 +63,25 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_concat_fragment('www.lib-ssl-ssl')
+        expect(subject).to contain_concat_fragment('www.lib-ssl-ssl')
           .with_content(%r{^\s*SSLCertificateFile\s*"/etc/ssl/certs/www.lib.umich.edu.crt"$})
       end
 
       it do
-        is_expected.to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
+        expect(subject).to contain_concat_file('/usr/local/lib/cgi-bin/monitor/monitor_config.yaml')
       end
 
       # from hiera
       it { is_expected.to contain_host('mysql-web').with_ip('10.0.0.123') }
 
       it do
-        is_expected.to contain_apache__vhost('000-default-ssl')
+        expect(subject).to contain_apache__vhost('000-default-ssl')
           .with_aliases([{ 'scriptalias' => '/monitor',
                            'path' => '/usr/local/lib/cgi-bin/monitor' }])
       end
 
       it do
-        is_expected.to contain_apache__vhost('datamart-https')
+        expect(subject).to contain_apache__vhost('datamart-https')
           .with_servername('datamart.lib.umich.edu')
           .with_error_log_file('datamart.lib/error.log')
       end
@@ -92,19 +92,19 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('mediaindustriesjournal.org-redirect-http')
+        expect(subject).to contain_apache__vhost('mediaindustriesjournal.org-redirect-http')
           .with_redirect_dest('http://www.mediaindustriesjournal.org/')
           .with_serveraliases([])
       end
 
       it do
-        is_expected.to contain_apache__vhost('michiganelt.org-redirect-https')
+        expect(subject).to contain_apache__vhost('michiganelt.org-redirect-https')
           .with_redirect_dest('https://www.press.umich.edu/elt')
           .with_serveraliases(['www.michiganelt.org'])
       end
 
       it do
-        is_expected.to contain_apache__vhost('lib.umich.edu-redirect-https')
+        expect(subject).to contain_apache__vhost('lib.umich.edu-redirect-https')
           .with_redirect_dest('https://www.lib.umich.edu/')
           .with_serveraliases(%w[lib
                                  library.umich.edu
@@ -112,7 +112,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('theater-historiography.org-redirect-https')
+        expect(subject).to contain_apache__vhost('theater-historiography.org-redirect-https')
           .with_ssl_cert('/etc/ssl/certs/theater-historiography.org.crt')
           .with_redirect_dest('https://www.theater-historiography.org/')
           .with_serveraliases(%w[www.theater-historiography.com
@@ -124,36 +124,36 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('deepblue-https')
+        expect(subject).to contain_apache__vhost('deepblue-https')
           .with_ssl_cert('/etc/ssl/certs/deepblue.lib.umich.edu.crt')
           .with_servername('deepblue.lib.umich.edu')
           .with_ssl_proxyengine(true)
       end
 
       it do
-        is_expected.to contain_apache__vhost('openmich-https')
+        expect(subject).to contain_apache__vhost('openmich-https')
           .with_ssl_cert('/etc/ssl/certs/open.umich.edu.crt')
           .with_servername('open.umich.edu')
       end
 
       it do
-        is_expected.to contain_apache__vhost('apps.staff.lib http redirect')
+        expect(subject).to contain_apache__vhost('apps.staff.lib http redirect')
           .with_servername('apps.staff.lib.umich.edu')
       end
 
       it do
-        is_expected.to contain_apache__vhost('apps.staff.lib ssl')
+        expect(subject).to contain_apache__vhost('apps.staff.lib ssl')
           .with_servername('apps.staff.lib.umich.edu')
           .with_ssl_cert('/etc/ssl/certs/apps.staff.lib.umich.edu.crt')
       end
 
       it do
-        is_expected.to contain_apache__vhost('www.publishing-http')
+        expect(subject).to contain_apache__vhost('www.publishing-http')
       end
 
       it do
         # SSL offloading
-        is_expected.to contain_apache__vhost('www.publishing-https')
+        expect(subject).to contain_apache__vhost('www.publishing-https')
           .with_servername('https://www.publishing.umich.edu')
           .with_ssl(false)
           .with_port(443)
@@ -161,7 +161,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
 
       it do
         # Name-based multi-site Wordpress
-        is_expected.to contain_apache__vhost('publishing-partners-http')
+        expect(subject).to contain_apache__vhost('publishing-partners-http')
           .with_servername('blog.press.umich.edu')
           .with_serveraliases([
                                 'www.theater-historiography.org',
@@ -173,7 +173,7 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it do
         # SSL offloading
         # Name-based multi-site Wordpress
-        is_expected.to contain_apache__vhost('publishing-partners-https')
+        expect(subject).to contain_apache__vhost('publishing-partners-https')
           .with_servername('https://blog.press.umich.edu')
           .with_ssl(false)
           .with_port(443)
@@ -185,19 +185,19 @@ describe 'nebula::role::webhost::www_lib_vm' do
       end
 
       it do
-        is_expected.to contain_apache__vhost('press-http')
+        expect(subject).to contain_apache__vhost('press-http')
           .with_servername('www.press.umich.edu')
       end
 
       it do
-        is_expected.to contain_apache__vhost('press-https')
+        expect(subject).to contain_apache__vhost('press-https')
           .with_servername('www.press.umich.edu')
           .with_ssl_cert('/etc/ssl/certs/www.press.umich.edu.crt')
           .with_setenv(['HTTPS on', 'PERL_USE_UNSAFE_INC 1'])
       end
 
       it do
-        is_expected.to contain_apache__vhost('apps.lib-https')
+        expect(subject).to contain_apache__vhost('apps.lib-https')
           .with(servername: 'apps.lib.umich.edu',
                 port: 443,
                 ssl: true,
@@ -210,12 +210,12 @@ describe 'nebula::role::webhost::www_lib_vm' do
       it { is_expected.to contain_file('sqlnet.ora') }
 
       it 'adds custom params to file authz_umichlib.conf' do
-        is_expected.to contain_file('authz_umichlib.conf')
+        expect(subject).to contain_file('authz_umichlib.conf')
           .with_content(%r{DBDParams\s*user=somebody})
       end
 
       it 'adds custom params to file tnsnames.ora' do
-        is_expected.to contain_file('tnsnames.ora')
+        expect(subject).to contain_file('tnsnames.ora')
           .with_content(%r{^ORCL.MYSERVER1_ALIAS1\s+=})
           .with_content(%r{^ORCL.MYSERVER1_ALIAS2\s+=})
           .with_content(%r{^ORCL.MYSERVER2_ALIAS1\s+=})

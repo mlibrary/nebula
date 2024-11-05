@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'nebula::profile::hathitrust::solr6' do
@@ -18,11 +19,13 @@ describe 'nebula::profile::hathitrust::solr6' do
       it { is_expected.to contain_file('/etc/systemd/system/solr.service').with_content(%r{SOLR_INCLUDE=/s0lr/h0me/solr.in.sh}) }
       it { is_expected.to contain_file('/s0lr/h0me/log4j.properties').with_content(%r{solr.log=/s0lr/h0me/logs}) }
       it { is_expected.to contain_file('/s0lr/h0me/solr.xml') }
-      it { is_expected.to contain_file('/s0lr/h0me/solr.in.sh')
-        .with_content(/SOLR_PORT=2525/)
-        .with_content(/-Dsolr.lock.type=single/)
-        .with_content(%r|SOLR_HOME="/s0lr/h0me"|)
-        .with_content(%r|SOLR_JAVA_HOME="/usr/lib/jvm/temurin-8-jre-amd64"|)
+
+      it {
+        expect(subject).to contain_file('/s0lr/h0me/solr.in.sh')
+          .with_content(%r{SOLR_PORT=2525})
+          .with_content(%r{-Dsolr.lock.type=single})
+          .with_content(%r{SOLR_HOME="/s0lr/h0me"})
+          .with_content(%r{SOLR_JAVA_HOME="/usr/lib/jvm/temurin-8-jre-amd64"})
       }
 
       # firewall

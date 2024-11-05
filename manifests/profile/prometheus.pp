@@ -98,9 +98,9 @@ class nebula::profile::prometheus (
     require => File['/etc/prometheus'],
   }
 
-  concat_fragment { "prometheus ipmi scrape config first line":
-    target  => "/etc/prometheus/ipmi.yml",
-    order   => "01",
+  concat_fragment { 'prometheus ipmi scrape config first line':
+    target  => '/etc/prometheus/ipmi.yml',
+    order   => '01',
     content => "scrape_configs:\n"
   }
 
@@ -159,20 +159,20 @@ class nebula::profile::prometheus (
       server_tokens        => 'off',
     }
     nginx::resource::server { 'https-forwarder':
-      server_name          => [$::fqdn],
-      listen_options       => "proxy_protocol default_server",
-      listen_port          => 443,
-      proxy                => "http://localhost:9090",
-      ssl                  => true,
-      ssl_cert             => "/etc/prometheus/tls/client.crt",
-      ssl_key              => "/etc/prometheus/tls/client.key",
-      server_cfg_append    => {
+      server_name       => [$::fqdn],
+      listen_options    => 'proxy_protocol default_server',
+      listen_port       => 443,
+      proxy             => 'http://localhost:9090',
+      ssl               => true,
+      ssl_cert          => '/etc/prometheus/tls/client.crt',
+      ssl_key           => '/etc/prometheus/tls/client.key',
+      server_cfg_append => {
         'ssl_client_certificate' => '/etc/prometheus/tls/ca.crt',
         'ssl_verify_client'      => 'on',
         'ssl_verify_depth'       => 1,
       },
     }
-    firewall { "200 HTTPS: Client Cert":
+    firewall { '200 HTTPS: Client Cert':
       proto  => 'tcp',
       dport  => [443],
       state  => 'NEW',
@@ -233,13 +233,13 @@ class nebula::profile::prometheus (
       ;
 
       "010 prometheus public node exporter ${::hostname} ${address}":
-        tag    => "${::datacenter}_prometheus_public_node_exporter",
-        dport  => 9100,
+        tag   => "${::datacenter}_prometheus_public_node_exporter",
+        dport => 9100,
       ;
 
       "010 prometheus public ipmi exporter ${::hostname} ${address}":
-        tag    => "${::datacenter}_prometheus_public_ipmi_exporter",
-        dport  => 9290,
+        tag   => "${::datacenter}_prometheus_public_ipmi_exporter",
+        dport => 9290,
       ;
     }
   }
@@ -254,13 +254,13 @@ class nebula::profile::prometheus (
       ;
 
       "010 prometheus private node exporter ${::hostname} ${address}":
-        tag    => "${::datacenter}_prometheus_private_node_exporter",
-        dport  => 9100,
+        tag   => "${::datacenter}_prometheus_private_node_exporter",
+        dport => 9100,
       ;
 
       "010 prometheus private ipmi exporter ${::hostname} ${address}":
-        tag    => "${::datacenter}_prometheus_private_ipmi_exporter",
-        dport  => 9290,
+        tag   => "${::datacenter}_prometheus_private_ipmi_exporter",
+        dport => 9290,
       ;
     }
   }

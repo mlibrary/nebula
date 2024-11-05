@@ -13,7 +13,7 @@ describe 'nebula::profile::networking::firewall' do
       let(:hiera_config) { 'spec/fixtures/hiera/firewall_config.yaml' }
 
       it do
-        is_expected.to contain_firewall('001 accept related established rules').with(
+        expect(subject).to contain_firewall('001 accept related established rules').with(
           proto: 'all',
           state: %w[RELATED ESTABLISHED],
           action: 'accept',
@@ -21,7 +21,7 @@ describe 'nebula::profile::networking::firewall' do
       end
 
       it do
-        is_expected.to contain_firewall('001 accept related established rules (v6)').with(
+        expect(subject).to contain_firewall('001 accept related established rules (v6)').with(
           proto: 'all',
           state: %w[RELATED ESTABLISHED],
           action: 'accept',
@@ -30,7 +30,7 @@ describe 'nebula::profile::networking::firewall' do
       end
 
       it do
-        is_expected.to contain_firewall('001 accept all to lo interface').with(
+        expect(subject).to contain_firewall('001 accept all to lo interface').with(
           proto: 'all',
           iniface: 'lo',
           action: 'accept',
@@ -38,7 +38,7 @@ describe 'nebula::profile::networking::firewall' do
       end
 
       it do
-        is_expected.to contain_firewall('001 accept all to lo interface (v6)').with(
+        expect(subject).to contain_firewall('001 accept all to lo interface (v6)').with(
           proto: 'all',
           iniface: 'lo',
           action: 'accept',
@@ -48,7 +48,7 @@ describe 'nebula::profile::networking::firewall' do
 
       it do
         # from hiera
-        is_expected.to contain_firewall('200 HTTP: custom rule').with(
+        expect(subject).to contain_firewall('200 HTTP: custom rule').with(
           proto: 'tcp',
           dport: %w[8081 8082],
           source: '10.2.3.4',
@@ -58,7 +58,7 @@ describe 'nebula::profile::networking::firewall' do
       end
 
       it do
-        is_expected.to contain_firewall('200 NTP: custom rule').with(
+        expect(subject).to contain_firewall('200 NTP: custom rule').with(
           proto: 'udp',
           dport: 123,
           source: '10.4.5.6',
@@ -68,7 +68,7 @@ describe 'nebula::profile::networking::firewall' do
       end
 
       it do
-        is_expected.to contain_firewall('900 port forwarding: an advanced rule').with(
+        expect(subject).to contain_firewall('900 port forwarding: an advanced rule').with(
           table: 'nat',
           proto: 'tcp',
           dport: '4657',
@@ -76,21 +76,21 @@ describe 'nebula::profile::networking::firewall' do
           chain: 'PREROUTING',
           toports: '1234',
         )
-        is_expected.not_to contain_firewall('900 port forwarding: an advanced rule').with(
+        expect(subject).not_to contain_firewall('900 port forwarding: an advanced rule').with(
           action: 'accept',
           state: 'NEW',
         )
       end
 
       it do
-        is_expected.to contain_firewall('999 drop all').with(
+        expect(subject).to contain_firewall('999 drop all').with(
           proto: 'all',
           action: 'drop',
         )
       end
 
       it do
-        is_expected.to contain_firewall('999 drop all (v6)').with(
+        expect(subject).to contain_firewall('999 drop all (v6)').with(
           proto: 'all',
           action: 'drop',
           provider: 'ip6tables',
@@ -111,13 +111,13 @@ describe 'nebula::profile::networking::firewall' do
 
         %w[INPUT OUTPUT FORWARD].each do |chain|
           it do
-            is_expected.to contain_firewallchain("#{chain}:filter:IPv4")
+            expect(subject).to contain_firewallchain("#{chain}:filter:IPv4")
               .with_ensure('present')
               .with_purge(true)
           end
 
           it do
-            is_expected.to contain_firewallchain("#{chain}:filter:IPv6")
+            expect(subject).to contain_firewallchain("#{chain}:filter:IPv6")
               .with_ensure('present')
               .with_purge(true)
           end

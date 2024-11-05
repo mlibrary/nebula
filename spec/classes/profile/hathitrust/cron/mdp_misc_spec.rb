@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # Copyright (c) 2019 The Regents of the University of Michigan.
@@ -19,7 +18,7 @@ describe 'nebula::profile::hathitrust::cron::mdp_misc' do
         end
 
         it do
-          is_expected.to contain_cron('manage mbook sessions')
+          expect(subject).to contain_cron('manage mbook sessions')
             .with(command: %r{/htapps/babel/mdp-misc/scripts/managembookssessions\.pl.*mail.*nobody@default\.invalid},
 
                   user: 'libadm',
@@ -46,7 +45,7 @@ describe 'nebula::profile::hathitrust::cron::mdp_misc' do
         end
 
         it do
-          is_expected.to contain_cron('manage mbook sessions')
+          expect(subject).to contain_cron('manage mbook sessions')
             .with(command: %r{.*/homewhere/scripts/managembookssessions\.pl.*mail.*somebody@default\.invalid},
                   user: 'cronuser',
                   environment: [

@@ -11,36 +11,37 @@ describe 'nebula::profile::dns::smartconnect' do
       let(:facts) { os_facts }
 
       it do
-        is_expected.to contain_package(
+        expect(subject).to contain_package(
           'nebula::profile::dns::smartconnect::bind9',
         ).with_name('bind9').with_ensure('present')
       end
 
       it do
-        is_expected.to contain_service('bind9').with_ensure('running')
+        expect(subject).to contain_service('bind9').with_ensure('running')
       end
 
       it do
-        is_expected.to contain_class('nebula::resolv_conf').with_nameservers(
+        expect(subject).to contain_class('nebula::resolv_conf').with_nameservers(
           [
             '127.0.0.1',  # localhost
             '5.5.5.5',    # nebula::resolv_conf::nameservers[0]
             '4.4.4.4',    # nebula::resolv_conf::nameservers[1]
           ],
         ).with_searchpath(['searchpath.default.invalid'])
-                                                   .with_require('Service[bind9]')
+                                                               .with_require('Service[bind9]')
       end
 
       it 'removes resolvconf package if present' do
-        is_expected.to contain_package('resolvconf').with_ensure('absent')
+        expect(subject).to contain_package('resolvconf').with_ensure('absent')
       end
+
       it 'contains expected resolv.conf file' do
-        is_expected.to contain_file('/etc/resolv.conf')
-          .with_content(/^#.*puppet/)
-          .with_content(/^search searchpath\.default\.invalid$/)
-          .with_content(/^nameserver 127.0.0.1$/)
-          .with_content(/^nameserver 5.5.5.5$/)
-          .with_content(/^nameserver 4.4.4.4$/)
+        expect(subject).to contain_file('/etc/resolv.conf')
+          .with_content(%r{^#.*puppet})
+          .with_content(%r{^search searchpath\.default\.invalid$})
+          .with_content(%r{^nameserver 127.0.0.1$})
+          .with_content(%r{^nameserver 5.5.5.5$})
+          .with_content(%r{^nameserver 4.4.4.4$})
       end
 
       [
@@ -52,7 +53,7 @@ describe 'nebula::profile::dns::smartconnect' do
       end
 
       it do
-        is_expected.to contain_file('/etc/bind/named.conf').with_content(
+        expect(subject).to contain_file('/etc/bind/named.conf').with_content(
           %r{/etc/bind/named.conf.options},
         ).with_content(
           %r{/etc/bind/named.conf.local},
@@ -70,7 +71,7 @@ describe 'nebula::profile::dns::smartconnect' do
       end
 
       it do
-        is_expected.to contain_file('/etc/bind/named.conf.options').with_content(
+        expect(subject).to contain_file('/etc/bind/named.conf.options').with_content(
           %r{^\s*5\.5\.5\.5; 4\.4\.4\.4;$},
         )
       end
@@ -79,7 +80,7 @@ describe 'nebula::profile::dns::smartconnect' do
         let(:params) { { other_ns_ips: ['3.3.3.3', '2.2.2.2', '1.1.1.1'] } }
 
         it do
-          is_expected.to contain_class('nebula::resolv_conf').with_nameservers(
+          expect(subject).to contain_class('nebula::resolv_conf').with_nameservers(
             [
               '127.0.0.1',
               '3.3.3.3',
@@ -90,7 +91,7 @@ describe 'nebula::profile::dns::smartconnect' do
         end
 
         it do
-          is_expected.to contain_file('/etc/bind/named.conf.options').with_content(
+          expect(subject).to contain_file('/etc/bind/named.conf.options').with_content(
             %r{^\s*3\.3\.3\.3; 2\.2\.2\.2; 1\.1\.1\.1;$},
           )
         end

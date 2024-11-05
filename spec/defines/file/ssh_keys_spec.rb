@@ -17,7 +17,7 @@ describe 'nebula::file::ssh_keys' do
 
       context 'when called /opt/keys' do
         it do
-          is_expected.to contain_file('/opt/keys')
+          expect(subject).to contain_file('/opt/keys')
             .without_content(%r{^[^#]})
         end
 
@@ -35,8 +35,8 @@ describe 'nebula::file::ssh_keys' do
           {
             keys: [
               {
-                type:    'ssh-rsa',
-                data:    'AAAAAAAAAAAA',
+                type: 'ssh-rsa',
+                data: 'AAAAAAAAAAAA',
                 comment: 'name',
               },
             ],
@@ -44,7 +44,7 @@ describe 'nebula::file::ssh_keys' do
         end
 
         it do
-          is_expected.to contain_file('/opt/keys')
+          expect(subject).to contain_file('/opt/keys')
             .with_content(%r{^ssh-rsa AAAAAAAAAAAA name$})
         end
       end
@@ -64,7 +64,7 @@ describe 'nebula::file::ssh_keys' do
         end
 
         it do
-          is_expected.to contain_file('/opt/keys')
+          expect(subject).to contain_file('/opt/keys')
             .with_content(%r{^command="/usr/bin/whatever" ssh-rsa AAAAAAAAAAAA name$})
         end
       end
@@ -74,14 +74,14 @@ describe 'nebula::file::ssh_keys' do
         let(:params) { { secret: true } }
 
         it do
-          is_expected.to contain_file('/etc/secret').with(
+          expect(subject).to contain_file('/etc/secret').with(
             ensure: 'directory',
-            mode:   '0700',
+            mode: '0700',
           )
         end
 
         it do
-          is_expected.to contain_file('/etc/secret/keys')
+          expect(subject).to contain_file('/etc/secret/keys')
             .that_requires('File[/etc/secret]')
         end
       end

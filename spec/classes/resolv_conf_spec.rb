@@ -10,51 +10,50 @@ describe 'nebula::resolv_conf' do
       it { is_expected.to compile }
 
       it 'removes resolvconf package if present' do
-        is_expected.to contain_package('resolvconf').with_ensure('absent')
+        expect(subject).to contain_package('resolvconf').with_ensure('absent')
       end
 
       it 'contains expected resolv.conf file' do
-        is_expected.to contain_file('/etc/resolv.conf')
+        expect(subject).to contain_file('/etc/resolv.conf')
           .with_owner('root')
           .with_group('root')
           .with_mode('0644')
-          .with_content(/^#.*puppet/)
-          .with_content(/^search searchpath\.default\.invalid$/)
-          .with_content(/^nameserver 5.5.5.5\nnameserver 4.4.4.4$/)
+          .with_content(%r{^#.*puppet})
+          .with_content(%r{^search searchpath\.default\.invalid$})
+          .with_content(%r{^nameserver 5.5.5.5\nnameserver 4.4.4.4$})
       end
 
-      context 'different nameservers' do
+      context 'with different nameservers' do
         let(:params) { { nameservers: ['3.3.3.3', '2.2.2.2', '1.1.1.1'] } }
 
         it do
-          is_expected.to contain_file('/etc/resolv.conf')
-            .with_content(/^#.*puppet/)
-            .with_content(/^search searchpath\.default\.invalid$/)
-            .with_content(/^nameserver 3.3.3.3\nnameserver 2.2.2.2\nnameserver 1.1.1.1$/)
+          expect(subject).to contain_file('/etc/resolv.conf')
+            .with_content(%r{^#.*puppet})
+            .with_content(%r{^search searchpath\.default\.invalid$})
+            .with_content(%r{^nameserver 3.3.3.3\nnameserver 2.2.2.2\nnameserver 1.1.1.1$})
         end
       end
 
-      context 'searchpath set to []' do
+      context 'with searchpath set to []' do
         let(:params) { { searchpath: [] } }
 
         it do
-          is_expected.to contain_file('/etc/resolv.conf')
-            .with_content(/^#.*puppet/)
-            .without_content(/^search/)
-            .with_content(/^nameserver 5.5.5.5\nnameserver 4.4.4.4$/)
+          expect(subject).to contain_file('/etc/resolv.conf')
+            .with_content(%r{^#.*puppet})
+            .without_content(%r{^search})
+            .with_content(%r{^nameserver 5.5.5.5\nnameserver 4.4.4.4$})
         end
       end
 
-      context 'custom file mode' do
+      context 'with custom file mode' do
         let(:params) { { mode: '0664' } }
 
         it do
-          is_expected.to contain_file('/etc/resolv.conf')
-            .with_content(/^#.*puppet/)
+          expect(subject).to contain_file('/etc/resolv.conf')
+            .with_content(%r{^#.*puppet})
             .with_mode('0664')
         end
       end
-
     end
   end
 end

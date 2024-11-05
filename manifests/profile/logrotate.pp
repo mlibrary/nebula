@@ -19,8 +19,8 @@ class nebula::profile::logrotate {
       create_group => 'utmp',
       rotate       => 4,
       ;
-# Override the logrotate module definition for 
-# wtmp and btmp to apply our preferred 4 x weekly schedule 
+# Override the logrotate module definition for
+# wtmp and btmp to apply our preferred 4 x weekly schedule
     'wtmp':
       path        => '/var/log/wtmp',
       create_mode => '0664',

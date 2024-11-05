@@ -18,7 +18,7 @@ describe 'nebula::exposed_port' do
         it { is_expected.to compile }
 
         it do
-          is_expected.to contain_firewall('100 SSH: Developers').with(
+          expect(subject).to contain_firewall('100 SSH: Developers').with(
             proto: 'tcp',
             dport: 22,
             source: '10.0.0.0/16',
@@ -43,14 +43,14 @@ describe 'nebula::exposed_port' do
         it { is_expected.to compile }
 
         it do
-          is_expected.to contain_firewall('200 HTTP: VPN users').with(
+          expect(subject).to contain_firewall('200 HTTP: VPN users').with(
             dport: 80,
             source: '10.10.10.0/24',
           )
         end
 
         it do
-          is_expected.to contain_firewall('200 HTTP: On-site users')
+          expect(subject).to contain_firewall('200 HTTP: On-site users')
             .with_source('10.10.11.0/24')
         end
       end
@@ -92,7 +92,7 @@ describe 'nebula::exposed_port' do
           end
 
           it do
-            is_expected.to contain_firewall('400 Who knows: Developers')
+            expect(subject).to contain_firewall('400 Who knows: Developers')
               .with_dport('30000-32967')
           end
         end
@@ -103,7 +103,7 @@ describe 'nebula::exposed_port' do
           end
 
           it do
-            is_expected.to contain_firewall('400 Who knows: Developers')
+            expect(subject).to contain_firewall('400 Who knows: Developers')
               .with_dport([80, 443])
           end
         end
