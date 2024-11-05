@@ -30,7 +30,7 @@ class nebula::profile::prometheus::exporter::mysql ()
     content => template('nebula/profile/prometheus/exporter/mysql/target.yaml.erb')
   }
 
-  Firewall <<| tag == "${::datacenter}_prometheus_mysql_exporter" |>>
+  Firewall <<| tag == "firewall6-${::datacenter}_prometheus_mysql_exporter" |>>
 
   $role = lookup_role()
 

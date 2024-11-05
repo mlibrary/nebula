@@ -313,5 +313,5 @@ class nebula::profile::prometheus (
     action => 'accept',
   }
 
-  Firewall <<| tag == "${::datacenter}_pushgateway_node" |>>
+  Firewall <<| tag == "firewall6-${::datacenter}_pushgateway_node" |>>
 }

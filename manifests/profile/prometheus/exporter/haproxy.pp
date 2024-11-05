@@ -32,6 +32,6 @@ class nebula::profile::prometheus::exporter::haproxy (
     content => template('nebula/profile/prometheus/exporter/haproxy/target.yaml.erb')
   }
 
-  Firewall <<| tag == "${::datacenter}_prometheus_haproxy_exporter" |>>
+  Firewall <<| tag == "firewall6-${::datacenter}_prometheus_haproxy_exporter" |>>
 
 }
