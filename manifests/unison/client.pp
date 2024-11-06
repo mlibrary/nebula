@@ -42,13 +42,4 @@ define nebula::unison::client (
     jump   => 'accept',
     tag    =>  "unison-client-${title}"
   }
-
-  @@firewall { "200 Unison firewall6: ${title} ${::hostname}":
-    proto  => 'tcp',
-    dport  => [$port],
-    source => $::ipaddress,
-    state  => 'NEW',
-    action => 'accept',
-    tag    =>  "firewall6-unison-client-${title}"
-  }
 }
