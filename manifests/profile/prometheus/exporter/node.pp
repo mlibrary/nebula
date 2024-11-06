@@ -155,7 +155,7 @@ class nebula::profile::prometheus::exporter::node (
       dport  => 9091,
       source => $address,
       state  => 'NEW',
-      action => 'accept',
+      jump   => 'accept',
     }
 
     @@firewall { "300 pushgateway firewall6 ${::hostname} ${address}":

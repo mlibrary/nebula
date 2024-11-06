@@ -135,8 +135,8 @@ class nebula::profile::haproxy(
     dport  => [80, 443],
     source => $::ipaddress,
     state  => 'NEW',
-    action => 'accept',
-    tag    => 'haproxy'
+    jump   => 'accept',
+    tag    => "${::datacenter}_haproxy"
   }
 
   @@firewall { "200 HTTP firewall6: HAProxy ${::hostname}":

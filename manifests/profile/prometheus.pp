@@ -231,7 +231,7 @@ class nebula::profile::prometheus (
         proto  => 'tcp',
         source => $address,
         state  => 'NEW',
-        action => 'accept',
+        jump   => 'accept',
       ;
 
       "010 prometheus public node exporter ${::hostname} ${address}":
@@ -247,11 +247,13 @@ class nebula::profile::prometheus (
       "010 prometheus public node exporter firewall6 ${::hostname} ${address}":
         tag    => "firewall6-${::datacenter}_prometheus_public_node_exporter",
         dport  => 9100,
+        action => 'accept',
       ;
 
       "010 prometheus public ipmi exporter firewall6 ${::hostname} ${address}":
         tag    => "firewall6-${::datacenter}_prometheus_public_ipmi_exporter",
         dport  => 9290,
+        action => 'accept',
       ;
     }
   }
@@ -262,7 +264,7 @@ class nebula::profile::prometheus (
         proto  => 'tcp',
         source => $address,
         state  => 'NEW',
-        action => 'accept',
+        jump   => 'accept',
       ;
 
       "010 prometheus private node exporter ${::hostname} ${address}":
@@ -302,7 +304,7 @@ class nebula::profile::prometheus (
     dport  => 9101,
     source => $::ipaddress,
     state  => 'NEW',
-    action => 'accept',
+    jump   => 'accept',
   }
 
   @@firewall { "010 prometheus firewall6 haproxy exporter ${::hostname}":
@@ -320,7 +322,7 @@ class nebula::profile::prometheus (
     dport  => 9104,
     source => $::ipaddress,
     state  => 'NEW',
-    action => 'accept',
+    jump   => 'accept',
   }
 
   @@firewall { "010 prometheus firewall6 mysql exporter ${::hostname}":
