@@ -17,7 +17,7 @@ describe 'nebula::profile::networking::firewall::private_ssh' do
 
         it { is_expected.to compile }
         it { is_expected.to contain_firewall('100 Private SSH: 10.0.0.0/8').with_state('NEW') }
-        it { is_expected.to contain_firewall('100 Private SSH: 10.0.0.0/8').with_action('accept') }
+        it { is_expected.to contain_firewall('100 Private SSH: 10.0.0.0/8').with_jump('accept') }
         it { is_expected.to contain_firewall('100 Private SSH: 10.0.0.0/8').with_proto('tcp') }
         it { is_expected.to contain_firewall('100 Private SSH: 10.0.0.0/8').with_dport(22) }
         it { is_expected.to contain_firewall('100 Private SSH: 10.0.0.0/8').with_source('10.0.0.0/8') }
