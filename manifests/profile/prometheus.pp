@@ -180,19 +180,6 @@ class nebula::profile::prometheus (
     }
   }
 
-  # Delete this once nothing is importing it. It's only here for the
-  # sake of hosts that aren't in production.
-  # Referenced in branches: fulcrum_demo, tdx_7298538
-  # ** intentionally retains puppetlabs/firewall v6.0.0 semantics **
-  @@firewall { "010 prometheus legacy node exporter ${::hostname}":
-    tag    => "${::datacenter}_prometheus_node_exporter",
-    proto  => 'tcp',
-    dport  => 9100,
-    source => $::ipaddress,
-    state  => 'NEW',
-    jump   => 'accept',
-  }
-
   case $facts["mlibrary_ip_addresses"] {
     Hash[String, Array[String]]: {
       $all_public_addresses = $facts["mlibrary_ip_addresses"]["public"]

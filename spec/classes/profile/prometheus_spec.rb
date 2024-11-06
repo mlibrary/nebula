@@ -193,14 +193,8 @@ describe 'nebula::profile::prometheus' do
         end
       end
 
-      it 'exports a firewall so that nodes can open 9100' do
-        expect(exported_resources).to contain_firewall("010 prometheus legacy node exporter #{facts[:hostname]}")
-          .with_tag('mydatacenter_prometheus_node_exporter')
-          .with_proto('tcp')
-          .with_dport(9100)
-          .with_source(facts[:ipaddress])
-          .with_state('NEW')
-          .with_action('accept')
+      it 'does not export legacy port 9100 firewall resource' do
+        expect(exported_resources).not_to contain_firewall("010 prometheus legacy node exporter #{facts[:hostname]}")
       end
 
       context 'with no mlibrary_ip_addresses fact' do
