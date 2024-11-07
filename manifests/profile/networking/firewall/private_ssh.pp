@@ -9,7 +9,7 @@ class nebula::profile::networking::firewall::private_ssh (
   $cidrs.each |$cidr| {
     firewall { "100 Private SSH: ${cidr}":
       state  => 'NEW',
-      action => 'accept',
+      jump   => 'accept',
       dport  => $port,
       source => $cidr,
       proto  => 'tcp'
