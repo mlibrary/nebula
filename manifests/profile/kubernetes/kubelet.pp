@@ -82,7 +82,7 @@ class nebula::profile::kubernetes::kubelet (
     ;
 
     '200 Cluster NodePorts':
-      dport => '30000-32767',
+      dport => '30000:32767',
     ;
 
     '200 Cluster Prometheus':

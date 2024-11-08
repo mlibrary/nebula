@@ -113,7 +113,7 @@ class nebula::profile::networking::firewall (
     firewallchain {
       default:
         ensure => 'present',
-        purge  => true,
+        purge  => $internal_routing != 'kubernetes_calico',
         policy => 'accept',
       ;
 

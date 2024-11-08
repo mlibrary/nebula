@@ -113,13 +113,13 @@ describe 'nebula::profile::networking::firewall' do
           it do
             expect(subject).to contain_firewallchain("#{chain}:filter:IPv4")
               .with_ensure('present')
-              .with_purge(true)
+              .with_purge(false)
           end
 
           it do
             expect(subject).to contain_firewallchain("#{chain}:filter:IPv6")
               .with_ensure('present')
-              .with_purge(true)
+              .with_purge(false)
           end
         end
       end
