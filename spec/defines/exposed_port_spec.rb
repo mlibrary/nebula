@@ -86,14 +86,14 @@ describe 'nebula::exposed_port' do
         let(:title) { '400 Who knows' }
         let(:params) { { block: 'developers' } }
 
-        context 'with port "30000-32967"' do
+        context 'with port "30000:32967"' do
           let(:params) do
-            super().merge(port: '30000-32967')
+            super().merge(port: '30000:32967')
           end
 
           it do
             expect(subject).to contain_firewall('400 Who knows: Developers')
-              .with_dport('30000-32967')
+              .with_dport('30000:32967')
           end
         end
 
