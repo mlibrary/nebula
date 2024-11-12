@@ -18,7 +18,7 @@ class nebula::profile::containerd {
     repos        => 'stable',
     key          => {
       name   => 'docker.asc',
-      source => 'https://download.docker.com/linux/debian/gpg',
+      source => 'puppet:///modules/nebula/apt/keyrings/docker.asc',
     },
     include      => {
       src => false,
