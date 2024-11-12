@@ -54,11 +54,6 @@ class nebula::profile::www_lib::vhosts::mgetit (
 
     rewrites                    => [
       {
-        comment      => 'Serve static assets through apache',
-        rewrite_cond => ['/www/mgetit/current/public/$1/index.html -f [OR]', '/www/mgetit/current/public/$1 -f'],
-        rewrite_rule => '^/(.*)$  /www/mgetit/current/public/$1 [L]',
-      },
-      {
         comment      => 'Reverse proxy application to app hostname and port',
         rewrite_rule => '^(/.*)$ http://app-mgetit:30100$1 [P]',
       },
