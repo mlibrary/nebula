@@ -14,7 +14,7 @@ describe 'nebula::profile::solr' do
 
       # Packages
       [
-        'temurin-11-jre',
+        'openjdk-11-jre-headless',
         'solr',
         'lsof',
       ].each do |package|
