@@ -48,7 +48,7 @@ describe 'nebula::profile::networking::firewall::ssh' do
         end
 
         it do
-          expect(subject).to contain_nebula__exposed_port('100 Private SSH').with(
+          expect(subject).to contain_nebula__exposed_port('100 Legacy Private SSH').with(
             port: 22,
             block: 'umich::networks::private_bastion_hosts',
           )
