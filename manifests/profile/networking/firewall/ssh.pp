@@ -13,11 +13,4 @@ class nebula::profile::networking::firewall::ssh {
     port  => 22,
     block => 'umich::networks::all_trusted_machines',
   }
-
-  if ! is_publicly_accessible() {
-    nebula::exposed_port { '100 Legacy Private SSH':
-      port  => 22,
-      block => 'umich::networks::private_bastion_hosts',
-    }
-  }
 }
