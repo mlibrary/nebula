@@ -83,10 +83,6 @@ class nebula::profile::www_lib::vhosts::redirects(
     serveraliases => ['www.datainformationliteracy.org', 'datainformationliteracy.org'],
   }
 
-  nebula::apache::redirect_vhost_http { 'pk.lib.umich.edu':
-    target => 'http://www.lib.umich.edu/pk/'
-  }
-
   nebula::apache::redirect_vhost_http { 'sfx.lib.umich.edu':
     serveraliases => ['sfx.lib'],
     target        => 'http://mgetit.lib.umich.edu/'
