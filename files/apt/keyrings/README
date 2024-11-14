@@ -1,0 +1,5 @@
+key_name        source_url
+adoptium.asc    https://packages.adoptium.net/artifactory/api/gpg/key/public
+docker.asc      https://download.docker.com/linux/debian/gpg
+k8s.io.asc      https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
+puppetlabs.asc  https://apt.puppetlabs.com/pubkey.gpg

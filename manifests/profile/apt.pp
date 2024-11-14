@@ -77,8 +77,8 @@ class nebula::profile::apt (
       location => 'http://apt.puppetlabs.com',
       repos    => $puppet_repo,
       key      => {
-        'name'   => 'puppetlabs.gpg',
-        'source' => 'https://apt.puppetlabs.com/keyring.gpg'
+        'name'   => 'puppetlabs.asc',
+        'source' => 'puppet:///modules/nebula/apt/keyrings/puppetlabs.asc'
       }
     }
 
@@ -129,8 +129,6 @@ class nebula::profile::apt (
       repos    => 'main',
       key      => {
         'name'   => 'adoptium.asc',
-        # Real source. Mirrored in files so we don't touch mtime on every puppet run.
-        # 'source' => 'https://packages.adoptium.net/artifactory/api/gpg/key/public',
         'source' => 'puppet:///modules/nebula/apt/keyrings/adoptium.asc',
       }
     }
