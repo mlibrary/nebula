@@ -41,4 +41,6 @@ class nebula::role::webhost::htvm::test {
     | SUDOERS
   }
 
+  @nebula::taghosts::tag { 'test': }
+
 }

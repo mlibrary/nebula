@@ -17,4 +17,6 @@ class nebula::role::webhost::htvm::prod {
     hostname      => $::hostname,
     ipaddress     => $::ipaddress
   }
+
+  @nebula::taghosts::tag { 'prod': }
 }

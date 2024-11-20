@@ -14,4 +14,6 @@ class nebula::role::vmhost {
   }
 
   include nebula::profile::vmhost::host
+
+  @nebula::taghosts::tag { 'vmhost': }
 }

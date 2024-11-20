@@ -37,4 +37,6 @@ class nebula::role::hathitrust (
   include nebula::profile::elastic::metricbeat
   include nebula::profile::elastic::filebeat::configs::ulib
 
+  @nebula::taghosts::tag { 'ht': }
+
 }

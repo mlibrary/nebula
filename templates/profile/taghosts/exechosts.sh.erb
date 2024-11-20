@@ -1,0 +1,137 @@
+#!/bin/sh
+set -e
+PROG="$0"
+USAGE="[-1fhps] TAGS COMMAND [ARGS...]"
+STRATEGY="parallel"
+STREAM_OUTPUT=false
+ASK_ARE_YOU_SURE=true
+
+errorout() {
+  echo "usage: $PROG $USAGE" >&2
+  [ -n "$1" ] && echo "${PROG}: error: $@" >&2
+  exit 1
+}
+
+printhelp() {
+  cat <<EOF
+usage: $PROG $USAGE
+
+This is a wrapper around \`bolt command run\`. It uses taghosts to build
+a list of targets and runs the given command on those targets.
+
+optional arguments:
+ -1           Run command one server at a time in serial
+ -f           Run command without waiting for confirmation
+ -h           Show this help message and exit
+ -p           Run command on all matching servers in parallel (default)
+ -s           Stream output in real time
+EOF
+}
+
+if [ "$1" = "--help" ]; then
+  printhelp
+  exit 0
+fi
+
+while getopts ':1fhps' opt; do
+  case "$opt" in
+    1)
+      STRATEGY="serial"
+      ;;
+
+    f)
+      ASK_ARE_YOU_SURE=false
+      ;;
+
+    h)
+      printhelp
+      exit 0
+      ;;
+
+    p)
+      STRATEGY="parallel"
+      ;;
+
+    s)
+      STREAM_OUTPUT=true
+      ;;
+
+    ?)
+      errorout "unrecognized argument: \`-$opt'"
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+if [ -n "$1" ]; then
+  TAGS="$1"
+  shift
+fi
+
+main() {
+  validate_arguments "$@"
+  confirm_plan "$@"
+  run_bolt "$@"
+}
+
+validate_arguments() {
+  if [ -z "$TAGS" ]; then
+    errorout "expected tags to pass to taghosts"
+  fi
+
+  if [ -z "$*" ]; then
+    errorout "expected a command"
+  fi
+}
+
+confirm_plan() {
+  if $ASK_ARE_YOU_SURE; then
+    printf 'Selector is: %s\n' "$TAGS"
+    printf 'Hosts are: %s\n' "`/usr/local/bin/taghosts -j ' ' $TAGS`"
+    echo "Command is: $@"
+    echo "Strategy is: $STRATEGY"
+    read -p "Do you want to continue? [Y/n] " CONTINUE
+    if ! echo "$CONTINUE"y | sed -e 's/[^Yy].*$//' | grep -q .; then
+      echo "Abort." >&2
+      exit 1
+    fi
+  fi
+}
+
+run_bolt() {
+  build_bolt_args
+  case "$STRATEGY" in
+    "serial")
+      /usr/local/bin/taghosts -d $TAGS | while read host; do
+        if ! /usr/local/bin/bolt command run $extra_args -t "$host" "$*"; then true; fi
+      done
+      ;;
+
+    "parallel")
+      exec /usr/local/bin/bolt command run $extra_args \
+        -t "`/usr/local/bin/taghosts -b $TAGS`" "$*"
+      ;;
+
+    *)
+      errorout "wtf did you do"
+      ;;
+  esac
+}
+
+build_bolt_args() {
+  if [ -e "inventory.yaml" ]; then
+    if $STREAM_OUTPUT; then
+      extra_args="--stream"
+    else
+      extra_args=""
+    fi
+  else
+    if $STREAM_OUTPUT; then
+      extra_args="-i /opt/bolt/inventory.yaml --stream"
+    else
+      extra_args="-i /opt/bolt/inventory.yaml"
+    fi
+  fi
+}
+
+main "$@"

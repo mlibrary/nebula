@@ -29,6 +29,7 @@ class nebula::profile::apache (
     source => "puppet:///ssl-certs/${chain_crt}"
   }
 
+  @nebula::taghosts::tag { 'apache': }
   class { 'apache':
     default_vhost          => false,
     default_ssl_vhost      => false,
