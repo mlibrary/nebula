@@ -13,6 +13,8 @@ nebula::profile::networking::firewall::http_datacenters::networks:
     datacenter: two
 
 
+nebula::profile::fulcrum::solr::solr_home: "/s0lr/h0me"
+nebula::profile::fulcrum::solr::port: "2525"
 
 
 ### Compatibility data
