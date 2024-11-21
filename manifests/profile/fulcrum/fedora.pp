@@ -12,8 +12,11 @@ class nebula::profile::fulcrum::fedora (
   # used in erb file
   $java_home = "/usr/lib/jvm/temurin-${jdk_version}-jre-amd64"
 
+  nebula::usergroup { 'fulcrum': }
+
   ensure_packages([
     'tomcat9-user',
+    "temurin-${jdk_version}-jre",
   ])
 
   file { '/etc/sudoers.d/fedora':
@@ -24,8 +27,8 @@ class nebula::profile::fulcrum::fedora (
     command => '/usr/bin/tomcat9-instance-create fedora',
     cwd     => '/opt',
     creates => '/opt/fedora',
+    user    => 'fulcrum',
     require => [
-      User['fulcrum'],
       Package['tomcat9-user'],
     ],
   }
@@ -82,6 +85,11 @@ class nebula::profile::fulcrum::fedora (
   file { '/etc/systemd/system/fedora.service':
     content => template('nebula/profile/fulcrum/fedora.service.erb'),
     notify  => Service['fedora'],
+  }
+
+  service { 'mysqld':
+    enable  => true,
+    ensure  => running,
   }
 
   service { 'fedora':
