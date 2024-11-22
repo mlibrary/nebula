@@ -161,4 +161,6 @@ class nebula::profile::haproxy(
     postrotate   => ['/usr/lib/rsyslog/rsyslog-rotate', '/bin/systemctl restart filebeat'],
   }
 
+  @nebula::taghosts::tag { 'haproxy': }
+
 }

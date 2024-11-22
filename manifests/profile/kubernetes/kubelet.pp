@@ -93,4 +93,6 @@ class nebula::profile::kubernetes::kubelet (
       dport => 5473,
     ;
   }
+
+  @nebula::taghosts::tag { 'kube': }
 }

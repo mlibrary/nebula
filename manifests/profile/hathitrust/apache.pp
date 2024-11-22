@@ -44,6 +44,7 @@ class nebula::profile::hathitrust::apache (
     "ip ${network['block']}"
   }.sort
 
+  @nebula::taghosts::tag { 'apache': }
   class { 'apache':
     default_vhost          => false,
     default_ssl_vhost      => false,

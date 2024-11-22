@@ -24,4 +24,6 @@ class nebula::role::minimum (
     include nebula::profile::apt
     include nebula::profile::vim
   }
+
+  include nebula::profile::taghosts::tags
 }

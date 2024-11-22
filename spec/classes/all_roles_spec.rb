@@ -85,7 +85,7 @@ def test_roles(slice_number = 1, slice_count = 1)
           it { is_expected.to contain_class('nebula::role::minimum') }
 
           if role_name.match?(%r{^nebula::role::hathitrust})
-            it { is_expected.to contain_class('nebula::role::hathitrust') }
+            it { is_expected.to contain_nebula__taghosts__tag('ht') }
           end
         end
       end

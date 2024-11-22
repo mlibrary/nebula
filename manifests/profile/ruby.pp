@@ -131,4 +131,6 @@ class nebula::profile::ruby (
     mode    => '0755',
     content => template('nebula/profile/ruby/testruby.sh.erb'),
   }
+
+  @nebula::taghosts::tag { 'ruby': }
 }

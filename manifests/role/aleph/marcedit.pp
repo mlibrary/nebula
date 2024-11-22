@@ -18,4 +18,6 @@ class nebula::role::aleph::marcedit {
 
   include nebula::profile::aleph::perl
   include nebula::profile::ruby
+
+  @nebula::taghosts::tag { 'marcedit': }
 }

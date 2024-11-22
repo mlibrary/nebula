@@ -32,6 +32,7 @@ class nebula::profile::http_fileserver (
     require => ['Package[nfs-common]']
   }
 
+  @nebula::taghosts::tag { 'apache': }
   $letsencrypt_directory = $::letsencrypt_directory[$::fqdn]
   if $letsencrypt_directory {
     class { 'apache':

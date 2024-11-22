@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+set -eo pipefail
+IFS=$'\n\t'
+PROG="$0"
+USAGE1="[-bd] [-j DELIMITER] [TAG1 TAG2...] [-v NOT_TAG1 NOT_TAG2...]"
+USAGE2="[-aAdh] [-j DELIMITER] [-r HOST]"
+ACTIVE_SERVERS="/var/lib/ae/active-servers"
+ALL_TAGS=false
+ALL_HOSTS=false
+INVERT_TAGS=false
+REVERSE=""
+STRIP_KNOWN_DOMAINS=true
+KNOWN_DOMAINS=()
+<% @known_domains.each do |domain| -%>
+KNOWN_DOMAINS=("${KNOWN_DOMAINS[@]}" "<%= domain %>")
+<% end -%>
+
+errorout() {
+  echo "usage: $PROG $USAGE1" >&2
+  echo "  or   $PROG $USAGE2" >&2
+  [ -n "$1" ] && echo "${PROG}: error: $@" >&2
+  exit 1
+}
+
+printhelp() {
+  cat <<EOF
+usage: $PROG $USAGE1
+  or   $PROG $USAGE2
+
+For example,
+
+    taghosts linux macc -v prod apache
+
+will list all linux hosts at the macc that match neither prod nor apache.
+
+optional arguments:
+ -a           Print all tags
+ -A           Print all hosts
+ -b           Format results for bolt targets (same as -dj ",")
+ -d           Leave fully qualified domain names in output
+ -h           Show this help message and exit
+ -j DELIMITER Join results in one line, separated by the given delimiter
+ -r HOST      List all tags for host
+ -v           Invert all tags after -v
+EOF
+}
+
+if [ "$1" = "--help" ]; then
+  printhelp
+  exit 0
+fi
+
+while getopts ':aAbdhj:r:v' opt; do
+  case "$opt" in
+    a)
+      ALL_TAGS=true
+      ;;
+
+    A)
+      ALL_HOSTS=true
+      ;;
+
+    b)
+      STRIP_KNOWN_DOMAINS=false
+      ONELINE_DELIMITER=","
+      ;;
+
+    d)
+      STRIP_KNOWN_DOMAINS=false
+      ;;
+
+    h)
+      printhelp
+      exit 0
+      ;;
+
+    j)
+      ONELINE_DELIMITER="$OPTARG"
+      ;;
+
+    r)
+      REVERSE="$OPTARG"
+      ;;
+
+    v)
+      INVERT_TAGS=true
+      ;;
+
+    ?)
+      errorout "unrecognized argument: \`-$opt'"
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+main() {
+  validate_arguments "$@"
+
+  if [ -n "$ONELINE_DELIMITER" ]; then
+    list_hosts_or_tags "$@" | paste -sd "$ONELINE_DELIMITER"
+  else
+    list_hosts_or_tags "$@"
+  fi
+}
+
+list_hosts_or_tags() {
+  if [ -n "$REVERSE" ]; then
+    get_all_tags_for_host "$REVERSE"
+  elif $ALL_TAGS; then
+    get_all_tags
+  elif $ALL_HOSTS; then
+    get_all_hosts
+  else
+    get_all_hosts_with_tags "$@"
+  fi
+}
+
+validate_arguments() {
+  if [ -n "$REVERSE" ]; then
+    if $ALL_TAGS; then errorout "cannot use both -r and -a"; fi
+    if $ALL_HOSTS; then errorout "cannot use both -r and -A"; fi
+    if [ -n "$*" ]; then errorout "no arguments expected after -r $REVERSE"; fi
+  fi
+
+  if [ -n "$*" ]; then
+    if $ALL_TAGS; then errorout "-a expects no arguments"; fi
+    if $ALL_HOSTS; then errorout "-A expects no arguments"; fi
+  fi
+
+  if $ALL_TAGS; then
+    if $ALL_HOSTS; then errorout "cannot use both -a and -A"; fi
+  fi
+}
+
+get_all_tags_for_host() {
+  host="$1"
+  query_host="^`echo "$host" | sed -e 's/[.]/[.]/g'`[.	]"
+  if ! grep -q "$query_host" "$ACTIVE_SERVERS"; then
+    errorout "couldn't find host $host"
+  fi
+
+  line_count="`grep "$query_host" "$ACTIVE_SERVERS" | wc -l`"
+  if [ "$line_count" = 1 ]; then
+    grep "$query_host" "$ACTIVE_SERVERS" \
+      | sed -e 's/^.*\t//' -e 's/ /\n/g' | sort
+  else
+    grep "$query_host" "$ACTIVE_SERVERS" | sed -e 's/\t.*$//' >&2
+    errorout "too many hosts match $host"
+  fi
+}
+
+get_all_tags() {
+  sed -e 's/^.*\t//' -e 's/ /\n/g' "$ACTIVE_SERVERS" | sort -u
+}
+
+get_all_hosts() {
+  cat "$ACTIVE_SERVERS" | get_servers
+}
+
+get_all_hosts_with_tags() {
+  lines="`cat "$ACTIVE_SERVERS"`"
+  for tag in "$@"; do
+    if [ "$tag" = "-v" ]; then
+      INVERT_TAGS=true
+    elif $INVERT_TAGS; then
+      lines="`echo "$lines" | happy_grep -v "\\<$tag\\>"`"
+    else
+      lines="`echo "$lines" | happy_grep "\\<$tag\\>"`"
+    fi
+  done
+  echo "$lines" | get_servers
+}
+
+happy_grep() {
+  grep "$@" || true
+}
+
+get_servers() {
+  sed_args=("-e" 's/\t.*$//')
+  if $STRIP_KNOWN_DOMAINS; then
+    for domain in "${KNOWN_DOMAINS[@]}"; do
+      sed_args=("${sed_args[@]}" "-e" "s/`echo ".$domain" | sed -e 's/[.]/[.]/g'`//")
+    done
+  fi
+
+  sed "${sed_args[@]}" -e '/^$/d'
+}
+
+main "$@"
