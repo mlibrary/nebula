@@ -149,6 +149,13 @@ describe 'nebula::profile::haproxy' do
         end
       end
 
+      describe 'Cloudflare proxy IP ranges' do
+        it 'saves Cloudflare trusted ranges in /etc/haproxy' do
+          expect(subject).to contain_file('/etc/haproxy/cloudflare-ipv4.txt')
+            .with_source('https://www.cloudflare.com/ips-v4')
+        end
+      end
+
       describe 'global_badrobots.txt file' do
         it 'lists ips to block' do
           expect(subject).to contain_file('/etc/haproxy/global_badrobots.txt').with_content("1.2.3.0/24\n5.6.7.8\n")

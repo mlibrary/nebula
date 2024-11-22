@@ -45,6 +45,10 @@
 # @param dynamic_weight_smoothing This value is added to the weight for each
 # backend server regardless of server load to help "smooth" the effect of the weighting
 #
+# @param cloudflare_protected This service is protected by Cloudflare's WAF / bot / DDoS
+#   service, so restrict all requests to Cloudflare's IP ranges. For now, we are only
+#   considering IPv4 and the list is kept at: /etc/haproxy/cloudflare-ipv4.txt
+#
 # @param check_timeout_milliseconds How long to wait for http status
 # checks; defaults to 5 seconds
 #
@@ -74,6 +78,7 @@ define nebula::haproxy::service(
   Boolean          $custom_503 = false,
   Boolean          $dynamic_weighting = false,
   Integer          $dynamic_weight_smoothing = 2,
+  Boolean          $cloudflare_protected = false,
   String           $badrobots = '/etc/haproxy/global_badrobots.txt',
   Optional[Integer] $check_timeout_milliseconds = undef
 ) {
