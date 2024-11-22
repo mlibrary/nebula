@@ -163,9 +163,9 @@ get_all_hosts_with_tags() {
     if [ "$tag" = "-v" ]; then
       INVERT_TAGS=true
     elif $INVERT_TAGS; then
-      lines="`echo "$lines" | happy_grep -v "\\<$tag\\>"`"
+      lines="`echo "$lines" | happy_grep -v "	.*\\<$tag\\>"`"
     else
-      lines="`echo "$lines" | happy_grep "\\<$tag\\>"`"
+      lines="`echo "$lines" | happy_grep "	.*\\<$tag\\>"`"
     fi
   done
   echo "$lines" | get_servers
