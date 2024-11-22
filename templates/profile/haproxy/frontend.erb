@@ -29,3 +29,7 @@ use_backend <%= @service_prefix %>-back-exempt if <%= exemption_condition %>
 default_backend <%= @service_prefix %>-back
 acl blocked-ip src -f <%= @badrobots %>
 http-request deny if blocked-ip
+<% if @cloudflare_protected -%>
+acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt
+http-request deny unless cloudflare_proxied
+<% end -%>

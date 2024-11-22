@@ -317,6 +317,41 @@ describe 'nebula::haproxy::service' do
         end
       end
 
+      describe 'Cloudflare proxy ACL' do
+        let(:service_config) { '/etc/haproxy/services.d/svc1-http.cfg' }
+
+        context 'with the cloudflare_protected setting' do
+          let(:params) { super().merge(cloudflare_protected: true) }
+
+          it { is_expected.to contain_file('/etc/haproxy/cloudflare-ipv4.txt') }
+
+          it do
+            expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
+              target: service_config,
+              content: %r{acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt},
+            )
+          end
+
+          it do
+            expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
+              target: service_config,
+              content: %r{http-request deny unless cloudflare_proxied},
+            )
+          end
+        end
+
+        context 'without the cloudflare_protected setting' do
+          let(:params) { super().merge(cloudflare_protected: false) }
+
+          it do
+            expect(subject).not_to contain_concat_fragment('svc1-dc1-http frontend').with(
+              target: service_config,
+              content: %r{http-request deny unless cloudflare_proxied},
+            )
+          end
+        end
+      end
+
       describe 'ssl certs' do
         let(:dest) { '/etc/ssl/private/svc1' }
 
