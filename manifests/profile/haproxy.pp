@@ -37,6 +37,10 @@ class nebula::profile::haproxy(
       content => $global_badrobots;
   }
 
+  file { '/etc/haproxy/cloudflare-ipv4.txt':
+    source => 'https://www.cloudflare.com/ips-v4',
+  }
+
   file { '/etc/ssl/private' :
     ensure => 'directory',
     mode   => '0700',

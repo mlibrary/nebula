@@ -323,8 +323,6 @@ describe 'nebula::haproxy::service' do
         context 'with the cloudflare_protected setting' do
           let(:params) { super().merge(cloudflare_protected: true) }
 
-          it { is_expected.to contain_file('/etc/haproxy/cloudflare-ipv4.txt') }
-
           it do
             expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
               target: service_config,
