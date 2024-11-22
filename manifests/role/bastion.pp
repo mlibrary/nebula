@@ -10,6 +10,10 @@ class nebula::role::bastion {
   include nebula::profile::interactive
   include nebula::profile::taghosts::index
 
+  class { 'nebula::profile::puppet::query':
+    ssl_group => 'sudo',
+  }
+
   # These three are effectively the requirements for getting user login
   # with kerberos and duo.
   include nebula::profile::duo
