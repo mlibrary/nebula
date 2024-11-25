@@ -87,11 +87,6 @@ class nebula::profile::fulcrum::fedora (
     notify  => Service['fedora'],
   }
 
-  service { 'mysqld':
-    enable  => true,
-    ensure  => running,
-  }
-
   service { 'fedora':
     ensure  => 'running',
     enable  => true,

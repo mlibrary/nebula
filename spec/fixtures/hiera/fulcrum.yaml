@@ -12,11 +12,6 @@ nebula::profile::networking::firewall::http_datacenters::networks:
     block: '10.1.2.0/24'
     datacenter: two
 
-
-nebula::profile::fulcrum::solr::solr_home: "/s0lr/h0me"
-nebula::profile::fulcrum::solr::port: "2525"
-
-
 ### Compatibility data
 # While we are running combined Apache+Fulcrum nodes and until we
 # extract the www-lib pieces, these settings need to be present.
