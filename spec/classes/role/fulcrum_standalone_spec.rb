@@ -9,10 +9,11 @@ require_relative '../../support/contexts/with_mocked_nodes'
 describe 'nebula::role::fulcrum::standalone' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts) { os_facts }
+      let(:facts) { os_facts.merge(hostname: 'thisnode', datacenter: 'somedc') }
+      let(:rolenode) { { 'ip' => Faker::Internet.ip_v4_address, 'hostname' => 'rolenode' } }
       let(:hiera_config) { 'spec/fixtures/hiera/fulcrum_config.yaml' }
 
-      include_context 'with mocked query for nodes in other datacenters', %w[one two], []
+      include_context 'with mocked puppetdb functions', 'somedc', %w[rolenode], 'nebula::profile::haproxy' => %w[]
 
       it { is_expected.to compile }
     end
