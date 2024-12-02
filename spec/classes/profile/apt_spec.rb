@@ -34,11 +34,25 @@ describe 'nebula::profile::apt' do
         it do
           expect(subject).to contain_apt__source('main').with(
             location: 'http://ftp.us.debian.org/debian/',
-            repos: 'main contrib non-free',
+            repos: case os
+                   when 'debian-12-x86_64'
+                     'main contrib non-free non-free-firmware'
+                   else
+                     'main contrib non-free'
+                   end,
           )
         end
 
-        it { is_expected.to contain_apt__source('security').with_repos('main contrib non-free') }
+        it do
+          expect(subject).to contain_apt__source('security').with(
+            repos: case os
+                   when 'debian-12-x86_64'
+                     'main contrib non-free non-free-firmware'
+                   else
+                     'main contrib non-free'
+                   end,
+          )
+        end
 
         it do
           expect(subject).to contain_apt__source('security').with_release(
@@ -94,7 +108,12 @@ describe 'nebula::profile::apt' do
           expect(subject).to contain_apt__source('updates').with(
             location: 'http://ftp.us.debian.org/debian/',
             release: "#{facts[:lsbdistcodename]}-updates",
-            repos: 'main contrib non-free',
+            repos: case os
+                   when 'debian-12-x86_64'
+                     'main contrib non-free non-free-firmware'
+                   else
+                     'main contrib non-free'
+                   end,
           )
         end
 

@@ -94,10 +94,16 @@ class nebula::profile::apt (
   }
 
   if($::operatingsystem == 'Debian') {
-    # port to DEB822 before upgrade to Debian 12
+    # TODO: port to DEB822
+    # TODO: remove non-free where we're not using it
+    # TODO: remove branches when we're off buster, bullseye
+    $repos = $::lsbdistcodename ? {
+      'bookworm' => "main contrib non-free non-free-firmware",
+      default    => "main contrib non-free",
+    }
     apt::source { 'main':
       location => $mirror,
-      repos    => 'main contrib non-free',
+      repos    => $repos,
     }
 
     $security_release = $::lsbdistcodename ? {
@@ -108,7 +114,7 @@ class nebula::profile::apt (
     apt::source { 'security':
       location => 'http://security.debian.org/debian-security',
       release  => $security_release,
-      repos    => 'main contrib non-free',
+      repos    => $repos,
     }
 
     unless empty($::installed_backports) {
@@ -120,7 +126,7 @@ class nebula::profile::apt (
     apt::source { 'updates':
       location => $mirror,
       release  => "${::lsbdistcodename}-updates",
-      repos    => 'main contrib non-free',
+      repos    => $repos,
     }
 
     apt::source { 'adoptium':
