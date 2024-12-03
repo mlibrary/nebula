@@ -27,7 +27,7 @@ class nebula::role::webhost::htvm::test {
   ])
 
   class { 'nebula::profile::nodejs':
-    version => '18',
+    version => '22',
   }
 
   include nebula::role::webhost::htvm
