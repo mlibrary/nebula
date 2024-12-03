@@ -41,8 +41,8 @@ class nebula::profile::base (
     }
 
     file { '/etc/hostname':
-      content => "${::fqdn}\n",
-      notify  => Exec["/bin/hostname ${::fqdn}"],
+      content => "${$facts['fqdn']}\n",
+      notify  => Exec["/bin/hostname ${$facts['fqdn']}"],
     }
 
     exec { "/bin/hostname ${::fqdn}":
