@@ -10,12 +10,7 @@ describe 'nebula::profile::apt::mono' do
       it do
         expect(subject).to contain_apt__source('mono-official-stable').with(
           location: 'https://download.mono-project.com/repo/debian',
-          release: case os
-                   when 'ubuntu-20.04-x86_64', 'debian-10-x86_64'
-                     "stable-#{facts[:lsbdistcodename]}"
-                   else
-                     'stable-buster'
-                   end,
+          release: 'stable-buster',
           repos: 'main',
         )
       end
