@@ -45,7 +45,7 @@ class nebula::profile::base (
       notify  => Exec["/bin/hostname ${$facts['fqdn']}"],
     }
 
-    exec { "/bin/hostname ${::fqdn}":
+    exec { "/bin/hostname ${$facts['fqdn']}":
       refreshonly => true,
     }
   }
