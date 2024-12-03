@@ -35,7 +35,7 @@ class nebula::profile::shibboleth (
     [
       'shibboleth-sp-common',
       'shibboleth-sp-utils',
-      'mariadb-unixodbc'
+      'odbc-mariadb'
     ]:
   }
 
@@ -50,7 +50,7 @@ class nebula::profile::shibboleth (
     ensure     => 'running',
     enable     => true,
     hasrestart => true,
-    require    => [Package['shibboleth-sp-utils'], Package['mariadb-unixodbc']]
+    require    => [Package['shibboleth-sp-utils'], Package['odbc-mariadb']]
   }
 
   file { '/etc/odbcinst.ini':
