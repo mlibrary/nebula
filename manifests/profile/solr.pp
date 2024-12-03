@@ -19,7 +19,7 @@ class nebula::profile::solr (
 ) {
   $jdk_version = lookup('nebula::jdk_version')
 
-  ensure_packages(["openjdk-${jdk_version}-jre",'solr','lsof'])
+  ensure_packages(["openjdk-${jdk_version}-jre-headless",'solr','lsof'])
 
   # Note: Along with variables above these are used in erb files also.
   $java_home = "/usr/lib/jvm/java-${jdk_version}-openjdk-amd64/jre"
