@@ -18,13 +18,13 @@ class nebula::profile::fulcrum::solr {
   ensure_packages(["temurin-${jdk_version}-jre"])
 
   class { 'nebula::profile::openjdk_java':
-    jdk_packages => ["temurin-${jdk_version}-jre"],
-    default_jdk => "temurin-${jdk_version}-jre",
+    jdk_packages     => ["temurin-${jdk_version}-jre"],
+    default_jdk      => "temurin-${jdk_version}-jre",
     base_alternative => $java_home,
     java_alternative => "temurin-${jdk_version}-jre-amd64",
   }
 
-  file { "/etc/environment":
+  file { '/etc/environment':
       content => inline_template("JAVA_HOME=${java_home}")
       ;
   }

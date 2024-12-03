@@ -173,10 +173,10 @@ class nebula::profile::prometheus (
       },
     }
     firewall { '200 HTTPS: Client Cert':
-      proto  => 'tcp',
-      dport  => [443],
-      state  => 'NEW',
-      jump   => 'accept',
+      proto => 'tcp',
+      dport => [443],
+      state => 'NEW',
+      jump  => 'accept',
     }
   }
 

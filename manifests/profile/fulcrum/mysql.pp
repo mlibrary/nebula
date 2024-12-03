@@ -17,27 +17,28 @@ class nebula::profile::fulcrum::mysql (
 # at some point need to do equivalent to `mysql_install_db --user=mysql --ldata=/var/lib/mysql`
 
   service { 'mysqld':
-    enable  => true,
     ensure  => running,
+    enable  => true,
     require => Package['mariadb-server'],
   }
 
-  file { "/etc/mysql/conf.d":
-    ensure => "directory"
+  file { '/etc/mysql/conf.d':
+    ensure => 'directory'
   }
 
-  file { "/etc/mysql/my.cnf":
-    owner => "mysql", group => "mysql",
+  file { '/etc/mysql/my.cnf':
+    owner   => 'mysql',
+    group   => 'mysql',
     content => template('nebula/mysql/my.cnf.erb'),
-    notify => Service["mysqld"],
-    require => Package["mariadb-server"],
+    notify  => Service['mysqld'],
+    require => Package['mariadb-server'],
   }
 
-  exec { "set-mysql-password":
-    unless => "mysqladmin -uroot -p$root_password status",
-    path => ["/bin", "/usr/bin"],
-    command => "mysqladmin -uroot password $root_password",
-    require => Service["mysqld"],
+  exec { 'set-mysql-password':
+    unless  => "mysqladmin -uroot -p${root_password} status",
+    path    => ['/bin', '/usr/bin'],
+    command => "mysqladmin -uroot password ${root_password}",
+    require => Service['mysqld'],
   }
 
   $dbs = [['fedora', 'fedora', $fedora_password], ['fulcrum', 'fulcrum', $fulcrum_password],
@@ -48,9 +49,9 @@ class nebula::profile::fulcrum::mysql (
     $user = $db[1]
     $password = $db[2]
     exec { "create-${name}-db":
-      unless => "/usr/bin/mysql -u${user} -p${password} ${name}",
+      unless  => "/usr/bin/mysql -u${user} -p${password} ${name}",
       command => "/usr/bin/mysql -uroot -p${root_password} -e \"create database ${name}; grant all on ${name}.* to ${user}@localhost identified by '${password}';\"",
-      require => Service["mysqld"],
+      require => Service['mysqld'],
     }
   }
 
