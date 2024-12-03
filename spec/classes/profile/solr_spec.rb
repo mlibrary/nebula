@@ -13,7 +13,7 @@ describe 'nebula::profile::solr' do
       it { is_expected.to compile }
 
       # Packages
-      [
+      %w[
         'openjdk-11-jre',
         'solr',
         'lsof',

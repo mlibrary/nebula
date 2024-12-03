@@ -13,8 +13,6 @@ describe 'nebula::profile::fulcrum::solr' do
       it { is_expected.to contain_package('temurin-11-jre') }
 
       it { is_expected.to contain_file('/etc/environment').with_content(%r{JAVA_HOME=/usr/lib/jvm/temurin-11-jre-amd64}) }
-
     end
   end
 end
-
