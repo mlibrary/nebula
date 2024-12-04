@@ -17,7 +17,7 @@
 #     version => '14',
 #   }
 class nebula::profile::nodejs (
-  $version = '10',
+  $version = '18',
 ) {
   include nebula::profile::apt
 
