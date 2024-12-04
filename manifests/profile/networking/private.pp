@@ -18,7 +18,7 @@ class nebula::profile::networking::private (
   Optional[String] $interface = undef,
 ) {
 
-  if !$interface and $facts['os']['family'] == 'Debian' and $facts['is_virtual']
+  if !$interface and $::os['family'] == 'Debian' and $facts['is_virtual']
     and 'ens4' in $facts['networking']['interfaces'] {
     $real_interface = 'ens4'
   } else {

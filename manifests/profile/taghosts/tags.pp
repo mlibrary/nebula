@@ -75,8 +75,8 @@ class nebula::profile::taghosts::tags (
     }
   }
 
-  if $facts['os']['family'] == 'Debian' {
-    $os_name = $facts['os']['name'] ? {
+  if $::os['family'] == 'Debian' {
+    $os_name = $::os['name'] ? {
       'Ubuntu' => 'ubuntu',
       default  => 'debian',
     }
@@ -85,7 +85,7 @@ class nebula::profile::taghosts::tags (
       order => '004',
     }
 
-    nebula::taghosts::tag { $facts['os']['distro']['codename']:
+    nebula::taghosts::tag { $::os['distro']['codename']:
       order => '005',
     }
   }

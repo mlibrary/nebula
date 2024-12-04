@@ -14,7 +14,7 @@ class nebula::profile::php73 (
       name   => 'php-community-sury.org.gpg',
       source => 'https://packages.sury.org/php/apt.gpg'
     },
-    release      => $::lsbdistcodename,
+    release      => $::os['distro']['codename'],
     repos        => 'main',
     architecture => $::os['architecture'],
   }

@@ -8,12 +8,12 @@ class nebula::profile::base::motd (
   String  $contact_email,
   String  $sysadmin_dept,
 ) {
-  if $facts['os']['family'] == 'Debian' {
+  if $::os['family'] == 'Debian' {
     file { '/etc/motd':
       content => template('nebula/profile/base/motd.erb'),
     }
 
-    if($::operatingsystem == 'Ubuntu') {
+    if($::os['name'] == 'Ubuntu') {
       # delete a lot of useless motd content so it's not a half page long
       file { '/etc/update-motd.d/10-help-text': ensure => absent }
       file { '/etc/update-motd.d/50-motd-news': ensure => absent }
