@@ -10,24 +10,28 @@ describe 'nebula::profile::kubernetes::dns_client' do
     context "on #{os}" do
       let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/first_cluster_config.yaml' }
       let(:facts) do
-        os_facts.merge(
-          'networking' => {
+        my_facts = os_facts.deep_merge(
+          networking: {
             'interfaces' => {
               'ens4' => {
                 'ip' => '10.123.234.5',
               },
             },
+            'ip' => '10.123.234.5',
+            'primary' => 'ens4',
           },
         )
+        my_facts[:networking]['interfaces'].delete('eth0')
+        my_facts
       end
 
       it { is_expected.to compile }
 
       it do
-        expect(exported_resources).to contain_concat_fragment("/etc/hosts ipv4 #{facts[:ipaddress]}")
+        expect(exported_resources).to contain_concat_fragment("/etc/hosts ipv4 #{facts[:networking]['ip']}")
           .with_target('/etc/hosts')
           .with_order('04')
-          .with_content("#{facts[:ipaddress]} #{facts[:fqdn]} #{facts[:hostname]}\n")
+          .with_content("#{facts[:networking]['ip']} #{facts[:fqdn]} #{facts[:hostname]}\n")
       end
 
       it do

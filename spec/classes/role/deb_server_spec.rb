@@ -12,7 +12,7 @@ describe 'nebula::role::deb_server' do
     context "on #{os}" do
       include_context 'with mocked query for nodes in other datacenters'
 
-      let(:facts) { os_facts.merge(networking: { ip: Faker::Internet.ip_v4_address, interfaces: {} }) }
+      let(:facts) { os_facts.deep_merge(networking: { ip: Faker::Internet.ip_v4_address, interfaces: {} }) }
       let(:hiera_config) { 'spec/fixtures/hiera/deb_server_config.yaml' }
 
       it { is_expected.to compile }

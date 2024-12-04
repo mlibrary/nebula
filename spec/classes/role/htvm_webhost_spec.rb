@@ -11,7 +11,7 @@ describe 'nebula::role::webhost::htvm' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       include_context 'with setup for htvm node', os_facts
-
+      # binding.irb
       it { is_expected.to compile }
 
       it do
@@ -40,10 +40,10 @@ describe 'nebula::role::webhost::htvm' do
 
       context 'with ens4' do
         let(:facts) do
-          os_facts.merge(
+          os_facts.deep_merge(
             networking: {
-              ip: '1.2.3.123',
-              interfaces: { 'ens4' => {} },
+              'ip' => '1.2.3.123',
+              'interfaces' => { 'ens4' => {} },
             },
             is_virtual: true,
           )

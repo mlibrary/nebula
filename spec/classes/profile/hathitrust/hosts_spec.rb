@@ -27,10 +27,15 @@ describe 'nebula::profile::hathitrust::hosts' do
       end
 
       let(:facts) do
-        os_facts.merge(
-          ipaddress: my_ip,
-          hostname: hostname,
-          fqdn: fqdn,
+        os_facts.deep_merge(
+          ipaddress: 'INVALID_DO_NOT_USE',
+          hostname: 'INVALID_DO_NOT_USE',
+          fqdn: 'INVALID_DO_NOT_USE',
+          networking: {
+            'ip' => my_ip,
+            'hostname' => hostname,
+            'fqdn' => fqdn,
+          },
         )
       end
 

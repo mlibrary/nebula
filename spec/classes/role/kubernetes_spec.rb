@@ -13,15 +13,19 @@ require 'spec_helper'
       context "on #{os}" do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/first_cluster_config.yaml' }
         let(:facts) do
-          os_facts.merge(
-            'networking' => {
+          my_facts = os_facts.deep_merge(
+            networking: {
               'interfaces' => {
                 'ens4' => {
                   'ip' => '10.123.234.5',
                 },
               },
+              'ip' => '10.123.234.5',
+              'primary' => 'ens4',
             },
           )
+          my_facts[:networking]['interfaces'].delete('eth0')
+          my_facts
         end
 
         it { is_expected.to contain_class('Nebula::Profile::Ntp') }
@@ -40,15 +44,19 @@ end
       context "on #{os}" do
         let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/first_cluster_config.yaml' }
         let(:facts) do
-          os_facts.merge(
-            'networking' => {
+          my_facts = os_facts.deep_merge(
+            networking: {
               'interfaces' => {
                 'ens4' => {
                   'ip' => '10.123.234.5',
                 },
               },
+              'ip' => '10.123.234.5',
+              'primary' => 'ens4',
             },
           )
+          my_facts[:networking]['interfaces'].delete('eth0')
+          my_facts
         end
 
         it { is_expected.to contain_class('Nebula::Profile::Ntp') }
@@ -89,27 +97,27 @@ end
         case role
         when 'etcd'
           it do
-            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:hostname]}")
+            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:networking]['hostname']}")
               .with_tag('first_cluster_pki_generation')
               .with_target('/var/local/generate_pki.sh')
               .with_order('02')
-              .with_content("ETCD_NODES=(\"${ETCD_NODES[@]}\" \"#{facts[:hostname]}/#{facts[:ipaddress]}\")\n")
+              .with_content("ETCD_NODES=(\"${ETCD_NODES[@]}\" \"#{facts[:networking]['hostname']}/#{facts[:networking]['ip']}\")\n")
           end
         when 'controller'
           it do
-            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:hostname]}")
+            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:networking]['hostname']}")
               .with_tag('first_cluster_pki_generation')
               .with_target('/var/local/generate_pki.sh')
               .with_order('02')
-              .with_content("KUBE_CONTROLLERS=(\"${KUBE_CONTROLLERS[@]}\" \"#{facts[:hostname]}/#{facts[:ipaddress]}\")\n")
+              .with_content("KUBE_CONTROLLERS=(\"${KUBE_CONTROLLERS[@]}\" \"#{facts[:networking]['hostname']}/#{facts[:networking]['ip']}\")\n")
           end
         when 'worker'
           it do
-            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:hostname]}")
+            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:networking]['hostname']}")
               .with_tag('first_cluster_pki_generation')
               .with_target('/var/local/generate_pki.sh')
               .with_order('02')
-              .with_content("KUBE_WORKERS=(\"${KUBE_WORKERS[@]}\" \"#{facts[:hostname]}/#{facts[:ipaddress]}\")\n")
+              .with_content("KUBE_WORKERS=(\"${KUBE_WORKERS[@]}\" \"#{facts[:networking]['hostname']}/#{facts[:networking]['ip']}\")\n")
           end
 
           it { is_expected.to contain_package('lvm2') }

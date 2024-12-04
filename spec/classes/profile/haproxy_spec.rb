@@ -16,9 +16,10 @@ describe 'nebula::profile::haproxy' do
           networking: {
             ip: my_ip,
             primary: 'eth0',
+            hostname: 'thisnode',
           },
-          ipaddress: my_ip,
-          hostname: 'thisnode',
+          ipaddress: 'INVALID_DO_NOT_USE',
+          hostname: 'INVALID_DO_NOT_USE',
         )
       end
 

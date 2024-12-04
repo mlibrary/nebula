@@ -13,8 +13,10 @@ describe 'nebula::profile::known_host_public_keys' do
       context 'with fqdn of example.invalid and some ssh public keys' do
         let(:facts) do
           {
-            'fqdn' => 'example.invalid',
-            'ssh' => {
+            networking: {
+              'fqdn' => 'example.invalid',
+            },
+            ssh: {
               'ecdsa' => {
                 'type' => 'ecdsa-sha2-nistp256',
                 'key' => 'ecdsa_key',
