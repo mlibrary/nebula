@@ -41,11 +41,11 @@ class nebula::profile::base (
     }
 
     file { '/etc/hostname':
-      content => "${$facts['fqdn']}\n",
-      notify  => Exec["/bin/hostname ${$facts['fqdn']}"],
+      content => "${::networking['fqdn']}\n",
+      notify  => Exec["/bin/hostname ${::networking['fqdn']}"],
     }
 
-    exec { "/bin/hostname ${$facts['fqdn']}":
+    exec { "/bin/hostname ${::networking['fqdn']}":
       refreshonly => true,
     }
   }

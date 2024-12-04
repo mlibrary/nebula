@@ -33,7 +33,7 @@ class nebula::profile::http_fileserver (
   }
 
   @nebula::taghosts::tag { 'apache': }
-  $letsencrypt_directory = $::letsencrypt_directory[$::fqdn]
+  $letsencrypt_directory = $::letsencrypt_directory[$::networking['fqdn']]
   if $letsencrypt_directory {
     class { 'apache':
       docroot           => '/srv/www',
@@ -54,16 +54,16 @@ class nebula::profile::http_fileserver (
     }
   }
 
-  apache::vhost { "${::fqdn} http":
-    servername => $::fqdn,
+  apache::vhost { "${::networking['fqdn']} http":
+    servername => $::networking['fqdn'],
     port       => 80,
     docroot    => '/var/local/http',
     require    => File['/var/local/http']
   }
 
-  nebula::cert { $::fqdn:
+  nebula::cert { $::networking['fqdn']:
     webroot => '/var/local/http',
-    require => Apache::Vhost["${::fqdn} http"]
+    require => Apache::Vhost["${::networking['fqdn']} http"]
   }
 
   include nebula::profile::networking::firewall::http_datacenters

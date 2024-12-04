@@ -38,7 +38,7 @@ class nebula::profile::hathitrust::cron::mdp_misc (
     'manage mbook sessions':
       minute      => $mdp_sessions_minute,
       environment => $sdr_environment + ["MAILTO=''"],
-      command     => "${home}/scripts/managembookssessions.pl -m clean -a 120 2>&1 || /usr/bin/mail -s '${::hostname} managembooksessions error' ${mail_recipient}";
+      command     => "${home}/scripts/managembookssessions.pl -m clean -a 120 2>&1 || /usr/bin/mail -s '${::networking['hostname']} managembooksessions error' ${mail_recipient}";
 
     'manage exclusivity expiration':
       minute  => $mdp_sessions_minute,
@@ -48,7 +48,7 @@ class nebula::profile::hathitrust::cron::mdp_misc (
       minute      => 01,
       hour        => 00,
       environment => $sdr_environment + ["MAILTO=''"],
-      command     => "${sdr_root}/pt/scripts/harvest_proxy_downloads.pl 2>&1 || /usr/bin/mail -s '${::hostname} harvest_proxy_downloads problems' ${mail_recipient}";
+      command     => "${sdr_root}/pt/scripts/harvest_proxy_downloads.pl 2>&1 || /usr/bin/mail -s '${::networking['hostname']} harvest_proxy_downloads problems' ${mail_recipient}";
 
     # Build up translation maps. Collection codes are pulled from the HT
     # database, and lists of languages and formats are pulled right out of the the solr data.

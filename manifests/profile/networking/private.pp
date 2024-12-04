@@ -19,14 +19,14 @@ class nebula::profile::networking::private (
 ) {
 
   if !$interface and $::os['family'] == 'Debian' and $facts['is_virtual']
-    and 'ens4' in $facts['networking']['interfaces'] {
+    and 'ens4' in $::networking['interfaces'] {
     $real_interface = 'ens4'
   } else {
     $real_interface = $interface
   }
 
   if $real_interface {
-    $address = sprintf($address_template,split($facts['networking']['ip'],'\.')[-1])
+    $address = sprintf($address_template,split($::networking['ip'],'\.')[-1])
 
     file { '/etc/network/interfaces.d/private':
       content      => template('nebula/profile/networking/private.erb'),

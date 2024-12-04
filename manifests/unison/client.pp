@@ -34,10 +34,10 @@ define nebula::unison::client (
     require    => Package[unison]
   }
 
-  @@firewall { "200 Unison: ${title} ${::hostname}":
+  @@firewall { "200 Unison: ${title} ${::networking['hostname']}":
     proto  => 'tcp',
     dport  => [$port],
-    source => $::ipaddress,
+    source => $::networking['ip'],
     state  => 'NEW',
     jump   => 'accept',
     tag    =>  "unison-client-${title}"

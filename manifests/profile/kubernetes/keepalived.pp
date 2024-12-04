@@ -24,16 +24,16 @@ class nebula::profile::kubernetes::keepalived (
     content => template('nebula/profile/kubernetes/keepalived/keepalived_01.erb'),
   }
 
-  @@concat_fragment { "keepalived ${::hostname}":
+  @@concat_fragment { "keepalived ${::networking['hostname']}":
     target  => '/etc/keepalived/keepalived.conf',
     order   => '02',
-    content => "    ${::ipaddress}\n",
+    content => "    ${::networking['ip']}\n",
     tag     => "${cluster_name}_keepalived",
   }
 
   # Don't collect own IP address, but otherwise get everyone else in
   # this cluster.
-  Concat_fragment <<| tag == "${cluster_name}_keepalived" and title != "keepalived ${::hostname}" |>>
+  Concat_fragment <<| tag == "${cluster_name}_keepalived" and title != "keepalived ${::networking['hostname']}" |>>
 
   concat_fragment { 'keepalived postamble':
     target  => '/etc/keepalived/keepalived.conf',
@@ -63,7 +63,7 @@ class nebula::profile::kubernetes::keepalived (
     $type = $key_obj["type"]
     $key = $key_obj["key"]
 
-    @@concat_fragment { "known host ${control_dns} ${::fqdn} ${name}":
+    @@concat_fragment { "known host ${control_dns} ${::networking['fqdn']} ${name}":
       tag     => 'known_host_public_keys',
       target  => '/etc/ssh/ssh_known_hosts',
       content => "${control_dns} ${type} ${key}\n",

@@ -10,7 +10,7 @@
 #   include nebula::profile::apache::standalone_app_host
 
 class nebula::profile::apache::standalone_app_host (
-  $ssl_cn = $::fqdn
+  $ssl_cn = $::networking['fqdn']
 ) {
 
   class { 'nebula::profile::ssl_keypair':

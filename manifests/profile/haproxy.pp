@@ -110,15 +110,15 @@ class nebula::profile::haproxy(
     order   => '01'
   }
 
-  @@concat_fragment { "keepalived node ip ${::hostname}":
+  @@concat_fragment { "keepalived node ip ${::networking['hostname']}":
     target  => '/etc/keepalived/keepalived.conf',
-    content => "    ${::ipaddress}\n",
+    content => "    ${::networking['ip']}\n",
     tag     => "keepalived-haproxy-ip-${::datacenter}",
     order   => '02'
   }
 
   # don't collect our own IP address, just the other haproxy nodes here
-  Concat_fragment <<| tag == "keepalived-haproxy-ip-${::datacenter}" and title != "keepalived node ip ${::hostname}" |>>
+  Concat_fragment <<| tag == "keepalived-haproxy-ip-${::datacenter}" and title != "keepalived node ip ${::networking['hostname']}" |>>
 
   concat_fragment { 'keepalived postamble':
     target  => '/etc/keepalived/keepalived.conf',
@@ -134,10 +134,10 @@ class nebula::profile::haproxy(
     content => template('nebula/profile/haproxy/keepalived/sysctl.conf.erb'),
   }
 
-  @@firewall { "200 HTTP: HAProxy ${::hostname}":
+  @@firewall { "200 HTTP: HAProxy ${::networking['hostname']}":
     proto  => 'tcp',
     dport  => [80, 443],
-    source => $::ipaddress,
+    source => $::networking['ip'],
     state  => 'NEW',
     jump   => 'accept',
     tag    => "${::datacenter}_haproxy"
