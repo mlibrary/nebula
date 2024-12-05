@@ -7,8 +7,8 @@
 # @example
 #   include nebula::profile::puppet::db
 class nebula::profile::puppet::db {
-  class { 'puppetdb':
-    disable_cleartext => true,
-    manage_firewall   => false,
-  }
+  #class { 'puppetdb':
+  #  disable_cleartext => true,
+  #  manage_firewall   => false,
+  #}
 }

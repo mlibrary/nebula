@@ -9,9 +9,9 @@
 class nebula::profile::puppet::master_with_db (
   String $puppetdb_server = lookup('nebula::puppetdb'),
 ) {
-  class { 'puppetdb::master::config':
-    puppetdb_server         => $puppetdb_server,
-    manage_report_processor => true,
-    enable_reports          => true,
-  }
+#  class { 'puppetdb::master::config':
+#    puppetdb_server         => $puppetdb_server,
+#    manage_report_processor => true,
+#    enable_reports          => true,
+#  }
 }
