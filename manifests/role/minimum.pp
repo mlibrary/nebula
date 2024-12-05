@@ -23,6 +23,7 @@ class nebula::role::minimum (
     include nebula::profile::networking::firewall::private_ssh
     include nebula::profile::apt
     include nebula::profile::vim
+    include nebula::profile::elastic::filebeat::configs::ulib
   }
 
   include nebula::profile::taghosts::tags
