@@ -119,8 +119,8 @@ class nebula::profile::hathitrust::apache (
   class { 'apache::mod::shib': }
 
   class { 'apache::mod::remoteip':
-    header    => 'X-Client-IP',
-    proxy_ips => $haproxy_ips
+    header         => 'X-Client-IP',
+    internal_proxy => $haproxy_ips
   }
 
   class { 'nebula::profile::ssl_keypair':

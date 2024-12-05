@@ -59,8 +59,8 @@ class nebula::profile::apache (
   }
 
   class { 'apache::mod::remoteip':
-    header    => 'X-Client-IP',
-    proxy_ips => $haproxy_ips
+    header         => 'X-Client-IP',
+    internal_proxy => $haproxy_ips
   }
 
   apache::custom_config { 'badrobots':
