@@ -22,8 +22,12 @@ class nebula::profile::hathitrust::babel_logs (
     mode   => '0644'
   }
 
+  include nebula::profile::loki
+
   file { '/etc/alloy/babel.alloy':
     ensure  => 'file',
+    require => Package['alloy'],
+    notify  => Service['alloy'],
     content => template('nebula/profile/hathitrust/babel_logs/alloy.erb'),
   }
 

@@ -8,8 +8,10 @@ require 'spec_helper'
 require_relative '../../../support/contexts/with_htvm_setup'
 
 describe 'nebula::profile::hathitrust::babel_logs' do
-  on_supported_os.each do |os, _os_facts|
+  on_supported_os.each do |os, os_facts|
     context "on #{os}" do
+      let(:facts) { os_facts }
+
       it { is_expected.to compile }
 
       it { is_expected.to contain_file('/var/log/babel').with_owner('nobody') }
