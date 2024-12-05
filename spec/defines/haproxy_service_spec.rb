@@ -72,11 +72,11 @@ describe 'nebula::haproxy::service' do
               stats uri /haproxy?stats
               http-response set-header "Strict-Transport-Security" "max-age=31536000"
               errorfile 400 /etc/haproxy/errors/hsts400.http
-              http-request set-header X-Client-IP %ci
-              http-request set-header X-Forwarded-Proto https
               default_backend svc1-dc1-https-back
               acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
               http-request deny if blocked-ip
+              http-request set-header X-Forwarded-Proto https
+              http-request set-header X-Client-IP %ci
             HAPROXY
           )
         end
@@ -290,11 +290,11 @@ describe 'nebula::haproxy::service' do
               frontend svc1-dc1-http-front
               bind 1.2.3.4:80
               stats uri /haproxy?stats
-              http-request set-header X-Client-IP %ci
-              http-request set-header X-Forwarded-Proto http
               default_backend svc1-dc1-http-back
               acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
               http-request deny if blocked-ip
+              http-request set-header X-Forwarded-Proto http
+              http-request set-header X-Client-IP %ci
             HAPROXY
           )
         end
@@ -336,6 +336,13 @@ describe 'nebula::haproxy::service' do
               content: %r{http-request deny unless cloudflare_proxied},
             )
           end
+
+          it 'forwards the CF-Connecting-IP as X-Client-IP' do
+            expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
+              target: service_config,
+              content: %r{http-request set-header X-Client-IP %\[req.hdr\(CF-Connecting-IP\)\]},
+            )
+          end
         end
 
         context 'without the cloudflare_protected setting' do
@@ -345,6 +352,13 @@ describe 'nebula::haproxy::service' do
             expect(subject).not_to contain_concat_fragment('svc1-dc1-http frontend').with(
               target: service_config,
               content: %r{http-request deny unless cloudflare_proxied},
+            )
+          end
+
+          it 'sets the originating client IP as X-Client-IP' do
+            expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
+              target: service_config,
+              content: %r{http-request set-header X-Client-IP %ci},
             )
           end
         end
