@@ -34,5 +34,10 @@ class nebula::role::hathitrust::ingest_indexing () {
 
   include nebula::profile::ruby
 
+  class { 'nebula::profile::hathitrust::babel_logs':
+    log_owner => 'slip',
+    log_group => 'htprod'
+  }
+
   nebula::usergroup { 'htingest': }
 }
