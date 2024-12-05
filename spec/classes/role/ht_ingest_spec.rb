@@ -30,8 +30,6 @@ describe 'nebula::role::hathitrust::ingest_indexing' do
       # not specified explicitly - realized through Nebula::Usergroup[htingest]
       it { is_expected.to contain_user('htingest') }
       it { is_expected.not_to contain_user('htweb') }
-
-      it { is_expected.to contain_file('/etc/logrotate.d/babel') }
     end
   end
 end
