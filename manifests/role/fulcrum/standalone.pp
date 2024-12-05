@@ -19,7 +19,7 @@ class nebula::role::fulcrum::standalone {
   include nebula::profile::fulcrum::redis
   include nebula::profile::fulcrum::perl
 
-  include nebula::profile::fulcrum::solr
+  include nebula::profile::solr
   include nebula::profile::fulcrum::mysql
 
   include nebula::profile::fulcrum::shibboleth
