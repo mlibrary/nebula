@@ -24,7 +24,7 @@ class nebula::profile::prometheus::exporter::mysql ()
     content => template('nebula/profile/prometheus/exporter/mysql/defaults.sh.erb')
   }
 
-  @@concat_fragment { "prometheus mysql service ${::hostname}":
+  @@concat_fragment { "prometheus mysql service ${::networking['hostname']}":
     tag     => "${::datacenter}_prometheus_mysql_service_list",
     target  => '/etc/prometheus/mysql.yml',
     content => template('nebula/profile/prometheus/exporter/mysql/target.yaml.erb')

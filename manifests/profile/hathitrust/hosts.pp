@@ -22,9 +22,9 @@ class nebula::profile::hathitrust::hosts(
     ip => '127.0.0.1'
   }
 
-  host { $::hostname:
-    host_aliases => [$::fqdn],
-    ip           => $::ipaddress
+  host { $::networking['hostname']:
+    host_aliases => [$::networking['fqdn']],
+    ip           => $::networking['ip']
   }
 
   host { 'ip6-localhost':

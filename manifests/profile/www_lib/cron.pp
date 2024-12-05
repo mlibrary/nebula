@@ -25,7 +25,7 @@ class nebula::profile::www_lib::cron (
     'staff.lib parse':
       hour    => 3,
       minute  => 30,
-      command => "/usr/bin/perl /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/parse.pl > /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/logs/${::hostname}-parse.log 2>&1",
+      command => "/usr/bin/perl /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/parse.pl > /www/staff.lib/web/sites/staff.lib.umich.edu/local/dashboard/logs/${::networking['hostname']}-parse.log 2>&1",
     ;
 
     'Proactively scan the log files for suspcious activity':

@@ -108,8 +108,9 @@ describe 'nebula::profile::kubernetes::keepalived' do
       context 'with fqdn of default.invalid and an ssh-rsa public key' do
         let(:facts) do
           {
-            'fqdn' => 'default.invalid',
-            'ssh' => {
+            fqdn: 'INVALID_DO_NOT_USE',
+            networking: { 'fqdn' => 'default.invalid' },
+            ssh: {
               'rsa' => {
                 'type' => 'ssh-rsa',
                 'key' => 'abc123',

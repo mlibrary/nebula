@@ -29,7 +29,7 @@ class nebula::profile::github_pull_account (
   exec { "create ${git_homedir}/.ssh/id_ecdsa":
     creates => "${git_homedir}/.ssh/id_ecdsa",
     user    => $git_username,
-    command => "/usr/bin/ssh-keygen -t ecdsa -N '' -C '${::hostname}' -f ${git_homedir}/.ssh/id_ecdsa",
+    command => "/usr/bin/ssh-keygen -t ecdsa -N '' -C '${::networking['hostname']}' -f ${git_homedir}/.ssh/id_ecdsa",
     require => File["${git_homedir}/.ssh"],
   }
 

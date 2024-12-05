@@ -25,7 +25,7 @@ class nebula::profile::prometheus (
   String $pushgateway_version = 'latest',
 ) {
   include nebula::profile::docker
-  $hostname = $::hostname
+  $hostname = $::networking['hostname']
 
   docker::run { 'prometheus':
     image            => "prom/prometheus:${version}",
@@ -126,11 +126,11 @@ class nebula::profile::prometheus (
   }
 
   file { '/etc/prometheus/tls/client.crt':
-    source => "puppet:///ssl-certs/prometheus-pki/${::fqdn}.crt",
+    source => "puppet:///ssl-certs/prometheus-pki/${::networking['fqdn']}.crt",
   }
 
   file { '/etc/prometheus/tls/client.key':
-    source => "puppet:///ssl-certs/prometheus-pki/${::fqdn}.key",
+    source => "puppet:///ssl-certs/prometheus-pki/${::networking['fqdn']}.key",
   }
 
   file { '/opt/prometheus':
@@ -159,7 +159,7 @@ class nebula::profile::prometheus (
       server_tokens        => 'off',
     }
     nginx::resource::server { 'https-forwarder':
-      server_name       => [$::fqdn],
+      server_name       => [$::networking['fqdn']],
       listen_options    => 'proxy_protocol default_server',
       listen_port       => 443,
       proxy             => 'http://localhost:9090',
@@ -187,7 +187,7 @@ class nebula::profile::prometheus (
     }
 
     default: {
-      $all_public_addresses = [$::ipaddress]
+      $all_public_addresses = [$::networking['ip']]
       $all_private_addresses = []
     }
   }
@@ -221,12 +221,12 @@ class nebula::profile::prometheus (
         jump   => 'accept',
       ;
 
-      "010 prometheus public node exporter ${::hostname} ${address}":
+      "010 prometheus public node exporter ${::networking['hostname']} ${address}":
         tag   => "${::datacenter}_prometheus_public_node_exporter",
         dport => 9100,
       ;
 
-      "010 prometheus public ipmi exporter ${::hostname} ${address}":
+      "010 prometheus public ipmi exporter ${::networking['hostname']} ${address}":
         tag   => "${::datacenter}_prometheus_public_ipmi_exporter",
         dport => 9290,
       ;
@@ -242,32 +242,32 @@ class nebula::profile::prometheus (
         jump   => 'accept',
       ;
 
-      "010 prometheus private node exporter ${::hostname} ${address}":
+      "010 prometheus private node exporter ${::networking['hostname']} ${address}":
         tag   => "${::datacenter}_prometheus_private_node_exporter",
         dport => 9100,
       ;
 
-      "010 prometheus private ipmi exporter ${::hostname} ${address}":
+      "010 prometheus private ipmi exporter ${::networking['hostname']} ${address}":
         tag   => "${::datacenter}_prometheus_private_ipmi_exporter",
         dport => 9290,
       ;
     }
   }
 
-  @@firewall { "010 prometheus haproxy exporter ${::hostname}":
+  @@firewall { "010 prometheus haproxy exporter ${::networking['hostname']}":
     tag    => "${::datacenter}_prometheus_haproxy_exporter",
     proto  => 'tcp',
     dport  => 9101,
-    source => $::ipaddress,
+    source => $::networking['ip'],
     state  => 'NEW',
     jump   => 'accept',
   }
 
-  @@firewall { "010 prometheus mysql exporter ${::hostname}":
+  @@firewall { "010 prometheus mysql exporter ${::networking['hostname']}":
     tag    => "${::datacenter}_prometheus_mysql_exporter",
     proto  => 'tcp',
     dport  => 9104,
-    source => $::ipaddress,
+    source => $::networking['ip'],
     state  => 'NEW',
     jump   => 'accept',
   }

@@ -15,14 +15,14 @@ class nebula::profile::taghosts::tags (
 
   # Each line starts with the fqdn, a tab, and the tag "puppet" to show
   # this host's tags are managed by puppet.
-  @@concat::fragment { "taghosts ${::fqdn} 000":
+  @@concat::fragment { "taghosts ${::networking['fqdn']} 000":
     tag     => 'taghosts',
     target  => '/var/lib/ae/active-servers',
-    content => "${::fqdn}\tpuppet",
+    content => "${::networking['fqdn']}\tpuppet",
   }
 
   # Each line ends with a newline.
-  @@concat::fragment { "taghosts ${::fqdn} 999":
+  @@concat::fragment { "taghosts ${::networking['fqdn']} 999":
     tag     => 'taghosts',
     target  => '/var/lib/ae/active-servers',
     content => "\n",
@@ -75,8 +75,8 @@ class nebula::profile::taghosts::tags (
     }
   }
 
-  if $facts['os']['family'] == 'Debian' {
-    $os_name = $facts['os']['name'] ? {
+  if $::os['family'] == 'Debian' {
+    $os_name = $::os['name'] ? {
       'Ubuntu' => 'ubuntu',
       default  => 'debian',
     }
@@ -85,7 +85,7 @@ class nebula::profile::taghosts::tags (
       order => '004',
     }
 
-    nebula::taghosts::tag { $facts['os']['distro']['codename']:
+    nebula::taghosts::tag { $::os['distro']['codename']:
       order => '005',
     }
   }

@@ -5,10 +5,10 @@
 class nebula::profile::kubernetes::destination_port::prometheus {
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
 
-  @@concat_fragment { "haproxy kubernetes prometheus ${::hostname}":
+  @@concat_fragment { "haproxy kubernetes prometheus ${::networking['hostname']}":
     target  => '/etc/haproxy/services.d/prometheus.cfg',
     order   => '02',
-    content => "  server ${::hostname} ${::ipaddress}:443 check send-proxy\n",
+    content => "  server ${::networking['hostname']} ${::networking['ip']}:443 check send-proxy\n",
     tag     => "${cluster_name}_haproxy_kubernetes_prometheus",
   }
 }

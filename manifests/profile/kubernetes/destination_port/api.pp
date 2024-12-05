@@ -5,10 +5,10 @@
 class nebula::profile::kubernetes::destination_port::api {
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
 
-  @@concat_fragment { "haproxy kubernetes api ${::hostname}":
+  @@concat_fragment { "haproxy kubernetes api ${::networking['hostname']}":
     target  => '/etc/haproxy/services.d/api.cfg',
     order   => '02',
-    content => "  server ${::hostname} ${::ipaddress}:6443 check check-ssl verify none\n",
+    content => "  server ${::networking['hostname']} ${::networking['ip']}:6443 check check-ssl verify none\n",
     tag     => "${cluster_name}_haproxy_kubernetes_api",
   }
 }

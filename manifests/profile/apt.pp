@@ -16,7 +16,7 @@ class nebula::profile::apt (
   Optional[Hash] $local_repo = undef,
 ) {
 
-  if($facts['os']['family'] == 'Debian') {
+  if($::os['family'] == 'Debian') {
     package { 'aptitude': }
 
     # Ensure that apt knows to never ever install recommended packages
@@ -55,7 +55,7 @@ class nebula::profile::apt (
     if $local_repo {
       apt::source { 'local':
         *            => $local_repo,
-        release      => $::lsbdistcodename,
+        release      => $::os['distro']['codename'],
         repos        => 'main',
         architecture => $::os['architecture'],
       }
@@ -64,7 +64,7 @@ class nebula::profile::apt (
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
       apt::source { 'hp':
         location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
-        release  => "${::lsbdistcodename}/current",
+        release  => "${::os['distro']['codename']}/current",
         repos    => 'non-free',
         key      => {
           'name'   => 'hpe.asc',
@@ -93,11 +93,11 @@ class nebula::profile::apt (
     file { '/etc/apt/trusted.gpg': ensure => absent }
   }
 
-  if($::operatingsystem == 'Debian') {
+  if($::os['name'] == 'Debian') {
     # TODO: port to DEB822
     # TODO: remove non-free where we're not using it
     # TODO: remove branches when we're off buster, bullseye
-    $repos = $::lsbdistcodename ? {
+    $repos = $::os['distro']['codename'] ? {
       'bookworm' => "main contrib non-free non-free-firmware",
       default    => "main contrib non-free",
     }
@@ -106,9 +106,9 @@ class nebula::profile::apt (
       repos    => $repos,
     }
 
-    $security_release = $::lsbdistcodename ? {
-      'buster'  => "${::lsbdistcodename}/updates",
-      default   => "${::lsbdistcodename}-security",
+    $security_release = $::os['distro']['codename'] ? {
+      'buster'  => "${::os['distro']['codename']}/updates",
+      default   => "${::os['distro']['codename']}-security",
     }
 
     apt::source { 'security':
@@ -125,30 +125,30 @@ class nebula::profile::apt (
 
     apt::source { 'updates':
       location => $mirror,
-      release  => "${::lsbdistcodename}-updates",
+      release  => "${::os['distro']['codename']}-updates",
       repos    => $repos,
     }
 
     apt::source { 'adoptium':
       location => 'https://packages.adoptium.net/artifactory/deb/',
-      release  => $::lsbdistcodename,
+      release  => $::os['distro']['codename'],
       repos    => 'main',
       key      => {
         'name'   => 'adoptium.asc',
         'source' => 'puppet:///modules/nebula/apt/keyrings/adoptium.asc',
       }
     }
-  } elsif($::operatingsystem == 'Ubuntu') {
+  } elsif($::os['name'] == 'Ubuntu') {
     # port to DEB822 before upgrade to 24.04
     apt::source {
       default:
         location => $ubuntu_mirror,
         repos    => 'main restricted universe',
       ;
-      'main'     : release => $::lsbdistcodename;
-      'updates'  : release => "${::lsbdistcodename}-updates";
-      'backports': release => "${::lsbdistcodename}-backports";
-      'security' : release => "${::lsbdistcodename}-security";
+      'main'     : release => $::os['distro']['codename'];
+      'updates'  : release => "${::os['distro']['codename']}-updates";
+      'backports': release => "${::os['distro']['codename']}-backports";
+      'security' : release => "${::os['distro']['codename']}-security";
     }
 
     package { 'landscape-common': ensure => purged }

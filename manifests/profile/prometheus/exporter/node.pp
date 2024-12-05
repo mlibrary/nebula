@@ -107,10 +107,10 @@ class nebula::profile::prometheus::exporter::node (
   $role = lookup_role()
   $datacenter = $::datacenter
 
-  if $::domain == lookup('umich::default_domain', default_value => 'prometheus-node-exporter.default.invalid') {
-    $hostname = $::hostname
+  if $::networking['domain'] == lookup('umich::default_domain', default_value => 'prometheus-node-exporter.default.invalid') {
+    $hostname = $::networking['hostname']
   } else {
-    $hostname = $::fqdn
+    $hostname = $::networking['fqdn']
   }
 
   if $datacenter in $covered_datacenters {
@@ -127,8 +127,8 @@ class nebula::profile::prometheus::exporter::node (
 
     default: {
       # If the public/private fact isn't working, fall back to assuming
-      # that the legacy `$::ipaddress` fact is public.
-      $all_public_addresses = [$::ipaddress]
+      # that the legacy `$::networking['ip']` fact is public.
+      $all_public_addresses = [$::networking['ip']]
       $all_private_addresses = []
     }
   }
@@ -149,7 +149,7 @@ class nebula::profile::prometheus::exporter::node (
 
   $ipaddress = $ipaddresses[0]
   $ipaddresses.each |$address| {
-    @@firewall { "300 pushgateway ${::hostname} ${address}":
+    @@firewall { "300 pushgateway ${::networking['hostname']} ${address}":
       tag    => "${monitoring_datacenter}_pushgateway_node",
       proto  => 'tcp',
       dport  => 9091,
@@ -180,7 +180,7 @@ class nebula::profile::prometheus::exporter::node (
     content => template('nebula/profile/prometheus/exporter/node/pushgateway_advanced.sh.erb'),
   }
 
-  @@concat_fragment { "prometheus node service ${::hostname}":
+  @@concat_fragment { "prometheus node service ${::networking['hostname']}":
     tag     => "${monitoring_datacenter}_prometheus_node_service_list",
     target  => '/etc/prometheus/nodes.yml',
     content => template('nebula/profile/prometheus/exporter/node/target.yaml.erb'),

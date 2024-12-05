@@ -7,7 +7,14 @@ require 'spec_helper'
 describe 'nebula::profile::quod::prod::haproxy' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts) { os_facts.merge(hostname: 'thisnode', datacenter: 'somedc') }
+      let(:facts) do
+        os_facts.deep_merge(
+          datacenter: 'somedc',
+          networking: {
+            'hostname' => 'thisnode',
+          },
+        )
+      end
 
       it { is_expected.to compile }
 

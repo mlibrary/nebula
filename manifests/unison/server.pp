@@ -25,7 +25,7 @@ define nebula::unison::server (
   }
 
   @@nebula::unison::client { $title:
-    server      => $::fqdn,
+    server      => $::networking['fqdn'],
     port        => $port,
     root        => $root,
     paths       => $paths,

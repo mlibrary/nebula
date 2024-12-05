@@ -5,10 +5,9 @@ require 'faker'
 
 RSpec.shared_context 'with setup for htvm node' do |os_facts|
   let(:facts) do
-    os_facts.merge(
-      hostname: 'thisnode',
+    os_facts.deep_merge(
       datacenter: 'somedc',
-      networking: { ip: Faker::Internet.ip_v4_address, interfaces: {} },
+      networking: { 'ip' => Faker::Internet.ip_v4_address, 'interfaces' => {}, 'hostname' => 'thisnode' },
     )
   end
   let(:hiera_config) { 'spec/fixtures/hiera/hathitrust_config.yaml' }
