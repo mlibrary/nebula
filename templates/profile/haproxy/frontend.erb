@@ -15,8 +15,6 @@ stats uri /haproxy?stats
 http-response set-header "Strict-Transport-Security" "max-age=31536000"
 errorfile 400 /etc/haproxy/errors/hsts400.http
 <% end -%>
-http-request set-header X-Client-IP %ci
-http-request set-header X-Forwarded-Proto <%= @protocol %>
 <% @nonempty_whitelists.each do |whitelist,_| -%>
 acl whitelist_<%= whitelist %> <%= whitelist %> -n -f /etc/haproxy/<%= @service %>_whitelist_<%= whitelist %>.txt
 <% end -%>
@@ -29,7 +27,11 @@ use_backend <%= @service_prefix %>-back-exempt if <%= exemption_condition %>
 default_backend <%= @service_prefix %>-back
 acl blocked-ip src -f <%= @badrobots %>
 http-request deny if blocked-ip
+http-request set-header X-Forwarded-Proto <%= @protocol %>
 <% if @cloudflare_protected -%>
 acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt
 http-request deny unless cloudflare_proxied
+http-request set-header X-Client-IP %[req.hdr(CF-Connecting-IP)]
+<% else -%>
+http-request set-header X-Client-IP %ci
 <% end -%>
