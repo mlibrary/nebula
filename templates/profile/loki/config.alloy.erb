@@ -15,7 +15,7 @@ loki.process "service__alloy" {
 }
 
 loki.process "hostname" {
-  stage.static_labels {values = {"hostname" = "<%= @hostname %>",}}
+  stage.static_labels {values = {"hostname" = "<%= @networking['hostname'] %>",}}
   forward_to = [loki.write.loki.receiver]
 }
 
