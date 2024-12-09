@@ -74,9 +74,12 @@ describe 'nebula::haproxy::service' do
               errorfile 400 /etc/haproxy/errors/hsts400.http
               default_backend svc1-dc1-https-back
               acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
+              acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt
+              acl cloudflare_connecting_ip req.hdr(CF-Connecting-IP) -m found
               http-request deny if blocked-ip
               http-request set-header X-Forwarded-Proto https
               http-request set-header X-Client-IP %ci
+              http-request set-header X-Client-IP %[req.hdr(CF-Connecting-IP)] if cloudflare_proxied cloudflare_connecting_ip
             HAPROXY
           )
         end
@@ -292,9 +295,12 @@ describe 'nebula::haproxy::service' do
               stats uri /haproxy?stats
               default_backend svc1-dc1-http-back
               acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
+              acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt
+              acl cloudflare_connecting_ip req.hdr(CF-Connecting-IP) -m found
               http-request deny if blocked-ip
               http-request set-header X-Forwarded-Proto http
               http-request set-header X-Client-IP %ci
+              http-request set-header X-Client-IP %[req.hdr(CF-Connecting-IP)] if cloudflare_proxied cloudflare_connecting_ip
             HAPROXY
           )
         end

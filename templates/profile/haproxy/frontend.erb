@@ -26,12 +26,12 @@ use_backend <%= @service_prefix %>-back-exempt if <%= exemption_condition %>
 <% end -%>
 default_backend <%= @service_prefix %>-back
 acl blocked-ip src -f <%= @badrobots %>
+acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt
+acl cloudflare_connecting_ip req.hdr(CF-Connecting-IP) -m found
 http-request deny if blocked-ip
 http-request set-header X-Forwarded-Proto <%= @protocol %>
-<% if @cloudflare_protected -%>
-acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt
-http-request deny unless cloudflare_proxied
-http-request set-header X-Client-IP %[req.hdr(CF-Connecting-IP)]
-<% else -%>
 http-request set-header X-Client-IP %ci
+http-request set-header X-Client-IP %[req.hdr(CF-Connecting-IP)] if cloudflare_proxied cloudflare_connecting_ip
+<% if @cloudflare_protected -%>
+http-request deny unless cloudflare_proxied
 <% end -%>
