@@ -30,5 +30,5 @@ vrrp_instance haproxy {
     <%= @floating_ip %>
   }
 
-  unicast_src_ip <%= @ipaddress %>
+  unicast_src_ip <%= @networking['ip'] %>
   unicast_peer {

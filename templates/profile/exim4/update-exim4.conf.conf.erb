@@ -17,7 +17,7 @@
 # This is a Debian specific file
 
 dc_eximconfig_configtype='internet'
-dc_other_hostnames='<%= @facts['fqdn'] %>'
+dc_other_hostnames='<%= @networking['fqdn'] %>'
 dc_local_interfaces='127.0.0.1 ; ::1'
 dc_readhost=''
 dc_relay_domains='<%= @relay_domain %>'
