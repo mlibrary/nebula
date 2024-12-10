@@ -9,7 +9,7 @@
 /.vagrant/
 /coverage/
 /bin/
-/Gemfile.local
+/Gemfile.lock
 /junit/
 /log/
 /log/
