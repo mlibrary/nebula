@@ -76,10 +76,13 @@ describe 'nebula::haproxy::service' do
               acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
               acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt
               acl cloudflare_connecting_ip req.hdr(CF-Connecting-IP) -m found
+              acl cloudflare_worker req.hdr(CF-Worker) -m found
               http-request deny if blocked-ip
               http-request set-header X-Forwarded-Proto https
               http-request set-header X-Client-IP %ci
               http-request set-header X-Client-IP %[req.hdr(CF-Connecting-IP)] if cloudflare_proxied cloudflare_connecting_ip
+              http-request set-header X-Client-IP 240.36.0.103 if cloudflare_proxied cloudflare_worker
+              http-request replace-header User-Agent (.*) "Cloudflare Worker (%[req.hdr(CF-Worker)]) - \\1" if cloudflare_proxied cloudflare_worker
             HAPROXY
           )
         end
@@ -297,10 +300,13 @@ describe 'nebula::haproxy::service' do
               acl blocked-ip src -f /etc/haproxy/global_badrobots.txt
               acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt
               acl cloudflare_connecting_ip req.hdr(CF-Connecting-IP) -m found
+              acl cloudflare_worker req.hdr(CF-Worker) -m found
               http-request deny if blocked-ip
               http-request set-header X-Forwarded-Proto http
               http-request set-header X-Client-IP %ci
               http-request set-header X-Client-IP %[req.hdr(CF-Connecting-IP)] if cloudflare_proxied cloudflare_connecting_ip
+              http-request set-header X-Client-IP 240.36.0.103 if cloudflare_proxied cloudflare_worker
+              http-request replace-header User-Agent (.*) "Cloudflare Worker (%[req.hdr(CF-Worker)]) - \\1" if cloudflare_proxied cloudflare_worker
             HAPROXY
           )
         end
