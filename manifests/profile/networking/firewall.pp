@@ -152,9 +152,9 @@ class nebula::profile::networking::firewall (
 
   # Default IPv4 items, sorted by title
   firewall { '001 accept related established rules':
-    proto  => 'all',
-    state  => ['RELATED', 'ESTABLISHED'],
-    jump   => 'accept',
+    proto => 'all',
+    state => ['RELATED', 'ESTABLISHED'],
+    jump  => 'accept',
   }
 
   firewall { '001 accept all to lo interface':

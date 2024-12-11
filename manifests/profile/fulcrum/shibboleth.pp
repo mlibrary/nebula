@@ -7,9 +7,9 @@
 class nebula::profile::fulcrum::shibboleth {
   ensure_packages([
     'unixodbc',
-    'shibboleth-sp2-common',
-    'shibboleth-sp2-utils',
-    'mariadb-unixodbc',
+    'shibboleth-sp-common',
+    'shibboleth-sp-utils',
+    'odbc-mariadb',
   ])
 
   file { '/etc/odbcinst.ini':
@@ -52,7 +52,7 @@ class nebula::profile::fulcrum::shibboleth {
     ensure     => 'running',
     enable     => true,
     hasrestart => true,
-    require    => [Package['shibboleth-sp2-utils'], Package['mariadb-unixodbc']]
+    require    => [Package['shibboleth-sp-utils'], Package['odbc-mariadb']]
   }
 
   service { 'shibauthorizer.socket':

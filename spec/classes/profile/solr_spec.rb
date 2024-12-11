@@ -13,10 +13,10 @@ describe 'nebula::profile::solr' do
       it { is_expected.to compile }
 
       # Packages
-      [
-        'openjdk-8-jre-headless',
-        'solr',
-        'lsof',
+      %w[
+        openjdk-11-jre-headless
+        solr
+        lsof
       ].each do |package|
         it { is_expected.to contain_package(package) }
       end
