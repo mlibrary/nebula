@@ -28,10 +28,13 @@ default_backend <%= @service_prefix %>-back
 acl blocked-ip src -f <%= @badrobots %>
 acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt
 acl cloudflare_connecting_ip req.hdr(CF-Connecting-IP) -m found
+acl cloudflare_worker req.hdr(CF-Worker) -m found
 http-request deny if blocked-ip
 http-request set-header X-Forwarded-Proto <%= @protocol %>
 http-request set-header X-Client-IP %ci
 http-request set-header X-Client-IP %[req.hdr(CF-Connecting-IP)] if cloudflare_proxied cloudflare_connecting_ip
+http-request set-header X-Client-IP 240.36.0.103 if cloudflare_proxied cloudflare_worker
+http-request replace-header User-Agent (.*) "Cloudflare Worker (%[req.hdr(CF-Worker)]) - \1" if cloudflare_proxied cloudflare_worker
 <% if @cloudflare_protected -%>
 http-request deny unless cloudflare_proxied
 <% end -%>
