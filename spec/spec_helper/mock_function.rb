@@ -65,6 +65,17 @@ module RSpecPuppetUtils
       self.expects(:execute)
     end
 
+    # Use stubbed instead, see readme
+    def stub
+      self.stubs(:call)
+    end
+
+    # Use expected instead, see readme
+    def expect(*args)
+      RSpec::Puppet::Support.clear_cache unless args.include? :keep_cache
+      self.expects(:call)
+    end
+
     private
 
     def parse_options!(options)
