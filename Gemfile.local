@@ -1,4 +1,5 @@
 group :development do
   gem "faker"
   gem "librarian-puppet"
+  gem 'pdk', '2.7.1'
 end
