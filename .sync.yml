@@ -32,7 +32,6 @@ spec/default_facts.yml:
     - 2.5.0
     vm_guests: ['invalid_existing_guest']
 spec/spec_helper.rb:
-  mock_with: ':mocha'
   spec_overrides:
     - "module DefaultHieraConfig"
     - "  extend RSpec::SharedContext"
