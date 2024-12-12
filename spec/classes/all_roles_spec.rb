@@ -72,12 +72,10 @@ def test_roles(slice_number = 1, slice_count = 1)
             ].select { |role_base, _| role_name.start_with? role_base }.first[1]
           end
 
-          let!(:puppetdb_query) do
-            MockFunction.new('puppetdb_query') do |f|
-              # Everything that runs puppetdb_query should be able to deal
-              # with empty results.
-              f.stubbed.returns([])
-            end
+          before(:each) do
+            # Everything that runs puppetdb_query should be able to deal
+            # with empty results.
+            Puppet::Parser::Functions.newfunction(:puppetdb_query, type: :rvalue) { |_| [] }
           end
 
           it { is_expected.to compile_along_with_all_roles(hiera_fixture) }

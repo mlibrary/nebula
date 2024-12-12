@@ -8,7 +8,6 @@ group :development do
   gem "fast_gettext",                                  require: false
   gem "puppet-module-posix-default-r#{minor_version}", require: false, platforms: [:ruby]
   gem "puppet-module-posix-dev-r#{minor_version}",     require: false, platforms: [:ruby]
-  gem "rspec-puppet-utils"
   gem "rubocop-rake"
   gem "faker"
   gem "librarian-puppet"

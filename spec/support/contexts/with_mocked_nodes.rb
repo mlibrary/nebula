@@ -12,7 +12,6 @@ RSpec.shared_context 'with mocked puppetdb functions' do |_datacenter, nodes, cl
       end
     end
 
-    # stub_function('fact_for', fact_for)
     stub('fact_for') do |d|
       nodes.each do |node|
         allow_call(d).with(node, 'networking').and_return(send(node.to_sym))
