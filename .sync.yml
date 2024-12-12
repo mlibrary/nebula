@@ -1,0 +1,34 @@
+---
+.gitignore:
+  required:
+    - ---.git/ # No .gitignore needs this
+    - ---/doc/ # We have files here
+    - /.pdkignore
+    - /.tmp/
+    - /Puppetfile.lock
+    - /modules/
+    - /spec/examples.txt
+Gemfile:
+  required:
+    ':development':
+      - gem: faker
+      - gem: librarian-puppet
+      - gem: pdk
+        version: 2.7.1
+spec/default_facts.yml:
+  extra_facts:
+    ec2_tag_role: nebula::role::aws
+    datacenter: mydatacenter
+    installed_backports: []
+    letsencrypt_directory:
+      foo.example.com: /etc/letsencrypt/live/foo.example.com
+      example.invalid: /etc/letsencrypt/live/example.invalid
+    prometheus_errors_total: 0
+    # The ruby tests by default are set to install 2.4.3 and 2.5.0, so 2.4.2
+    # represents an installed but not desired version of ruby, while 2.5.0
+    # represents an already-installed and still desired version of ruby.
+    ruby_versions:
+      - 2.4.2
+      - 2.5.0
+    vm_guests:
+      - invalid_existing_guest
