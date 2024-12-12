@@ -1,4 +1,11 @@
 ---
+Gemfile:
+  required:
+    ':development':
+      - gem: faker
+      - gem: librarian-puppet
+      - gem: pdk
+        version: 2.7.1      
 spec/default_facts.yml:
   extra_facts:
     ec2_tag_role: nebula::role::aws
