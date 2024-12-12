@@ -3,7 +3,7 @@
   required:
     - ---.git/ # No .gitignore needs this
     - ---/doc/ # We have files here
-    - .pdkignore
+    - /.pdkignore
     - /.tmp/
     - /Puppetfile.lock
     - /modules/
