@@ -1,4 +1,13 @@
 ---
+.gitignore:
+  required:
+    - ---.git/ # No .gitignore needs this
+    - ---/doc/ # We have files here
+    - .pdkignore
+    - /.tmp/
+    - /Puppetfile.lock
+    - /modules/
+    - /spec/examples.txt
 Gemfile:
   required:
     ':development':
