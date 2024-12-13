@@ -7,8 +7,5 @@
 # @example
 #   include nebula::profile::puppet::db
 class nebula::profile::puppet::db {
-  #class { 'puppetdb':
-  #  disable_cleartext => true,
-  #  manage_firewall   => false,
-  #}
+  # puppetdb is no longer managed by nebula
 }
