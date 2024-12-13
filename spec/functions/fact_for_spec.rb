@@ -10,12 +10,12 @@ describe 'fact_for' do
   let(:fact_name) { '' }
   let(:fact_value) { '' }
 
-  let!(:puppetdb_query) do
-    MockFunction.new('puppetdb_query') do |f|
-      f.stubbed
-       .with(['from', 'facts', ['extract', ['value'], ['and', ['=', 'certname', node_id], ['=', 'name', fact_name]]]])
-       .returns([{ 'value' => fact_value }])
-    end
+  before(:each) do
+    Puppet::Parser::Functions.newfunction(:puppetdb_query, type: :rvalue) { |_| raise 'OVERRIDE ME!' }
+
+    allow(scope).to receive(:function_puppetdb_query)
+      .with([['from', 'facts', ['extract', ['value'], ['and', ['=', 'certname', node_id], ['=', 'name', fact_name]]]]])
+      .and_return([{ 'value' => fact_value }])
   end
 
   context 'when my_node has datacenter my_datacenter' do

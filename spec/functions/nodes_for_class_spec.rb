@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 The Regents of the University of Michigan.
-# All Rights Reserved. Licensed according to the terms of the Revised
-# BSD License. See LICENSE.txt for details.
 require 'spec_helper'
 
 describe 'nodes_for_class' do
   let(:class_title) { '' }
   let(:nodes) { [] }
-  let!(:puppetdb_query) do
-    MockFunction.new('puppetdb_query') do |f|
-      f.stubbed
-       .with(['from', 'resources', ['extract', ['certname'], ['=', 'title', class_title]]])
-       .returns(nodes.map { |n| { 'certname' => n } })
-    end
+
+  before(:each) do
+    Puppet::Parser::Functions.newfunction(:puppetdb_query, type: :rvalue) { |_| raise 'OVERRIDE ME!' }
+
+    allow(scope).to receive(:function_puppetdb_query)
+      .with([['from', 'resources', ['extract', ['certname'], ['=', 'title', class_title]]]])
+      .and_return(nodes.map { |n| { 'certname' => n } })
   end
 
   context 'when nodes node_a and node_b have the role my_role' do
