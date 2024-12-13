@@ -4,7 +4,6 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 require 'spec_helper'
-require_relative '../support/contexts/with_mocked_nodes'
 
 def puppet_role_name_from(path)
   path.strip.gsub('/', '::').gsub(%r{^manifests}, 'nebula').gsub(%r{\.pp}, '')
