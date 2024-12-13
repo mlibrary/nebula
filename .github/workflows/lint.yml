@@ -6,11 +6,11 @@ on:
   pull_request:
 
 jobs:
-  test:
-    runs-on: ${{ contains( github.event.pull_request.labels.*.name, 'use_fast_ci') && 'ubuntu-latest-8core' || 'ubuntu-latest' }}
+  lint:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Run tests
       run: |
         docker compose --file docker-compose.test.yml build
-        docker compose --file docker-compose.test.yml run specs
+        docker compose --file docker-compose.test.yml run lint
