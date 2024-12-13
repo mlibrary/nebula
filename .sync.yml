@@ -7,7 +7,6 @@
     - /.tmp/
     - /Puppetfile.lock
     - /modules/
-    - /spec/examples.txt
 Gemfile:
   required:
     ':development':
