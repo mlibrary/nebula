@@ -13,7 +13,7 @@ Puppet::Functions.create_function(:public_ip) do
     if aws_node?
       ec2_metadata['public-ipv4']
     else
-      facts['ipaddress']
+      facts['networking']['ip']
     end
   end
 

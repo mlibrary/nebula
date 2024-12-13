@@ -13,7 +13,7 @@ describe 'nebula::profile::base' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
-      let(:fqdn) { facts[:fqdn] }
+      let(:fqdn) { facts[:networking]['fqdn'] }
 
       it { is_expected.to contain_service('puppet').without_ensure }
       it { is_expected.to contain_service('puppet').with_enable(true) }
