@@ -6,5 +6,11 @@
 require 'spec_helper'
 
 describe 'public_ip' do
-  it { is_expected.to run.and_return('172.16.254.254') }
+  on_supported_os.each do |os, os_facts|
+    context "on #{os}" do
+      let(:facts) { os_facts }
+
+      it { is_expected.to run.and_return(facts[:networking]['ip']) }
+    end
+  end
 end
