@@ -1,0 +1,9 @@
+---
+ignore:
+  - Gemfile
+  - Puppetfile
+  - Rakefile
+  - modules/**/*
+  - spec/fixtures/**/*
+  - spec/spec_helper.rb
+  - vendor/**/*
