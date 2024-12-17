@@ -62,9 +62,9 @@ class nebula::profile::authz_test {
   }
 
   firewall { '200 HTTP(S): public':
-    proto  => 'tcp',
-    dport  => [80, 443],
-    state  => 'NEW',
-    action => 'accept',
+    proto => 'tcp',
+    dport => [80, 443],
+    state => 'NEW',
+    jump  => 'accept',
   }
 }
