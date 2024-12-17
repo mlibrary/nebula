@@ -5,6 +5,7 @@
     - ---/doc/ # We have files here
     - /.pdkignore
     - /.tmp/
+    - /.tool-versions
     - /Puppetfile.lock
     - /modules/
     - /spec/examples.txt

@@ -21,6 +21,7 @@
 /update_report.txt
 .DS_Store
 /.tmp/
+/.tool-versions
 /Puppetfile.lock
 /modules/
 /spec/examples.txt
