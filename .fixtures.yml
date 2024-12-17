@@ -15,6 +15,7 @@ fixtures:
   repositories:
     apache:
       repo: "https://github.com/mlibrary/puppetlabs-apache"
+      ref: "v7.1.1"
   forge_modules:
     rbenv:               {"repo": "jdowning/rbenv",             "ref": "3.1.0" }
     archive:             {"repo": "puppet/archive",             "ref": "7.1.0" }
