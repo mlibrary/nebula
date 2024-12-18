@@ -23,7 +23,7 @@ describe "nebula::profile::elastic::metricbeat" do
 
       it do
         expect(subject).to contain_file("/etc/metricbeat/metricbeat.yml").with(
-          ensure: "present",
+          ensure: "file",
           require: "Package[metricbeat]",
           notify: "Service[metricbeat]",
           mode: "0644"

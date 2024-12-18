@@ -128,7 +128,7 @@ describe "nebula::profile::haproxy" do
       describe "haproxy default file" do
         let(:file) { default_file }
 
-        it { is_expected.to contain_file(file).with(ensure: "present") }
+        it { is_expected.to contain_file(file).with(ensure: "file") }
         it { is_expected.to contain_file(file).with(require: "Package[haproxy]") }
         it { is_expected.to contain_file(file).with(notify: "Service[haproxy]") }
         it { is_expected.to contain_file(file).with(mode: "0644") }
@@ -166,7 +166,7 @@ describe "nebula::profile::haproxy" do
       describe "base haproxy config file" do
         let(:file) { haproxy_conf }
 
-        it { is_expected.to contain_file(file).with(ensure: "present") }
+        it { is_expected.to contain_file(file).with(ensure: "file") }
         it { is_expected.to contain_file(file).with(require: "Package[haproxy]") }
         it { is_expected.to contain_file(file).with(notify: "Service[haproxy]") }
         it { is_expected.to contain_file(file).with(mode: "0644") }
@@ -297,7 +297,7 @@ describe "nebula::profile::haproxy" do
       describe "sysctl conf" do
         let(:file) { "/etc/sysctl.d/keepalived.conf" }
 
-        it { is_expected.to contain_file(file).with(ensure: "present") }
+        it { is_expected.to contain_file(file).with(ensure: "file") }
         it { is_expected.to contain_file(file).with(mode: "0644") }
 
         it "says it is managed by puppet" do

@@ -21,7 +21,7 @@ describe "nebula::profile::elastic::filebeat" do
 
       it do
         expect(subject).to contain_file("/etc/filebeat/filebeat.yml").with(
-          ensure: "present",
+          ensure: "file",
           require: "Package[filebeat]",
           notify: "Service[filebeat]",
           mode: "0644"

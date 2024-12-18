@@ -31,7 +31,7 @@ describe "nebula::profile::elastic" do
 
         it do
           expect(subject).to contain_file("/etc/ssl/certs/logstash-forwarder.crt").with(
-            ensure: "present",
+            ensure: "file",
             require: "File[/etc/ssl/certs]",
             mode: "0644",
             source: "puppet:///some/file.crt"
