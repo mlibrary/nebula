@@ -69,7 +69,7 @@ def test_roles(slice_number = 1, slice_count = 1)
               %w[nebula::role::webhost::fulcrum_www_and_app fulcrum],
               %w[nebula::role::fulcrum::standalone fulcrum],
               %w[nebula default]
-            ].select { |role_base, _| role_name.start_with? role_base }.first[1]
+            ].find { |role_base, _| role_name.start_with? role_base }[1]
           end
 
           before(:each) do
