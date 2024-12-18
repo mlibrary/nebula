@@ -8,3 +8,5 @@ require 'puppet-strings/tasks' if Gem.loaded_specs.key? 'puppet-strings'
 
 PuppetLint.configuration.send('disable_relative')
 PuppetLint.configuration.send('disable_puppet_url_without_modules')
+PuppetLint.configuration.send('disable_strict_indent')
+PuppetLint.configuration.send('disable_trailing_comma')

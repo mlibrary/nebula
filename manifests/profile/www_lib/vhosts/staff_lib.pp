@@ -16,7 +16,6 @@ class nebula::profile::www_lib::vhosts::staff_lib (
   String $vhost_root = '/www/staff.lib',
   String $docroot = "${vhost_root}/web"
 ) {
-
   nebula::apache::www_lib_vhost { 'apps.staff.lib http redirect':
     servername      => "${prefix}apps.staff.${domain}",
     ssl             => false,
@@ -169,4 +168,3 @@ class nebula::profile::www_lib::vhosts::staff_lib (
     ]
   }
 }
-

@@ -20,6 +20,4 @@ class nebula::profile::www_lib::dependencies {
       "openjdk-${jdk_version}-jre",
     ]
   )
-
-
 }

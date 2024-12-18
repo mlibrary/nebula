@@ -17,8 +17,7 @@ class nebula::profile::networking::private (
   String $broadcast = '192.168.255.255',
   Optional[String] $interface = undef,
 ) {
-
-  if !$interface and $::os['family'] == 'Debian' and $facts['is_virtual']
+  if !$interface and $facts['os']['family'] == 'Debian' and $facts['is_virtual']
     and 'ens4' in $::networking['interfaces'] {
     $real_interface = 'ens4'
   } else {
@@ -40,9 +39,7 @@ class nebula::profile::networking::private (
 
     Exec["ifup ${real_interface}"] -> Service <| tag == 'private_network' |>
     Exec["ifup ${real_interface}"] -> Mount <| tag == 'private_network' |>
-
   } else {
     err('No network interface to configure')
   }
 }
-

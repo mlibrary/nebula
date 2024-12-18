@@ -14,7 +14,7 @@ class nebula::profile::hathitrust::solr6::lss (
   String $release_flag_prefix = lookup('nebula::profile::hathitrust::solr6::release_flag_prefix', default_value => ''),
   String $mirror_site_ip = lookup('nebula::profile::hathitrust::solr6::mirror_site_ip'),
   String $mail_recipient = lookup('nebula::profile::hathitrust::solr6::mail_recipient'),
-){
+) {
   class { 'nebula::profile::hathitrust::solr6':
     port      => $port,
     solr_home => $solr_home,
@@ -27,7 +27,7 @@ class nebula::profile::hathitrust::solr6::lss (
       private_network => true,
       monitored       => true,
       before          => Service['solr'],
-      remote_target   => "nas-${::datacenter}.sc:/ifs/htsolr/lss/cores/${core}";
+      remote_target   => "nas-${facts['datacenter']}.sc:/ifs/htsolr/lss/cores/${core}";
     }
   }
   nebula::nfs_mount {
@@ -37,9 +37,9 @@ class nebula::profile::hathitrust::solr6::lss (
       monitored       => true,
       before          => Service['solr'],
     ;
-    '/htsolr/lss/flags':  remote_target => "nas-${::datacenter}.sc:/ifs/htsolr/lss/flags";
-    '/htsolr/lss/prep':   remote_target => "nas-${::datacenter}.sc:/ifs/htsolr/lss/prep";
-    '/htsolr/lss/shared': remote_target => "nas-${::datacenter}.sc:/ifs/htsolr/lss/shared";
+    '/htsolr/lss/flags':  remote_target => "nas-${facts['datacenter']}.sc:/ifs/htsolr/lss/flags";
+    '/htsolr/lss/prep':   remote_target => "nas-${facts['datacenter']}.sc:/ifs/htsolr/lss/prep";
+    '/htsolr/lss/shared': remote_target => "nas-${facts['datacenter']}.sc:/ifs/htsolr/lss/shared";
   }
 
   # core configs require jars to be available in solr home as well as /htsolr/serve

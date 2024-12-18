@@ -13,7 +13,6 @@ define nebula::local_storage_volume (
   String $volume_name,
   Integer $mib_capacity
 ) {
-
   file { "/mnt/local-pvs/mounts/${volume_name}":
     ensure => 'directory'
   }

@@ -26,7 +26,6 @@ class nebula::profile::ruby (
   # These should be removed as soon as practical in coordination with devs.
   String $manage_blacklist = '^jruby-(1\.7|9\.0)\.',
 ) {
-
   ensure_packages([
     'autoconf',
     'build-essential',
@@ -41,7 +40,7 @@ class nebula::profile::ruby (
     'libgdbm-dev'
   ])
 
-  case $::os['release']['major'] {
+  case $facts['os']['release']['major'] {
     '8':     { package { 'libmysqlclient-dev': } }
     '9':     { package { 'default-libmysqlclient-dev': } }
     default: { package { 'libmariadb-dev': } }
@@ -71,7 +70,7 @@ class nebula::profile::ruby (
 
   $supported_versions.each |$version| {
     # Ruby < 2.4 is incompatible with debian stretch
-    unless $::os['release']['major'] == '9' and $version =~ /^2\.3\./ {
+    unless $facts['os']['release']['major'] == '9' and $version =~ /^2\.3\./ {
       unless $version =~ $manage_blacklist {
         unless $version == $global_version {
           rbenv::build { $version:
@@ -91,7 +90,7 @@ class nebula::profile::ruby (
     }
   }
 
-  $::ruby_versions.each |$version| {
+  $facts['ruby_versions'].each |$version| {
     unless $version in $supported_versions {
       unless $version == $global_version {
         exec { "rbenv uninstall ${version}":

@@ -13,7 +13,7 @@
 # only trusts the hosts; it does not actually grant access through a
 # firewall or anything.
 class nebula::profile::known_host_public_keys {
-  $::ssh.each |$name, $key_obj| {
+  $facts['ssh'].each |$name, $key_obj| {
     $type = $key_obj["type"]
     $key = $key_obj["key"]
 

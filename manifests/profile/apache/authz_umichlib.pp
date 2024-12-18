@@ -36,7 +36,6 @@ class nebula::profile::apache::authz_umichlib (
   String $oracle_sid = 'orcl',
   Integer $oracle_port = 1521,
 ) {
-
   include apache::mod::dbd
 
   # Note: Packages for modules must be declared in the mod stanzas and
@@ -67,11 +66,11 @@ class nebula::profile::apache::authz_umichlib (
 
   file { 'authz_umichlib.conf':
     ensure  => file,
-    path    => "${::apache::mod_dir}/authz_umichlib.conf",
-    mode    => $::apache::file_mode,
+    path    => "${apache::mod_dir}/authz_umichlib.conf",
+    mode    => $apache::file_mode,
     content => template('nebula/profile/apache/authz_umichlib.conf.erb'),
-    require => Exec["mkdir ${::apache::mod_dir}"],
-    before  => File[$::apache::mod_dir],
+    require => Exec["mkdir ${apache::mod_dir}"],
+    before  => File[$apache::mod_dir],
     notify  => Class['apache::service'],
   }
 

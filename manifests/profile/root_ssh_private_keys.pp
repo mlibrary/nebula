@@ -4,7 +4,6 @@
 
 # nebula::profile::root_ssh_private_keys
 class nebula::profile::root_ssh_private_keys {
-
   $users = lookup('nebula::profile::authorized_keys::ssh_keys').keys
 
   $users.each |$user| {
@@ -31,5 +30,4 @@ class nebula::profile::root_ssh_private_keys {
   file { '/var/local/ssh':
     ensure => 'directory',
   }
-
 }

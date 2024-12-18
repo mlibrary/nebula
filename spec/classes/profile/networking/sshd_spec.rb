@@ -3,24 +3,24 @@
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'nebula::profile::networking::sshd' do
+describe "nebula::profile::networking::sshd" do
   def contain_sshd
-    contain_file('/etc/ssh/sshd_config')
+    contain_file("/etc/ssh/sshd_config")
   end
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to contain_sshd.that_notifies('Service[sshd]') }
+      it { is_expected.to contain_sshd.that_notifies("Service[sshd]") }
 
       it do
-        expect(subject).to contain_service('sshd').only_with(
-          ensure: 'running',
+        expect(subject).to contain_service("sshd").only_with(
+          ensure: "running",
           enable: true,
-          hasrestart: true,
+          hasrestart: true
         )
       end
 
@@ -38,36 +38,36 @@ describe 'nebula::profile::networking::sshd' do
         %r{^UsePrivilegeSeparation yes$},
         %r{^AcceptEnv LANG LC_\*$},
         %r{^Subsystem\s+sftp\s+/usr/lib/openssh/sftp-server$},
-        %r{^Match Address 10\.1\.1\.0/24,10\.2\.2\.0/24,!10\.2\.2\.2\n\s*PubkeyAuthentication yes$}m,
+        %r{^Match Address 10\.1\.1\.0/24,10\.2\.2\.0/24,!10\.2\.2\.2\n\s*PubkeyAuthentication yes$}m
       ].each do |line|
         it { is_expected.to contain_sshd.with_content(line) }
       end
 
       it "doesn't contain whitelist settings other than pubkey" do
         expect(subject).to contain_sshd.without_content(
-          %r{^Match Address [0-9.,/!]+\n\s*PubkeyAuthentication yes\n.}m,
+          %r{^Match Address [0-9.,/!]+\n\s*PubkeyAuthentication yes\n.}m
         )
       end
 
-      context 'when given no whitelist' do
-        let(:params) { { whitelist: [] } }
+      context "when given no whitelist" do
+        let(:params) { {whitelist: []} }
 
         it do
           expect(subject).to contain_sshd.without_content(
-            %r{^Match Address},
+            %r{^Match Address}
           )
         end
       end
 
-      context 'with no keytab' do
+      context "with no keytab" do
         it do
           expect(subject).not_to contain_sshd.with_content(
-            %r{^GSSAPIAuthentication yes$}m,
+            %r{^GSSAPIAuthentication yes$}m
           )
         end
       end
 
-      context 'with a keytab' do
+      context "with a keytab" do
         let(:pre_condition) do
           <<~KEYTAB
             class { 'nebula::profile::networking::keytab':
@@ -79,37 +79,37 @@ describe 'nebula::profile::networking::sshd' do
 
         it do
           expect(subject).to contain_sshd.with_content(
-            %r{^Match Address [0-9.,/!]+\n\s*PubkeyAuthentication yes\n\s*GSSAPIAuthentication yes$}m,
+            %r{^Match Address [0-9.,/!]+\n\s*PubkeyAuthentication yes\n\s*GSSAPIAuthentication yes$}m
           )
         end
       end
 
       it do
-        expect(subject).to contain_concat('/etc/ssh/ssh_config')
-        expect(subject).to contain_concat_fragment('main ssh client config')
-          .with_target('/etc/ssh/ssh_config')
+        expect(subject).to contain_concat("/etc/ssh/ssh_config")
+        expect(subject).to contain_concat_fragment("main ssh client config")
+          .with_target("/etc/ssh/ssh_config")
           .with_content(%r{^\s*SendEnv LANG LC_\*$})
       end
 
-      it { is_expected.to contain_file('/etc/pam.d/sshd-defaults') }
+      it { is_expected.to contain_file("/etc/pam.d/sshd-defaults") }
 
-      it { is_expected.to contain_concat_file('/etc/pam.d/sshd').with_path('/etc/pam.d/sshd') }
+      it { is_expected.to contain_concat_file("/etc/pam.d/sshd").with_path("/etc/pam.d/sshd") }
 
       it do
-        expect(subject).to contain_concat_fragment('/etc/pam.d/sshd: base')
-          .with_target('/etc/pam.d/sshd')
+        expect(subject).to contain_concat_fragment("/etc/pam.d/sshd: base")
+          .with_target("/etc/pam.d/sshd")
           .with_content(%r{@include sshd-defaults})
       end
 
-      context 'with port set to 44' do
-        let(:params) { { port: 44 } }
+      context "with port set to 44" do
+        let(:params) { {port: 44} }
 
         it { is_expected.not_to contain_sshd.with_content(%r{^#Port 22$}) }
         it { is_expected.to contain_sshd.with_content(%r{^Port 44$}) }
       end
 
-      context 'with port set to 333' do
-        let(:params) { { port: 333 } }
+      context "with port set to 333" do
+        let(:params) { {port: 333} }
 
         it { is_expected.not_to contain_sshd.with_content(%r{^#Port 22$}) }
         it { is_expected.to contain_sshd.with_content(%r{^Port 333$}) }

@@ -1,4 +1,3 @@
-
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
@@ -10,7 +9,6 @@
 # @example
 #   include nebula::profile::hathitrust::apache::logs
 class nebula::profile::hathitrust::apache::logs {
-
   cron { 'purge apache error logs':
     command => '/usr/bin/find /var/log/apache2 -type f -name "error_log*" -mtime +14 -exec /bin/rm {} \; > /dev/null 2>&1 ',
     user    => 'root',
@@ -31,5 +29,4 @@ class nebula::profile::hathitrust::apache::logs {
     minute  => '0',
     hour    => '2',
   }
-
 }

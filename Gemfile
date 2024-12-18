@@ -39,6 +39,7 @@ group :development do
   gem "faker",                                   require: false
   gem "librarian-puppet", '>= 5.0',              require: false
   gem "pdk", '>= 3.3.0',                         require: false
+  gem "standard",                                require: false
 end
 group :system_tests do
   gem "puppet_litmus", '~> 1.0', require: false, platforms: [:ruby, :x64_mingw]

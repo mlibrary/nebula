@@ -26,7 +26,6 @@ class nebula::profile::apache::auth_openidc (
   String $oidc_client_secret,
   String $oidc_crypto,
 ) {
-
   apache::mod { 'auth_openidc':
     package       => 'libapache2-mod-auth-openidc',
   }
@@ -35,11 +34,11 @@ class nebula::profile::apache::auth_openidc (
 
   file { 'auth_openidc.conf':
     ensure  => file,
-    path    => "${::apache::mod_dir}/auth_openidc.conf",
+    path    => "${apache::mod_dir}/auth_openidc.conf",
     mode    => '0700',
     content => template('nebula/profile/apache/auth_openidc.conf.erb'),
-    require => Exec["mkdir ${::apache::mod_dir}"],
-    before  => File[$::apache::mod_dir],
+    require => Exec["mkdir ${apache::mod_dir}"],
+    before  => File[$apache::mod_dir],
     notify  => Class['apache::service'],
   }
 
@@ -49,9 +48,8 @@ class nebula::profile::apache::auth_openidc (
 
   file { '/var/cache/apache2/mod_auth_openidc/oidc-sessions':
     ensure => 'directory',
-    owner  => $::apache::user,
-    group  => $::apache::group,
+    owner  => $apache::user,
+    group  => $apache::group,
     mode   => '0700'
   }
-
 }

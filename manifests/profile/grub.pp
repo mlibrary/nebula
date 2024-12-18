@@ -9,8 +9,7 @@
 # @example
 #   include nebula::profile::grub
 class nebula::profile::grub {
-
-  if $::is_virtual and $::virtual == 'kvm' {
+  if $facts['is_virtual'] and $facts['virtual'] == 'kvm' {
     service { 'getty@hvc0':
       ensure     => 'running',
       enable     => true,

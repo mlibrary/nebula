@@ -12,12 +12,11 @@ class nebula::role::umich (
   $bridge_network = false,
   $internal_routing = '',
 ) {
-
   class { 'nebula::role::minimum':
     internal_routing => $internal_routing,
   }
 
-  if $::os['family'] == 'Debian' {
+  if $facts['os']['family'] == 'Debian' {
     include nebula::profile::duo
     include nebula::profile::exim4
     include nebula::profile::grub
@@ -30,5 +29,4 @@ class nebula::role::umich (
   include nebula::profile::dns::standard
   include nebula::profile::elastic::metricbeat
   include nebula::profile::elastic::filebeat::configs::ulib
-
 }

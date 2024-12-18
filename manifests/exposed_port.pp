@@ -55,7 +55,7 @@
 #     block    => 'one building',
 #     protocol => 'udp',
 #   }
-define nebula::exposed_port(
+define nebula::exposed_port (
   $port,
   String $block,
   String $protocol = 'tcp',

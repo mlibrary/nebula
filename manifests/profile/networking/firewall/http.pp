@@ -14,7 +14,5 @@
 # @example
 #   include nebula::profile::networking::firewall::http
 class nebula::profile::networking::firewall::http () {
-  Firewall <<| tag == "${::datacenter}_haproxy" |>>
+  Firewall <<| tag == "${facts['datacenter']}_haproxy" |>>
 }
-
-

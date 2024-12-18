@@ -36,7 +36,7 @@ class nebula::profile::hathitrust::secure_rsync (
         Package['rsync'],
         Package['stunnel4'],
       ],
-      notify  => Service[secure-rsync];
+      notify  => Service['secure-rsync'];
     '/etc/systemd/system/secure-rsync.service':
       content  => template('nebula/profile/hathitrust/secure_rsync/secure-rsync.service.erb');
     "${rsync_home}/stunnel.conf":

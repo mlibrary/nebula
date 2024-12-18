@@ -12,8 +12,7 @@ class nebula::profile::aws::filesystem (
   String $disk = 'xvdb',
   String $device = '/dev/xvdb',
   String $mountpoint = '/l'
-){
-
+) {
   if $facts['disks'][$disk] {
     filesystem { $device:
       ensure  => present,
@@ -34,5 +33,4 @@ class nebula::profile::aws::filesystem (
       fstype => 'ext4'
     }
   }
-
 }

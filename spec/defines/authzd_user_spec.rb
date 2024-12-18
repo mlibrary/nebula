@@ -3,21 +3,21 @@
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
-require 'faker'
+require "spec_helper"
+require "faker"
 
-describe 'nebula::authzd_user' do
+describe "nebula::authzd_user" do
   let(:title) { Faker::Internet.user_name }
-  let(:home) { '/some/where' }
+  let(:home) { "/some/where" }
   let(:params) do
     {
       gid: Faker::Internet.user_name,
       home: home,
       key: {
-        type: 'ssh-rsa',
-        data: 'CCCCCCCCCCCC',
-        comment: Faker::Internet.email,
-      },
+        type: "ssh-rsa",
+        data: "CCCCCCCCCCCC",
+        comment: Faker::Internet.email
+      }
     }
   end
 
@@ -25,20 +25,20 @@ describe 'nebula::authzd_user' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      describe 'users' do
+      describe "users" do
         it {
           expect(subject).to contain_user(title).with(name: title,
-                                                      gid: params[:gid],
-                                                      home: home,
-                                                      shell: '/bin/bash',
-                                                      managehome: true)
+            gid: params[:gid],
+            home: home,
+            shell: "/bin/bash",
+            managehome: true)
         }
 
-        it { is_expected.to contain_file("#{home}/.ssh").with(ensure: 'directory', mode: '0700') }
+        it { is_expected.to contain_file("#{home}/.ssh").with(ensure: "directory", mode: "0700") }
         it { is_expected.to contain_file("#{home}/.ssh").with(owner: title, group: params[:gid]) }
         it { is_expected.to contain_file("#{home}/.ssh/authorized_keys").with(owner: title, group: params[:gid]) }
 
-        it 'creates authorized_keys with the given key' do
+        it "creates authorized_keys with the given key" do
           expect(subject).to contain_file("#{home}/.ssh/authorized_keys")
             .with_content(%r{^#{params[:key][:type]} #{params[:key][:data]} #{params[:key][:comment]}$})
         end

@@ -15,7 +15,6 @@ class nebula::profile::www_lib::vhosts::apps_lib (
   String $www_lib_root = '/www/www.lib',
   String $docroot = "${www_lib_root}/web"
 ) {
-
   $servername = "${prefix}apps.${domain}"
 
   ### client cert
@@ -32,13 +31,13 @@ class nebula::profile::www_lib::vhosts::apps_lib (
   concat::fragment { 'client cert':
     target => $client_cert,
     source => "/etc/puppetlabs/puppet/ssl/certs/${certname}.pem",
-    order  =>  1
+    order  => 1
   }
 
   concat::fragment { 'client key':
     target => $client_cert,
     source => "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem",
-    order  =>  2
+    order  => 2
   }
 
   nebula::apache::www_lib_vhost { 'apps.lib-http':
@@ -144,7 +143,7 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         #
         # jhovater - 2008-12-04 varnum said to keep
         # 2008-08-28 csnavely per varnum
-        rewrite_rule =>  '^/wsfh		http://www.wsfh.org/	[redirect,last]'
+        rewrite_rule => '^/wsfh		http://www.wsfh.org/	[redirect,last]'
       },
       {
         # rewrites for aol-like, tinyurl-like "go" function
@@ -195,6 +194,5 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         path        => "${www_lib_root}/cgi/",
       },
     ],
-
   }
 }

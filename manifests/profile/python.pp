@@ -7,9 +7,7 @@
 # @example
 #   include nebula::profile::python
 class nebula::profile::python {
-
   package {[
     'python3-dev'
-  ]:}
-
+  ]: }
 }

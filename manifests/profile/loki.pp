@@ -7,7 +7,7 @@
 #
 class nebula::profile::loki (
   String $endpoint_url = 'https://loki-gateway.loki/loki/api/v1/push',
-){
+) {
   $certname = $trusted['certname']
   $hostname = $trusted['hostname']
   $user = 'alloy'

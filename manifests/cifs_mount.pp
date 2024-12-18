@@ -21,7 +21,7 @@
 #     gid           => 'somegroup',
 #
 #  }
-define nebula::cifs_mount(
+define nebula::cifs_mount (
   String $remote_target,
   String $uid,
   String $gid,
@@ -35,7 +35,7 @@ define nebula::cifs_mount(
 
   realize File["/etc/default/${user}-credentials"]
 
-  ensure_packages(['cifs-utils'], {'ensure' => 'present'})
+  ensure_packages(['cifs-utils'], { 'ensure' => 'present' })
 
   file { $title:
     ensure => 'directory',
@@ -46,7 +46,6 @@ define nebula::cifs_mount(
     device  => $remote_target,
     options => "credentials=/etc/default/${user}-credentials,uid=${uid},gid=${gid},file_mode=${file_mode},dir_mode=${dir_mode},${extra_options}",
     fstype  => 'cifs',
-    require => Package[cifs-utils]
+    require => Package['cifs-utils']
   }
-
 }

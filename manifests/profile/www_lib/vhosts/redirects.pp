@@ -2,9 +2,8 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-class nebula::profile::www_lib::vhosts::redirects(
+class nebula::profile::www_lib::vhosts::redirects (
 ) {
-
   nebula::apache::redirect_vhost_http { 'mediaindustriesjournal.org':
     serveraliases => [],
   }
@@ -123,7 +122,5 @@ class nebula::profile::www_lib::vhosts::redirects(
         rewrite_rule => ['^/.*$ http://www.lib.umich.edu/searchtools? [redirect=permanent,last,noescape]']
       }
     ]
-
   }
-
 }

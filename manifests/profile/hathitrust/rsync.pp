@@ -35,14 +35,13 @@ class nebula::profile::hathitrust::rsync (
   }
 
   file { '/etc/rsyncd.conf':
-    require => Package[rsync],
-    notify  => Service[rsync],
+    require => Package['rsync'],
+    notify  => Service['rsync'],
     content => template('nebula/profile/hathitrust/rsync/rsyncd.conf.erb')
   }
 
   $datasets.each |String $name, Hash $dataset| {
     $dataset['users'].each |Hash $user| {
-
       firewall { "200 rsync: dataset ${name} - ${user['comment']}":
         proto  => 'tcp',
         dport  => 873,
@@ -52,5 +51,4 @@ class nebula::profile::hathitrust::rsync (
       }
     }
   }
-
 }

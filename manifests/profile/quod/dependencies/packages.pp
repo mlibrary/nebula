@@ -24,6 +24,6 @@ class nebula::profile::quod::dependencies::packages () {
     ]
   )
   file { '/usr/share/GeoIP':
-    target =>  '/quod/misc/g/geoip'
+    target => '/quod/misc/g/geoip'
   }
 }

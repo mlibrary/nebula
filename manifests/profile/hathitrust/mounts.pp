@@ -37,7 +37,7 @@ class nebula::profile::hathitrust::mounts (
 
   $smartconnect_mounts.each |$mount| {
     nebula::nfs_mount { $mount:
-      remote_target   => "nas-${::datacenter}.sc:/ifs${mount}",
+      remote_target   => "nas-${facts['datacenter']}.sc:/ifs${mount}",
       tag             => 'smartconnect',
       private_network => true,
       monitored       => true
@@ -55,7 +55,7 @@ class nebula::profile::hathitrust::mounts (
   Integer[1, 24].each |$partition| {
     nebula::nfs_mount { "/sdr${partition}":
       options       => $sdr_options,
-      remote_target => "nas-${::datacenter}.sc:/ifs/sdr/${partition}",
+      remote_target => "nas-${facts['datacenter']}.sc:/ifs/sdr/${partition}",
       tag           => 'smartconnect',
       monitored     => true
     }

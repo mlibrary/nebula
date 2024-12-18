@@ -58,7 +58,7 @@
 #     $timeout => 0,                        # the special value of 0
 #                                           # disables the timeout
 #   }
-define nebula::virtual_machine(
+define nebula::virtual_machine (
   String  $addr            = '127.0.0.1',
   String  $build           = 'bullseye',
   Integer $cpus            = 2,
@@ -93,7 +93,7 @@ define nebula::virtual_machine(
     ensure => 'directory',
   }
 
-  unless $::vm_guests.member($title) {
+  unless $facts['vm_guests'].member($title) {
     if $build == 'stretch' or $build == 'buster' or $build == 'bullseye' {
       file { "${tmpdir}/preseed.cfg":
         content => template("nebula/virtual_machine/${build}.cfg.erb"),

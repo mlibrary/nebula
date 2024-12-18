@@ -30,7 +30,7 @@ class nebula::profile::hathitrust::php () {
     ]:
   }
 
-  -> class { '::php':
+  -> class { 'php':
     ensure       => present,     # Don't touch stuff from above; should be equivalent
     manage_repos => false, # Set true to add dotdeb repos
     fpm          => false,          # We only use mod_php at present
@@ -74,5 +74,4 @@ class nebula::profile::hathitrust::php () {
       'mail function/sendmail_path' => '/usr/sbin/sendmail -t -i'
     },
   }
-
 }

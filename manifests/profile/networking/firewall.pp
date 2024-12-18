@@ -47,7 +47,7 @@ class nebula::profile::networking::firewall (
           '-j DOCKER',
         ]
 
-        case $::os['name'] {
+        case $facts['os']['name'] {
           default: {
             $forward_ignore = []
           }
@@ -138,7 +138,6 @@ class nebula::profile::networking::firewall (
       'OUTPUT:filter:IPv6':
       ;
     }
-
   }
 
   $firewall_defaults = {
@@ -152,9 +151,9 @@ class nebula::profile::networking::firewall (
 
   # Default IPv4 items, sorted by title
   firewall { '001 accept related established rules':
-    proto  => 'all',
-    state  => ['RELATED', 'ESTABLISHED'],
-    jump   => 'accept',
+    proto => 'all',
+    state => ['RELATED', 'ESTABLISHED'],
+    jump  => 'accept',
   }
 
   firewall { '001 accept all to lo interface':
@@ -190,5 +189,4 @@ class nebula::profile::networking::firewall (
     before   => undef,
     protocol => 'ip6tables',
   }
-
 }

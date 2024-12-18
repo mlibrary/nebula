@@ -24,7 +24,7 @@ class nebula::profile::base (
     enable => true,
   }
 
-  if $::os['family'] == 'Debian' {
+  if $facts['os']['family'] == 'Debian' {
     package { 'dselect': }
     package { 'ifenslave': }
     package { 'vlan': }
@@ -56,7 +56,6 @@ class nebula::profile::base (
   }
 
   include nebula::profile::base::stop_mcollective
-
 
   if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
     include nebula::profile::base::hp

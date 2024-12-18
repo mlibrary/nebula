@@ -3,34 +3,34 @@
 # Copyright (c) 2019-2020 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
 %w[primary backup].each do |tier|
   describe "nebula::role::kubernetes::#{tier}_gateway" do
     on_supported_os.each do |os, os_facts|
-      next if os == 'debian-8-x86_64'
+      next if os == "debian-8-x86_64"
 
       context "on #{os}" do
-        let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/first_cluster_config.yaml' }
+        let(:hiera_config) { "spec/fixtures/hiera/kubernetes/first_cluster_config.yaml" }
         let(:facts) do
           my_facts = os_facts.deep_merge(
             networking: {
-              'interfaces' => {
-                'ens4' => {
-                  'ip' => '10.123.234.5',
-                },
+              "interfaces" => {
+                "ens4" => {
+                  "ip" => "10.123.234.5"
+                }
               },
-              'ip' => '10.123.234.5',
-              'primary' => 'ens4',
-            },
+              "ip" => "10.123.234.5",
+              "primary" => "ens4"
+            }
           )
-          my_facts[:networking]['interfaces'].delete('eth0')
+          my_facts[:networking]["interfaces"].delete("eth0")
           my_facts
         end
 
-        it { is_expected.to contain_class('Nebula::Profile::Ntp') }
+        it { is_expected.to contain_class("Nebula::Profile::Ntp") }
 
-        it { is_expected.to contain_service('haproxy').that_notifies('Service[keepalived]') }
+        it { is_expected.to contain_service("haproxy").that_notifies("Service[keepalived]") }
       end
     end
   end
@@ -39,88 +39,88 @@ end
 %w[controller etcd worker].each do |role|
   describe "nebula::role::kubernetes::#{role}" do
     on_supported_os.each do |os, os_facts|
-      next if os == 'debian-8-x86_64'
+      next if os == "debian-8-x86_64"
 
       context "on #{os}" do
-        let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/first_cluster_config.yaml' }
+        let(:hiera_config) { "spec/fixtures/hiera/kubernetes/first_cluster_config.yaml" }
         let(:facts) do
           my_facts = os_facts.deep_merge(
             networking: {
-              'interfaces' => {
-                'ens4' => {
-                  'ip' => '10.123.234.5',
-                },
+              "interfaces" => {
+                "ens4" => {
+                  "ip" => "10.123.234.5"
+                }
               },
-              'ip' => '10.123.234.5',
-              'primary' => 'ens4',
-            },
+              "ip" => "10.123.234.5",
+              "primary" => "ens4"
+            }
           )
-          my_facts[:networking]['interfaces'].delete('eth0')
+          my_facts[:networking]["interfaces"].delete("eth0")
           my_facts
         end
 
-        it { is_expected.to contain_class('Nebula::Profile::Ntp') }
+        it { is_expected.to contain_class("Nebula::Profile::Ntp") }
 
-        it { is_expected.not_to contain_resources('firewall').with_purge(false) }
+        it { is_expected.not_to contain_resources("firewall").with_purge(false) }
 
         it do
-          expect(subject).to contain_firewallchain('INPUT:filter:IPv4').with(
-            ensure: 'present',
+          expect(subject).to contain_firewallchain("INPUT:filter:IPv4").with(
+            ensure: "present",
             purge: false,
-            ignore: ['-j cali-INPUT',
-                     '-j KUBE-FIREWALL',
-                     '-j KUBE-SERVICES',
-                     '-j KUBE-EXTERNAL-SERVICES'],
+            ignore: ["-j cali-INPUT",
+              "-j KUBE-FIREWALL",
+              "-j KUBE-SERVICES",
+              "-j KUBE-EXTERNAL-SERVICES"]
           )
         end
 
         it do
-          expect(subject).to contain_firewallchain('OUTPUT:filter:IPv4').with(
-            ensure: 'present',
+          expect(subject).to contain_firewallchain("OUTPUT:filter:IPv4").with(
+            ensure: "present",
             purge: false,
-            ignore: ['-j cali-OUTPUT',
-                     '-j KUBE-FIREWALL',
-                     '-j KUBE-SERVICES'],
+            ignore: ["-j cali-OUTPUT",
+              "-j KUBE-FIREWALL",
+              "-j KUBE-SERVICES"]
           )
         end
 
         it do
-          expect(subject).to contain_firewallchain('FORWARD:filter:IPv4').with(
-            ensure: 'present',
+          expect(subject).to contain_firewallchain("FORWARD:filter:IPv4").with(
+            ensure: "present",
             purge: false,
-            ignore: ['-j cali-FORWARD',
-                     '-j KUBE-FORWARD',
-                     '-j KUBE-SERVICES'],
+            ignore: ["-j cali-FORWARD",
+              "-j KUBE-FORWARD",
+              "-j KUBE-SERVICES"]
           )
         end
 
         case role
-        when 'etcd'
+        when "etcd"
           it do
-            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:networking]['hostname']}")
-              .with_tag('first_cluster_pki_generation')
-              .with_target('/var/local/generate_pki.sh')
-              .with_order('02')
-              .with_content("ETCD_NODES=(\"${ETCD_NODES[@]}\" \"#{facts[:networking]['hostname']}/#{facts[:networking]['ip']}\")\n")
+            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:networking]["hostname"]}")
+              .with_tag("first_cluster_pki_generation")
+              .with_target("/var/local/generate_pki.sh")
+              .with_order("02")
+              .with_content("ETCD_NODES=(\"${ETCD_NODES[@]}\" \"#{facts[:networking]["hostname"]}/#{facts[:networking]["ip"]}\")\n")
           end
-        when 'controller'
+        when "controller"
           it do
-            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:networking]['hostname']}")
-              .with_tag('first_cluster_pki_generation')
-              .with_target('/var/local/generate_pki.sh')
-              .with_order('02')
-              .with_content("KUBE_CONTROLLERS=(\"${KUBE_CONTROLLERS[@]}\" \"#{facts[:networking]['hostname']}/#{facts[:networking]['ip']}\")\n")
+            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:networking]["hostname"]}")
+              .with_tag("first_cluster_pki_generation")
+              .with_target("/var/local/generate_pki.sh")
+              .with_order("02")
+              .with_content("KUBE_CONTROLLERS=(\"${KUBE_CONTROLLERS[@]}\" \"#{facts[:networking]["hostname"]}/#{facts[:networking]["ip"]}\")\n")
           end
-        when 'worker'
+        when "worker"
           it do
-            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:networking]['hostname']}")
-              .with_tag('first_cluster_pki_generation')
-              .with_target('/var/local/generate_pki.sh')
-              .with_order('02')
-              .with_content("KUBE_WORKERS=(\"${KUBE_WORKERS[@]}\" \"#{facts[:networking]['hostname']}/#{facts[:networking]['ip']}\")\n")
+            expect(exported_resources).to contain_concat_fragment("cluster pki for #{facts[:networking]["hostname"]}")
+              .with_tag("first_cluster_pki_generation")
+              .with_target("/var/local/generate_pki.sh")
+              .with_order("02")
+              .with_content("KUBE_WORKERS=(\"${KUBE_WORKERS[@]}\" \"#{facts[:networking]["hostname"]}/#{facts[:networking]["ip"]}\")\n")
           end
 
-          it { is_expected.to contain_package('lvm2') }
+          it { is_expected.to contain_package("lvm2") }
         end
       end
     end

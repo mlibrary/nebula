@@ -12,7 +12,7 @@ class nebula::role::webhost::htvm::global_primary {
 
   cron {
     'wordpress cron':
-      user    =>  'nobody',
+      user    => 'nobody',
       minute  => 0,
       command => '/usr/bin/curl -s https://www.hathitrust.org/wp-cron.php --resolve "www.hathitrust.org:443:127.0.0.1"';
   }

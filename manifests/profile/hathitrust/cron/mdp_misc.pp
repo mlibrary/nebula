@@ -1,4 +1,3 @@
-
 # Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
@@ -23,7 +22,6 @@ class nebula::profile::hathitrust::cron::mdp_misc (
     "HOME=${home}"
   ]
 ) {
-
   cron {
     default:
       user        => $user,
@@ -45,8 +43,8 @@ class nebula::profile::hathitrust::cron::mdp_misc (
       command => "${sdr_root}/pt/scripts/manage_exclusivity.pl";
 
     'harvest proxy downloads':
-      minute      => 01,
-      hour        => 00,
+      minute      => '01',
+      hour        => '00',
       environment => $sdr_environment + ["MAILTO=''"],
       command     => "${sdr_root}/pt/scripts/harvest_proxy_downloads.pl 2>&1 || /usr/bin/mail -s '${::networking['hostname']} harvest_proxy_downloads problems' ${mail_recipient}";
 
@@ -59,9 +57,7 @@ class nebula::profile::hathitrust::cron::mdp_misc (
       command => "${catalog_home}/derived_data/getall.sh ${catalog_home}/derived_data";
 
     'merge application logs':
-      minute  => 05,
+      minute  => '05',
       command => "${home}/scripts/merge_application_logs.pl";
-
   }
-
 }

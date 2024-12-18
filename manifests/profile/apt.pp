@@ -15,8 +15,7 @@ class nebula::profile::apt (
   String $ubuntu_mirror = 'http://us.archive.ubuntu.com/ubuntu',
   Optional[Hash] $local_repo = undef,
 ) {
-
-  if($::os['family'] == 'Debian') {
+  if($facts['os']['family'] == 'Debian') {
     package { 'aptitude': }
 
     # Ensure that apt knows to never ever install recommended packages
@@ -55,16 +54,16 @@ class nebula::profile::apt (
     if $local_repo {
       apt::source { 'local':
         *            => $local_repo,
-        release      => $::os['distro']['codename'],
+        release      => $facts['os']['distro']['codename'],
         repos        => 'main',
-        architecture => $::os['architecture'],
+        architecture => $facts['os']['architecture'],
       }
     }
 
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
       apt::source { 'hp':
         location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
-        release  => "${::os['distro']['codename']}/current",
+        release  => "${facts['os']['distro']['codename']}/current",
         repos    => 'non-free',
         key      => {
           'name'   => 'hpe.asc',
@@ -86,29 +85,29 @@ class nebula::profile::apt (
     # remove this once vm creation no longer adds these files
     tidy { '/etc/apt/trusted.gpg.d/':
       recurse => true,
-      matches => [ 'puppet*.gpg' ],
+      matches => ['puppet*.gpg'],
     }
 
     # not used for os packages, and all added repos should use /etc/apt/keyrings
     file { '/etc/apt/trusted.gpg': ensure => absent }
   }
 
-  if($::os['name'] == 'Debian') {
+  if($facts['os']['name'] == 'Debian') {
     # TODO: port to DEB822
     # TODO: remove non-free where we're not using it
     # TODO: remove branches when we're off buster, bullseye
-    $repos = $::os['distro']['codename'] ? {
-      'bookworm' => "main contrib non-free non-free-firmware",
-      default    => "main contrib non-free",
+    $repos = $facts['os']['distro']['codename'] ? {
+      'bookworm' => 'main contrib non-free non-free-firmware',
+      default    => 'main contrib non-free',
     }
     apt::source { 'main':
       location => $mirror,
       repos    => $repos,
     }
 
-    $security_release = $::os['distro']['codename'] ? {
-      'buster'  => "${::os['distro']['codename']}/updates",
-      default   => "${::os['distro']['codename']}-security",
+    $security_release = $facts['os']['distro']['codename'] ? {
+      'buster'  => "${facts['os']['distro']['codename']}/updates",
+      default   => "${facts['os']['distro']['codename']}-security",
     }
 
     apt::source { 'security':
@@ -117,7 +116,7 @@ class nebula::profile::apt (
       repos    => $repos,
     }
 
-    unless empty($::installed_backports) {
+    unless empty($facts['installed_backports']) {
       class { 'apt::backports':
         location => $mirror,
       }
@@ -125,30 +124,30 @@ class nebula::profile::apt (
 
     apt::source { 'updates':
       location => $mirror,
-      release  => "${::os['distro']['codename']}-updates",
+      release  => "${facts['os']['distro']['codename']}-updates",
       repos    => $repos,
     }
 
     apt::source { 'adoptium':
       location => 'https://packages.adoptium.net/artifactory/deb/',
-      release  => $::os['distro']['codename'],
+      release  => $facts['os']['distro']['codename'],
       repos    => 'main',
       key      => {
         'name'   => 'adoptium.asc',
         'source' => 'puppet:///modules/nebula/apt/keyrings/adoptium.asc',
       }
     }
-  } elsif($::os['name'] == 'Ubuntu') {
+  } elsif($facts['os']['name'] == 'Ubuntu') {
     # port to DEB822 before upgrade to 24.04
     apt::source {
       default:
         location => $ubuntu_mirror,
         repos    => 'main restricted universe',
       ;
-      'main'     : release => $::os['distro']['codename'];
-      'updates'  : release => "${::os['distro']['codename']}-updates";
-      'backports': release => "${::os['distro']['codename']}-backports";
-      'security' : release => "${::os['distro']['codename']}-security";
+      'main'     : release => $facts['os']['distro']['codename'];
+      'updates'  : release => "${facts['os']['distro']['codename']}-updates";
+      'backports': release => "${facts['os']['distro']['codename']}-backports";
+      'security' : release => "${facts['os']['distro']['codename']}-security";
     }
 
     package { 'landscape-common': ensure => purged }

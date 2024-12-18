@@ -24,7 +24,7 @@ class nebula::profile::nodejs (
     apt::source { 'nodesource.com':
       comment       => 'Nodesource apt source for recent nodejs',
       location      => "https://deb.nodesource.com/node_${version}.x",
-      release       => $::os['distro']['codename'],
+      release       => $facts['os']['distro']['codename'],
       repos         => 'main',
       notify_update => true,
       key           => {

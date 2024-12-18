@@ -23,9 +23,8 @@ class nebula::profile::hathitrust::apache::babel (
   String $ptsearch_solr,
   String $ptsearch_solr_basic_auth,
   Boolean $prod_crms_instance = true,
-  Array[String] $cache_paths = [ ],
+  Array[String] $cache_paths = [],
 ) {
-
   ### client cert
 
   $certname = $trusted['certname'];
@@ -46,12 +45,12 @@ class nebula::profile::hathitrust::apache::babel (
 
   $monitor_requires = {
     enforce  => 'any',
-    requires => [ 'local' ] + $haproxy_ips.map |String $ip| { "ip ${ip}" }
+    requires => ['local'] + $haproxy_ips.map |String $ip| { "ip ${ip}" }
   }
 
   $metrics_requires = {
     enforce => 'any',
-    requires => [ 'local' ] + $prometheus_ips.map |String $ip| { "ip ${ip}" }
+    requires => ['local'] + $prometheus_ips.map |String $ip| { "ip ${ip}" }
   }
 
   class { 'nebula::profile::monitor_pl':
@@ -129,7 +128,7 @@ class nebula::profile::hathitrust::apache::babel (
       'USE_CATPROCIO 1'
     ] + if($prod_crms_instance) {
       ['CRMS_INSTANCE production']
-    } else{ [] },
+    } else {[] },
 
     rewrites                    => [
       {
@@ -154,14 +153,12 @@ class nebula::profile::hathitrust::apache::babel (
       },
 
       {
-
         # serve ht widgets from /widgets/<widget name>/web/
         #
         # 2012-12-10 skorner
         rewrite_cond => ['%{DOCUMENT_ROOT}/widgets/$1/web/$2 -f'],
         rewrite_rule => ['^/widgets/([^/]+)/(.*)      /widgets/$1/web/$2      [last]'],
       },
-
 
       # FROM SSL
 
@@ -231,7 +228,7 @@ class nebula::profile::hathitrust::apache::babel (
 
       {
         # user administration ruby application
-        rewrite_rule =>  ["^(/otis.*)$ ${otis_endpoint}\$1 [P]"]
+        rewrite_rule => ["^(/otis.*)$ ${otis_endpoint}\$1 [P]"]
       },
 
       {
@@ -243,20 +240,19 @@ class nebula::profile::hathitrust::apache::babel (
         rewrite_cond => ['"%{QUERY_STRING}" "(.*(?:^|&))entityID=([^&]*)&?(.*)&?$"'],
         rewrite_rule => ["\"(^/dex/auth)\" \"https://%{HTTP_HOST}/Shibboleth.sso/Login?entityID=\${unescape:%2}&target=https\\%3A\\%2F\\%2F%{HTTP_HOST}\\%2Fdex\\%2Fauth\\%3F%1%3\" [B,NE,L,R]"],
       },
-
     ],
 
     directories                 => [
       {
         provider => 'filesmatch',
-        location =>  '~$',
+        location => '~$',
         require  => 'all denied'
       },
       {
         provider       => 'directory',
         location       => $sdrroot,
         allow_override => ['None'],
-        require        =>  'all denied'
+        require        => 'all denied'
       },
       {
         provider              => 'location',
@@ -270,7 +266,7 @@ class nebula::profile::hathitrust::apache::babel (
       },
       {
         provider => 'directory',
-        path     =>  "${sdrroot}/firebird-common",
+        path     => "${sdrroot}/firebird-common",
         require  => $default_access,
       },
       {
@@ -339,27 +335,26 @@ class nebula::profile::hathitrust::apache::babel (
         path                  => '/otis',
         auth_type             => 'shibboleth',
         require               => 'shibboleth',
-        shib_request_settings => { 'requireSession' => '0'},
+        shib_request_settings => { 'requireSession' => '0' },
       },
       {
         provider              => 'location',
         path                  => '/dex/',
         auth_type             => 'shibboleth',
         require               => 'shibboleth',
-        shib_request_settings => { 'requireSession' => '0'},
+        shib_request_settings => { 'requireSession' => '0' },
         request_headers       => ['unset X-Remote-User'],
-        proxy_pass            => [ { url =>$dex_endpoint }],
+        proxy_pass            => [{ url => $dex_endpoint }],
       },
       {
         provider              => 'location',
         path                  => '/dex/callback/htrc-saml-proxy',
         auth_type             => 'shibboleth',
         require               => 'valid-user',
-        shib_request_settings => { 'requireSession' => '1'},
-        request_headers       => [ 'set X-Remote-User "expr=%{REMOTE_USER}' ],
-        proxy_pass            => [ { url =>"${dex_endpoint}callback/htrc-saml-proxy" }],
+        shib_request_settings => { 'requireSession' => '1' },
+        request_headers       => ['set X-Remote-User "expr=%{REMOTE_USER}'],
+        proxy_pass            => [{ url => "${dex_endpoint}callback/htrc-saml-proxy" }],
       }
-
     ],
 
     ssl_proxyengine             => true,
@@ -402,7 +397,5 @@ class nebula::profile::hathitrust::apache::babel (
     ],
 
     allow_encoded_slashes       => 'on',
-
   }
-
 }

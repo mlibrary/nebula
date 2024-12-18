@@ -13,8 +13,8 @@ class nebula::profile::containerd {
 
   apt::source { 'docker':
     location     => 'https://download.docker.com/linux/debian',
-    architecture => $::os['architecture'],
-    release      => $::os['distro']['codename'],
+    architecture => $facts['os']['architecture'],
+    release      => $facts['os']['distro']['codename'],
     repos        => 'stable',
     key          => {
       name   => 'docker.asc',

@@ -29,7 +29,7 @@ class nebula::profile::elastic::metricbeat (
   }
 
   file { '/etc/metricbeat/metricbeat.yml':
-    ensure  => 'present',
+    ensure  => 'file',
     mode    => '0644',
     content => template('nebula/profile/elastic/metricbeat.yml.erb'),
     require => Package['metricbeat'],

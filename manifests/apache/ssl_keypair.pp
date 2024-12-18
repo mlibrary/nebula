@@ -21,5 +21,4 @@ define nebula::apache::ssl_keypair () {
     notify => Class['Apache::Service'],
     source => "puppet:///ssl-certs/${title}.key"
   }
-
 }

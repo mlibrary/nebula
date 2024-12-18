@@ -36,7 +36,7 @@ class nebula::profile::elastic (
 
   if $logstash_auth_cert != '' {
     file { '/etc/ssl/certs/logstash-forwarder.crt':
-      ensure  => 'present',
+      ensure  => 'file',
       mode    => '0644',
       source  => "puppet://${logstash_auth_cert}",
       require => File['/etc/ssl/certs'],

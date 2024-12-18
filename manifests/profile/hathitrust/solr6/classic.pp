@@ -5,7 +5,7 @@
 # @example
 #   include nebula::profile::hathitrust::solr6::classic
 class nebula::profile::hathitrust::solr6::classic (
-){
+) {
   nebula::log { 'lss_solr':
     files => ['/var/lib/solr-current-lss/logs/solr.log'],
   }

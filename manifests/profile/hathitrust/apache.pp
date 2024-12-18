@@ -15,8 +15,6 @@ class nebula::profile::hathitrust::apache (
   String $monitoring_user = 'haproxyctl',
   Optional[Hash] $monitoring_pubkey = undef
 ) {
-
-
   if($monitoring_pubkey) {
     nebula::authzd_user { $monitoring_user:
       gid  => 'nogroup',
@@ -98,7 +96,7 @@ class nebula::profile::hathitrust::apache (
     ],
   }
   class { 'apache::mod::expires':
-    expires_active  =>  'true',
+    expires_active  => 'true',
     expires_by_type => [
       { 'application/javascript' => 'access plus 6 hours' },
       { 'text/css' => 'access plus 6 hours' }
@@ -161,10 +159,9 @@ class nebula::profile::hathitrust::apache (
     domain         => $domain
   }
 
-
   ['redirection','babel','old_www','www','catalog','crms_training','matomo'].each |$vhost| {
     class { "${title}::${vhost}":
-      * =>  $default_vhost_params
+      * => $default_vhost_params
     }
   }
 
@@ -176,7 +173,7 @@ class nebula::profile::hathitrust::apache (
 
   $http_files = lookup('nebula::http_files')
   file { '/usr/local/bin/ckapacheconn':
-    ensure => 'present',
+    ensure => 'file',
     mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/ckapacheconn"
   }
@@ -202,13 +199,13 @@ class nebula::profile::hathitrust::apache (
   concat::fragment { 'client cert':
     target => $client_cert,
     source => "/etc/puppetlabs/puppet/ssl/certs/${certname}.pem",
-    order  =>  1
+    order  => 1
   }
 
   concat::fragment { 'client key':
     target => $client_cert,
     source => "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem",
-    order  =>  2
+    order  => 2
   }
 
   nebula::log { 'apache':

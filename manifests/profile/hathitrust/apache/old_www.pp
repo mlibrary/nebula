@@ -17,7 +17,6 @@ class nebula::profile::hathitrust::apache::old_www (
   String $domain,
   String $docroot = '/htapps/old.www'
 ) {
-
   $servername = "old.${prefix}www.${domain}"
 
   apache::vhost { "${servername} ssl":
@@ -36,7 +35,7 @@ class nebula::profile::hathitrust::apache::old_www (
     directories        => [
       {
         provider => 'filesmatch',
-        location =>  '~$',
+        location => '~$',
         require  => 'all denied'
       },
       {
@@ -56,6 +55,5 @@ class nebula::profile::hathitrust::apache::old_www (
     ],
 
     headers            => 'set "Strict-Transport-Security" "max-age=31536000"',
-
   }
 }

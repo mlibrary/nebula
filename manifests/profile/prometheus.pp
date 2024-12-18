@@ -71,27 +71,27 @@ class nebula::profile::prometheus (
 
   $static_nodes.each |$static_node| {
     concat_fragment { "prometheus node service ${static_node['labels']['hostname']}":
-      tag     => "${::datacenter}_prometheus_node_service_list",
+      tag     => "${facts['datacenter']}_prometheus_node_service_list",
       target  => '/etc/prometheus/nodes.yml',
       content => template('nebula/profile/prometheus/exporter/node/static_target.yaml.erb'),
     }
   }
 
-  Concat_fragment <<| tag == "${::datacenter}_prometheus_node_service_list" |>>
+  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_node_service_list" |>>
 
   concat_file { '/etc/prometheus/haproxy.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
   }
 
-  Concat_fragment <<| tag == "${::datacenter}_prometheus_haproxy_service_list" |>>
+  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_haproxy_service_list" |>>
 
   concat_file { '/etc/prometheus/mysql.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
   }
 
-  Concat_fragment <<| tag == "${::datacenter}_prometheus_mysql_service_list" |>>
+  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_mysql_service_list" |>>
 
   concat_file { '/etc/prometheus/ipmi.yml':
     notify  => Docker::Run['prometheus'],
@@ -104,14 +104,14 @@ class nebula::profile::prometheus (
     content => "scrape_configs:\n"
   }
 
-  Concat_fragment <<| tag == "${::datacenter}_prometheus_ipmi_exporter" |>>
+  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_ipmi_exporter" |>>
 
   concat_file { '/etc/prometheus/etcd.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
   }
 
-  Concat_fragment <<| tag == "${::datacenter}_prometheus_etcd_service_list" |>>
+  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_etcd_service_list" |>>
 
   file { '/etc/prometheus':
     ensure => 'directory',
@@ -173,10 +173,10 @@ class nebula::profile::prometheus (
       },
     }
     firewall { '200 HTTPS: Client Cert':
-      proto  => 'tcp',
-      dport  => [443],
-      state  => 'NEW',
-      jump   => 'accept',
+      proto => 'tcp',
+      dport => [443],
+      state => 'NEW',
+      jump  => 'accept',
     }
   }
 
@@ -193,20 +193,20 @@ class nebula::profile::prometheus (
   }
 
   if $all_public_addresses != [] {
-    @@concat_fragment { "02 pushgateway advanced public url ${::datacenter}":
+    @@concat_fragment { "02 pushgateway advanced public url ${facts['datacenter']}":
       target  => '/usr/local/bin/pushgateway_advanced',
       content => "PUSHGATEWAY='http://${all_public_addresses[0]}:9091'\n",
     }
 
     # Legacy resource name, delete when no longer in use.
-    @@concat_fragment { "02 pushgateway advanced url ${::datacenter}":
+    @@concat_fragment { "02 pushgateway advanced url ${facts['datacenter']}":
       target  => '/usr/local/bin/pushgateway_advanced',
       content => "PUSHGATEWAY='http://${all_public_addresses[0]}:9091'\n",
     }
   }
 
   if $all_private_addresses != [] {
-    @@concat_fragment { "02 pushgateway advanced private url ${::datacenter}":
+    @@concat_fragment { "02 pushgateway advanced private url ${facts['datacenter']}":
       target  => '/usr/local/bin/pushgateway_advanced',
       content => "PUSHGATEWAY='http://${all_private_addresses[0]}:9091'\n",
     }
@@ -222,12 +222,12 @@ class nebula::profile::prometheus (
       ;
 
       "010 prometheus public node exporter ${::networking['hostname']} ${address}":
-        tag   => "${::datacenter}_prometheus_public_node_exporter",
+        tag   => "${facts['datacenter']}_prometheus_public_node_exporter",
         dport => 9100,
       ;
 
       "010 prometheus public ipmi exporter ${::networking['hostname']} ${address}":
-        tag   => "${::datacenter}_prometheus_public_ipmi_exporter",
+        tag   => "${facts['datacenter']}_prometheus_public_ipmi_exporter",
         dport => 9290,
       ;
     }
@@ -243,19 +243,19 @@ class nebula::profile::prometheus (
       ;
 
       "010 prometheus private node exporter ${::networking['hostname']} ${address}":
-        tag   => "${::datacenter}_prometheus_private_node_exporter",
+        tag   => "${facts['datacenter']}_prometheus_private_node_exporter",
         dport => 9100,
       ;
 
       "010 prometheus private ipmi exporter ${::networking['hostname']} ${address}":
-        tag   => "${::datacenter}_prometheus_private_ipmi_exporter",
+        tag   => "${facts['datacenter']}_prometheus_private_ipmi_exporter",
         dport => 9290,
       ;
     }
   }
 
   @@firewall { "010 prometheus haproxy exporter ${::networking['hostname']}":
-    tag    => "${::datacenter}_prometheus_haproxy_exporter",
+    tag    => "${facts['datacenter']}_prometheus_haproxy_exporter",
     proto  => 'tcp',
     dport  => 9101,
     source => $::networking['ip'],
@@ -264,7 +264,7 @@ class nebula::profile::prometheus (
   }
 
   @@firewall { "010 prometheus mysql exporter ${::networking['hostname']}":
-    tag    => "${::datacenter}_prometheus_mysql_exporter",
+    tag    => "${facts['datacenter']}_prometheus_mysql_exporter",
     proto  => 'tcp',
     dport  => 9104,
     source => $::networking['ip'],
@@ -272,5 +272,5 @@ class nebula::profile::prometheus (
     jump   => 'accept',
   }
 
-  Firewall <<| tag == "${::datacenter}_pushgateway_node" |>>
+  Firewall <<| tag == "${facts['datacenter']}_pushgateway_node" |>>
 }

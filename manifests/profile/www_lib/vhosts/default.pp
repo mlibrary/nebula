@@ -1,4 +1,3 @@
-
 # Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
@@ -15,7 +14,6 @@ class nebula::profile::www_lib::vhosts::default (
   String $domain,
   String $ssl_cn = 'www.lib.umich.edu'
 ) {
-
   nebula::apache::www_lib_vhost { '000-default':
     ssl        => false,
     ssl_cn     => $ssl_cn,
@@ -34,8 +32,8 @@ class nebula::profile::www_lib::vhosts::default (
     ssl         => true,
     ssl_cn      => $ssl_cn,
     servername  => $::networking['fqdn'],
-    directories => [ $nebula::profile::apache::monitoring::location ],
-    aliases     => [ $nebula::profile::apache::monitoring::scriptalias ],
+    directories => [$nebula::profile::apache::monitoring::location],
+    aliases     => [$nebula::profile::apache::monitoring::scriptalias],
     docroot     => false,
     rewrites    => [
       {

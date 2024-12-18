@@ -59,7 +59,7 @@ class nebula::profile::kubernetes::keepalived (
   package { 'keepalived': }
   package { 'ipset': }
 
-  $::ssh.each |$name, $key_obj| {
+  $facts['ssh'].each |$name, $key_obj| {
     $type = $key_obj["type"]
     $key = $key_obj["key"]
 

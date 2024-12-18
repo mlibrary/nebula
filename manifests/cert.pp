@@ -35,15 +35,12 @@ define nebula::cert (
   require nebula::profile::letsencrypt
 
   if $webroot == [] {
-
     letsencrypt::certonly { $title:
       domains     => [$title] + $additional_domains,
       manage_cron => true,
       cron_output => 'log',
     }
-
   } else {
-
     if $webroot =~ Array {
       $webroot_paths = $webroot
     } else {
@@ -57,6 +54,5 @@ define nebula::cert (
       plugin        => 'webroot',
       webroot_paths => $webroot_paths,
     }
-
   }
 }

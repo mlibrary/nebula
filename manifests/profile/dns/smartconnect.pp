@@ -57,7 +57,7 @@ class nebula::profile::dns::smartconnect (
     ensure  => 'directory',
     owner   => 'root',
     group   => 'bind',
-    require => Package[nebula::profile::dns::smartconnect::bind9]
+    require => Package['nebula::profile::dns::smartconnect::bind9']
   }
 
   file { '/etc/bind/named.conf':

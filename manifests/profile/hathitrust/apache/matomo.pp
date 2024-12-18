@@ -18,7 +18,6 @@ class nebula::profile::hathitrust::apache::matomo (
   String $matomo_endpoint,
   String $subdomain = 'matomo.www',
 ) {
-
   ### client cert
 
   $certname = $trusted['certname'];
@@ -62,19 +61,19 @@ class nebula::profile::hathitrust::apache::matomo (
     directories                 => [
       {
         provider => 'filesmatch',
-        location =>  '~$',
+        location => '~$',
         require  => 'all denied'
       },
       {
         provider       => 'directory',
         location       => $sdrroot,
         allow_override => ['None'],
-        require        =>  'all denied'
+        require        => 'all denied'
       },
       {
         provider   => 'location',
         path       => '/',
-        proxy_pass => [ { url =>$matomo_endpoint }],
+        proxy_pass => [{ url => $matomo_endpoint }],
       },
     ],
 
@@ -91,7 +90,5 @@ class nebula::profile::hathitrust::apache::matomo (
       # Remove existing X-Forwarded-For headers; mod_proxy will automatically add the correct one.
       'unset X-Forwarded-For',
     ],
-
   }
-
 }

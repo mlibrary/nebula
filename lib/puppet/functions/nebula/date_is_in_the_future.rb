@@ -5,18 +5,18 @@
 # BSD License. See LICENSE.txt for details.
 
 # Return true if the given date is in the future.
-Puppet::Functions.create_function(:'nebula::date_is_in_the_future') do
+Puppet::Functions.create_function(:"nebula::date_is_in_the_future") do
   # @param date Date to check
   # @return [Boolean] whether the given date is in the future
   #
   # @example Check a date in the past
   #   nebula::date_is_in_the_future('1970-01-01') => false
   dispatch :run do
-    required_param 'String', :date
-    return_type 'Boolean'
+    required_param "String", :date
+    return_type "Boolean"
   end
 
   def run(date)
-    Date.strptime(date, '%Y-%m-%d') > Date.today
+    Date.strptime(date, "%Y-%m-%d") > Date.today
   end
 end

@@ -12,7 +12,6 @@
 class nebula::profile::apache::standalone_app_host (
   $ssl_cn = $::networking['fqdn']
 ) {
-
   class { 'nebula::profile::ssl_keypair':
     common_name => $ssl_cn
   }
@@ -46,6 +45,4 @@ class nebula::profile::apache::standalone_app_host (
   include apache::mod::setenvif
 
   apache::listen { ['80','443']: }
-
 }
-

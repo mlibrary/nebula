@@ -51,7 +51,7 @@ class nebula::profile::prometheus::exporter::node (
     notify  => Service['prometheus-node-exporter', 'rsyslog'],
   }
 
-  $prometheus_errors_total = $::prometheus_errors_total
+  $prometheus_errors_total = $facts['prometheus_errors_total']
   file { '/var/lib/prometheus/node-exporter/node_exporter_errors.prom':
     content => template('nebula/profile/prometheus/exporter/node/node_exporter_errors.prom.erb'),
   }
@@ -105,7 +105,7 @@ class nebula::profile::prometheus::exporter::node (
   realize User['prometheus']
 
   $role = lookup_role()
-  $datacenter = $::datacenter
+  $datacenter = $facts['datacenter']
 
   if $::networking['domain'] == lookup('umich::default_domain', default_value => 'prometheus-node-exporter.default.invalid') {
     $hostname = $::networking['hostname']

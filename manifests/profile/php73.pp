@@ -7,16 +7,15 @@
 # Installs php73 from community repositories.
 class nebula::profile::php73 (
 ) {
-
   apt::source { 'php-community':
     location     => 'https://packages.sury.org/php/',
-    key          =>  {
+    key          => {
       name   => 'php-community-sury.org.gpg',
       source => 'https://packages.sury.org/php/apt.gpg'
     },
-    release      => $::os['distro']['codename'],
+    release      => $facts['os']['distro']['codename'],
     repos        => 'main',
-    architecture => $::os['architecture'],
+    architecture => $facts['os']['architecture'],
   }
 
   ensure_packages (

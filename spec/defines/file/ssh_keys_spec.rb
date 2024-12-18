@@ -3,10 +3,10 @@
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'nebula::file::ssh_keys' do
-  let(:title) { '/opt/keys' }
+describe "nebula::file::ssh_keys" do
+  let(:title) { "/opt/keys" }
   let(:params) do
     {}
   end
@@ -15,93 +15,93 @@ describe 'nebula::file::ssh_keys' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      context 'when called /opt/keys' do
+      context "when called /opt/keys" do
         it do
-          expect(subject).to contain_file('/opt/keys')
+          expect(subject).to contain_file("/opt/keys")
             .without_content(%r{^[^#]})
         end
 
-        it { is_expected.not_to contain_file('/opt') }
+        it { is_expected.not_to contain_file("/opt") }
       end
 
-      context 'when called /etc/keys' do
-        let(:title) { '/etc/keys' }
+      context "when called /etc/keys" do
+        let(:title) { "/etc/keys" }
 
-        it { is_expected.to contain_file('/etc/keys') }
+        it { is_expected.to contain_file("/etc/keys") }
       end
 
-      context 'when given a key' do
+      context "when given a key" do
         let(:params) do
           {
             keys: [
               {
-                type: 'ssh-rsa',
-                data: 'AAAAAAAAAAAA',
-                comment: 'name',
-              },
-            ],
+                type: "ssh-rsa",
+                data: "AAAAAAAAAAAA",
+                comment: "name"
+              }
+            ]
           }
         end
 
         it do
-          expect(subject).to contain_file('/opt/keys')
+          expect(subject).to contain_file("/opt/keys")
             .with_content(%r{^ssh-rsa AAAAAAAAAAAA name$})
         end
       end
 
-      context 'when given a key with a command' do
+      context "when given a key with a command" do
         let(:params) do
           {
             keys: [
               {
-                type: 'ssh-rsa',
-                data: 'AAAAAAAAAAAA',
-                comment: 'name',
-                command: '/usr/bin/whatever',
-              },
-            ],
+                type: "ssh-rsa",
+                data: "AAAAAAAAAAAA",
+                comment: "name",
+                command: "/usr/bin/whatever"
+              }
+            ]
           }
         end
 
         it do
-          expect(subject).to contain_file('/opt/keys')
+          expect(subject).to contain_file("/opt/keys")
             .with_content(%r{^command="/usr/bin/whatever" ssh-rsa AAAAAAAAAAAA name$})
         end
       end
 
-      context 'when called /etc/secret/keys and secret is true' do
-        let(:title) { '/etc/secret/keys' }
-        let(:params) { { secret: true } }
+      context "when called /etc/secret/keys and secret is true" do
+        let(:title) { "/etc/secret/keys" }
+        let(:params) { {secret: true} }
 
         it do
-          expect(subject).to contain_file('/etc/secret').with(
-            ensure: 'directory',
-            mode: '0700',
+          expect(subject).to contain_file("/etc/secret").with(
+            ensure: "directory",
+            mode: "0700"
           )
         end
 
         it do
-          expect(subject).to contain_file('/etc/secret/keys')
-            .that_requires('File[/etc/secret]')
+          expect(subject).to contain_file("/etc/secret/keys")
+            .that_requires("File[/etc/secret]")
         end
       end
 
-      context 'when given an owner and group' do
+      context "when given an owner and group" do
         let(:params) do
           {
-            owner: 'someuser',
-            group: 'somegroup',
+            owner: "someuser",
+            group: "somegroup",
             keys: [
               {
-                type: 'ssh-rsa',
-                data: 'AAAAAAAAAAAA',
-                comment: 'name',
-              },
-            ],
+                type: "ssh-rsa",
+                data: "AAAAAAAAAAAA",
+                comment: "name"
+              }
+            ]
           }
         end
 
-        it { is_expected.to contain_file('/opt/keys').with(owner: 'someuser', group: 'somegroup') }
+        it { is_expected.to contain_file("/opt/keys").with(owner: "someuser", group: "somegroup") }
       end
     end
   end

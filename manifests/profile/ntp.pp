@@ -13,7 +13,6 @@
 class nebula::profile::ntp (
   Array[String] $servers,
 ) {
-
   class { 'ntp':
     servers       => $servers,
     # debian default

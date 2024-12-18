@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'yaml'
+require "yaml"
 
 # This will read the Prometheus node exporter's log and look for errors.
 # The result seen by puppet is nothing more than an integer which it can
@@ -11,7 +11,7 @@ require 'yaml'
 # are for.
 Facter.add(:prometheus_errors_total) do
   setcode do
-    log_path = '/var/log/prometheus-node-exporter.log'
+    log_path = "/var/log/prometheus-node-exporter.log"
     error_count = %r{(?<=error gathering metrics: )\d*(?= error)}
 
     if File.size? log_path

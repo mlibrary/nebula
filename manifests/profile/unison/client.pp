@@ -11,7 +11,6 @@
 class nebula::profile::unison::client (
   String $home = '/root',
 ) {
-
   ensure_packages(['unison'])
 
   file { "${home}/.unison":
@@ -22,5 +21,4 @@ class nebula::profile::unison::client (
     content => template('nebula/profile/unison/client/unisonsync.erb'),
     mode    => '0755'
   }
-
 }

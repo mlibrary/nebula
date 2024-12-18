@@ -73,7 +73,6 @@ class nebula::profile::shibboleth (
       |ODBCINST
   }
 
-
   file { '/etc/shibboleth':
     ensure  => 'directory',
     mode    => 'u=rw,u+X,g=r,g+X,o=r,o+X',
@@ -131,9 +130,8 @@ class nebula::profile::shibboleth (
 
   $http_files = lookup('nebula::http_files')
   file { '/usr/local/bin/ckshibd':
-    ensure => 'present',
+    ensure => 'file',
     mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/ckshibd"
   }
-
 }

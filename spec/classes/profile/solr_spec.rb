@@ -3,9 +3,9 @@
 # Copyright (c) 2018-2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'nebula::profile::solr' do
+describe "nebula::profile::solr" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
@@ -14,50 +14,50 @@ describe 'nebula::profile::solr' do
 
       # Packages
       [
-        'openjdk-8-jre-headless',
-        'solr',
-        'lsof',
+        "openjdk-8-jre-headless",
+        "solr",
+        "lsof"
       ].each do |package|
         it { is_expected.to contain_package(package) }
       end
 
       # Service
       it do
-        expect(subject).to contain_service('solr').with(
+        expect(subject).to contain_service("solr").with(
           enable: true,
-          ensure: 'running',
+          ensure: "running"
         )
       end
 
-      context 'with default parameters' do
+      context "with default parameters" do
         # Directories
         [
-          '/var/lib/solr',
-          '/var/lib/solr/home',
-          '/var/lib/solr/logs',
+          "/var/lib/solr",
+          "/var/lib/solr/home",
+          "/var/lib/solr/logs"
         ].each do |path|
           it do
             expect(subject).to contain_file(path).with(
-              owner: 'solr',
-              group: 'solr',
-              ensure: 'directory',
-              mode: '0750',
+              owner: "solr",
+              group: "solr",
+              ensure: "directory",
+              mode: "0750"
             )
           end
         end
 
         # Files
         [
-          '/var/lib/solr/log4j.properties',
-          '/var/lib/solr/solr.in.sh',
-          '/var/lib/solr/home/solr.xml',
+          "/var/lib/solr/log4j.properties",
+          "/var/lib/solr/solr.in.sh",
+          "/var/lib/solr/home/solr.xml"
         ].each do |path|
           it do
             expect(subject).to contain_file(path).with(
-              owner: 'solr',
-              group: 'solr',
-              ensure: 'file',
-              mode: '0644',
+              owner: "solr",
+              group: "solr",
+              ensure: "file",
+              mode: "0644"
             )
           end
         end

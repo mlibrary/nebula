@@ -6,7 +6,7 @@
 #
 # @example Provision all sudoers
 #   nebula::usergroup { 'sudo': }
-define nebula::usergroup(
+define nebula::usergroup (
 ) {
   $membership = lookup('nebula::usergroup::membership')
   include nebula::virtual::users

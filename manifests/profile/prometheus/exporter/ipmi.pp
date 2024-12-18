@@ -33,14 +33,14 @@ class nebula::profile::prometheus::exporter::ipmi (
       fail('Host cannot be scraped without a public or private IP address')
     } elsif $all_private_addresses != [] {
       $ipaddress = $all_private_addresses[0]
-      Firewall <<| tag == "${::datacenter}_prometheus_private_ipmi_exporter" |>>
+      Firewall <<| tag == "${facts['datacenter']}_prometheus_private_ipmi_exporter" |>>
     } else {
       $ipaddress = $all_public_addresses[0]
-      Firewall <<| tag == "${::datacenter}_prometheus_public_ipmi_exporter" |>>
+      Firewall <<| tag == "${facts['datacenter']}_prometheus_public_ipmi_exporter" |>>
     }
 
     @@concat_fragment { "prometheus ipmi scrape config ${::networking['hostname']}":
-      tag     => "${::datacenter}_prometheus_ipmi_exporter",
+      tag     => "${facts['datacenter']}_prometheus_ipmi_exporter",
       target  => '/etc/prometheus/ipmi.yml',
       order   => '02',
       content => template('nebula/profile/prometheus/exporter/ipmi/scrape_config.yaml.erb')

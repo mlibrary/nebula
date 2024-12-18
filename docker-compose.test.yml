@@ -9,7 +9,7 @@ services:
     command:
     - /bin/bash
     - '-c'
-    - 'bundle exec rubocop ''spec/{aliases,classes,defines,functions,hosts,integration,plans,tasks,type_aliases,types,unit}/**/*_spec.rb'' && bundle exec rake syntax lint && bundle exec rake metadata_lint'
+    - 'bundle exec standardrb && bundle exec rake syntax lint && bundle exec rake metadata_lint'
 
   librarian:
     build: .

@@ -17,7 +17,6 @@ class nebula::profile::hathitrust::apache::catalog (
   String $domain,
   String $docroot = '/htapps/catalog/web',
 ) {
-
   $servername = "${prefix}catalog.${domain}"
 
   cron { 'purge catalog apache access logs':
@@ -49,7 +48,7 @@ class nebula::profile::hathitrust::apache::catalog (
     directories        => [
       {
         provider => 'filesmatch',
-        path     =>  '~$',
+        path     => '~$',
         require  => 'all denied'
       },
       {
@@ -61,12 +60,12 @@ class nebula::profile::hathitrust::apache::catalog (
       },
       {
         provider => 'directory',
-        path     =>  "${sdrroot}/firebird-common",
+        path     => "${sdrroot}/firebird-common",
         require  => $default_access,
       },
       {
         provider => 'directory',
-        path     =>  "${sdrroot}/common/web",
+        path     => "${sdrroot}/common/web",
         require  => $default_access,
       },
     ],
@@ -88,7 +87,6 @@ class nebula::profile::hathitrust::apache::catalog (
 
     rewrites           => [
       {
-
         # redirect top-level page to www.hathitrust.org, but not for mobile or orphanworks host names
         #
         # 2010-11-12 csnavely per jjyork
@@ -100,7 +98,6 @@ class nebula::profile::hathitrust::apache::catalog (
 
         rewrite_cond => "%{HTTP_HOST}    ^(${prefix}catalog)  [nocase]",
         rewrite_rule => "^(/$|/index.html$)  https://${prefix}www.${domain}/  [redirect=permanent,last]"
-
       }
     ]
   }

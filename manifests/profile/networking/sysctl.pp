@@ -24,4 +24,3 @@ class nebula::profile::networking::sysctl (
     notify  => Service['procps'],
   }
 }
-

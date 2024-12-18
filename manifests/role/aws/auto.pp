@@ -7,8 +7,8 @@
 # @example
 #   include nebula::role::aws::auto
 class nebula::role::aws::auto {
-  if $::ec2_tag_role {
-    include Class[$::ec2_tag_role]
+  if $facts['ec2_tag_role'] {
+    include Class[$facts['ec2_tag_role']]
   } else {
     fail('no ec2 role tag defined')
   }

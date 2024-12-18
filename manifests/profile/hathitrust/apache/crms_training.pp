@@ -16,7 +16,6 @@ class nebula::profile::hathitrust::apache::crms_training (
   String $prefix,
   String $domain,
 ) {
-
   ## VHOST DEFINITION
 
   $servername = "crms-training.${prefix}babel.${domain}"
@@ -94,14 +93,12 @@ class nebula::profile::hathitrust::apache::crms_training (
       },
 
       {
-
         # serve ht widgets from /widgets/<widget name>/web/
         #
         # 2012-12-10 skorner
         rewrite_cond => ['%{DOCUMENT_ROOT}/widgets/$1/web/$2 -f'],
         rewrite_rule => ['^/widgets/([^/]+)/(.*)      /widgets/$1/web/$2      [last]'],
       },
-
 
       # FROM SSL
 
@@ -151,28 +148,26 @@ class nebula::profile::hathitrust::apache::crms_training (
       {
         rewrite_rule => ["  ^(/$|/index.html$)      https://${servername}/cgi/crms  [redirect=permanent,last]"],
       },
-
-
     ],
 
     directories           => [
       {
         provider => 'filesmatch',
-        location =>  '~$',
+        location => '~$',
         require  => 'all denied'
       },
       {
         provider       => 'directory',
         location       => $sdrroot,
         allow_override => ['None'],
-        require        =>  'all denied'
+        require        => 'all denied'
       },
       {
         provider              => 'location',
         path                  => '/',
         auth_type             => 'shibboleth',
         require               => 'shibboleth',
-        shib_request_settings => { 'requireSession' => '0'}
+        shib_request_settings => { 'requireSession' => '0' }
       },
       {
         # Grant access to necessary directories under the document root:
@@ -215,11 +210,8 @@ class nebula::profile::hathitrust::apache::crms_training (
         path     => '^/shibboleth-sp/main.css',
         require  => 'all granted'
       },
-
     ],
 
     allow_encoded_slashes => 'on',
-
   }
-
 }

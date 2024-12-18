@@ -31,7 +31,6 @@ class nebula::profile::vmhost::host (
   String  $internet_bridge = 'br0',
   String  $lan_bridge      = 'br1',
 ) {
-
   file { '/etc/default/libvirt-guests':
     content => template('nebula/profile/vmhost/defaults.sh.erb'),
   }
@@ -54,11 +53,11 @@ class nebula::profile::vmhost::host (
     }
 
     mount { $local_storage:
-      ensure  =>  'mounted',
-      device  =>  '/dev/mapper/internal-vmimages',
-      atboot  =>  true,
-      fstype  =>  'ext4',
-      options =>  'defaults',
+      ensure  => 'mounted',
+      device  => '/dev/mapper/internal-vmimages',
+      atboot  => true,
+      fstype  => 'ext4',
+      options => 'defaults',
       require => ["File[${local_storage}]"]
     }
 
@@ -91,7 +90,7 @@ class nebula::profile::vmhost::host (
     }
   }
 
-  if($::os['name'] == 'Ubuntu') {
+  if($facts['os']['name'] == 'Ubuntu') {
     package { 'command-not-found': ensure => purged }
     package { 'python3-commandnotfound': ensure => purged }
   }

@@ -23,7 +23,7 @@ class nebula::profile::https_to_port (
   # This fact is set by the letsencrypt module. If letsencrypt has
   # created a cert, then this will be set to the directory that cert
   # exists in. If the cert doesn't exist yet, this will be null.
-  $letsencrypt_directory = $::letsencrypt_directory[$server_name]
+  $letsencrypt_directory = $facts['letsencrypt_directory'][$server_name]
 
   if $letsencrypt_directory {
     # Only serve the HTTPS site if the cert aleady exists.

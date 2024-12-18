@@ -2,7 +2,6 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-
 # Base profile for a Fulcrum host; sets up networking and app user.
 class nebula::profile::fulcrum::base (
   $uid = 717,

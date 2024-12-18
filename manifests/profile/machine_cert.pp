@@ -25,12 +25,12 @@ class nebula::profile::machine_cert (
   concat::fragment { 'client cert':
     target => $client_cert,
     source => "/etc/puppetlabs/puppet/ssl/certs/${certname}.pem",
-    order  =>  1
+    order  => 1
   }
 
   concat::fragment { 'client key':
     target => $client_cert,
     source => "/etc/puppetlabs/puppet/ssl/private_keys/${certname}.pem",
-    order  =>  2
+    order  => 2
   }
 }

@@ -74,5 +74,4 @@ class nebula::profile::fulcrum::shibboleth {
     enable  => true,
     require => Service['shibd'],
   }
-
 }

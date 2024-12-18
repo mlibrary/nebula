@@ -19,7 +19,7 @@ class nebula::profile::fulcrum::nginx (
     'nginx-module-headersmore',
   ])
 
-  $letsencrypt_directory = $::letsencrypt_directory[$server_name]
+  $letsencrypt_directory = $facts['letsencrypt_directory'][$server_name]
 
   $networks = lookup('nebula::profile::networking::firewall::http_datacenters::networks')
   $allow = $networks.flatten.map |$network| { $network['block'] }
@@ -161,7 +161,7 @@ class nebula::profile::fulcrum::nginx (
   }
 
   file { '/etc/nginx/modules-enabled':
-    ensure =>  'directory',
+    ensure => 'directory',
   }
 
   file { '/etc/nginx/shib_clear_headers':
@@ -194,9 +194,9 @@ class nebula::profile::fulcrum::nginx (
   include nebula::profile::networking::firewall::http_datacenters
 
   firewall { '200 HTTPS: public':
-    proto  => 'tcp',
-    dport  => 443,
-    state  => 'NEW',
-    jump   => 'accept',
+    proto => 'tcp',
+    dport => 443,
+    state => 'NEW',
+    jump  => 'accept',
   }
 }
