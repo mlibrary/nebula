@@ -19,7 +19,6 @@ class nebula::profile::deb_signing (
   String $sign_key,
   String $sign_script
 ) {
-
   ensure_packages(['gnupg', 'dpkg-dev', 'pinentry-curses', 'apt-utils'])
 
   file { '/var/local/deb-signing.key':
@@ -37,5 +36,4 @@ class nebula::profile::deb_signing (
     group  => 'dlps',
     mode   => '0750'
   }
-
 }

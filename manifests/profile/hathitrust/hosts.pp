@@ -8,7 +8,7 @@
 #
 # @example
 #   include nebula::profile::hathitrust::hosts
-class nebula::profile::hathitrust::hosts(
+class nebula::profile::hathitrust::hosts (
   String $mysql_sdr,
   String $mysql_htdev,
   String $apps_ht,
@@ -17,7 +17,6 @@ class nebula::profile::hathitrust::hosts(
   String $solr_vufind_primary,
   String $solr_vufind_failover
 ) {
-
   host { 'localhost':
     ip => '127.0.0.1'
   }
@@ -70,5 +69,4 @@ class nebula::profile::hathitrust::hosts(
     comment => 'solr (vufind failover)',
     ip      => $solr_vufind_failover
   }
-
 }

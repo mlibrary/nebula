@@ -28,7 +28,7 @@ class nebula::profile::taghosts::tags (
     content => "\n",
   }
 
-  $datacenter_tag = $::datacenter ? {
+  $datacenter_tag = $facts['datacenter'] ? {
     /^aws.*/                      => 'aws',
     'hatcher'                     => 'hatcher',
     'miserver'                    => 'miserver',
@@ -41,13 +41,13 @@ class nebula::profile::taghosts::tags (
     order => '001',
   }
 
-  if $::kernel == 'Linux' {
+  if $facts['kernel'] == 'Linux' {
     nebula::taghosts::tag { 'linux':
       order => '002',
     }
   }
 
-  if $::is_virtual {
+  if $facts['is_virtual'] {
     nebula::taghosts::tag { 'virtual':
       order => '003',
     }
@@ -67,7 +67,7 @@ class nebula::profile::taghosts::tags (
     }
 
     default: {
-      unless $::is_virtual {
+      unless $facts['is_virtual'] {
         nebula::taghosts::tag { 'no-manufacturer':
           order => '003',
         }
@@ -75,8 +75,8 @@ class nebula::profile::taghosts::tags (
     }
   }
 
-  if $::os['family'] == 'Debian' {
-    $os_name = $::os['name'] ? {
+  if $facts['os']['family'] == 'Debian' {
+    $os_name = $facts['os']['name'] ? {
       'Ubuntu' => 'ubuntu',
       default  => 'debian',
     }
@@ -85,7 +85,7 @@ class nebula::profile::taghosts::tags (
       order => '004',
     }
 
-    nebula::taghosts::tag { $::os['distro']['codename']:
+    nebula::taghosts::tag { $facts['os']['distro']['codename']:
       order => '005',
     }
   }

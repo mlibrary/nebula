@@ -19,9 +19,9 @@ class nebula::profile::letsencrypt (
   }
 
   firewall { '200 HTTP':
-    proto  => 'tcp',
-    dport  => 80,
-    state  => 'NEW',
-    jump   => 'accept',
+    proto => 'tcp',
+    dport => 80,
+    state => 'NEW',
+    jump  => 'accept',
   }
 }

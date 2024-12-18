@@ -6,11 +6,10 @@
 #
 # @example
 #   include nebula::profile::authzd_user()
-define nebula::authzd_user(
+define nebula::authzd_user (
   String $home,
   Hash $key,
   String $gid) {
-
   user { $title:
     gid        => $gid,
     home       => $home,
@@ -19,7 +18,7 @@ define nebula::authzd_user(
   }
 
   nebula::file::ssh_keys { "${home}/.ssh/authorized_keys":
-    keys   => [ $key],
+    keys   => [$key],
     secret => true,
     owner  => $title,
     group  => $gid

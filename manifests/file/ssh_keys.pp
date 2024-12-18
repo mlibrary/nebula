@@ -34,7 +34,7 @@
 #         comment => 'user4@host' },
 #     ]
 #   }
-define nebula::file::ssh_keys(
+define nebula::file::ssh_keys (
   Array   $keys = [],
   Boolean $secret = false,
   String  $owner = 'root',

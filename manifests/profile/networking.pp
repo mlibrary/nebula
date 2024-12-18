@@ -16,7 +16,6 @@
 class nebula::profile::networking (
   Boolean $bridge = false,
 ) {
-
   class { 'nebula::profile::networking::sysctl':
     bridge => $bridge,
   }

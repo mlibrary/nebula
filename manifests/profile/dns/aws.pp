@@ -10,7 +10,6 @@
 # @example
 #   include nebula::profile::dns::aws
 class nebula::profile::dns::aws {
-
   $searchpaths = lookup('nebula::resolv_conf::searchpath')
   $searchpath_str = join($searchpaths, ' ')
 

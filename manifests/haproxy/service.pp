@@ -67,7 +67,7 @@
 #     },
 #     custom_503           => true,
 #  }
-define nebula::haproxy::service(
+define nebula::haproxy::service (
   String           $floating_ip,
   Optional[String] $cert_source = undef,
   Optional[String] $throttle_condition = undef,
@@ -82,7 +82,6 @@ define nebula::haproxy::service(
   String           $badrobots = '/etc/haproxy/global_badrobots.txt',
   Optional[Integer] $check_timeout_milliseconds = undef
 ) {
-
   include nebula::profile::haproxy::prereqs
 
   $service = $title
@@ -91,7 +90,7 @@ define nebula::haproxy::service(
 
   if $max_requests_per_sec > 0 {
     file { "/etc/haproxy/errors/${service}429.http":
-      ensure => 'present',
+      ensure => 'file',
       mode   => '0644',
       notify => Service['haproxy'],
       source => "https://${http_files}/errorfiles/${service}429.http"
@@ -100,7 +99,7 @@ define nebula::haproxy::service(
 
   if $custom_503 {
     file { "/etc/haproxy/errors/${service}503.http":
-      ensure => 'present',
+      ensure => 'file',
       mode   => '0644',
       notify => Service['haproxy'],
       source => "https://${http_files}/errorfiles/${service}503.http"
@@ -109,7 +108,7 @@ define nebula::haproxy::service(
 
   if $dynamic_weighting {
     cron { "dynamic weighting for ${service}":
-      command     => "/usr/bin/ruby /usr/local/bin/set_weights.rb ${::datacenter} ${service} > /dev/null 2>&1",
+      command     => "/usr/bin/ruby /usr/local/bin/set_weights.rb ${facts['datacenter']} ${service} > /dev/null 2>&1",
       user        => lookup('nebula::profile::haproxy::monitoring_user')['name'],
       minute      => '*/5',
       environment => ["HAPROXY_SMOOTHING_FACTOR=${dynamic_weight_smoothing}"]
@@ -118,7 +117,7 @@ define nebula::haproxy::service(
 
   $nonempty_whitelists.each |String $whitelist, Array[String] $exemptions| {
     file { "/etc/haproxy/${service}_whitelist_${whitelist}.txt":
-      ensure  => 'present',
+      ensure  => 'file',
       mode    => '0644',
       notify  => Service['haproxy'],
       content => $exemptions.map |$exemption| { "${exemption}\n" }.join('')
@@ -132,13 +131,13 @@ define nebula::haproxy::service(
 
   $protocols.each |$protocol,$protocol_options| {
     $service_cfg = "/etc/haproxy/services.d/${service}-${protocol}.cfg"
-    $service_loc = "${service}-${::datacenter}"
+    $service_loc = "${service}-${facts['datacenter']}"
     $service_prefix = "${service_loc}-${protocol}"
 
     concat { $service_cfg:
       ensure => 'present',
       mode   => '0644',
-      notify =>  Service['haproxy']
+      notify => Service['haproxy']
     }
 
     concat_fragment { "${service_prefix} backend":
@@ -146,7 +145,6 @@ define nebula::haproxy::service(
       content => "backend ${service_prefix}-back\n",
       order   => '01'
     }
-
 
     if($protocol == 'https') {
       concat_fragment { "${service_prefix} check":
@@ -203,13 +201,11 @@ define nebula::haproxy::service(
       Concat_fragment <| tag == "${service_prefix}_exempt_binding" |>
     }
 
-
     concat_fragment { "${service_prefix} frontend":
       target  => $service_cfg,
       content => template('nebula/profile/haproxy/frontend.erb'),
       order   => '07'
     }
-
   }
 
   if $cert_source {
@@ -227,5 +223,4 @@ define nebula::haproxy::service(
       require => Package['haproxy']
     }
   }
-
 }

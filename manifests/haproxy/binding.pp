@@ -26,14 +26,13 @@
 #     hostname      => $::networking['hostname'],
 #     ipaddress     => $::networking['ip']
 #  }
-define nebula::haproxy::binding(
+define nebula::haproxy::binding (
   String $service,
   String $hostname,
   String $datacenter,
   String $ipaddress,
   Boolean $https_offload = true,
 ) {
-
   $last_octet = $ipaddress.split('\.')[-1]
   $cookie = "cookie s${last_octet}"
   $track = "track ${service}-${datacenter}-https-back/${hostname}"
@@ -73,5 +72,4 @@ define nebula::haproxy::binding(
   }
 
   realize(Nebula::Haproxy::Service[$service])
-
 }

@@ -14,7 +14,6 @@ class nebula::profile::hathitrust::babel_logs (
   String $log_owner = 'nobody',
   String $log_group = 'nogroup',
 ) {
-
   file { $log_path:
     ensure => 'directory',
     owner  => $log_owner,

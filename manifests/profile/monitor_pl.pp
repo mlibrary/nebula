@@ -31,14 +31,13 @@ class nebula::profile::monitor_pl (
   Optional[Hash] $mysql = undef,
   Boolean $shibboleth = false,
 ) {
-
   $http_files = lookup('nebula::http_files')
 
   file { $directory:
     ensure => 'directory',
     owner  => 'root',
     group  => 'root',
-    mode   =>  '0755'
+    mode   => '0755'
   }
 
   file { "${directory}/monitor.pl":
@@ -51,7 +50,7 @@ class nebula::profile::monitor_pl (
 
   $monitor_file = "${directory}/monitor_config.yaml"
 
-  concat_file {  $monitor_file:
+  concat_file { $monitor_file:
     tag    => 'monitor_config',
     owner  => 'root',
     group  => 'root',
@@ -73,7 +72,5 @@ class nebula::profile::monitor_pl (
       content => { 'mysql' => $mysql }.to_yaml();
     'monitor shibboleth':
       content => { 'shibd' => $shibboleth }.to_yaml();
-
   }
-
 }

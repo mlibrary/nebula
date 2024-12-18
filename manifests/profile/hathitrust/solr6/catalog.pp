@@ -12,7 +12,7 @@ class nebula::profile::hathitrust::solr6::catalog (
   String $release_flag_prefix = lookup('nebula::profile::hathitrust::solr6::release_flag_prefix', default_value => ''),
   String $mirror_site_ip = lookup('nebula::profile::hathitrust::solr6::mirror_site_ip'),
   String $mail_recipient = lookup('nebula::profile::hathitrust::solr6::mail_recipient'),
-){
+) {
   class { 'nebula::profile::hathitrust::solr6':
     port      => $port,
     solr_home => $solr_home,
@@ -24,7 +24,7 @@ class nebula::profile::hathitrust::solr6::catalog (
     private_network => true,
     monitored       => true,
     before          => Service['solr'],
-    remote_target   => "nas-${::datacenter}.sc:/ifs/htsolr/catalog";
+    remote_target   => "nas-${facts['datacenter']}.sc:/ifs/htsolr/catalog";
   }
 
   # link to core in solr home

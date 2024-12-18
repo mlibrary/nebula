@@ -9,7 +9,7 @@
 class nebula::role::minimum (
   String $internal_routing = '',
 ) {
-  if $::os['family'] == 'Debian' {
+  if $facts['os']['family'] == 'Debian' {
     include nebula::profile::base
     include nebula::profile::prometheus::exporter::node
     include nebula::profile::authorized_keys

@@ -3,8 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 
 # A server with this role will have docker and pretty much nothing else.
-class nebula::role::minimal_docker ()
-{
+class nebula::role::minimal_docker () {
   class { 'nebula::role::minimum':
     internal_routing => 'docker',
   }

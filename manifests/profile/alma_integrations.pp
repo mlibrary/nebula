@@ -6,7 +6,6 @@
 class nebula::profile::alma_integrations (
   Array[Hash] $ssh_keys = []
 ) {
-
   user { 'alma':
     home       => '/var/local/alma',
     managehome => true,

@@ -45,7 +45,6 @@ class nebula::profile::tsm (
   Array[String] $exclude_dirs = ['/afs/','/net/','/nfs/','/usr/vice/cache/'],
   Array[String] $opt_settings = ['* No custom settings']
 ) {
-
   ensure_packages(['tivsm-ba',])
   $tsm_home = '/opt/tivoli/tsm/client/ba/bin'
 
@@ -80,5 +79,4 @@ class nebula::profile::tsm (
     ensure  => 'file',
     content => template('nebula/profile/tsm/dsm.sys.erb'),
   }
-
 }

@@ -27,7 +27,7 @@ class nebula::profile::hathitrust::imgsrv (
   }
 
   logrotate::rule { 'imgsrv':
-    path          => [ "${log_path}/imgsrv.out", "${log_path}/imgsrv.err" ],
+    path          => ["${log_path}/imgsrv.out", "${log_path}/imgsrv.err"],
     rotate        => 7,
     rotate_every  => 'day',
     missingok     => true,
@@ -37,14 +37,14 @@ class nebula::profile::hathitrust::imgsrv (
   }
 
   file { '/usr/local/bin/startup_imgsrv':
-    ensure  => 'present',
+    ensure  => 'file',
     content => template('nebula/profile/hathitrust/imgsrv/startup_imgsrv.erb'),
     notify  => Service['imgsrv'],
     mode    => '0755'
   }
 
   file { '/etc/systemd/system/imgsrv.service':
-    ensure  => 'present',
+    ensure  => 'file',
     content => template('nebula/profile/hathitrust/imgsrv/imgsrv.service.erb'),
     notify  => Service['imgsrv']
   }
@@ -52,7 +52,7 @@ class nebula::profile::hathitrust::imgsrv (
   service { 'imgsrv':
     ensure     => 'running',
     enable     => true,
-    hasrestart =>  true
+    hasrestart => true
   }
 
   package { 'libfcgi-bin': }
@@ -66,20 +66,19 @@ class nebula::profile::hathitrust::imgsrv (
 
   $http_files = lookup('nebula::http_files')
   file { '/usr/local/bin/check_imgsrv':
-    ensure => 'present',
+    ensure => 'file',
     mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/check_imgsrv"
   }
 
   file { '/usr/local/bin/startup_app':
-    ensure => 'present',
+    ensure => 'file',
     mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/startup_app"
   }
 
   file { '/etc/sudoers.d/imgsrv-catprocio':
-    ensure  => 'present',
+    ensure  => 'file',
     content => 'nobody ALL=(root) NOPASSWD: /usr/local/bin/catprocio'
   }
-
 }

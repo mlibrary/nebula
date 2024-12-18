@@ -13,7 +13,6 @@ class nebula::profile::http_fileserver (
   String $storage_path,
   String $docroot = '/srv/www',
 ) {
-
   package { 'nfs-common': }
 
   file { $docroot:
@@ -33,7 +32,7 @@ class nebula::profile::http_fileserver (
   }
 
   @nebula::taghosts::tag { 'apache': }
-  $letsencrypt_directory = $::letsencrypt_directory[$::networking['fqdn']]
+  $letsencrypt_directory = $facts['letsencrypt_directory'][$::networking['fqdn']]
   if $letsencrypt_directory {
     class { 'apache':
       docroot           => '/srv/www',
@@ -93,5 +92,4 @@ class nebula::profile::http_fileserver (
       target => '../conf-available/serve-cgi-bin.conf',
     ;
   }
-
 }

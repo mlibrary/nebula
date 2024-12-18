@@ -32,7 +32,7 @@ class nebula::profile::www_lib::vhosts::press (
   }
 
   logrotate::rule { 'press':
-    path          => [ "${mojo_log_path}/press.out", "${mojo_log_path}/press.err" ],
+    path          => ["${mojo_log_path}/press.out", "${mojo_log_path}/press.err"],
     rotate        => 7,
     rotate_every  => 'day',
     missingok     => true,
@@ -41,16 +41,15 @@ class nebula::profile::www_lib::vhosts::press (
     compress      => true,
   }
 
-
   file { '/usr/local/bin/startup_press':
-    ensure  => 'present',
+    ensure  => 'file',
     content => template('nebula/profile/www_lib/vhosts/press/startup_press.erb'),
     notify  => Service['press'],
     mode    => '0755',
   }
 
   file { '/etc/systemd/system/press.service':
-    ensure  => 'present',
+    ensure  => 'file',
     content => template('nebula/profile/www_lib/vhosts/press/press.service.erb'),
     notify  => Service['press'],
   }

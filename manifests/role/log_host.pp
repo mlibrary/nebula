@@ -16,5 +16,4 @@ class nebula::role::log_host {
     port  => 5044,
     block => 'umich::networks::datacenter',
   }
-
 }

@@ -13,7 +13,6 @@
 class nebula::profile::krb5 (
   String  $realm
 ) {
-
   include nebula::profile::networking::keytab
 
   package { 'krb5-user': }

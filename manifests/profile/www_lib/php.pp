@@ -11,21 +11,20 @@
 class nebula::profile::www_lib::php (
   String $default_php_version = '8.1'
 ) {
-
   # Set the php repo
   apt::source { 'php-community':
     location     => 'https://packages.sury.org/php/',
-    key          =>  {
+    key          => {
       name   => 'php-community-sury.org.gpg',
       source => 'https://packages.sury.org/php/apt.gpg'
     },
-    release      => $::os['distro']['codename'],
+    release      => $facts['os']['distro']['codename'],
     repos        => 'main',
-    architecture => $::os['architecture'],
+    architecture => $facts['os']['architecture'],
   }
 
   # Set default php
-  class { '::php::globals':
+  class { 'php::globals':
     php_version => $default_php_version,
     config_root => "/etc/php/${default_php_version}",
   }
@@ -106,7 +105,7 @@ class nebula::profile::www_lib::php (
   }
 
   # Configure default PHP
-  class { '::php':
+  class { 'php':
     ensure       => present, # Don't touch stuff from above; should be equivalent
     manage_repos => false, # Set true to add dotdeb repos
     fpm          => true,

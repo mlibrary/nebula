@@ -62,7 +62,7 @@ class nebula::profile::www_lib::apache::base {
   include apache::mod::xsendfile
 
   file { '/etc/apache2/mods-available/shib2.conf':
-    ensure  => 'present',
+    ensure  => 'file',
     content => template('nebula/profile/www_lib/shib2.conf.erb'),
     require => File['/etc/apache2/mods-available'],
   }
@@ -72,5 +72,4 @@ class nebula::profile::www_lib::apache::base {
     target  => '/etc/apache2/mods-available/shib2.conf',
     require => File['/etc/apache2/mods-available/shib2.conf'],
   }
-
 }

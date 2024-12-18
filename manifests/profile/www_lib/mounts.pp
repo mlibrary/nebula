@@ -34,4 +34,3 @@ class nebula::profile::www_lib::mounts (
     private_network => true
   }
 }
-

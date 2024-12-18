@@ -18,13 +18,13 @@
 #     options       => 'ro,auto,hard,intr,nfsvers=3',
 #     monitored     => true
 #  }
-define nebula::nfs_mount(
+define nebula::nfs_mount (
   String $remote_target,
   String $options = 'auto,hard,nfsvers=3',
   Boolean $monitored = true,
   Boolean $private_network = true
 ) {
-  ensure_packages(['nfs-common'], {'ensure' => 'present'})
+  ensure_packages(['nfs-common'], { 'ensure' => 'present' })
 
   file { $title:
     ensure => 'directory',
@@ -35,7 +35,7 @@ define nebula::nfs_mount(
     device  => $remote_target,
     options => $options,
     fstype  => 'nfs',
-    require => Package[nfs-common]
+    require => Package['nfs-common']
   }
 
   if($private_network) {

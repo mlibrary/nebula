@@ -16,7 +16,7 @@
 define nebula::log (
   Array[String] $files,
   String $service = $title,
-){
+) {
   include nebula::profile::loki
 
   file { "/etc/alloy/${service}.alloy":

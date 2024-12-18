@@ -9,7 +9,6 @@
 # @example
 #   include nebula::profile::aleph::perl
 class nebula::profile::aleph::perl () {
-
   ensure_packages([
     'libjson-perl',
     'libmarc-record-perl',

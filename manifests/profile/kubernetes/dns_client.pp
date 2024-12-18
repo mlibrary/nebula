@@ -19,7 +19,7 @@ class nebula::profile::kubernetes::dns_client {
     content => template('nebula/profile/kubernetes/dns/resolv.conf.erb'),
   }
 
-  $::ssh.each |$name, $key_obj| {
+  $facts['ssh'].each |$name, $key_obj| {
     $type = $key_obj["type"]
     $key = $key_obj["key"]
 

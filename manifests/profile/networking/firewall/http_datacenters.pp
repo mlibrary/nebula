@@ -11,7 +11,6 @@
 class nebula::profile::networking::firewall::http_datacenters (
   Array $networks = [],
 ) {
-
   $params = {
     proto  => 'tcp',
     dport  => [80, 443],

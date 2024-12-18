@@ -13,7 +13,7 @@ class nebula::profile::kubernetes::destination_port::etcd {
   }
 
   @@concat_fragment { "prometheus etcd service ${::networking['hostname']}":
-    tag     => "${::datacenter}_prometheus_etcd_service_list",
+    tag     => "${facts['datacenter']}_prometheus_etcd_service_list",
     target  => '/etc/prometheus/etcd.yml',
     content => template('nebula/profile/prometheus/exporter/etcd/target.yaml.erb')
   }

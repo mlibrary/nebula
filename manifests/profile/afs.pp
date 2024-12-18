@@ -30,7 +30,6 @@ class nebula::profile::afs (
   Integer $cache_size,
   String  $cell,
 ) {
-
   include nebula::profile::krb5
 
   if nebula::date_is_in_the_future($allow_auto_reboot_until) {
@@ -47,7 +46,7 @@ class nebula::profile::afs (
 
   exec { 'reinstall kernel to enable afs':
     command => '/usr/bin/apt-get -y install --reinstall linux-headers-amd64',
-    creates => "/lib/modules/${::kernelrelease}/updates/dkms/openafs.ko",
+    creates => "/lib/modules/${facts['kernelrelease']}/updates/dkms/openafs.ko",
     timeout => 600,
     require => Package['openafs-modules-dkms'],
   }

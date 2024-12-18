@@ -2,7 +2,7 @@ class nebula::resolv_conf (
   Array[String] $nameservers,
   Array[String] $searchpath = [],
   String        $mode = '0644',
-){
+) {
   # replicate behavior of saz/resolv_conf for Debian based OS
   package { 'resolvconf':
     ensure => absent

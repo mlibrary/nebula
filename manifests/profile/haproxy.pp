@@ -6,7 +6,7 @@
 #
 # @example
 #   include nebula::profile::haproxy
-class nebula::profile::haproxy(
+class nebula::profile::haproxy (
   Hash $services,
   Hash $monitoring_user,
   Boolean $master = false,
@@ -22,7 +22,7 @@ class nebula::profile::haproxy(
 
   file {
     default:
-      ensure  => 'present',
+      ensure  => 'file',
       mode    => '0644',
       require => Package['haproxy'],
       notify  => Service['haproxy'],
@@ -57,7 +57,7 @@ class nebula::profile::haproxy(
     }
   }
 
-  Nebula::Haproxy::Binding <<| datacenter == $::datacenter |>>
+  Nebula::Haproxy::Binding <<| datacenter == $facts['datacenter'] |>>
 
   nebula::authzd_user { $monitoring_user['name']:
     gid     => 'haproxy',
@@ -80,7 +80,7 @@ class nebula::profile::haproxy(
   }
   $http_files = lookup('nebula::http_files')
   file { '/usr/local/bin/set_weights.rb':
-    ensure => 'present',
+    ensure => 'file',
     mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/set_weights.rb"
   }
@@ -98,7 +98,7 @@ class nebula::profile::haproxy(
   $email = lookup('nebula::root_email')
 
   concat { '/etc/keepalived/keepalived.conf':
-    ensure  =>  'present',
+    ensure  => 'present',
     require => Package['keepalived'],
     notify  => Service['keepalived'],
     mode    => '0644',
@@ -113,12 +113,12 @@ class nebula::profile::haproxy(
   @@concat_fragment { "keepalived node ip ${::networking['hostname']}":
     target  => '/etc/keepalived/keepalived.conf',
     content => "    ${::networking['ip']}\n",
-    tag     => "keepalived-haproxy-ip-${::datacenter}",
+    tag     => "keepalived-haproxy-ip-${facts['datacenter']}",
     order   => '02'
   }
 
   # don't collect our own IP address, just the other haproxy nodes here
-  Concat_fragment <<| tag == "keepalived-haproxy-ip-${::datacenter}" and title != "keepalived node ip ${::networking['hostname']}" |>>
+  Concat_fragment <<| tag == "keepalived-haproxy-ip-${facts['datacenter']}" and title != "keepalived node ip ${::networking['hostname']}" |>>
 
   concat_fragment { 'keepalived postamble':
     target  => '/etc/keepalived/keepalived.conf',
@@ -127,7 +127,7 @@ class nebula::profile::haproxy(
   }
 
   file { '/etc/sysctl.d/keepalived.conf':
-    ensure  => 'present',
+    ensure  => 'file',
     require => Package['keepalived'],
     notify  => [Service['keepalived'], Service['procps'], Service['haproxy']],
     mode    => '0644',
@@ -140,7 +140,7 @@ class nebula::profile::haproxy(
     source => $::networking['ip'],
     state  => 'NEW',
     jump   => 'accept',
-    tag    => "${::datacenter}_haproxy"
+    tag    => "${facts['datacenter']}_haproxy"
   }
 
   # HAProxy should listen for kubernetes connections.
@@ -166,5 +166,4 @@ class nebula::profile::haproxy(
   }
 
   @nebula::taghosts::tag { 'haproxy': }
-
 }

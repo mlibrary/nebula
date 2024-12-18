@@ -5,7 +5,6 @@
 class nebula::profile::prometheus::exporter::haproxy (
   Boolean $master,
 ) {
-
   package { 'prometheus-haproxy-exporter': }
 
   service { 'prometheus-haproxy-exporter':
@@ -25,13 +24,11 @@ class nebula::profile::prometheus::exporter::haproxy (
     content => template('nebula/profile/prometheus/exporter/haproxy/defaults.sh.erb')
   }
 
-
   @@concat_fragment { "prometheus haproxy service ${::networking['hostname']}":
-    tag     => "${::datacenter}_prometheus_haproxy_service_list",
+    tag     => "${facts['datacenter']}_prometheus_haproxy_service_list",
     target  => '/etc/prometheus/haproxy.yml',
     content => template('nebula/profile/prometheus/exporter/haproxy/target.yaml.erb')
   }
 
-  Firewall <<| tag == "${::datacenter}_prometheus_haproxy_exporter" |>>
-
+  Firewall <<| tag == "${facts['datacenter']}_prometheus_haproxy_exporter" |>>
 }

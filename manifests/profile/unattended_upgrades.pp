@@ -4,7 +4,7 @@
 
 class nebula::profile::unattended_upgrades {
   class { 'unattended_upgrades':
-    extra_origins => [
+    extra_origins    => [
       'origin=Puppetlabs,codename=${distro_codename},label=Puppetlabs',
     ],
     only_on_ac_power => false,

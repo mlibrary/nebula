@@ -1,4 +1,3 @@
-
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
@@ -18,14 +17,9 @@ class nebula::profile::hathitrust::apache::redirection (
   String $domain,
   Array[String] $alias_domains = []
 ) {
-
-
   $babel_servername   = "${prefix}babel.${domain}"
   $catalog_servername = "${prefix}catalog.${domain}"
-  $www_servername     = "${prefix}www.${domain}"
-
-
-  ['babel', 'catalog', 'm', 'www', 'old.www'].each |String $vhost| {
+  $www_servername     = "${prefix}www.${domain}" ['babel', 'catalog', 'm', 'www', 'old.www'].each |String $vhost| {
     $servername = "${prefix}${vhost}.${domain}"
 
     apache::vhost { "${servername} non-ssl":
@@ -91,5 +85,4 @@ class nebula::profile::hathitrust::apache::redirection (
         }
       ],
   }
-
 }

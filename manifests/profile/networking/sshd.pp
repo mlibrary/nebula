@@ -16,7 +16,6 @@ class nebula::profile::networking::sshd (
   String $addon_directives = '',
   Integer $port = 22,
 ) {
-
   # This will do nothing if the keytab doesn't exist
   include nebula::profile::networking::keytab
   $gssapi_auth = defined(File['/etc/krb5.keytab'])

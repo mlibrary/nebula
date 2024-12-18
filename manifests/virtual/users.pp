@@ -32,7 +32,7 @@
 #
 # @example
 #   include nebula::virtual::users
-class nebula::virtual::users(
+class nebula::virtual::users (
   Hash   $all_users,
   String $default_group,
 ) {

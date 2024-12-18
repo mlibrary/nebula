@@ -14,7 +14,6 @@ class nebula::profile::apache (
   String $ssl_key_dir = '/etc/ssl/private',
   Optional[Hash] $log_formats = undef,
 ) {
-
   $haproxy_ips = nodes_for_class('nebula::profile::haproxy').map |String $nodename| {
     fact_for($nodename, 'networking')['ip']
   }

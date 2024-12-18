@@ -8,7 +8,6 @@
 class nebula::profile::mysql (
   String $password
 ) {
-
   # Install and configure mysql server
   class { 'mysql::server':
     create_root_user        => true,
@@ -21,5 +20,4 @@ class nebula::profile::mysql (
   class { 'mysql::client':
     bindings_enable => false
   }
-
 }

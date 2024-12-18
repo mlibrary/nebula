@@ -21,7 +21,7 @@ define nebula::unison::server (
     ensure     => 'running',
     enable     => true,
     hasrestart => true,
-    require    => Package[unison]
+    require    => Package['unison']
   }
 
   @@nebula::unison::client { $title:
@@ -34,5 +34,4 @@ define nebula::unison::server (
   }
 
   Firewall <<| tag == "unison-client-${title}" |>>
-
 }

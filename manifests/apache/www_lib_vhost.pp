@@ -55,7 +55,7 @@ define nebula::apache::www_lib_vhost (
   if $setenv {
     $setenv_with_perl = $setenv + 'PERL_USE_UNSAFE_INC 1'
   } else {
-    $setenv_with_perl = [ 'PERL_USE_UNSAFE_INC 1' ]
+    $setenv_with_perl = ['PERL_USE_UNSAFE_INC 1']
   }
 
   if($usertrack) {

@@ -153,5 +153,4 @@ class nebula::profile::hathitrust::perl () {
     'MARC::File::MiJ',
     'Prometheus::Tiny::Shared']:
   }
-
 }

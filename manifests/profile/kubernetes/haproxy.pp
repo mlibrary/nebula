@@ -50,9 +50,9 @@ class nebula::profile::kubernetes::haproxy {
 
   firewall {
     default:
-      proto  => 'tcp',
-      state  => 'NEW',
-      jump   => 'accept',
+      proto => 'tcp',
+      state => 'NEW',
+      jump  => 'accept',
     ;
 
     '200 private api':

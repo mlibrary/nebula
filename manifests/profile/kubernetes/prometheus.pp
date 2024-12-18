@@ -12,5 +12,5 @@ class nebula::profile::kubernetes::prometheus {
     require => File['/var/local/prometheus'],
   }
 
-  Concat_fragment <<| tag == "${::datacenter}_prometheus_node_service_list" |>>
+  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_node_service_list" |>>
 }

@@ -9,11 +9,11 @@ class nebula::profile::hathitrust::solr6 (
   String $port,
   String $jdk_version = '8',
   String $solr_home = '/var/lib/solr',
-  String $java_home = "/usr/lib/jvm/temurin-${jdk_version}-jre-${::os['architecture']}",
+  String $java_home = "/usr/lib/jvm/temurin-${jdk_version}-jre-${facts['os']['architecture']}",
   String $heap = '16G',
   String $timezone = 'America/Detroit',
   String $solr_bin = '/opt/solr/bin/solr',
-){
+) {
   include nebula::profile::hathitrust::networking
   include nebula::profile::hathitrust::hosts
 
@@ -46,7 +46,7 @@ class nebula::profile::hathitrust::solr6 (
       monitored       => true,
       before          => Service['solr'],
     ;
-    '/htapps':            remote_target => "nas-${::datacenter}.sc:/ifs/htapps";
+    '/htapps':            remote_target => "nas-${facts['datacenter']}.sc:/ifs/htapps";
   }
 
   # solr config files

@@ -12,7 +12,6 @@ define nebula::unison::client (
   Integer $watchdog_sec = 7200,
   Optional[Array[String]] $ignores = undef,
 ) {
-
   include nebula::profile::unison::client
 
   $remote_root = "socket://${server}:${port}${root}"
@@ -31,7 +30,7 @@ define nebula::unison::client (
     ensure     => 'running',
     enable     => true,
     hasrestart => true,
-    require    => Package[unison]
+    require    => Package['unison']
   }
 
   @@firewall { "200 Unison: ${title} ${::networking['hostname']}":
@@ -40,6 +39,6 @@ define nebula::unison::client (
     source => $::networking['ip'],
     state  => 'NEW',
     jump   => 'accept',
-    tag    =>  "unison-client-${title}"
+    tag    => "unison-client-${title}"
   }
 }

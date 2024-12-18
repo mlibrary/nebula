@@ -67,5 +67,4 @@ class nebula::profile::solr (
       File['/etc/systemd/system/solr.service']
     ]
   }
-
 }

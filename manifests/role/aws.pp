@@ -20,7 +20,7 @@ class nebula::role::aws (
 
   include nebula::profile::aws::filesystem
 
-  if $::os['family'] == 'Debian' {
+  if $facts['os']['family'] == 'Debian' {
     include nebula::profile::exim4
     include nebula::profile::ntp
     class { 'nebula::profile::networking':
@@ -31,5 +31,4 @@ class nebula::role::aws (
   include nebula::profile::dns::aws
   include nebula::profile::elastic::metricbeat
   include nebula::profile::elastic::filebeat::configs::ulib
-
 }

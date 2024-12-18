@@ -13,12 +13,11 @@ class nebula::role::hathitrust (
   String $internal_routing = '',
   Boolean $afs = true,
 ) {
-
   class { 'nebula::role::minimum':
     internal_routing => $internal_routing,
   }
 
-  if $::os['family'] == 'Debian' {
+  if $facts['os']['family'] == 'Debian' {
     include nebula::profile::krb5
     if $afs {
       include nebula::profile::afs
@@ -38,5 +37,4 @@ class nebula::role::hathitrust (
   include nebula::profile::elastic::filebeat::configs::ulib
 
   @nebula::taghosts::tag { 'ht': }
-
 }

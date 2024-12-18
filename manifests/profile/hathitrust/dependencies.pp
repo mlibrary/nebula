@@ -31,7 +31,6 @@ class nebula::profile::hathitrust::dependencies () {
     ensure => 'directory'
   }
 
-
   file { '/l/local':
     ensure => 'directory'
   }
@@ -42,7 +41,7 @@ class nebula::profile::hathitrust::dependencies () {
   }
 
   file { '/usr/share/GeoIP':
-    target =>  '/htapps/babel/geoip'
+    target => '/htapps/babel/geoip'
   }
 
   package {
@@ -51,7 +50,7 @@ class nebula::profile::hathitrust::dependencies () {
 
   $http_files = lookup('nebula::http_files')
   file { '/usr/local/bin/kdu_munge':
-    ensure => 'present',
+    ensure => 'file',
     mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/kdu_munge"
   }
@@ -66,9 +65,8 @@ class nebula::profile::hathitrust::dependencies () {
   ensure_packages(['mariadb-client'])
 
   file { '/usr/local/bin/catprocio':
-    ensure  => 'present',
+    ensure  => 'file',
     content => file('nebula/imgsrv/catprocio'),
     mode    => '0755',
   }
-
 }

@@ -13,7 +13,7 @@ class nebula::role::webhost::htvm::prod {
   @@nebula::haproxy::binding { "${::networking['hostname']} hathitrust":
     service       => 'hathitrust',
     https_offload => false,
-    datacenter    => $::datacenter,
+    datacenter    => $facts['datacenter'],
     hostname      => $::networking['hostname'],
     ipaddress     => $::networking['ip']
   }

@@ -27,32 +27,32 @@ class nebula::profile::www_lib::apache::fulcrum (
 
     'minnesota.fulcrumscholar.org':
       target        => 'https://www.fulcrum.org/minnesota',
-      serveraliases => [ 'minnesota.fulcrum.org', 'minnesota.fulcrumservices.org'],
+      serveraliases => ['minnesota.fulcrum.org', 'minnesota.fulcrumservices.org'],
     ;
 
     'michigan.fulcrumscholar.org':
       target        => 'https://www.fulcrum.org/michigan',
-      serveraliases => [ 'michigan.fulcrum.org', 'michigan.fulcrumservices.org'],
+      serveraliases => ['michigan.fulcrum.org', 'michigan.fulcrumservices.org'],
     ;
 
     'indiana.fulcrumscholar.org':
       target        => 'https://www.fulcrum.org/indiana',
-      serveraliases => [ 'indiana.fulcrum.org', 'indiana.fulcrumservices.org'],
+      serveraliases => ['indiana.fulcrum.org', 'indiana.fulcrumservices.org'],
     ;
 
     'pennstate.fulcrumscholar.org':
       target        => 'https://www.fulcrum.org/pennstate',
-      serveraliases => [ 'pennstate.fulcrum.org', 'pennstate.fulcrumservices.org'],
+      serveraliases => ['pennstate.fulcrum.org', 'pennstate.fulcrumservices.org'],
     ;
 
     'nyupress.fulcrumscholar.org':
       target        => 'https://www.fulcrum.org/nyupress',
-      serveraliases => [ 'nyupress.fulcrum.org', 'nyupress.fulcrumservices.org'],
+      serveraliases => ['nyupress.fulcrum.org', 'nyupress.fulcrumservices.org'],
     ;
 
     'dialogue.fulcrumscholar.org':
       target        => 'https://www.fulcrum.org/dialogue',
-      serveraliases => [ 'dialogue.fulcrum.org', 'dialogue.fulcrumservices.org'],
+      serveraliases => ['dialogue.fulcrum.org', 'dialogue.fulcrumservices.org'],
     ;
   }
 

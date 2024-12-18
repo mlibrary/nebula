@@ -17,4 +17,3 @@ class nebula::profile::openjdk_java (
     require => Package[$default_jdk]
   }
 }
-

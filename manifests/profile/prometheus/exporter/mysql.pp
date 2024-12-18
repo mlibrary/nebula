@@ -2,9 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-class nebula::profile::prometheus::exporter::mysql ()
-  {
-
+class nebula::profile::prometheus::exporter::mysql () {
   package { 'prometheus-mysqld-exporter': }
 
   service { 'prometheus-mysqld-exporter':
@@ -25,13 +23,12 @@ class nebula::profile::prometheus::exporter::mysql ()
   }
 
   @@concat_fragment { "prometheus mysql service ${::networking['hostname']}":
-    tag     => "${::datacenter}_prometheus_mysql_service_list",
+    tag     => "${facts['datacenter']}_prometheus_mysql_service_list",
     target  => '/etc/prometheus/mysql.yml',
     content => template('nebula/profile/prometheus/exporter/mysql/target.yaml.erb')
   }
 
-  Firewall <<| tag == "${::datacenter}_prometheus_mysql_exporter" |>>
+  Firewall <<| tag == "${facts['datacenter']}_prometheus_mysql_exporter" |>>
 
   $role = lookup_role()
-
 }

@@ -17,7 +17,6 @@ class nebula::profile::hathitrust::apache::www (
   String $domain,
   String $docroot = '/htapps/www'
 ) {
-
   cron { 'purge non-babel apache access logs':
     command => '/usr/bin/find /var/log/apache2/www -type f -name "access_log*" -mtime +7 -exec /bin/rm {} \; > /dev/null 2>&1',
     user    => 'root',
@@ -50,7 +49,7 @@ class nebula::profile::hathitrust::apache::www (
     directories        => [
       {
         provider => 'filesmatch',
-        location =>  '~$',
+        location => '~$',
         require  => 'all denied'
       },
       {
@@ -62,12 +61,12 @@ class nebula::profile::hathitrust::apache::www (
       },
       {
         provider => 'directory',
-        path     =>  "${sdrroot}/firebird-common",
+        path     => "${sdrroot}/firebird-common",
         require  => $default_access,
       },
       {
         provider => 'directory',
-        path     =>  "${sdrroot}/common/web",
+        path     => "${sdrroot}/common/web",
         require  => $default_access,
       },
     ],
@@ -88,6 +87,5 @@ class nebula::profile::hathitrust::apache::www (
     ],
 
     headers            => 'set "Strict-Transport-Security" "max-age=31536000"',
-
   }
 }

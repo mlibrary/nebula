@@ -1,4 +1,3 @@
-
 # Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
@@ -16,7 +15,6 @@ class nebula::profile::www_lib::vhosts::www_lib (
   String $www_lib_root = '/www/www.lib-fallback',
   String $docroot = "${www_lib_root}/web"
 ) {
-
   nebula::apache::www_lib_vhost { 'www.lib-ssl':
     servername  => "${prefix}www.${domain}",
     ssl         => true,

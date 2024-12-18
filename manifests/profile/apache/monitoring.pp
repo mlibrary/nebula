@@ -21,13 +21,12 @@ class nebula::profile::apache::monitoring (
   String $monitor_uri = '/monitor',
   String $monitor_dir = "${cgi_dir}/monitor",
 ) {
-
   $location = {
     provider => 'location',
     path     => $monitor_uri,
     require  => {
       enforce  => 'any',
-      requires => [ 'local' ] + $nebula::profile::apache::haproxy_ips.map |String $ip| { "ip ${ip}" }
+      requires => ['local'] + $nebula::profile::apache::haproxy_ips.map |String $ip| { "ip ${ip}" }
     }
   }
 
@@ -44,5 +43,4 @@ class nebula::profile::apache::monitoring (
     group  => 'root',
     mode   => '0755'
   }
-
 }
