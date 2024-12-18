@@ -1,16 +1,45 @@
-Puppet Nebula
-=============
+# Puppet Nebula
 
-# Development
+## Development
 
-1. git clone
-2. `docker compose build`
-3. `docker compose run spec_prep`
-4. `docker compose run specs`
+### with locally installed ruby
 
-or:
+```sh
+# ensure you're using the correct ruby (higher versions will _probably_ work)
+% cat .ruby-version
+3.2
+% ruby -v
+ruby 3.2.6
 
-```bash
+# bundle
+bundle
+
+# run all tests
+bundle exec rake parallel_spec
+
+# run any single test
+bundle exec rake spec_prep
+bundle exec rspec specs/path/to/a_spec.rb
+
+# lint
+bundle exec standardrb # lint .rb files
+bundle exec rake lint # lint .pp files
+
+# puppet module dependencies
+bundle exec rake outdated
+bundle exec rake librarian
+
+# update gems, pdk
+vi .sync.yml
+pdk update
+```
+
+### with `docker compose`
+```sh
+docker compose build
+docker compose run spec_prep
+docker compose run specs
+# or…
 docker compose run specs bundle exec rspec specs/path/to/a_spec.rb
 docker compose run specs bundle exec rake spec_standalone
 ```
