@@ -23,6 +23,10 @@ Rakefile:
     # We sometimes refer to non-nebula puppet fileserver paths.
     # This check will make breaking changes on lint_fix task.
     - puppet_url_without_modules
+    # likes to add useless indents in heredocs and never pass its own tests
+    - strict_indent
+    # likes to crash when "fixing" files
+    - trailing_comma
 spec/default_facts.yml:
   extra_facts:
     ec2_tag_role: nebula::role::aws

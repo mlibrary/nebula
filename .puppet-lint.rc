@@ -1,2 +1,4 @@
 --relative
 --no-puppet_url_without_modules-check
+--no-strict_indent-check
+--no-trailing_comma-check
