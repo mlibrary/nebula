@@ -6,13 +6,13 @@
 
 Puppet::Functions.create_function(:lookup_role) do
   dispatch :run do
-    return_type 'String'
+    return_type "String"
   end
 
   def run
     clear_internals
     case hiera_role
-    when 'nebula::role::aws::auto'
+    when "nebula::role::aws::auto"
       ec2_tag_role
     else
       hiera_role
@@ -25,11 +25,11 @@ Puppet::Functions.create_function(:lookup_role) do
   end
 
   def hiera_role
-    @hiera_role ||= call_function('lookup', 'role')
+    @hiera_role ||= call_function("lookup", "role")
   end
 
   def ec2_tag_role
-    @ec2_tag_role ||= closure_scope['facts']['ec2_tag_role']
+    @ec2_tag_role ||= closure_scope["facts"]["ec2_tag_role"]
     @ec2_tag_role ||= hiera_role
   end
 end

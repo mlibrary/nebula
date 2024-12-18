@@ -3,38 +3,38 @@
 # Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'nebula::unison::client' do
+describe "nebula::unison::client" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
-      let(:title) { 'myinstance' }
+      let(:title) { "myinstance" }
       let(:params) do
         {
-          server: 'somehost.default.invalid',
+          server: "somehost.default.invalid",
           port: 12_345,
-          root: '/myroot',
+          root: "/myroot",
           paths: %w[path1 path2],
-          filesystems: ['fs1'],
+          filesystems: ["fs1"]
         }
       end
 
       [
         'Description=myinstance somehost.default.invalid sync \(unison\)',
-        'Requires=fs1.mount',
-        'WatchdogSec=7200',
-        'Environment=HOME=/root',
-        'ExecStart=/usr/local/bin/unisonsync myinstance',
+        "Requires=fs1.mount",
+        "WatchdogSec=7200",
+        "Environment=HOME=/root",
+        "ExecStart=/usr/local/bin/unisonsync myinstance"
       ].each do |line|
         it do
-          expect(subject).to contain_file('/etc/systemd/system/unison-client-myinstance.service')
+          expect(subject).to contain_file("/etc/systemd/system/unison-client-myinstance.service")
             .with_content(%r{^#{line}$}m)
         end
       end
 
-      it 'generates a prf file for unison clients' do
-        expect(subject).to contain_file('/root/.unison/myinstance.prf')
+      it "generates a prf file for unison clients" do
+        expect(subject).to contain_file("/root/.unison/myinstance.prf")
           .with_content(%r{root\s+=\s+/myroot})
           .with_content(%r{root\s+=\s+socket://somehost.default.invalid:12345/myroot})
           .with_content(%r{path\s+=\s+path1})
@@ -51,34 +51,34 @@ describe 'nebula::unison::client' do
       end
 
       it do
-        expect(subject).to contain_service('unison-client-myinstance')
-          .with(enable: true, ensure: 'running')
-          .that_requires('Package[unison]')
+        expect(subject).to contain_service("unison-client-myinstance")
+          .with(enable: true, ensure: "running")
+          .that_requires("Package[unison]")
       end
 
-      it 'exports firewall resource' do
+      it "exports firewall resource" do
         expect(exported_resources).to contain_firewall("200 Unison: myinstance #{facts[:hostname]}").with(
-          proto: 'tcp',
+          proto: "tcp",
           dport: [12_345],
           source: facts[:ipaddress],
-          tag: 'unison-client-myinstance',
+          tag: "unison-client-myinstance"
         )
       end
 
-      context 'with optional params' do
+      context "with optional params" do
         let(:params) do
           {
-            server: 'somehost.default.invalid',
+            server: "somehost.default.invalid",
             port: 12_345,
-            root: '/myroot',
+            root: "/myroot",
             paths: %w[path1 path2],
-            filesystems: ['fs1'],
-            ignores: %w[ignore_path1 ignore_path2],
+            filesystems: ["fs1"],
+            ignores: %w[ignore_path1 ignore_path2]
           }
         end
 
-        it 'generates a prf file for unison clients' do
-          expect(subject).to contain_file('/root/.unison/myinstance.prf')
+        it "generates a prf file for unison clients" do
+          expect(subject).to contain_file("/root/.unison/myinstance.prf")
             .with_content(%r{root\s+=\s+/myroot})
             .with_content(%r{root\s+=\s+socket://somehost.default.invalid:12345/myroot})
             .with_content(%r{path\s+=\s+path1})

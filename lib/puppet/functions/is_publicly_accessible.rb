@@ -4,11 +4,11 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-require 'ipaddr'
+require "ipaddr"
 
 Puppet::Functions.create_function(:is_publicly_accessible) do
   dispatch :run do
-    return_type 'Boolean'
+    return_type "Boolean"
   end
 
   def run
@@ -16,11 +16,11 @@ Puppet::Functions.create_function(:is_publicly_accessible) do
   end
 
   def ip_addresses
-    interfaces.values.map { |v| v['ip'] }.delete_if { |ip| ip.nil? }
+    interfaces.values.map { |v| v["ip"] }.delete_if { |ip| ip.nil? }
   end
 
   def interfaces
-    @interfaces ||= closure_scope['facts']['networking']['interfaces']
+    @interfaces ||= closure_scope["facts"]["networking"]["interfaces"]
     @interfaces ||= {}
   end
 
@@ -29,8 +29,8 @@ Puppet::Functions.create_function(:is_publicly_accessible) do
   end
 
   def private_blocks
-    @private_blocks ||= call_function('lookup',
-                                      'umich::networks::private_blocks')
-                        .map { |cidr| IPAddr.new(cidr) }
+    @private_blocks ||= call_function("lookup",
+      "umich::networks::private_blocks")
+      .map { |cidr| IPAddr.new(cidr) }
   end
 end

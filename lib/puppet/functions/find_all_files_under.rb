@@ -6,8 +6,8 @@
 
 Puppet::Functions.create_function(:find_all_files_under) do
   dispatch :find_all_files_under do
-    required_param 'String', :path
-    return_type 'Array[String]'
+    required_param "String", :path
+    return_type "Array[String]"
   end
 
   def find_all_files_under(path)

@@ -3,16 +3,16 @@
 # Copyright (c) 2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'nebula::haproxy::binding' do
-  let(:title) { 'whatever' }
+describe "nebula::haproxy::binding" do
+  let(:title) { "whatever" }
   let(:params) do
     {
-      service: 'myservice',
-      datacenter: 'dc',
-      hostname: 'thishost',
-      ipaddress: '10.1.2.123',
+      service: "myservice",
+      datacenter: "dc",
+      hostname: "thishost",
+      ipaddress: "10.1.2.123"
     }
   end
 
@@ -31,53 +31,53 @@ describe 'nebula::haproxy::binding' do
       end
 
       it do
-        expect(subject).to contain_concat_fragment('myservice-dc-http thishost binding').with(
-          target: '/etc/haproxy/services.d/myservice-http.cfg',
-          order: '04',
+        expect(subject).to contain_concat_fragment("myservice-dc-http thishost binding").with(
+          target: "/etc/haproxy/services.d/myservice-http.cfg",
+          order: "04",
           content: "server thishost 10.1.2.123:80 track myservice-dc-https-back/thishost cookie s123\n",
-          tag: 'myservice-dc-http_binding',
+          tag: "myservice-dc-http_binding"
         )
       end
 
       it do
-        expect(subject).to contain_concat_fragment('myservice-dc-https thishost binding').with(
-          target: '/etc/haproxy/services.d/myservice-https.cfg',
-          order: '04',
+        expect(subject).to contain_concat_fragment("myservice-dc-https thishost binding").with(
+          target: "/etc/haproxy/services.d/myservice-https.cfg",
+          order: "04",
           content: "server thishost 10.1.2.123:443 check cookie s123\n",
-          tag: 'myservice-dc-https_binding',
+          tag: "myservice-dc-https_binding"
         )
       end
 
       it do
-        expect(subject).to contain_concat_fragment('myservice-dc-http thishost exempt binding').with(
-          target: '/etc/haproxy/services.d/myservice-http.cfg',
-          order: '06',
+        expect(subject).to contain_concat_fragment("myservice-dc-http thishost exempt binding").with(
+          target: "/etc/haproxy/services.d/myservice-http.cfg",
+          order: "06",
           content: "server thishost 10.1.2.123:80 track myservice-dc-https-back/thishost cookie s123\n",
-          tag: 'myservice-dc-http_exempt_binding',
+          tag: "myservice-dc-http_exempt_binding"
         )
       end
 
       it do
-        expect(subject).to contain_concat_fragment('myservice-dc-https thishost exempt binding').with(
-          target: '/etc/haproxy/services.d/myservice-https.cfg',
-          order: '06',
+        expect(subject).to contain_concat_fragment("myservice-dc-https thishost exempt binding").with(
+          target: "/etc/haproxy/services.d/myservice-https.cfg",
+          order: "06",
           content: "server thishost 10.1.2.123:443 track myservice-dc-https-back/thishost cookie s123\n",
-          tag: 'myservice-dc-https_exempt_binding',
+          tag: "myservice-dc-https_exempt_binding"
         )
       end
 
-      it { is_expected.to contain_nebula__haproxy__service('myservice') }
+      it { is_expected.to contain_nebula__haproxy__service("myservice") }
 
-      context 'without https offload' do
+      context "without https offload" do
         let(:params) { super().merge(https_offload: false) }
 
         it do
-          expect(subject).to contain_concat_fragment('myservice-dc-https thishost binding')
+          expect(subject).to contain_concat_fragment("myservice-dc-https thishost binding")
             .with_content("server thishost 10.1.2.123:443 ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt check cookie s123\n")
         end
 
         it do
-          expect(subject).to contain_concat_fragment('myservice-dc-https thishost exempt binding')
+          expect(subject).to contain_concat_fragment("myservice-dc-https thishost exempt binding")
             .with_content("server thishost 10.1.2.123:443 ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt track myservice-dc-https-back/thishost cookie s123\n")
         end
       end

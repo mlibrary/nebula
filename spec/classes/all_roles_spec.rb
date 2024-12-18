@@ -3,10 +3,10 @@
 # Copyright (c) 2018-2019 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
 def puppet_role_name_from(path)
-  path.strip.gsub('/', '::').gsub(%r{^manifests}, 'nebula').gsub(%r{\.pp}, '')
+  path.strip.gsub("/", "::").gsub(%r{^manifests}, "nebula").gsub(%r{\.pp}, "")
 end
 
 module RSpec::Puppet
@@ -68,7 +68,7 @@ def test_roles(slice_number = 1, slice_count = 1)
               %w[nebula::role::webhost::www_lib_vm www_lib],
               %w[nebula::role::webhost::fulcrum_www_and_app fulcrum],
               %w[nebula::role::fulcrum::standalone fulcrum],
-              %w[nebula default],
+              %w[nebula default]
             ].select { |role_base, _| role_name.start_with? role_base }.first[1]
           end
 
@@ -79,10 +79,10 @@ def test_roles(slice_number = 1, slice_count = 1)
           end
 
           it { is_expected.to compile_along_with_all_roles(hiera_fixture) }
-          it { is_expected.to contain_class('nebula::role::minimum') }
+          it { is_expected.to contain_class("nebula::role::minimum") }
 
           if role_name.match?(%r{^nebula::role::hathitrust})
-            it { is_expected.to contain_nebula__taghosts__tag('ht') }
+            it { is_expected.to contain_nebula__taghosts__tag("ht") }
           end
         end
       end

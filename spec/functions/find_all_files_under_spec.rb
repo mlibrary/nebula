@@ -3,9 +3,9 @@
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'find_all_files_under' do
+describe "find_all_files_under" do
   before :each do
     `mkdir spec/test_files`
 
@@ -33,13 +33,13 @@ describe 'find_all_files_under' do
     `rm -r spec/test_files`
   end
 
-  it { is_expected.to run.with_params('spec/test_files/does_not_exist').and_return([]) }
+  it { is_expected.to run.with_params("spec/test_files/does_not_exist").and_return([]) }
 
-  it { is_expected.to run.with_params('spec/test_files/empty').and_return([]) }
+  it { is_expected.to run.with_params("spec/test_files/empty").and_return([]) }
 
-  it { is_expected.to run.with_params('spec/test_files/one_file').and_return(%w[just_me.txt]) }
+  it { is_expected.to run.with_params("spec/test_files/one_file").and_return(%w[just_me.txt]) }
 
-  it { is_expected.to run.with_params('spec/test_files/some_empty_subdirs').and_return([]) }
+  it { is_expected.to run.with_params("spec/test_files/some_empty_subdirs").and_return([]) }
 
-  it { is_expected.to run.with_params('spec/test_files/nested_files').and_return(%w[a_file.txt a/another_file.txt b/c/yet_another_file.txt].sort) }
+  it { is_expected.to run.with_params("spec/test_files/nested_files").and_return(%w[a_file.txt a/another_file.txt b/c/yet_another_file.txt].sort) }
 end

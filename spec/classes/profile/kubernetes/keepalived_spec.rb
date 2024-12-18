@@ -3,53 +3,53 @@
 # Copyright (c) 2019-2020, 2022 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'nebula::profile::kubernetes::keepalived' do
+describe "nebula::profile::kubernetes::keepalived" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/first_cluster_config.yaml' }
+      let(:hiera_config) { "spec/fixtures/hiera/kubernetes/first_cluster_config.yaml" }
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
 
-      it { is_expected.to contain_class('Nebula::Profile::Networking::Sysctl') }
-      it { is_expected.to contain_package('keepalived') }
-      it { is_expected.to contain_package('ipset') }
+      it { is_expected.to contain_class("Nebula::Profile::Networking::Sysctl") }
+      it { is_expected.to contain_package("keepalived") }
+      it { is_expected.to contain_package("ipset") }
 
       it do
-        expect(subject).to contain_service('keepalived')
-          .with_ensure('running')
+        expect(subject).to contain_service("keepalived")
+          .with_ensure("running")
           .with_enable(true)
-          .that_requires(['Package[keepalived]', 'Package[ipset]'])
+          .that_requires(["Package[keepalived]", "Package[ipset]"])
       end
 
-      describe '/etc/keepalived/keepalived.conf' do
-        let(:file) { '/etc/keepalived/keepalived.conf' }
+      describe "/etc/keepalived/keepalived.conf" do
+        let(:file) { "/etc/keepalived/keepalived.conf" }
 
         it do
           expect(subject).to contain_concat(file)
-            .that_notifies('Service[keepalived]')
+            .that_notifies("Service[keepalived]")
         end
 
         it do
-          expect(subject).to contain_concat_fragment('keepalived preamble')
+          expect(subject).to contain_concat_fragment("keepalived preamble")
             .with_target(file)
-            .with_order('01')
+            .with_order("01")
         end
 
-        it 'exports its ip address for first_cluster keepalived peers' do
+        it "exports its ip address for first_cluster keepalived peers" do
           expect(exported_resources).to contain_concat_fragment("keepalived #{os_facts[:hostname]}")
             .with_target(file)
-            .with_order('02')
+            .with_order("02")
             .with_content(%r{^\s*#{os_facts[:ipaddress]}\s*$}m)
-            .with_tag('first_cluster_keepalived')
+            .with_tag("first_cluster_keepalived")
         end
 
         it do
-          expect(subject).to contain_concat_fragment('keepalived postamble')
+          expect(subject).to contain_concat_fragment("keepalived postamble")
             .with_target(file)
-            .with_order('99')
+            .with_order("99")
         end
 
         [
@@ -61,21 +61,21 @@ describe 'nebula::profile::kubernetes::keepalived' do
           %r{virtual_ipaddress \{[^\}]*172\.16\.0\.1 dev ens4[^\}]*\}}m,
           %r{virtual_ipaddress \{[^\}]*172\.16\.0\.6 dev ens4[^\}]*\}}m,
           %r{virtual_ipaddress \{[^\}]*172\.16\.0\.7 dev ens4[^\}]*\}}m,
-          %r{virtual_ipaddress \{[^\}]*192\.168\.123\.234 dev ens4[^\}]*\}}m,
+          %r{virtual_ipaddress \{[^\}]*192\.168\.123\.234 dev ens4[^\}]*\}}m
         ].each do |content|
-          it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(content) }
+          it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(content) }
         end
 
-        context 'when cluster is set to second_cluster' do
-          let(:hiera_config) { 'spec/fixtures/hiera/kubernetes/second_cluster_config.yaml' }
+        context "when cluster is set to second_cluster" do
+          let(:hiera_config) { "spec/fixtures/hiera/kubernetes/second_cluster_config.yaml" }
 
-          it 'exports its ip address for second_cluster keepalived peers' do
+          it "exports its ip address for second_cluster keepalived peers" do
             expect(exported_resources).to contain_concat_fragment("keepalived #{os_facts[:hostname]}")
-              .with_tag('second_cluster_keepalived')
+              .with_tag("second_cluster_keepalived")
           end
 
           it do
-            expect(subject).to contain_concat_fragment('keepalived preamble')
+            expect(subject).to contain_concat_fragment("keepalived preamble")
               .with_content(%r{virtual_ipaddress \{[^\}]*10\.0\.0\.2[^\}]*\}}m)
               .with_content(%r{virtual_ipaddress \{[^\}]*172\.16\.1\.1 dev ens4[^\}]*\}}m)
               .with_content(%r{virtual_ipaddress \{[^\}]*172\.16\.1\.6 dev ens4[^\}]*\}}m)
@@ -83,48 +83,48 @@ describe 'nebula::profile::kubernetes::keepalived' do
           end
         end
 
-        context 'when master is true' do
-          let(:params) { { master: true } }
+        context "when master is true" do
+          let(:params) { {master: true} }
 
           [
             %r{state MASTER},
-            %r{priority 101},
+            %r{priority 101}
           ].each do |content|
-            it { is_expected.to contain_concat_fragment('keepalived preamble').with_content(content) }
+            it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(content) }
           end
         end
       end
 
-      describe '/etc/sysctl.d/keepalived.conf' do
-        let(:file) { '/etc/sysctl.d/keepalived.conf' }
+      describe "/etc/sysctl.d/keepalived.conf" do
+        let(:file) { "/etc/sysctl.d/keepalived.conf" }
 
         it do
           expect(subject).to contain_file(file)
             .with_content(%r{^net.ipv4.ip_nonlocal_bind = 1$})
-            .that_notifies(['Service[keepalived]', 'Service[procps]'])
+            .that_notifies(["Service[keepalived]", "Service[procps]"])
         end
       end
 
-      context 'with fqdn of default.invalid and an ssh-rsa public key' do
+      context "with fqdn of default.invalid and an ssh-rsa public key" do
         let(:facts) do
           {
-            fqdn: 'INVALID_DO_NOT_USE',
-            networking: { 'fqdn' => 'default.invalid' },
+            fqdn: "INVALID_DO_NOT_USE",
+            networking: {"fqdn" => "default.invalid"},
             ssh: {
-              'rsa' => {
-                'type' => 'ssh-rsa',
-                'key' => 'abc123',
-              },
-            },
+              "rsa" => {
+                "type" => "ssh-rsa",
+                "key" => "abc123"
+              }
+            }
           }
         end
 
         it { is_expected.to compile }
 
-        it 'exports an ssh_known_hosts line for its rsa key' do
-          expect(exported_resources).to contain_concat_fragment('known host public.first.cluster default.invalid rsa')
-            .with_target('/etc/ssh/ssh_known_hosts')
-            .with_tag('known_host_public_keys')
+        it "exports an ssh_known_hosts line for its rsa key" do
+          expect(exported_resources).to contain_concat_fragment("known host public.first.cluster default.invalid rsa")
+            .with_target("/etc/ssh/ssh_known_hosts")
+            .with_tag("known_host_public_keys")
             .with_content("public.first.cluster ssh-rsa abc123\n")
         end
       end

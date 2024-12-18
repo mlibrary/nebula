@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'yaml'
+require "yaml"
 
 # This will put the contents of puppet's summary of its last run into a
 # facter fact. It does no analysis: it only reads the yaml and takes the
@@ -16,8 +16,8 @@ require 'yaml'
 # purpose is only for quick and simple error detection.
 Facter.add(:two_syncs_ago_summary) do
   setcode do
-    summary_file_path = '/opt/puppetlabs/puppet/cache/state/last_run_summary.yaml'
-    if Facter.value(:osfamily) == 'windows'
+    summary_file_path = "/opt/puppetlabs/puppet/cache/state/last_run_summary.yaml"
+    if Facter.value(:osfamily) == "windows"
       summary_file_path = 'C:\ProgramData\PuppetLabs\puppet\cache\state\last_run_summary.yaml'
     end
 

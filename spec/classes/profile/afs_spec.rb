@@ -3,95 +3,95 @@
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'nebula::profile::afs' do
+describe "nebula::profile::afs" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:kernelrelease) { os_facts[:kernelrelease] }
 
-      today = Date.today.strftime('%Y-%m-%d')
-      tomorrow = (Date.today + 1).strftime('%Y-%m-%d')
+      today = Date.today.strftime("%Y-%m-%d")
+      tomorrow = (Date.today + 1).strftime("%Y-%m-%d")
 
-      it { is_expected.to contain_package('libpam-afs-session') }
-      it { is_expected.to contain_package('openafs-client') }
-      it { is_expected.to contain_package('openafs-krb5') }
-      it { is_expected.to contain_package('openafs-modules-dkms') }
+      it { is_expected.to contain_package("libpam-afs-session") }
+      it { is_expected.to contain_package("openafs-client") }
+      it { is_expected.to contain_package("openafs-krb5") }
+      it { is_expected.to contain_package("openafs-modules-dkms") }
 
-      it { is_expected.to contain_class('nebula::profile::krb5') }
+      it { is_expected.to contain_class("nebula::profile::krb5") }
 
       it do
-        expect(subject).to contain_exec('reinstall kernel to enable afs').with(
-          command: '/usr/bin/apt-get -y install --reinstall linux-headers-amd64',
+        expect(subject).to contain_exec("reinstall kernel to enable afs").with(
+          command: "/usr/bin/apt-get -y install --reinstall linux-headers-amd64",
           creates: "/lib/modules/#{kernelrelease}/updates/dkms/openafs.ko",
           timeout: 600,
-          require: 'Package[openafs-modules-dkms]',
+          require: "Package[openafs-modules-dkms]"
         )
       end
 
-      it { is_expected.not_to contain_reboot('afs') }
+      it { is_expected.not_to contain_reboot("afs") }
 
       context "when allow_auto_reboot_until is #{today}" do
-        let(:params) { { allow_auto_reboot_until: today } }
+        let(:params) { {allow_auto_reboot_until: today} }
 
-        it { is_expected.not_to contain_reboot('afs') }
+        it { is_expected.not_to contain_reboot("afs") }
       end
 
       context "when allow_auto_reboot_until is #{tomorrow}" do
-        let(:params) { { allow_auto_reboot_until: tomorrow } }
+        let(:params) { {allow_auto_reboot_until: tomorrow} }
 
         it do
-          expect(subject).to contain_reboot('afs')
-            .that_subscribes_to('Exec[reinstall kernel to enable afs]')
-            .with_apply('finished')
+          expect(subject).to contain_reboot("afs")
+            .that_subscribes_to("Exec[reinstall kernel to enable afs]")
+            .with_apply("finished")
         end
       end
 
       it do
-        expect(subject).to contain_debconf('openafs-client/thiscell')
-          .with_type('string')
-          .with_value('cell.default.invalid')
+        expect(subject).to contain_debconf("openafs-client/thiscell")
+          .with_type("string")
+          .with_value("cell.default.invalid")
       end
 
       it do
-        expect(subject).to contain_debconf('openafs-client/cachesize')
-          .with_type('string')
-          .with_value('50000')
+        expect(subject).to contain_debconf("openafs-client/cachesize")
+          .with_type("string")
+          .with_value("50000")
       end
 
-      context 'with a cell of example.com' do
-        let(:params) { { cell: 'example.com' } }
+      context "with a cell of example.com" do
+        let(:params) { {cell: "example.com"} }
 
         it do
-          expect(subject).to contain_debconf('openafs-client/thiscell')
-            .with_type('string')
-            .with_value('example.com')
+          expect(subject).to contain_debconf("openafs-client/thiscell")
+            .with_type("string")
+            .with_value("example.com")
         end
       end
 
-      context 'with a cache_size of 100' do
-        let(:params) { { cache_size: 100 } }
+      context "with a cache_size of 100" do
+        let(:params) { {cache_size: 100} }
 
         it do
-          expect(subject).to contain_debconf('openafs-client/cachesize')
-            .with_type('string')
-            .with_value('100')
+          expect(subject).to contain_debconf("openafs-client/cachesize")
+            .with_type("string")
+            .with_value("100")
         end
       end
 
       %w[login profile].each do |suffix|
         it do
           expect(subject).to contain_file("/usr/local/skel/sys.#{suffix}")
-            .with_source('puppet:///modules/nebula/skel.txt')
-            .that_requires('File[/usr/local/skel]')
+            .with_source("puppet:///modules/nebula/skel.txt")
+            .that_requires("File[/usr/local/skel]")
         end
       end
 
       it do
-        expect(subject).to contain_file('/usr/local/skel').with(
-          ensure: 'directory',
-          mode: '0755',
+        expect(subject).to contain_file("/usr/local/skel").with(
+          ensure: "directory",
+          mode: "0755"
         )
       end
     end

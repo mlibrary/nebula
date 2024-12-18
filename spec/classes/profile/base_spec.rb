@@ -3,9 +3,9 @@
 # Copyright (c) 2018 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'nebula::profile::base' do
+describe "nebula::profile::base" do
   def contain_base_class(name)
     contain_class("nebula::profile::base::#{name}")
   end
@@ -15,45 +15,45 @@ describe 'nebula::profile::base' do
       let(:facts) { os_facts }
       let(:fqdn) { facts[:fqdn] }
 
-      it { is_expected.to contain_service('puppet').without_ensure }
-      it { is_expected.to contain_service('puppet').with_enable(true) }
+      it { is_expected.to contain_service("puppet").without_ensure }
+      it { is_expected.to contain_service("puppet").with_enable(true) }
 
       case os
       when %r{^debian}, %r{^ubuntu}
-        it { is_expected.to contain_package('dselect') }
-        it { is_expected.to contain_package('ifenslave') }
-        it { is_expected.to contain_package('vlan') }
-        it { is_expected.to contain_package('dbus') }
-        it { is_expected.to contain_package('dkms') }
+        it { is_expected.to contain_package("dselect") }
+        it { is_expected.to contain_package("ifenslave") }
+        it { is_expected.to contain_package("vlan") }
+        it { is_expected.to contain_package("dbus") }
+        it { is_expected.to contain_package("dkms") }
 
         it do
-          expect(subject).to contain_file('/etc/localtime')
-            .with_ensure('link')
-            .with_target('/usr/share/zoneinfo/US/Eastern')
+          expect(subject).to contain_file("/etc/localtime")
+            .with_ensure("link")
+            .with_target("/usr/share/zoneinfo/US/Eastern")
         end
 
         it do
-          expect(subject).to contain_file('/etc/timezone')
+          expect(subject).to contain_file("/etc/timezone")
             .with_content("US/Eastern\n")
         end
 
-        context 'with timezone set to America/Detroit' do
-          let(:params) { { timezone: 'America/Detroit' } }
+        context "with timezone set to America/Detroit" do
+          let(:params) { {timezone: "America/Detroit"} }
 
           it do
-            expect(subject).to contain_file('/etc/localtime')
-              .with_ensure('link')
-              .with_target('/usr/share/zoneinfo/America/Detroit')
+            expect(subject).to contain_file("/etc/localtime")
+              .with_ensure("link")
+              .with_target("/usr/share/zoneinfo/America/Detroit")
           end
 
           it do
-            expect(subject).to contain_file('/etc/timezone')
+            expect(subject).to contain_file("/etc/timezone")
               .with_content("America/Detroit\n")
           end
         end
 
         it do
-          expect(subject).to contain_file('/etc/hostname')
+          expect(subject).to contain_file("/etc/hostname")
             .with_content("#{fqdn}\n")
             .that_notifies("Exec[/bin/hostname #{fqdn}]")
         end
@@ -64,25 +64,25 @@ describe 'nebula::profile::base' do
         end
 
         it do
-          expect(subject).to contain_file('/etc/motd')
+          expect(subject).to contain_file("/etc/motd")
             .with_content(%r{contact us at contact@default\.invalid\.$})
             .with_content(%r{administered by Default Incorrect Dept\.$})
         end
 
-        context 'when given a contact_email of the_dean@umich.edu' do
-          let(:params) { { contact_email: 'the_dean@umich.edu' } }
+        context "when given a contact_email of the_dean@umich.edu" do
+          let(:params) { {contact_email: "the_dean@umich.edu"} }
 
           it do
-            expect(subject).to contain_file('/etc/motd')
+            expect(subject).to contain_file("/etc/motd")
               .with_content(%r{contact us at the_dean@umich\.edu\.$})
           end
         end
 
-        context 'when given a sysadmin_dept of The Cool Team' do
-          let(:params) { { sysadmin_dept: 'The Cool Team' } }
+        context "when given a sysadmin_dept of The Cool Team" do
+          let(:params) { {sysadmin_dept: "The Cool Team"} }
 
           it do
-            expect(subject).to contain_file('/etc/motd')
+            expect(subject).to contain_file("/etc/motd")
               .with_content(%r{administered by The Cool Team\.$})
           end
         end
@@ -90,77 +90,77 @@ describe 'nebula::profile::base' do
 
       case os
       when %r{^ubuntu}
-        it 'disables ubuntu motd spam' do
-          expect(subject).to contain_file('/var/lib/update-notifier/hide-esm-in-motd')
+        it "disables ubuntu motd spam" do
+          expect(subject).to contain_file("/var/lib/update-notifier/hide-esm-in-motd")
         end
       else
-        it 'does not manage ubuntu specific motd files' do
-          expect(subject).not_to contain_file('/var/lib/update-notifier/hide-esm-in-motd')
+        it "does not manage ubuntu specific motd files" do
+          expect(subject).not_to contain_file("/var/lib/update-notifier/hide-esm-in-motd")
         end
       end
 
       it do
-        expect(subject).to contain_service('mcollective').with(
-          ensure: 'stopped',
-          enable: false,
+        expect(subject).to contain_service("mcollective").with(
+          ensure: "stopped",
+          enable: false
         )
       end
 
-      context 'when on an HP machine' do
+      context "when on an HP machine" do
         let(:facts) do
-          super().merge('dmi' => { 'manufacturer' => 'HP' })
+          super().merge("dmi" => {"manufacturer" => "HP"})
         end
 
         it do
-          expect(subject).to contain_kmod__blacklist('hpwdt').with(
-            file: '/etc/modprobe.d/hpwdt-blacklist.conf',
+          expect(subject).to contain_kmod__blacklist("hpwdt").with(
+            file: "/etc/modprobe.d/hpwdt-blacklist.conf"
           )
         end
 
         it do
-          expect(subject).to contain_kmod__blacklist('acpi_power_meter').with(
-            file: '/etc/modprobe.d/acpi_power_meter-blacklist.conf',
+          expect(subject).to contain_kmod__blacklist("acpi_power_meter").with(
+            file: "/etc/modprobe.d/acpi_power_meter-blacklist.conf"
           )
         end
       end
 
-      context 'when on an HPE machine' do
+      context "when on an HPE machine" do
         let(:facts) do
-          super().merge('dmi' => { 'manufacturer' => 'HPE' })
+          super().merge("dmi" => {"manufacturer" => "HPE"})
         end
 
         it do
-          expect(subject).to contain_kmod__blacklist('hpwdt').with(
-            file: '/etc/modprobe.d/hpwdt-blacklist.conf',
+          expect(subject).to contain_kmod__blacklist("hpwdt").with(
+            file: "/etc/modprobe.d/hpwdt-blacklist.conf"
           )
         end
 
         it do
-          expect(subject).to contain_kmod__blacklist('acpi_power_meter').with(
-            file: '/etc/modprobe.d/acpi_power_meter-blacklist.conf',
+          expect(subject).to contain_kmod__blacklist("acpi_power_meter").with(
+            file: "/etc/modprobe.d/acpi_power_meter-blacklist.conf"
           )
         end
 
-        it { is_expected.to contain_package('ssacli') }
+        it { is_expected.to contain_package("ssacli") }
       end
 
-      context 'when on an Dell machine' do
+      context "when on an Dell machine" do
         let(:facts) do
-          super().merge('dmi' => { 'manufacturer' => 'Dell Inc.' })
+          super().merge("dmi" => {"manufacturer" => "Dell Inc."})
         end
 
-        it { is_expected.not_to contain_kmod__blacklist('hpwdt') }
-        it { is_expected.not_to contain_kmod__blacklist('acpi_power_meter') }
+        it { is_expected.not_to contain_kmod__blacklist("hpwdt") }
+        it { is_expected.not_to contain_kmod__blacklist("acpi_power_meter") }
       end
 
-      it { is_expected.not_to contain_package('i40e-dkms') }
+      it { is_expected.not_to contain_package("i40e-dkms") }
 
-      context 'with an Intel X710 network card' do
+      context "with an Intel X710 network card" do
         let(:facts) do
-          super().merge('network_cards' => ['Intel Corporation Ethernet Controller X710 for 10GbE SFP+ (rev 01)'])
+          super().merge("network_cards" => ["Intel Corporation Ethernet Controller X710 for 10GbE SFP+ (rev 01)"])
         end
 
-        it { is_expected.not_to contain_package('i40e-dkms') }
+        it { is_expected.not_to contain_package("i40e-dkms") }
       end
     end
   end

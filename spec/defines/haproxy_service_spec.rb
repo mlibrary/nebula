@@ -3,24 +3,24 @@
 # Copyright (c) 2018, 2024 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
-require 'spec_helper'
+require "spec_helper"
 
-describe 'nebula::haproxy::service' do
-  let(:title) { 'svc1' }
+describe "nebula::haproxy::service" do
+  let(:title) { "svc1" }
   let(:params) { {} }
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:params) do
-        super().merge(floating_ip: '1.2.3.4')
+        super().merge(floating_ip: "1.2.3.4")
       end
 
       let(:facts) do
         os_facts.merge(
-          datacenter: 'dc1',
+          datacenter: "dc1",
           networking: {
-            ip: '40.41.42.43',
-          },
+            ip: "40.41.42.43"
+          }
         )
       end
 
@@ -42,31 +42,31 @@ describe 'nebula::haproxy::service' do
         RESOURCES
       end
 
-      describe 'https service config' do
+      describe "https service config" do
         let(:service) { title }
-        let(:service_config) { '/etc/haproxy/services.d/svc1-https.cfg' }
+        let(:service_config) { "/etc/haproxy/services.d/svc1-https.cfg" }
 
         it do
           expect(subject).to contain_concat(service_config).with(
-            ensure: 'present',
-            notify: 'Service[haproxy]',
-            mode: '0644',
+            ensure: "present",
+            notify: "Service[haproxy]",
+            mode: "0644"
           )
         end
 
         it do
-          expect(subject).to contain_concat_fragment('svc1-dc1-https backend').with(
+          expect(subject).to contain_concat_fragment("svc1-dc1-https backend").with(
             target: service_config,
-            content: "backend svc1-dc1-https-back\n",
+            content: "backend svc1-dc1-https-back\n"
           )
         end
 
-        it { is_expected.to contain_concat_fragment('svc1-dc1-https check').with_target(service_config) }
+        it { is_expected.to contain_concat_fragment("svc1-dc1-https check").with_target(service_config) }
 
         it do
-          expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with(
+          expect(subject).to contain_concat_fragment("svc1-dc1-https frontend").with(
             target: service_config,
-            content: <<~HAPROXY,
+            content: <<~HAPROXY
               frontend svc1-dc1-https-front
               bind 1.2.3.4:443 ssl crt /etc/ssl/private/svc1
               stats uri /haproxy?stats
@@ -87,55 +87,55 @@ describe 'nebula::haproxy::service' do
           )
         end
 
-        describe 'with frontend maxconn' do
+        describe "with frontend maxconn" do
           let(:params) do
             super().merge(max_frontend_sessions: 999)
           end
 
           it do
-            expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with(
+            expect(subject).to contain_concat_fragment("svc1-dc1-https frontend").with(
               target: service_config,
-              content: %r{^maxconn 999$},
+              content: %r{^maxconn 999$}
             )
           end
         end
 
         it do
-          expect(subject).not_to contain_file('/etc/haproxy/errors/svc1503.http')
+          expect(subject).not_to contain_file("/etc/haproxy/errors/svc1503.http")
         end
 
-        describe 'with custom 503' do
+        describe "with custom 503" do
           let(:params) do
             super().merge(custom_503: true)
           end
 
           it do
-            expect(subject).to contain_file('/etc/haproxy/errors/svc1503.http')
-              .with_source('https://default.http_files.invalid/errorfiles/svc1503.http')
+            expect(subject).to contain_file("/etc/haproxy/errors/svc1503.http")
+              .with_source("https://default.http_files.invalid/errorfiles/svc1503.http")
           end
 
           it do
-            expect(subject).to contain_concat_fragment('svc1-dc1-https custom 503').with(
+            expect(subject).to contain_concat_fragment("svc1-dc1-https custom 503").with(
               target: service_config,
-              content: <<~HAPROXY,
+              content: <<~HAPROXY
                 errorfile 503 /etc/haproxy/errors/svc1503.http
               HAPROXY
             )
           end
         end
 
-        describe 'with throttling parameters' do
+        describe "with throttling parameters" do
           let(:params) do
             super().merge(max_requests_per_sec: 2,
-                          max_requests_burst: 400,
-                          floating_ip: '1.2.3.4',
-                          cert_source: '')
+              max_requests_burst: 400,
+              floating_ip: "1.2.3.4",
+              cert_source: "")
           end
 
           it do
-            expect(subject).to contain_concat_fragment('svc1-dc1-https throttling').with(
+            expect(subject).to contain_concat_fragment("svc1-dc1-https throttling").with(
               target: service_config,
-              content: <<~HAPROXY,
+              content: <<~HAPROXY
                 stick-table type ip size 200k expire 200s store http_req_rate(200s),bytes_out_rate(200s)
                 tcp-request content track-sc2 src
                 http-request set-var(req.http_rate) src_http_req_rate(svc1-dc1-http-back)
@@ -148,33 +148,33 @@ describe 'nebula::haproxy::service' do
           end
 
           it do
-            expect(subject).to contain_file('/etc/haproxy/errors/svc1429.http')
-              .with_source('https://default.http_files.invalid/errorfiles/svc1429.http')
+            expect(subject).to contain_file("/etc/haproxy/errors/svc1429.http")
+              .with_source("https://default.http_files.invalid/errorfiles/svc1429.http")
           end
 
-          context 'with no whitelists' do
-            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_src.txt') }
-            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_path_beg.txt') }
-            it { is_expected.not_to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt') }
+          context "with no whitelists" do
+            it { is_expected.not_to contain_file("/etc/haproxy/svc1_whitelist_src.txt") }
+            it { is_expected.not_to contain_file("/etc/haproxy/svc1_whitelist_path_beg.txt") }
+            it { is_expected.not_to contain_file("/etc/haproxy/svc1_whitelist_path_end.txt") }
 
-            it 'does not reference any whitelists' do
-              expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{(?!whitelist)})
+            it "does not reference any whitelists" do
+              expect(subject).to contain_concat_fragment("svc1-dc1-https frontend").with_content(%r{(?!whitelist)})
             end
 
-            it 'does not reference the exemption backend' do
-              expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{(?!svc1-dc1-https?-back-exempt)})
+            it "does not reference the exemption backend" do
+              expect(subject).to contain_concat_fragment("svc1-dc1-https frontend").with_content(%r{(?!svc1-dc1-https?-back-exempt)})
             end
           end
 
-          context 'with IP exemptions' do
+          context "with IP exemptions" do
             let(:params) do
-              super().merge(whitelists: { 'src' => ['10.0.0.1', '10.2.32.0/24'] })
+              super().merge(whitelists: {"src" => ["10.0.0.1", "10.2.32.0/24"]})
             end
 
-            it { is_expected.to contain_file('/etc/haproxy/svc1_whitelist_src.txt').with_content("10.0.0.1\n10.2.32.0/24\n") }
+            it { is_expected.to contain_file("/etc/haproxy/svc1_whitelist_src.txt").with_content("10.0.0.1\n10.2.32.0/24\n") }
 
             it do
-              expect(subject).to contain_concat_fragment('svc1-dc1-https frontend').with_content(%r{#{<<~HAPROXY}}m)
+              expect(subject).to contain_concat_fragment("svc1-dc1-https frontend").with_content(%r{#{<<~HAPROXY}}m)
                 acl whitelist_src src -n -f /etc/haproxy/svc1_whitelist_src.txt
                 use_backend svc1-dc1-https-back-exempt if whitelist_src
                 default_backend svc1-dc1-https-back
@@ -182,117 +182,117 @@ describe 'nebula::haproxy::service' do
             end
 
             it do
-              expect(subject).to contain_concat_fragment('svc1-dc1-https back-exempt')
+              expect(subject).to contain_concat_fragment("svc1-dc1-https back-exempt")
                 .with_content("backend svc1-dc1-https-back-exempt\n")
             end
 
             it do
-              expect(subject).to contain_concat_fragment('svc1-dc1-https scotch binding')
+              expect(subject).to contain_concat_fragment("svc1-dc1-https scotch binding")
                 .with_content("server scotch 111.111.111.123:443 check cookie s123\n")
             end
 
             it do
-              expect(subject).to contain_concat_fragment('svc1-dc1-https soda binding')
+              expect(subject).to contain_concat_fragment("svc1-dc1-https soda binding")
                 .with_content("server soda 222.222.222.234:443 check cookie s234\n")
             end
           end
 
-          context 'with path & suffix exemptions' do
+          context "with path & suffix exemptions" do
             let(:params) do
-              super().merge(whitelists: { 'path_beg' => ['/some/where', '/another/path'],
-                                          'path_end' => ['.abc', '.def'] })
+              super().merge(whitelists: {"path_beg" => ["/some/where", "/another/path"],
+                                         "path_end" => [".abc", ".def"]})
             end
 
-            ['acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt',
-             'acl whitelist_path_end path_end -n -f /etc/haproxy/svc1_whitelist_path_end.txt',
-             'use_backend svc1-dc1-https-back-exempt if whitelist_path_beg OR whitelist_path_end']
+            ["acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt",
+              "acl whitelist_path_end path_end -n -f /etc/haproxy/svc1_whitelist_path_end.txt",
+              "use_backend svc1-dc1-https-back-exempt if whitelist_path_beg OR whitelist_path_end"]
               .each do |fragment|
               it do
-                expect(subject).to contain_concat_fragment('svc1-dc1-https frontend')
+                expect(subject).to contain_concat_fragment("svc1-dc1-https frontend")
                   .with_content(%r{#{fragment}})
               end
             end
 
             it do
-              expect(subject).to contain_file('/etc/haproxy/svc1_whitelist_path_beg.txt').with_content(<<~PATHS)
+              expect(subject).to contain_file("/etc/haproxy/svc1_whitelist_path_beg.txt").with_content(<<~PATHS)
                 /some/where
                 /another/path
               PATHS
             end
 
             it do
-              expect(subject).to contain_file('/etc/haproxy/svc1_whitelist_path_end.txt').with_content(<<~PATHS)
+              expect(subject).to contain_file("/etc/haproxy/svc1_whitelist_path_end.txt").with_content(<<~PATHS)
                 .abc
                 .def
               PATHS
             end
           end
 
-          context 'with throttling condition' do
+          context "with throttling condition" do
             let(:params) do
-              super().merge(throttle_condition: 'path_beg /whatever')
+              super().merge(throttle_condition: "path_beg /whatever")
             end
 
-            ['acl throttle_condition path_beg /whatever',
-             'use_backend svc1-dc1-https-back-exempt if !throttle_condition'].each do |fragment|
+            ["acl throttle_condition path_beg /whatever",
+              "use_backend svc1-dc1-https-back-exempt if !throttle_condition"].each do |fragment|
               it do
-                expect(subject).to contain_concat_fragment('svc1-dc1-https frontend')
+                expect(subject).to contain_concat_fragment("svc1-dc1-https frontend")
                   .with_content(%r{#{fragment}})
               end
             end
 
             it do
-              expect(subject).to contain_concat_fragment('svc1-dc1-https scotch exempt binding')
+              expect(subject).to contain_concat_fragment("svc1-dc1-https scotch exempt binding")
                 .with_content("server scotch 111.111.111.123:443 track svc1-dc1-https-back/scotch cookie s123\n")
             end
 
             it do
-              expect(subject).to contain_concat_fragment('svc1-dc1-https soda exempt binding')
+              expect(subject).to contain_concat_fragment("svc1-dc1-https soda exempt binding")
                 .with_content("server soda 222.222.222.234:443 track svc1-dc1-https-back/soda cookie s234\n")
             end
           end
         end
 
-        context 'with dynamic weighting' do
+        context "with dynamic weighting" do
           let(:params) do
             super().merge(dynamic_weighting: true)
           end
 
           it do
-            expect(subject).to contain_cron('dynamic weighting for svc1')
-              .with_command('/usr/bin/ruby /usr/local/bin/set_weights.rb dc1 svc1 > /dev/null 2>&1')
-              .with_user('haproxyctl')
-              .with_environment(['HAPROXY_SMOOTHING_FACTOR=2'])
+            expect(subject).to contain_cron("dynamic weighting for svc1")
+              .with_command("/usr/bin/ruby /usr/local/bin/set_weights.rb dc1 svc1 > /dev/null 2>&1")
+              .with_user("haproxyctl")
+              .with_environment(["HAPROXY_SMOOTHING_FACTOR=2"])
           end
         end
 
-        it { is_expected.not_to contain_concat_fragment('svc1-dc1-https check_timeout') }
+        it { is_expected.not_to contain_concat_fragment("svc1-dc1-https check_timeout") }
 
-        context 'with check_timeout_milliseconds set to 15000' do
+        context "with check_timeout_milliseconds set to 15000" do
           let(:params) do
             super().merge(check_timeout_milliseconds: 15000)
           end
 
           it do
-            expect(subject).to contain_concat_fragment('svc1-dc1-https check_timeout')
+            expect(subject).to contain_concat_fragment("svc1-dc1-https check_timeout")
               .with_target(service_config)
               .with_content("timeout connect 15000\n")
           end
         end
       end
 
-      describe 'http service config' do
+      describe "http service config" do
         let(:service) { title }
-        let(:service_config) { '/etc/haproxy/services.d/svc1-http.cfg' }
+        let(:service_config) { "/etc/haproxy/services.d/svc1-http.cfg" }
 
-        it { is_expected.to contain_concat(service_config).with(ensure: 'present') }
-        it { is_expected.to contain_concat(service_config).with(notify: 'Service[haproxy]') }
-        it { is_expected.to contain_concat(service_config).with(mode: '0644') }
+        it { is_expected.to contain_concat(service_config).with(ensure: "present") }
+        it { is_expected.to contain_concat(service_config).with(notify: "Service[haproxy]") }
+        it { is_expected.to contain_concat(service_config).with(mode: "0644") }
 
         it do
-          expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
+          expect(subject).to contain_concat_fragment("svc1-dc1-http frontend").with(
             target: service_config,
-            content: <<~HAPROXY,
+            content: <<~HAPROXY
               frontend svc1-dc1-http-front
               bind 1.2.3.4:80
               stats uri /haproxy?stats
@@ -312,98 +312,98 @@ describe 'nebula::haproxy::service' do
         end
 
         it do
-          expect(subject).to contain_concat_fragment('svc1-dc1-http backend').with(
+          expect(subject).to contain_concat_fragment("svc1-dc1-http backend").with(
             target: service_config,
-            content: "backend svc1-dc1-http-back\n",
+            content: "backend svc1-dc1-http-back\n"
           )
         end
 
         it do
-          expect(subject).to contain_concat_fragment('svc1-dc1-http scotch binding')
+          expect(subject).to contain_concat_fragment("svc1-dc1-http scotch binding")
             .with_content("server scotch 111.111.111.123:80 track svc1-dc1-https-back/scotch cookie s123\n")
         end
 
         it do
-          expect(subject).to contain_concat_fragment('svc1-dc1-http soda binding')
+          expect(subject).to contain_concat_fragment("svc1-dc1-http soda binding")
             .with_content("server soda 222.222.222.234:80 track svc1-dc1-https-back/soda cookie s234\n")
         end
       end
 
-      describe 'Cloudflare proxy ACL' do
-        let(:service_config) { '/etc/haproxy/services.d/svc1-http.cfg' }
+      describe "Cloudflare proxy ACL" do
+        let(:service_config) { "/etc/haproxy/services.d/svc1-http.cfg" }
 
-        context 'with the cloudflare_protected setting' do
+        context "with the cloudflare_protected setting" do
           let(:params) { super().merge(cloudflare_protected: true) }
 
           it do
-            expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
+            expect(subject).to contain_concat_fragment("svc1-dc1-http frontend").with(
               target: service_config,
-              content: %r{acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt},
+              content: %r{acl cloudflare_proxied src -n -f /etc/haproxy/cloudflare-ipv4.txt}
             )
           end
 
           it do
-            expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
+            expect(subject).to contain_concat_fragment("svc1-dc1-http frontend").with(
               target: service_config,
-              content: %r{http-request deny unless cloudflare_proxied},
+              content: %r{http-request deny unless cloudflare_proxied}
             )
           end
 
-          it 'forwards the CF-Connecting-IP as X-Client-IP' do
-            expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
+          it "forwards the CF-Connecting-IP as X-Client-IP" do
+            expect(subject).to contain_concat_fragment("svc1-dc1-http frontend").with(
               target: service_config,
-              content: %r{http-request set-header X-Client-IP %\[req.hdr\(CF-Connecting-IP\)\]},
+              content: %r{http-request set-header X-Client-IP %\[req.hdr\(CF-Connecting-IP\)\]}
             )
           end
         end
 
-        context 'without the cloudflare_protected setting' do
+        context "without the cloudflare_protected setting" do
           let(:params) { super().merge(cloudflare_protected: false) }
 
           it do
-            expect(subject).not_to contain_concat_fragment('svc1-dc1-http frontend').with(
+            expect(subject).not_to contain_concat_fragment("svc1-dc1-http frontend").with(
               target: service_config,
-              content: %r{http-request deny unless cloudflare_proxied},
+              content: %r{http-request deny unless cloudflare_proxied}
             )
           end
 
-          it 'sets the originating client IP as X-Client-IP' do
-            expect(subject).to contain_concat_fragment('svc1-dc1-http frontend').with(
+          it "sets the originating client IP as X-Client-IP" do
+            expect(subject).to contain_concat_fragment("svc1-dc1-http frontend").with(
               target: service_config,
-              content: %r{http-request set-header X-Client-IP %ci},
+              content: %r{http-request set-header X-Client-IP %ci}
             )
           end
         end
       end
 
-      describe 'ssl certs' do
-        let(:dest) { '/etc/ssl/private/svc1' }
+      describe "ssl certs" do
+        let(:dest) { "/etc/ssl/private/svc1" }
 
-        context 'with an empty source' do
+        context "with an empty source" do
           it { is_expected.not_to contain_file(dest) }
         end
 
-        context 'with a source' do
+        context "with a source" do
           let(:params) do
             {
-              floating_ip: '1.2.3.4',
-              cert_source: '/some/where',
+              floating_ip: "1.2.3.4",
+              cert_source: "/some/where"
             }
           end
 
           it do
             expect(subject).to contain_file(dest).with(
-              ensure: 'directory',
-              notify: 'Service[haproxy]',
-              require: 'Package[haproxy]',
-              mode: '0700',
-              owner: 'haproxy',
-              group: 'haproxy',
+              ensure: "directory",
+              notify: "Service[haproxy]",
+              require: "Package[haproxy]",
+              mode: "0700",
+              owner: "haproxy",
+              group: "haproxy",
               recurse: true,
               source: "puppet://#{params[:cert_source]}/svc1",
               path: dest,
-              links: 'follow',
-              purge: true,
+              links: "follow",
+              purge: true
             )
           end
         end
