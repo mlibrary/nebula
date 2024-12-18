@@ -2,38 +2,17 @@
 #
 # Facts specified here will override the values provided by rspec-puppet-facts.
 ---
-concat_basedir: "/tmp"
-ipaddress: "172.16.254.254"
 is_pe: false
-macaddress: "AA:AA:AA:AA:AA:AA"
-dmi: {}
-disks: {}
-installed_backports: []
-datacenter: "mydatacenter"
-prometheus_errors_total: 0
-mountpoints: {}
-disks: {}
-root_home: "/root"
-letsencrypt_directory:
-  foo.example.com: '/etc/letsencrypt/live/foo.example.com'
-  example.invalid: '/etc/letsencrypt/live/example.invalid'
-
-# required by puppetlabs/postgres since 8.1.0
-service_provider: systemd
-
-# required by apt with update => { frequency => 'daily' }
-apt_update_last_success: '1523250000'
-
 ec2_tag_role: nebula::role::aws
-
-vm_guests: ['invalid_existing_guest']
-
-# The ruby tests by default are set to install 2.4.3 and 2.5.0, so 2.4.2
-# represents an installed but not desired version of ruby, while 2.5.0
-# represents an already-installed and still desired version of ruby.
+datacenter: mydatacenter
+installed_backports: []
+letsencrypt_directory:
+  foo.example.com: "/etc/letsencrypt/live/foo.example.com"
+  example.invalid: "/etc/letsencrypt/live/example.invalid"
+prometheus_errors_total: 0
 ruby_versions:
 - 2.4.2
 - 2.5.0
+vm_guests:
+- invalid_existing_guest
 
-# This can be removed once the firewall module is updated.
-ip6tables_version: 1.6.0

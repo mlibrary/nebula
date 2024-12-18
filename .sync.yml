@@ -5,6 +5,7 @@
     - ---/doc/ # We have files here
     - /.pdkignore
     - /.tmp/
+    - /.tool-versions
     - /Puppetfile.lock
     - /modules/
     - /spec/examples.txt
@@ -13,8 +14,14 @@ Gemfile:
     ':development':
       - gem: faker
       - gem: librarian-puppet
+        version: '>= 5.0'
       - gem: pdk
-        version: 2.7.1
+        version: '>= 3.3.0'
+Rakefile:
+  extra_disabled_lint_checks:
+    # We sometimes refer to non-nebula puppet fileserver paths.
+    # This check will make breaking changes on lint_fix task.
+    - puppet_url_without_modules
 spec/default_facts.yml:
   extra_facts:
     ec2_tag_role: nebula::role::aws
