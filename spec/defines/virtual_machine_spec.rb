@@ -298,11 +298,7 @@ describe "nebula::virtual_machine" do
       context "with pre-bullseye build name" do
         let(:params) { {build: "buster"} }
 
-        [
-          %r{\sin-target systemctl enable puppet\b}
-        ].each do |line|
-          it { is_expected.not_to contain_preseed.with_content(line) }
-        end
+        it { is_expected.not_to compile }
       end
 
       context "with domain set to awesome.com" do

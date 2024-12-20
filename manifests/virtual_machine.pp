@@ -94,7 +94,7 @@ define nebula::virtual_machine (
   }
 
   unless $facts['vm_guests'].member($title) {
-    if $build == 'stretch' or $build == 'buster' or $build == 'bullseye' {
+    if $build == 'bullseye' {
       file { "${tmpdir}/preseed.cfg":
         content => template("nebula/virtual_machine/${build}.cfg.erb"),
       }
