@@ -95,20 +95,17 @@ class nebula::profile::apt (
   if($facts['os']['name'] == 'Debian') {
     # TODO: port to DEB822
     # TODO: remove non-free where we're not using it
-    # TODO: remove branches when we're off buster, bullseye
+    # TODO: remove branch when we're off bullseye
     $repos = $facts['os']['distro']['codename'] ? {
-      'bookworm' => 'main contrib non-free non-free-firmware',
-      default    => 'main contrib non-free',
+      'bullseye' => 'main contrib non-free',
+      default    => 'main contrib non-free non-free-firmware',
     }
     apt::source { 'main':
       location => $mirror,
       repos    => $repos,
     }
 
-    $security_release = $facts['os']['distro']['codename'] ? {
-      'buster'  => "${facts['os']['distro']['codename']}/updates",
-      default   => "${facts['os']['distro']['codename']}-security",
-    }
+    $security_release = "${facts['os']['distro']['codename']}-security"
 
     apt::source { 'security':
       location => 'http://security.debian.org/debian-security',
