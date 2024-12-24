@@ -11,14 +11,6 @@
 class nebula::profile::vim {
   package { 'vim': }
 
-  # Replace default vimrc
-  # This is only here to eliminate our previous customizations
-  # Remove after December 2024
-  file { '/etc/vim/vimrc':
-    source  => "puppet:///modules/nebula/default/${facts['os']['distro']['codename']}/etc/vim/vimrc",
-    require => Package['vim'],
-  }
-
   file { '/etc/vim/vimrc.local':
     content => template('nebula/profile/vim/vimrc.local.erb'),
     require => Package['vim'],
