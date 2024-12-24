@@ -13,18 +13,18 @@ describe "nebula::profile::vim" do
       it { is_expected.to contain_package("vim") }
 
       it do
-        expect(subject).to contain_file("/etc/vim/vimrc")
+        expect(subject).to contain_file("/etc/vim/vimrc.local")
           .that_requires("Package[vim]")
       end
 
       [
         %r{^set mouse=$}
       ].each do |line|
-        it { is_expected.to contain_file("/etc/vim/vimrc").with_content(line) }
+        it { is_expected.to contain_file("/etc/vim/vimrc.local").with_content(line) }
       end
 
       it "never enables any mouse usage of any kind" do
-        expect(subject).to contain_file("/etc/vim/vimrc").without_content(
+        expect(subject).to contain_file("/etc/vim/vimrc.local").without_content(
           %r{^set mouse=.+$}
         )
       end
