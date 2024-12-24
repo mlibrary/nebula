@@ -93,7 +93,16 @@ define nebula::virtual_machine (
     ensure => 'directory',
   }
 
-  unless $facts['vm_guests'].member($title) {
+  if $facts['vm_guests'].member($title) {
+    # If the VM already exists, ensure that it's marked to autostart
+    # when the host boots. (This exec is in this conditional because it
+    # isn't constructed to be safe to run before the VM exists.)
+    exec { "${prefix}::autostart":
+      creates => "${autostart_path}/${title}.xml",
+      command => "/usr/bin/virsh autostart ${title}",
+    }
+  } else {
+    # If the VM does not already exist, create it.
     if $build == 'bullseye' {
       file { "${tmpdir}/preseed.cfg":
         content => template("nebula/virtual_machine/${build}.cfg.erb"),
@@ -132,11 +141,26 @@ define nebula::virtual_machine (
           --extra-args 'auto netcfg/disable_dhcp=true'
         | VIRT_INSTALL_EOF
     }
+  }
 
-    exec { "${prefix}::autostart":
-      require => Exec["${prefix}::virt-install"],
-      creates => "${autostart_path}/${title}.xml",
-      command => "/usr/bin/virsh autostart ${title}",
-    }
+  # Ensure that the xml file that sets up future instances of this VM is
+  # set to restart after a crash.
+  exec { "/usr/bin/virsh set-lifecycle-action ${title} crash restart --config":
+    # If the VM doesn't exist yet, or if it's set to do anything other
+    # than destroy on crash, this exec won't run.
+    onlyif => "/usr/bin/virsh dumpxml --inactive ${title} | grep on_crash | grep -q destroy",
+  }
+
+  # If the VM is running, the above exec won't affect the live
+  # configuration, so this exec ensures that, if it is running, it too
+  # is set to restart after a crash.
+  exec { "/usr/bin/virsh set-lifecycle-action ${title} crash restart --live":
+    # If the VM doesn't exist yet, or if it's set to do anything other
+    # than destroy on crash, this exec won't run.
+    onlyif  => "/usr/bin/virsh dumpxml ${title} | grep on_crash | grep -q destroy",
+
+    # This is to prevent running with --live on a VM that exists but is
+    # powered off.
+    require => Exec["/usr/bin/virsh set-lifecycle-action ${title} crash restart --config"],
   }
 }

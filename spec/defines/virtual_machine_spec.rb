@@ -99,13 +99,28 @@ describe "nebula::virtual_machine" do
           it { is_expected.to contain_install.with_command(command) }
         end
 
+        context "with vmname in the vm_guests fact" do
+          let(:facts) { os_facts.merge(vm_guests: ["vmname"]) }
+
+          it { is_expected.not_to contain_install }
+
+          it do
+            expect(subject).to contain_autostart.with(
+              creates: "/etc/libvirt/qemu/autostart/vmname.xml",
+              command: "/usr/bin/virsh autostart vmname"
+            )
+          end
+        end
+
         it do
-          expect(subject).to contain_autostart.that_requires(
-            "Exec[nebula::virtual_machine::vmname::virt-install]"
-          ).with(
-            creates: "/etc/libvirt/qemu/autostart/vmname.xml",
-            command: "/usr/bin/virsh autostart vmname"
-          )
+          is_expected.to contain_exec("/usr/bin/virsh set-lifecycle-action vmname crash restart --config")
+            .with_onlyif("/usr/bin/virsh dumpxml --inactive vmname | grep on_crash | grep -q destroy")
+        end
+
+        it do
+          is_expected.to contain_exec("/usr/bin/virsh set-lifecycle-action vmname crash restart --live")
+            .with_onlyif("/usr/bin/virsh dumpxml vmname | grep on_crash | grep -q destroy")
+            .that_requires("Exec[/usr/bin/virsh set-lifecycle-action vmname crash restart --config]")
         end
       end
 
@@ -178,16 +193,22 @@ describe "nebula::virtual_machine" do
           )
         end
 
-        it do
-          expect(subject).to contain_autostart.with_creates(
-            "/etc/libvirt/qemu/autostart/secondvm.xml"
-          )
-        end
+        context "with secondvm in the vm_guests fact" do
+          let(:facts) { os_facts.merge(vm_guests: ["secondvm"]) }
 
-        it do
-          expect(subject).to contain_autostart.with_command(
-            "/usr/bin/virsh autostart secondvm"
-          )
+          it { is_expected.not_to contain_install }
+
+          it do
+            expect(subject).to contain_autostart.with_creates(
+              "/etc/libvirt/qemu/autostart/secondvm.xml"
+            )
+          end
+
+          it do
+            expect(subject).to contain_autostart.with_command(
+              "/usr/bin/virsh autostart secondvm"
+            )
+          end
         end
       end
 
@@ -271,10 +292,16 @@ describe "nebula::virtual_machine" do
       context "with autostart_path set to /etc/autostart" do
         let(:params) { {autostart_path: "/etc/autostart"} }
 
-        it do
-          expect(subject).to contain_autostart.with_creates(
-            "/etc/autostart/vmname.xml"
-          )
+        context "with secondvm in the vm_guests fact" do
+          let(:facts) { os_facts.merge(vm_guests: ["vmname"]) }
+
+          it { is_expected.not_to contain_install }
+
+          it do
+            expect(subject).to contain_autostart.with_creates(
+              "/etc/autostart/vmname.xml"
+            )
+          end
         end
       end
 
