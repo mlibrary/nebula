@@ -15,7 +15,7 @@ class nebula::profile::vim {
   # This is only here to eliminate our previous customizations
   # Remove after December 2024
   file { '/etc/vim/vimrc':
-    source  => "puppet:///modules/nebula/default/${facts['os']['distro']['codename']}${title}",
+    source  => "puppet:///modules/nebula/default/${facts['os']['distro']['codename']}/etc/vim/vimrc",
     require => Package['vim'],
   }
 
