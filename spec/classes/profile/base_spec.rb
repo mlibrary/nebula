@@ -20,9 +20,7 @@ describe "nebula::profile::base" do
 
       case os
       when %r{^debian}, %r{^ubuntu}
-        it { is_expected.to contain_package("dselect") }
-        it { is_expected.to contain_package("ifenslave") }
-        it { is_expected.to contain_package("vlan") }
+        it { is_expected.to contain_package("zstd") }
         it { is_expected.to contain_package("dbus") }
         it { is_expected.to contain_package("dkms") }
 
@@ -99,13 +97,6 @@ describe "nebula::profile::base" do
         end
       end
 
-      it do
-        expect(subject).to contain_service("mcollective").with(
-          ensure: "stopped",
-          enable: false
-        )
-      end
-
       context "when on an HP machine" do
         let(:facts) do
           super().merge("dmi" => {"manufacturer" => "HP"})
@@ -122,6 +113,22 @@ describe "nebula::profile::base" do
             file: "/etc/modprobe.d/acpi_power_meter-blacklist.conf"
           )
         end
+      end
+
+      context "when on a vm" do
+        let(:facts) do
+          super().merge("is_virtual" => true)
+        end
+
+        it { is_expected.not_to contain_package("vlan") }
+      end
+
+      context "when not on a vm" do
+        let(:facts) do
+          super().merge("is_virtual" => false)
+        end
+
+        it { is_expected.to contain_package("vlan") }
       end
 
       context "when on an HPE machine" do

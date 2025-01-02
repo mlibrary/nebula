@@ -24,38 +24,38 @@ class nebula::profile::base (
     enable => true,
   }
 
-  if $facts['os']['family'] == 'Debian' {
-    package { 'dselect': }
-    package { 'ifenslave': }
+  unless $facts['is_virtual'] {
     package { 'vlan': }
-    package { 'dbus': }
-    package { 'dkms': }
+  }
 
-    file { '/etc/localtime':
-      ensure => 'link',
-      target => "/usr/share/zoneinfo/${timezone}",
-    }
+  ensure_packages([
+    'dbus', # ??
+    'dkms', # afs?
+    'zstd', # prevent warnings about fallback on `apt dist-upgrade`
+  ])
 
-    file { '/etc/timezone':
-      content => "${timezone}\n",
-    }
+  file { '/etc/localtime':
+    ensure => 'link',
+    target => "/usr/share/zoneinfo/${timezone}",
+  }
 
-    file { '/etc/hostname':
-      content => "${::networking['fqdn']}\n",
-      notify  => Exec["/bin/hostname ${::networking['fqdn']}"],
-    }
+  file { '/etc/timezone':
+    content => "${timezone}\n",
+  }
 
-    exec { "/bin/hostname ${::networking['fqdn']}":
-      refreshonly => true,
-    }
+  file { '/etc/hostname':
+    content => "${::networking['fqdn']}\n",
+    notify  => Exec["/bin/hostname ${::networking['fqdn']}"],
+  }
+
+  exec { "/bin/hostname ${::networking['fqdn']}":
+    refreshonly => true,
   }
 
   class { 'nebula::profile::base::motd':
     contact_email => $contact_email,
     sysadmin_dept => $sysadmin_dept,
   }
-
-  include nebula::profile::base::stop_mcollective
 
   if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
     include nebula::profile::base::hp
