@@ -18,6 +18,9 @@ Gemfile:
       - gem: pdk
         version: '>= 3.3.0'
       - gem: standard
+      # Silence bundler errors. It's expected that newer PDK will
+      # add syslog. When that happens, remove this line.
+      - gem: syslog
 Rakefile:
   extra_disabled_lint_checks:
     # We sometimes refer to non-nebula puppet fileserver paths.
