@@ -15,6 +15,7 @@ class nebula::role::minimum (
     include nebula::profile::authorized_keys
     include nebula::profile::known_host_public_keys
     include nebula::profile::falcon
+    include nebula::profile::root
 
     class { 'nebula::profile::networking::firewall':
       internal_routing => $internal_routing,
