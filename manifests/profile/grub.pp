@@ -6,9 +6,13 @@
 #
 # Manage grub.
 #
+# @param kernel_args Optionally specify kernel args for physical host. Ignored for virtual machines.
+#
 # @example
 #   include nebula::profile::grub
-class nebula::profile::grub {
+class nebula::profile::grub (
+  String $kernel_args = 'console=tty0 console=ttyS1,115200n8 ixgbe.allow_unsupported_sfp=1'
+) {
   if $facts['is_virtual'] and $facts['virtual'] == 'kvm' {
     service { 'getty@hvc0':
       ensure     => 'running',
@@ -53,7 +57,7 @@ class nebula::profile::grub {
         before => Service['serial-getty@ttyS1'],
       ;
       '/etc/default/grub: ^GRUB_CMDLINE_LINUX':
-        line  => 'GRUB_CMDLINE_LINUX="console=tty0 console=ttyS1,115200n8 ixgbe.allow_unsupported_sfp=1"',
+        line  => "GRUB_CMDLINE_LINUX=\"${kernel_args}\"",
         match => '^GRUB_CMDLINE_LINUX=',
       ;
       '/etc/default/grub: ^GRUB_CMDLINE_LINUX_DEFAULT':
