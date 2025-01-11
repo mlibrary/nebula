@@ -103,43 +103,46 @@ define nebula::virtual_machine (
     }
   } else {
     # If the VM does not already exist, create it.
-    if $build == 'bullseye' {
-      file { "${tmpdir}/preseed.cfg":
-        content => template("nebula/virtual_machine/${build}.cfg.erb"),
+    case $build {
+      'bullseye': {
+        file { "${tmpdir}/preseed.cfg":
+          content => template("nebula/virtual_machine/${build}.cfg.erb"),
+        }
+
+        $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
+
+        exec { "${prefix}::virt-install":
+          require => [
+            Package['libvirt-clients'],
+            Package['virtinst'],
+            File["${tmpdir}/preseed.cfg"],
+          ],
+          creates => $full_image_path,
+          timeout => $timeout,
+          path    => [
+            '/usr/bin',
+            '/usr/sbin',
+            '/bin',
+            '/sbin',
+          ],
+          command => @("VIRT_INSTALL_EOF")
+            /usr/bin/virt-install                                         \
+              -n '${title}'                                               \
+              -r ${ram_in_mb}                                             \
+              --vcpus ${cpus}                                             \
+              --location ${location}                                      \
+              --os-type=linux                                             \
+              --disk '${full_image_path},size=${disk}'                    \
+              --network bridge=${internet_bridge},model=virtio            \
+              --network bridge=${lan_bridge},model=virtio                 \
+              --console pty,target_type=virtio                            \
+              --virt-type kvm                                             \
+              --graphics vnc                   ${initrd_inject}           \
+              --extra-args 'auto netcfg/disable_dhcp=true'
+            | VIRT_INSTALL_EOF
+        }
       }
-
-      $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
-    }
-
-    exec { "${prefix}::virt-install":
-      require => [
-        Package['libvirt-clients'],
-        Package['virtinst'],
-        File["${tmpdir}/preseed.cfg"],
-      ],
-      creates => $full_image_path,
-      timeout => $timeout,
-      path    => [
-        '/usr/bin',
-        '/usr/sbin',
-        '/bin',
-        '/sbin',
-      ],
-      command => @("VIRT_INSTALL_EOF")
-        /usr/bin/virt-install                                         \
-          -n '${title}'                                               \
-          -r ${ram_in_mb}                                             \
-          --vcpus ${cpus}                                             \
-          --location ${location}                                      \
-          --os-type=linux                                             \
-          --disk '${full_image_path},size=${disk}'                    \
-          --network bridge=${internet_bridge},model=virtio            \
-          --network bridge=${lan_bridge},model=virtio                 \
-          --console pty,target_type=virtio                            \
-          --virt-type kvm                                             \
-          --graphics vnc                   ${initrd_inject}           \
-          --extra-args 'auto netcfg/disable_dhcp=true'
-        | VIRT_INSTALL_EOF
+      default: { fail("${build} is not a supported build type.") }
     }
   }
 
