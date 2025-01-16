@@ -24,11 +24,8 @@ describe "nebula::profile::duo" do
       end
 
       it do
-        expect(subject).to contain_file_line("/etc/pam.d/sudo: pam_duo")
-          .with_path("/etc/pam.d/sudo")
-          .with_line("auth required pam_duo.so")
-          .with_after("^@include common-auth")
-          .that_requires(["Package[sudo]", "Package[libpam-duo]"])
+        expect(subject).to contain_file("/etc/pam.d/sudo")
+          .with_source("puppet:///modules/nebula/default/#{facts[:os]["distro"]["codename"]}/etc/pam.d/sudo")
       end
 
       it do

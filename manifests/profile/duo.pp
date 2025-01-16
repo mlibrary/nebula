@@ -26,23 +26,11 @@ class nebula::profile::duo (
     'libpam-duo'
   ])
 
-  package { 'duo-unix':
-    ensure => absent
-  }
-
-  ['sudo'].each |$pamfile| {
-    file_line { "/etc/pam.d/${pamfile}: pam_duo":
-      path    => "/etc/pam.d/${pamfile}",
-      line    => 'auth required pam_duo.so',
-      after   => '^@include common-auth',
-      require => Package['sudo', 'libpam-duo'],
-    }
-
-    file_line { "/etc/pam.d/${pamfile}: remove /lib64/security/pam_duo":
-      ensure => absent,
-      path   => "/etc/pam.d/${pamfile}",
-      line   => 'auth required /lib64/security/pam_duo.so'
-    }
+  # Replace default /etc/pam.d/sudo
+  # This is only here to eliminate previous customizations
+  # Remove after January 2025
+  file { '/etc/pam.d/sudo':
+    source  => "puppet:///modules/nebula/default/${facts['os']['distro']['codename']}/etc/pam.d/sudo",
   }
 
   concat_fragment { '/etc/pam.d/sshd: pam_duo':
