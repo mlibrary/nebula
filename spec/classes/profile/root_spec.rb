@@ -8,8 +8,8 @@ describe "nebula::profile::root" do
       let(:facts) { os_facts }
 
       it {
-        is_expected.to contain_file("/root/")
-          .with(recurse: "remote", purge: false, source_permissions: "use")
+        is_expected.to contain_file("/root/.bashrc")
+        is_expected.to contain_file("/root/.profile")
       }
       it {
         is_expected.to contain_file("/root/.bash_profile")

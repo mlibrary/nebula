@@ -8,17 +8,14 @@ class nebula::profile::root (
   Boolean $manage = true,
 ) {
   if ($manage) {
-    file { '/root/':
-      ensure             => directory,
-      mode               => '0700',
-      source             => 'puppet:///modules/nebula/root/',
-      source_permissions => use,
-      recurse            => remote,
-      purge              => false,
-    }
-
-    file { '/root/.bash_profile':
-      ensure => absent
+    file {
+      default:
+        ensure => file,
+        mode   => '0644',
+      ;
+      '/root/.bashrc': source => 'puppet:///modules/nebula/root/.bashrc';
+      '/root/.profile': source => 'puppet:///modules/nebula/root/.profile';
+      '/root/.bash_profile': ensure => absent;
     }
   }
 }
