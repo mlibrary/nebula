@@ -26,15 +26,15 @@ class nebula::profile::networking::sshd (
     hasrestart => true,
   }
 
-  file { '/etc/ssh/sshd_config':
+  file { '/etc/ssh/sshd_config.d/lit.conf':
     content => template('nebula/profile/networking/sshd_config.erb'),
     notify  => Service['sshd'],
   }
 
-  concat { '/etc/ssh/ssh_config': }
+  concat { '/etc/ssh/ssh_config.d/lit.conf': }
 
   concat_fragment { 'main ssh client config':
-    target  => '/etc/ssh/ssh_config',
+    target  => '/etc/ssh/ssh_config.d/lit.conf',
     order   => '01',
     content => template('nebula/profile/networking/ssh_config.erb'),
   }
