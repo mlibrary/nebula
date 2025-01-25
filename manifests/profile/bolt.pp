@@ -51,7 +51,7 @@ class nebula::profile::bolt {
     $host = $cluster["control_dns"]
 
     concat_fragment { "configure ssh client for ${id}":
-      target  => '/etc/ssh/ssh_config',
+      target  => '/etc/ssh/ssh_config.d/lit.conf',
       order   => '10',
       content => @("SSH_CONFIG")
         Host ${host}
