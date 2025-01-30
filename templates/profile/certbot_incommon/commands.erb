@@ -1,0 +1,10 @@
+<% @certs.each do |service, domains| -%>
+<% domains.each do |main_domain, alt_domains| -%>
+<% full_san = [main_domain, "*.#{main_domain}"] -%>
+<% alt_domains.each { |x| full_san += [x, "*.#{x}"] } -%>
+certbot certonly --standalone --server "<%= @server %>" -m "<%= @letsencrypt_email %>" -d "<%= full_san.join(",") %>"
+<% end -%>
+<% end -%>
+<% @simple_certs.each do |domain, sans| -%>
+certbot certonly --standalone --server "<%= @server %>" -m "<%= @letsencrypt_email %>" -d "<%= [domain, sans].flatten.join(",") %>"
+<% end -%>

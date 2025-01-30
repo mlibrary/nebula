@@ -11,6 +11,7 @@ class nebula::role::puppet::master {
   include nebula::profile::puppet::master
   include nebula::profile::certbot_route53
   include nebula::profile::certbot_cloudflare
+  include nebula::profile::certbot_incommon
 
   # FIXME because there's also a git repo
   include nebula::profile::krb5
