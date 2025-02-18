@@ -10,7 +10,7 @@ class nebula::profile::fulcrum::solr (
   String $logs = "${base}/logs",
   String $log4j_properties = "${base}/log4j.properties",
   String $solr_in_sh = "${base}/solr.in.sh",
-  String $solr_xml = "${home}/solr.xml",
+  String $solr_xml = "${base}/solr.xml",
   String $jdk_version = '8',
   String $solr_home = '/var/lib/solr',
   String $java_home = "/usr/lib/jvm/temurin-${jdk_version}-jre-${::os['architecture']}",
