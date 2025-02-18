@@ -12,7 +12,7 @@ class nebula::profile::openjdk_java (
 ) {
   ensure_packages($jdk_packages)
   exec { 'ensure default java':
-    command => "/usr/sbin/update-java-alternatives -s ${java_alternative}",
+    command => "/usr/sbin/update-java-alternatives --jre -s ${java_alternative}",
     unless  => "/usr/bin/update-alternatives --query java | grep '^Value:.*${base_alternative}'",
     require => Package[$default_jdk]
   }
