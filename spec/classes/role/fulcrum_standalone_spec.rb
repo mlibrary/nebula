@@ -5,11 +5,15 @@
 # BSD License. See LICENSE.txt for details.
 require "spec_helper"
 
+require_relative "../../support/contexts/with_mocked_nodes"
+
 describe "nebula::role::fulcrum::standalone" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:hiera_config) { "spec/fixtures/hiera/fulcrum_config.yaml" }
+      let(:rolenode) { {"ip" => Faker::Internet.ip_v4_address, "hostname" => "rolenode"} }
+      include_context "with mocked puppetdb functions", "somedc", %w[rolenode], "nebula::profile::haproxy" => %w[]
 
       it { is_expected.to compile }
     end

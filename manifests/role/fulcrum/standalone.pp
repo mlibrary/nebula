@@ -11,11 +11,16 @@ class nebula::role::fulcrum::standalone {
   include nebula::profile::ruby
   include nebula::profile::fulcrum::base
   include nebula::profile::fulcrum::hosts
+  include nebula::profile::fulcrum::mounts
+  include nebula::profile::fulcrum::symlinks
   include nebula::profile::fulcrum::app
-  include nebula::profile::fulcrum::fedora
   include nebula::profile::fulcrum::logrotate
-  include nebula::profile::fulcrum::mysql
   include nebula::profile::fulcrum::redis
-  include nebula::profile::fulcrum::shibboleth
+  include nebula::profile::fulcrum::perl
+
   include nebula::profile::fulcrum::solr
+  include nebula::profile::fulcrum::mysql
+
+  include nebula::profile::fulcrum::shibboleth
+  include nebula::profile::fulcrum::fedora
 }
