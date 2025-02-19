@@ -6,69 +6,59 @@
 #
 # Manage grub.
 #
-# @param kernel_args Optionally specify kernel args for physical host. Ignored for virtual machines.
+# @param kernel_args Optionally override generated kernel args.
 #
 # @example
 #   include nebula::profile::grub
 class nebula::profile::grub (
-  String $kernel_args = 'console=tty0 console=ttyS1,115200n8 ixgbe.allow_unsupported_sfp=1'
+  Optional[String] $kernel_args = undef,
 ) {
   if $facts['is_virtual'] and $facts['virtual'] == 'kvm' {
-    service { 'getty@hvc0':
-      ensure     => 'running',
-      enable     => true,
-      hasrestart => true,
-    }
-
-    file_line {
-      default:
-        path   => '/etc/default/grub',
-        notify => Exec['/usr/sbin/update-grub'],
-        before => Service['getty@hvc0'],
-      ;
-      '/etc/default/grub: ^GRUB_CMDLINE_LINUX':
-        line  => 'GRUB_CMDLINE_LINUX="console=tty0 console=hvc0,9600n8"',
-        match => '^GRUB_CMDLINE_LINUX=',
-      ;
-      '/etc/default/grub: ^GRUB_CMDLINE_LINUX_DEFAULT':
-        line  => 'GRUB_CMDLINE_LINUX_DEFAULT=""',
-        match => '^GRUB_CMDLINE_LINUX_DEFAULT=',
-      ;
-      '/etc/default/grub: ^#?GRUB_SERIAL_COMMAND':
-        line  => 'GRUB_SERIAL_COMMAND="serial --unit=0 --speed=9600"',
-        match => '^#?GRUB_SERIAL_COMMAND=',
-      ;
-      '/etc/default/grub: ^#?GRUB_TERMINAL':
-        line  => 'GRUB_TERMINAL=serial',
-        match => '^#?GRUB_TERMINAL=',
-      ;
-    }
+    $getty = 'getty@hvc0'
+    $default_grub_cmdline = 'console=tty0 console=hvc0,9600n8'
+    $grub_terminal = 'serial'
+    $grub_serial_command = 'serial --unit=0 --speed=9600'
   } else {
-    service { 'serial-getty@ttyS1':
-      ensure     => 'running',
-      enable     => true,
-      hasrestart => true,
-    }
+    $getty = 'serial-getty@ttyS1'
+    $default_grub_cmdline = 'console=tty0 console=ttyS1,115200n8 ixgbe.allow_unsupported_sfp=1'
+    $grub_terminal = 'console'
+    $grub_serial_command = 'serial'
+  }
 
-    file_line {
-      default:
-        path   => '/etc/default/grub',
-        notify => Exec['/usr/sbin/update-grub'],
-        before => Service['serial-getty@ttyS1'],
-      ;
-      '/etc/default/grub: ^GRUB_CMDLINE_LINUX':
-        line  => "GRUB_CMDLINE_LINUX=\"${kernel_args}\"",
-        match => '^GRUB_CMDLINE_LINUX=',
-      ;
-      '/etc/default/grub: ^GRUB_CMDLINE_LINUX_DEFAULT':
-        line  => 'GRUB_CMDLINE_LINUX_DEFAULT=""',
-        match => '^GRUB_CMDLINE_LINUX_DEFAULT=',
-      ;
-      '/etc/default/grub: ^#?GRUB_TERMINAL':
-        line  => 'GRUB_TERMINAL=console',
-        match => '^#?GRUB_TERMINAL=',
-      ;
-    }
+  if $kernel_args {
+    $grub_cmdline = $kernel_args
+  } else {
+    $grub_cmdline = $default_grub_cmdline
+  }
+
+  service { $getty:
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+  }
+
+  file_line {
+    default:
+      path   => '/etc/default/grub',
+      notify => Exec['/usr/sbin/update-grub'],
+      before => Service[$getty],
+    ;
+    '/etc/default/grub: ^GRUB_CMDLINE_LINUX':
+      line  => "GRUB_CMDLINE_LINUX=\"${grub_cmdline}\"",
+      match => '^GRUB_CMDLINE_LINUX=',
+    ;
+    '/etc/default/grub: ^GRUB_CMDLINE_LINUX_DEFAULT':
+      line  => 'GRUB_CMDLINE_LINUX_DEFAULT=""',
+      match => '^GRUB_CMDLINE_LINUX_DEFAULT=',
+    ;
+    '/etc/default/grub: ^#?GRUB_TERMINAL':
+      line  => "GRUB_TERMINAL=${grub_terminal}",
+      match => '^#?GRUB_TERMINAL=',
+    ;
+    '/etc/default/grub: ^#?GRUB_SERIAL_COMMAND':
+      line  => "GRUB_SERIAL_COMMAND=\"${grub_serial_command}\"",
+      match => '^#?GRUB_SERIAL_COMMAND=',
+    ;
   }
 
   exec { '/usr/sbin/update-grub':
