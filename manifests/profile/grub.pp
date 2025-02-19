@@ -37,6 +37,9 @@ class nebula::profile::grub (
     hasrestart => true,
   }
 
+  # TODO: Delete after February 2025
+  # This should revert /etc/default/grub to as close to stock as possible.
+  # Once it has run on all hosts this stanza should be removed.
   file_line {
     default:
       path   => '/etc/default/grub',
@@ -44,21 +47,28 @@ class nebula::profile::grub (
       before => Service[$getty],
     ;
     '/etc/default/grub: ^GRUB_CMDLINE_LINUX':
-      line  => "GRUB_CMDLINE_LINUX=\"${grub_cmdline}\"",
+      line  => 'GRUB_CMDLINE_LINUX=""',
       match => '^GRUB_CMDLINE_LINUX=',
     ;
     '/etc/default/grub: ^GRUB_CMDLINE_LINUX_DEFAULT':
-      line  => 'GRUB_CMDLINE_LINUX_DEFAULT=""',
+      line  => 'GRUB_CMDLINE_LINUX_DEFAULT="quiet"',
       match => '^GRUB_CMDLINE_LINUX_DEFAULT=',
     ;
     '/etc/default/grub: ^#?GRUB_TERMINAL':
-      line  => "GRUB_TERMINAL=${grub_terminal}",
+      line  => '#GRUB_TERMINAL=console',
       match => '^#?GRUB_TERMINAL=',
     ;
     '/etc/default/grub: ^#?GRUB_SERIAL_COMMAND':
-      line  => "GRUB_SERIAL_COMMAND=\"${grub_serial_command}\"",
-      match => '^#?GRUB_SERIAL_COMMAND=',
+      ensure            => absent,
+      match             => '^GRUB_SERIAL_COMMAND=',
+      match_for_absence => true,
     ;
+  }
+
+  file { '/etc/default/grub.d/grub.cfg':
+    notify  => Exec['/usr/sbin/update-grub'],
+    before  => Service[$getty],
+    content => template('nebula/profile/grub/grub.cfg.erb'),
   }
 
   exec { '/usr/sbin/update-grub':
