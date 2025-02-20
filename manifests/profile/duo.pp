@@ -26,13 +26,6 @@ class nebula::profile::duo (
     'libpam-duo'
   ])
 
-  # Replace default /etc/pam.d/sudo
-  # This is only here to eliminate previous customizations
-  # Remove after January 2025
-  file { '/etc/pam.d/sudo':
-    source  => "puppet:///modules/nebula/default/${facts['os']['distro']['codename']}/etc/pam.d/sudo",
-  }
-
   concat_fragment { '/etc/pam.d/sshd: pam_duo':
     target  => '/etc/pam.d/sshd',
     content => @("EOT")

@@ -24,11 +24,6 @@ describe "nebula::profile::duo" do
       end
 
       it do
-        expect(subject).to contain_file("/etc/pam.d/sudo")
-          .with_source("puppet:///modules/nebula/default/#{facts[:os]["distro"]["codename"]}/etc/pam.d/sudo")
-      end
-
-      it do
         expect(subject).to contain_pam_duo
           .with_mode("0600")
           .that_requires("Package[libpam-duo]")
