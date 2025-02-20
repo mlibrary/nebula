@@ -49,10 +49,10 @@ class nebula::profile::hathitrust::solr6::catalog (
   }
   if ($is_primary_site) {
     $cron_h = 6
-    $cron_m = 30
+    $cron_m = 0
   } else {
-    $cron_h = 6
-    $cron_m = 25
+    $cron_h = 5
+    $cron_m = 55
   }
   cron { 'catalog solr index release':
     hour    => $cron_h,
