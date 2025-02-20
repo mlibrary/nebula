@@ -37,7 +37,6 @@ fixtures:
     lvm:                 {"repo": "puppetlabs/lvm",             "ref": "3.0.0" }
     mount_core:          {"repo": "puppetlabs/mount_core",      "ref": "1.3.0" }
     mysql:               {"repo": "puppetlabs/mysql",           "ref": "16.2.0"}
-    ntp:                 {"repo": "puppetlabs/ntp",             "ref": "11.0.0"}
     reboot:              {"repo": "puppetlabs/reboot",          "ref": "5.1.0" }
     sshkeys_core:        {"repo": "puppetlabs/sshkeys_core",    "ref": "2.5.0" }
     stdlib:              {"repo": "puppetlabs/stdlib",          "ref": "9.7.0" }
