@@ -44,7 +44,7 @@ describe "nebula::profile::hathitrust::solr6::catalog" do
 
         it {
           expect(subject).to contain_cron("catalog solr index release")
-            .with(hour: 6, minute: 30)
+            .with(hour: 6, minute: 0)
         }
       end
 
@@ -60,7 +60,7 @@ describe "nebula::profile::hathitrust::solr6::catalog" do
 
         it {
           expect(subject).to contain_cron("catalog solr index release")
-            .with(hour: 6, minute: 25)
+            .with(hour: 5, minute: 55)
         }
       end
 
