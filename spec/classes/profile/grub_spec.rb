@@ -53,6 +53,16 @@ describe "nebula::profile::grub" do
         end
       end
 
+      context "with kernel_args set" do
+        let :params do
+          {kernel_args: "foo bar baz"}
+        end
+        it do
+          is_expected.to contain_file("/etc/default/grub.d/grub.cfg")
+            .with_content(/^GRUB_CMDLINE_LINUX="foo bar baz"$/)
+        end
+      end
+
       it do
         expect(subject).to contain_exec("/usr/sbin/update-grub")
           .with_refreshonly(true)
