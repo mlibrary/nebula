@@ -12,23 +12,13 @@ describe "nebula::profile::grub" do
 
       context "when on a kvm vm" do
         let(:facts) { super().merge(is_virtual: true, virtual: "kvm") }
-
-        [
-          ["^GRUB_CMDLINE_LINUX", 'GRUB_CMDLINE_LINUX="console=tty0 console=hvc0,9600n8"'],
-          ["^GRUB_CMDLINE_LINUX_DEFAULT", 'GRUB_CMDLINE_LINUX_DEFAULT=""'],
-          ["^#?GRUB_SERIAL_COMMAND", 'GRUB_SERIAL_COMMAND="serial --unit=0 --speed=9600"'],
-          ["^#?GRUB_TERMINAL", "GRUB_TERMINAL=serial"]
-        ].each do |match, line|
-          it do
-            expect(subject).to contain_file_line("/etc/default/grub: #{match}").with(
-              path: "/etc/default/grub",
-              line: line,
-              match: "#{match}=",
-              notify: "Exec[/usr/sbin/update-grub]",
-              before: "Service[getty@hvc0]"
-            )
-          end
-        end
+        it {
+          is_expected.to contain_file("/etc/default/grub.d/grub.cfg")
+            .with_content(/^GRUB_CMDLINE_LINUX="console=tty0 console=hvc0,9600n8"$/)
+            .with_content(/^GRUB_CMDLINE_LINUX_DEFAULT=""$/)
+            .with_content(/^GRUB_SERIAL_COMMAND="serial --unit=0 --speed=9600"$/)
+            .with_content(/^GRUB_TERMINAL="serial"$/)
+        }
 
         it do
           expect(subject).to contain_service("getty@hvc0").with(
@@ -46,21 +36,13 @@ describe "nebula::profile::grub" do
         context desc do
           let(:facts) { super().merge(is_virtual: isvirt, virtual: virt) }
 
-          [
-            ["^GRUB_CMDLINE_LINUX", 'GRUB_CMDLINE_LINUX="console=tty0 console=ttyS1,115200n8 ixgbe.allow_unsupported_sfp=1"'],
-            ["^GRUB_CMDLINE_LINUX_DEFAULT", 'GRUB_CMDLINE_LINUX_DEFAULT=""'],
-            ["^#?GRUB_TERMINAL", "GRUB_TERMINAL=console"]
-          ].each do |match, line|
-            it do
-              expect(subject).to contain_file_line("/etc/default/grub: #{match}").with(
-                path: "/etc/default/grub",
-                line: line,
-                match: "#{match}=",
-                notify: "Exec[/usr/sbin/update-grub]",
-                before: "Service[serial-getty@ttyS1]"
-              )
-            end
-          end
+          it {
+            is_expected.to contain_file("/etc/default/grub.d/grub.cfg")
+              .with_content(/^GRUB_CMDLINE_LINUX="console=tty0 console=ttyS1,115200n8 ixgbe.allow_unsupported_sfp=1"$/)
+              .with_content(/^GRUB_CMDLINE_LINUX_DEFAULT=""$/)
+              .with_content(/^GRUB_SERIAL_COMMAND="serial"$/)
+              .with_content(/^GRUB_TERMINAL="console"$/)
+          }
 
           it do
             expect(subject).to contain_service("serial-getty@ttyS1").with(
@@ -68,6 +50,16 @@ describe "nebula::profile::grub" do
               enable: true
             )
           end
+        end
+      end
+
+      context "with kernel_args set" do
+        let :params do
+          {kernel_args: "foo bar baz"}
+        end
+        it do
+          is_expected.to contain_file("/etc/default/grub.d/grub.cfg")
+            .with_content(/^GRUB_CMDLINE_LINUX="foo bar baz"$/)
         end
       end
 

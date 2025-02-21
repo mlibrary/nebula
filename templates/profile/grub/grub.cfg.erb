@@ -1,0 +1,15 @@
+# Managed by puppet (nebula/profile/grub/grub.cfg.erb)
+
+# Documentation for these settings:
+# https://www.gnu.org/software/grub/manual/grub/html_node/Simple-configuration.html
+
+GRUB_TERMINAL="<%= @grub_terminal %>"
+
+# disable default quiet flag
+GRUB_CMDLINE_LINUX_DEFAULT=""
+
+# configure serial for kernel, set any other kernel flags
+GRUB_CMDLINE_LINUX="<%= @grub_cmdline %>"
+
+# configure serial in grub
+GRUB_SERIAL_COMMAND="<%= @grub_serial_command %>"
