@@ -65,7 +65,7 @@ nebula::profile::base::environment::vars: {}
 nebula::profile::exim4::root_email: root@default.invalid
 nebula::profile::exim4::relay_domain: exim.default.invalid
 
-nebula::profile::ntp::servers:
+nebula::profile::ntp::pools:
 - ntp.example.invalid
 
 nebula::profile::duo::ikey: ikey.default.invalid
