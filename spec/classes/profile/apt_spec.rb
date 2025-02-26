@@ -164,14 +164,14 @@ describe "nebula::profile::apt" do
         end
       end
 
-      it { is_expected.not_to contain_apt__source("hp") }
+      it { is_expected.not_to contain_apt__source("hpe") }
 
       context "when on an HPE machine" do
         let(:facts) { os_facts.merge("dmi" => {"manufacturer" => "HPE"}) }
 
         it do
-          expect(subject).to contain_apt__source("hp").with(
-            location: "http://downloads.linux.hpe.com/SDR/repo/mcp/debian",
+          expect(subject).to contain_apt__source("hpe").with(
+            location: "https://downloads.linux.hpe.com/SDR/repo/mcp",
             release: "#{facts[:lsbdistcodename]}/current",
             repos: "non-free"
           )
@@ -184,8 +184,8 @@ describe "nebula::profile::apt" do
           end
 
           it do
-            expect(subject).to contain_apt__source("hp").with(
-              location: "http://downloads.linux.hpe.com/SDR/repo/mcp/debian",
+            expect(subject).to contain_apt__source("hpe").with(
+              location: "https://downloads.linux.hpe.com/SDR/repo/mcp",
               release: "#{facts[:lsbdistcodename]}/current",
               repos: "non-free"
             )
