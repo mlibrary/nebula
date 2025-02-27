@@ -61,13 +61,23 @@ class nebula::profile::apt (
     }
 
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
-      apt::source { 'hp':
-        location => 'http://downloads.linux.hpe.com/SDR/repo/mcp/debian',
+      # `hpe1` is deprecated, but as of this writing is still used to sign HPE's Debian repos.
+      # At some point in 2025 this key should stop working, at which point we can move Debian
+      # to hpe2 as well. Due to an apparant bug in apt, hpe2 does not work when armored, so
+      # it has been included in this repo as a dearmored binary key.
+      # See also: https://downloads.linux.hpe.com/SDR/keys.html
+      $hpe_key = $facts['os']['name'] ? {
+        'Debian' => 'hpe1.asc',
+        'Ubuntu' => 'hpe2.gpg',
+      }
+
+      apt::source { 'hpe':
+        location => 'https://downloads.linux.hpe.com/SDR/repo/mcp',
         release  => "${facts['os']['distro']['codename']}/current",
         repos    => 'non-free',
         key      => {
-          'name'   => 'hpe.asc',
-          'source' => 'https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub',
+          'name'   => $hpe_key,
+          'source' => "puppet:///modules/nebula/apt/keyrings/${hpe_key}",
         },
       }
     }
