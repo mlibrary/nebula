@@ -20,7 +20,7 @@ class nebula::profile::grub (
     $grub_serial_command = 'serial --unit=0 --speed=9600'
   } else {
     $getty = 'serial-getty@ttyS1'
-    $default_grub_cmdline = 'console=tty0 console=ttyS1,115200n8'
+    $default_grub_cmdline = 'console=tty0 console=ttyS0,115200n8'
     $grub_terminal = 'console'
     $grub_serial_command = 'serial'
   }
