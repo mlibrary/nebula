@@ -14,4 +14,19 @@ class nebula::resolv_conf (
     mode    => $mode,
     content => template('nebula/resolv_conf/resolv.conf.erb'),
   }
+
+  # we never want systemd-resolved
+  # on older Debian releases it's part of systemd, so we can't purge it
+  if $facts['os']['distro']['codename'] in ['jammy','bullseye'] {
+    service { 'systemd-resolved':
+      ensure => stopped,
+      enable => false,
+      before => File['/etc/resolv.conf'],
+    }
+  } else {
+    package { 'systemd-resolved':
+      ensure => absent,
+      before => File['/etc/resolv.conf'],
+    }
+  }
 }

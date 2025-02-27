@@ -54,6 +54,20 @@ describe "nebula::resolv_conf" do
             .with_mode("0664")
         end
       end
+
+      case os
+      when "debian-11-x86_64", "ubuntu-22.04-x86_64"
+        it "disables systemd-resolved service" do
+          is_expected.to contain_service("systemd-resolved")
+            .with_enable("false")
+            .with_ensure("stopped")
+        end
+      when "debian-12-x86_64", "ubuntu-24.04-x86_64"
+        it "removes systemd-resolved package" do
+          is_expected.to contain_package("systemd-resolved")
+            .with_ensure("absent")
+        end
+      end
     end
   end
 end
