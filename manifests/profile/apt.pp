@@ -157,8 +157,17 @@ class nebula::profile::apt (
       'security' : release => "${facts['os']['distro']['codename']}-security";
     }
 
+    # remove unwanted recommendeds from `ubuntu-server` package
     package { 'landscape-common': ensure => purged }
     package { 'open-vm-tools': ensure => purged }
-    file { '/etc/apt/apt.conf.d/20apt-esm-hook.conf': ensure => absent }
+
+    # disable ubuntu subscription advertisements
+    exec { 'disable 20apt-esm-hook.conf':
+      creates => '/etc/apt/apt.conf.d/20apt-esm-hook.conf.disabled',
+      timeout => 30,
+      command => "/usr/bin/dpkg-divert --rename \
+--divert /etc/apt/apt.conf.d/20apt-esm-hook.conf.disabled \
+--add /etc/apt/apt.conf.d/20apt-esm-hook.conf"
+    }
   }
 }

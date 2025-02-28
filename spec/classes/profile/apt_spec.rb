@@ -162,6 +162,12 @@ describe "nebula::profile::apt" do
             .with_repos("main restricted universe")
             .with_release("#{facts[:lsbdistcodename]}-backports")
         end
+
+        it "disables 20apt-esm-hook.conf" do
+          is_expected.to contain_exec("disable 20apt-esm-hook.conf")
+            .with_creates("/etc/apt/apt.conf.d/20apt-esm-hook.conf.disabled")
+            .with_command("/usr/bin/dpkg-divert --rename --divert /etc/apt/apt.conf.d/20apt-esm-hook.conf.disabled --add /etc/apt/apt.conf.d/20apt-esm-hook.conf")
+        end
       end
 
       it { is_expected.not_to contain_apt__source("hpe") }
