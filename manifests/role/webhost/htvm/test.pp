@@ -26,9 +26,10 @@ class nebula::role::webhost::htvm::test {
     'xsltproc'
   ])
 
-  class { 'nebula::profile::nodejs':
-    version => '22',
+  class { 'nebula::profile::apt::nodejs':
+    before => Package['nodejs']
   }
+  package { 'nodejs': }
 
   include nebula::role::webhost::htvm
   include nebula::profile::hathitrust::apache::test

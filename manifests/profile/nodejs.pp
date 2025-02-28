@@ -29,7 +29,7 @@ class nebula::profile::nodejs (
       notify_update => true,
       key           => {
         'name'   => 'nodesource.asc',
-        'source' => 'https://deb.nodesource.com/gpgkey/nodesource.gpg.key',
+        'source' => 'puppet:///modules/nebula/apt/keyrings/nodesource0.asc',
       },
       include       => {
         'src' => false,
