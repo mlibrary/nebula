@@ -38,7 +38,7 @@ describe "nebula::profile::grub" do
 
           it {
             is_expected.to contain_file("/etc/default/grub.d/grub.cfg")
-              .with_content(/^GRUB_CMDLINE_LINUX="console=tty0 console=ttyS1,115200n8 ixgbe.allow_unsupported_sfp=1"$/)
+              .with_content(/^GRUB_CMDLINE_LINUX="console=tty0 console=ttyS1,115200n8"$/)
               .with_content(/^GRUB_CMDLINE_LINUX_DEFAULT=""$/)
               .with_content(/^GRUB_SERIAL_COMMAND="serial"$/)
               .with_content(/^GRUB_TERMINAL="console"$/)
