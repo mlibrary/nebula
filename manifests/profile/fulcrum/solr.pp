@@ -30,11 +30,11 @@ class nebula::profile::fulcrum::solr (
   file {
     default:
       owner => 'solr',
-      group => 'solr',
+      group => 'fulcrum',
     ;
     [$base, $home, $logs]:
       ensure => 'directory',
-      mode   => '0750',
+      mode   => '0775',
     ;
     $log4j_properties:
       ensure  => 'file',
