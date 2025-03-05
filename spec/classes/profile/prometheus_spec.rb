@@ -140,6 +140,22 @@ describe "nebula::profile::prometheus" do
           .that_requires("File[/etc/prometheus/tls]")
       end
 
+      it do
+        expect(subject).to contain_file("/etc/prometheus/tls/mimir-client.crt")
+          .with_source("/etc/puppetlabs/puppet/ssl/certs/#{facts[:fqdn]}.pem")
+          .with_mode("0644")
+          .with_owner(65534)
+          .with_group(65534)
+      end
+
+      it do
+        expect(subject).to contain_file("/etc/prometheus/tls/mimir-client.key")
+          .with_source("/etc/puppetlabs/puppet/ssl/private_keys/#{facts[:fqdn]}.pem")
+          .with_mode("0600")
+          .with_owner(65534)
+          .with_group(65534)
+      end
+
       %w[ca.crt client.crt client.key].each do |filename|
         it do
           expect(subject).to contain_docker__run("prometheus")
