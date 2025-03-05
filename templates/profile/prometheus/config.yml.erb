@@ -20,6 +20,11 @@ alerting:
       - <%= alert_manager %>
 <% end -%>
 <% end -%>
+remote_write:
+  - url: https://mimir.lib.umich.edu/push
+    tls_config:
+      cert_file: /tls/mimir-client.crt
+      key_file: /tls/mimir-client.key
 scrape_configs:
 - job_name: prometheus
   static_configs:
