@@ -27,7 +27,7 @@ remote_write:
       key_file: /tls/mimir-client.key
     # Temporarily restrict to very recent samples while stabilizing the tuning
     queue_config:
-      sample_age_limit: 300
+      sample_age_limit: 300s
 scrape_configs:
 - job_name: prometheus
   static_configs:
