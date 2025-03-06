@@ -25,6 +25,9 @@ remote_write:
     tls_config:
       cert_file: /tls/mimir-client.crt
       key_file: /tls/mimir-client.key
+    # Temporarily restrict to very recent samples while stabilizing the tuning
+    queue_config:
+      sample_age_limit: 300
 scrape_configs:
 - job_name: prometheus
   static_configs:
