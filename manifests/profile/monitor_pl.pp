@@ -60,7 +60,7 @@ class nebula::profile::monitor_pl (
 
   concat_fragment {
     default:
-      tag  => 'monitor_config';
+      tag => 'monitor_config';
 
     'monitor nfs mounts':
       content => { 'nfs' => $nfs_mounts }.to_yaml();

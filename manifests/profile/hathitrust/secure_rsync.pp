@@ -40,7 +40,7 @@ class nebula::profile::hathitrust::secure_rsync (
     '/etc/systemd/system/secure-rsync.service':
       content  => template('nebula/profile/hathitrust/secure_rsync/secure-rsync.service.erb');
     "${rsync_home}/stunnel.conf":
-      content  => template('nebula/profile/hathitrust/secure_rsync/stunnel.conf.erb');
+      content => template('nebula/profile/hathitrust/secure_rsync/stunnel.conf.erb');
     "${rsync_home}/rsyncd.conf":
       content => template('nebula/profile/hathitrust/rsync/rsyncd.conf.erb');
     "${rsync_home}/server.key":

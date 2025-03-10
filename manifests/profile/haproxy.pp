@@ -32,7 +32,7 @@ class nebula::profile::haproxy (
     '/etc/default/haproxy':
       content => template('nebula/profile/haproxy/default.erb');
     '/etc/haproxy/errors/hsts400.http':
-      source  => 'puppet:///modules/nebula/haproxy/errors/hsts400.http';
+      source => 'puppet:///modules/nebula/haproxy/errors/hsts400.http';
     '/etc/haproxy/global_badrobots.txt':
       content => $global_badrobots;
   }

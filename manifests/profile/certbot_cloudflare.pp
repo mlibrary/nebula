@@ -40,11 +40,11 @@ class nebula::profile::certbot_cloudflare (
   $certs.each |$service, $domains| {
     $domains.each |$main_domain, $alt_domains| {
       concat { "${cert_dir}/${main_domain}.crt":
-        group  => 'puppet',
+        group => 'puppet',
       }
 
       concat { "${cert_dir}/${main_domain}.key":
-        group  => 'puppet',
+        group => 'puppet',
       }
 
       concat { "${haproxy_cert_dir}/${service}/${main_domain}.pem":
@@ -77,7 +77,7 @@ class nebula::profile::certbot_cloudflare (
 
   $simple_certs.each |$domain, $sans| {
     concat { "${cert_dir}/${domain}.crt":
-      group  => 'puppet',
+      group => 'puppet',
     }
 
     concat_fragment { "${cert_dir}/${domain}.crt cert":
@@ -86,7 +86,7 @@ class nebula::profile::certbot_cloudflare (
     }
 
     concat { "${cert_dir}/${domain}.key":
-      group  => 'puppet',
+      group => 'puppet',
     }
 
     concat_fragment { "${cert_dir}/${domain}.key key":

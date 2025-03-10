@@ -66,7 +66,7 @@ class nebula::profile::afs (
   }
 
   file { '/usr/local/skel/sys.profile':
-    source  => 'puppet:///modules/nebula/skel.txt',
+    source => 'puppet:///modules/nebula/skel.txt',
   }
 
   file { '/usr/local/skel':

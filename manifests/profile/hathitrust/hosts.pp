@@ -51,7 +51,7 @@ class nebula::profile::hathitrust::hosts (
 
   $solr_search.each |Integer $i, String $ip| {
     host { "solr-sdr-search-${$i+1}":
-      ip      => $ip
+      ip => $ip
     }
   }
 
