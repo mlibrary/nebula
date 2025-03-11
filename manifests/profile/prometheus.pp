@@ -170,7 +170,7 @@ class nebula::profile::prometheus (
     }
   } else {
     class { 'nginx':
-      server_tokens        => 'off',
+      server_tokens => 'off',
     }
     nginx::resource::server { 'https-forwarder':
       server_name       => [$::networking['fqdn']],

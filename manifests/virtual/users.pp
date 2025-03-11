@@ -50,7 +50,7 @@ class nebula::virtual::users (
       ;
 
       $username:
-        *          => $data,
+        * => $data,
       ;
     }
   }

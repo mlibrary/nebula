@@ -107,7 +107,7 @@ class nebula::profile::ruby (
   }
 
   file { '/usr/local/rubytests/':
-    ensure  => 'directory',
+    ensure => 'directory',
   }
 
   file { '/etc/cron.daily/ruby-health-check':

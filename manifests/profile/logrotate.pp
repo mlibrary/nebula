@@ -26,7 +26,7 @@ class nebula::profile::logrotate {
       create_mode => '0664',
       ;
     'btmp':
-      path        => '/var/log/btmp',
+      path => '/var/log/btmp',
       ;
   }
 }

@@ -12,7 +12,7 @@ class nebula::profile::fulcrum::base (
   ])
 
   host { 'localhost':
-    ip           => '127.0.0.1',
+    ip => '127.0.0.1',
   }
 
   host { $::networking['hostname']:

@@ -27,7 +27,7 @@ class nebula::profile::apache::auth_openidc (
   String $oidc_crypto,
 ) {
   apache::mod { 'auth_openidc':
-    package       => 'libapache2-mod-auth-openidc',
+    package => 'libapache2-mod-auth-openidc',
   }
   include apache::mod::authn_core
   include apache::mod::authz_user
