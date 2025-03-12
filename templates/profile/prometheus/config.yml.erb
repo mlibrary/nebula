@@ -23,8 +23,8 @@ alerting:
 remote_write:
   - url: https://mimir.lib.umich.edu/push
     tls_config:
-      cert_file: /tls/mimir-client.crt
-      key_file: /tls/mimir-client.key
+      cert_file: /tls/client.crt
+      key_file: /tls/client.key
     # Temporarily restrict to very recent samples while stabilizing the tuning
     queue_config:
       sample_age_limit: 300s

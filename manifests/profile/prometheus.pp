@@ -133,20 +133,6 @@ class nebula::profile::prometheus (
     source => "puppet:///ssl-certs/prometheus-pki/${::networking['fqdn']}.key",
   }
 
-  file { '/etc/prometheus/tls/mimir-client.crt':
-    source => "/etc/puppetlabs/puppet/ssl/certs/${::networking['fqdn']}.pem",
-    mode   => '0644',
-    owner  => 65534,
-    group  => 65534,
-  }
-
-  file { '/etc/prometheus/tls/mimir-client.key':
-    source => "/etc/puppetlabs/puppet/ssl/private_keys/${::networking['fqdn']}.pem",
-    mode   => '0600',
-    owner  => 65534,
-    group  => 65534,
-  }
-
   file { '/opt/prometheus':
     ensure => 'directory',
     owner  => 65534,
