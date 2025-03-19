@@ -87,7 +87,7 @@ describe "nebula::virtual_machine" do
           %r{ -r 1024},
           %r{ --vcpus 2},
           %r{ --location http://ftp\.us\.debian\.org/debian/dists/bullseye/main/installer-amd64/},
-          %r{ --os-type=linux},
+          %r{ --os-variant=debianbullseye},
           %r{ --disk '/var/lib/libvirt/images/vmname\.img,size=16'},
           %r{ --network bridge=br0,model=virtio .* --network bridge=br1,model=virtio}m,
           %r{ --console pty,target_type=virtio},
