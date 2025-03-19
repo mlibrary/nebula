@@ -13,7 +13,7 @@ class nebula::profile::apt (
   String $puppet_repo,
   Boolean $purge = true,
   String $ubuntu_mirror = 'http://us.archive.ubuntu.com/ubuntu',
-  Optional[Hash] $local_repo = undef,
+  Optional[Hash] $repos = undef,
 ) {
   if($facts['os']['family'] == 'Debian') {
     package { 'aptitude': }
@@ -51,13 +51,13 @@ class nebula::profile::apt (
       content => template('nebula/profile/apt/apt_no_ipv6.erb'),
     }
 
-    if $local_repo {
-      apt::source { 'local':
-        *            => $local_repo,
+    if $repos {
+      $repo_defaults = {
         release      => $facts['os']['distro']['codename'],
         repos        => 'main',
         architecture => $facts['os']['architecture'],
       }
+      create_resources(apt::source,$repos,$repo_defaults)
     }
 
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
@@ -106,13 +106,13 @@ class nebula::profile::apt (
     # TODO: port to DEB822
     # TODO: remove non-free where we're not using it
     # TODO: remove branch when we're off bullseye
-    $repos = $facts['os']['distro']['codename'] ? {
+    $debian_repos = $facts['os']['distro']['codename'] ? {
       'bullseye' => 'main contrib non-free',
       default    => 'main contrib non-free non-free-firmware',
     }
     apt::source { 'main':
       location => $mirror,
-      repos    => $repos,
+      repos    => $debian_repos,
     }
 
     $security_release = "${facts['os']['distro']['codename']}-security"
@@ -120,7 +120,7 @@ class nebula::profile::apt (
     apt::source { 'security':
       location => 'http://security.debian.org/debian-security',
       release  => $security_release,
-      repos    => $repos,
+      repos    => $debian_repos,
     }
 
     unless empty($facts['installed_backports']) {
@@ -132,7 +132,7 @@ class nebula::profile::apt (
     apt::source { 'updates':
       location => $mirror,
       release  => "${facts['os']['distro']['codename']}-updates",
-      repos    => $repos,
+      repos    => $debian_repos,
     }
 
     apt::source { 'adoptium':

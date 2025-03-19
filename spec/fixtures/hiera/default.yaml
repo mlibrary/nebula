@@ -113,11 +113,12 @@ nebula::profile::vmhost::host::nameservers: "%{alias('nebula::resolv_conf::names
 
 nebula::http_files: 'default.http_files.invalid'
 
-nebula::profile::apt::local_repo:
-  location: https://local-repo.default-invalid/debian
-  key:
-    id: 0123456789ABCDEF
-    source: https://local-repo.default-invalid/debian-pubkey.txt
+nebula::profile::apt::repos:
+  local:
+    location: https://local-repo.default-invalid/debian
+    key:
+      id: 0123456789ABCDEF
+      source: https://local-repo.default-invalid/debian-pubkey.txt
 
 nebula::profile::authorized_keys::key_file: /etc/secretkeys/default.invalid
 nebula::profile::authorized_keys::default_host: 'default.invalid'

@@ -95,7 +95,11 @@ describe "nebula::profile::apt" do
         end
       end
 
-      it { is_expected.to contain_apt__source("local").with_architecture("amd64") }
+      it {
+        is_expected.to contain_apt__source("local")
+          .with_architecture("amd64")
+          .with_location("https://local-repo.default-invalid/debian")
+      }
 
       case os
       when %r{^debian}
@@ -119,17 +123,32 @@ describe "nebula::profile::apt" do
 
         context "when given a local repo" do
           let(:params) do
-            {local_repo:
-                             {"location" => "http://somehost.example.invalid/debs",
-                              "key" => {"id" => "12345678", "source" => "http://somehost.example.invalid/repo-key.gpg"}}}
+            {repos:
+              {
+                "foobar" =>
+                  {
+                    "location" => "https://foobar.example.invalid/debs",
+                    "key" => {"name" => "foobar.asc", "source" => "https://foobar.example.invalid/key.asc"}
+                  },
+                "foobaz" =>
+                  {
+                    "location" => "https://www.foobaz.invalid/repo",
+                    "key" => {"name" => "baz.gpg", "source" => "https://www.foobaz.invalid/key.gpg"}
+                  }
+              }}
           end
 
           it do
-            expect(subject).to contain_apt__source("local").with(location: "http://somehost.example.invalid/debs",
+            expect(subject).not_to contain_apt__source("local")
+            expect(subject).to contain_apt__source("foobar").with(
+              location: "https://foobar.example.invalid/debs",
               architecture: "amd64",
               release: facts[:lsbdistcodename].to_s,
-              key: params[:local_repo]["key"],
-              repos: "main")
+              repos: "main"
+            )
+            expect(subject).to contain_apt__source("foobaz").with(
+              location: "https://www.foobaz.invalid/repo"
+            )
           end
         end
 
