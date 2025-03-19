@@ -131,7 +131,7 @@ define nebula::virtual_machine (
           -r ${ram_in_mb}                                             \
           --vcpus ${cpus}                                             \
           --location ${location}                                      \
-          --os-type=linux                                             \
+          --os-variant=debian${build}                                 \
           --disk '${full_image_path},size=${disk}'                    \
           --network bridge=${internet_bridge},model=virtio            \
           --network bridge=${lan_bridge},model=virtio                 \
