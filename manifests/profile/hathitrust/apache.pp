@@ -178,11 +178,12 @@ class nebula::profile::hathitrust::apache (
     source => "https://${http_files}/ae-utils/bins/ckapacheconn"
   }
 
+  # restart apache nightly, some time between 00:00 and 01:59
   cron { 'apache restart':
     command => '( /bin/systemctl stop apache2; /bin/sleep 10; /bin/systemctl start apache2 ) > /dev/null',
     user    => 'root',
-    minute  => '1',
-    hour    => '0',
+    hour    => fqdn_rand(2),
+    minute  => fqdn_rand(60),
   }
 
   ### client cert
