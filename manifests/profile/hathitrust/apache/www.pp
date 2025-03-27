@@ -35,6 +35,7 @@ class nebula::profile::hathitrust::apache::www (
 
   apache::vhost { "${servername} ssl":
     servername         => $servername,
+    serveraliases      => ["cf.${servername}"],
     use_canonical_name => 'On',
     port               => '443',
     manage_docroot     => false,
