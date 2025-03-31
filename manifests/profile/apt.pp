@@ -83,12 +83,9 @@ class nebula::profile::apt (
     }
 
     apt::source { 'puppet':
+      ensure   => absent,
       location => 'http://apt.puppetlabs.com',
       repos    => $puppet_repo,
-      key      => {
-        'name'   => 'puppetlabs.asc',
-        'source' => 'puppet:///modules/nebula/apt/keyrings/puppetlabs.asc'
-      }
     }
 
     # replaced by /etc/apt/keyrings/puppetlabs.gpg, but still automatically created on new vms
