@@ -68,7 +68,10 @@ describe "nebula::profile::apt" do
         end
 
         it do
+          # puppet apt repo is removed, but this is expected to be temporary
+          # until a replacement repo is ready
           expect(subject).to contain_apt__source("puppet").with(
+            ensure: "absent",
             location: "http://apt.puppetlabs.com",
             repos: "puppet5"
           )
