@@ -65,6 +65,12 @@ class nebula::profile::hathitrust::apache (
     conf_enabled           => '/etc/apache2/conf-enabled',
   }
 
+  class { 'apache::mod::ssl':
+    ssl_protocol         => '-all +TLSv1.3',
+    ssl_openssl_conf_cmd => 'Curves X25519:prime256v1:secp384r1',
+    ssl_honorcipherorder => false
+  }
+
   class { 'apache::mod::prefork':
     startservers           => 10,
     minspareservers        => 10,
@@ -150,8 +156,6 @@ class nebula::profile::hathitrust::apache (
     haproxy_ips    => $haproxy_ips,
     ssl_params     => {
       ssl            => true,
-      ssl_protocol   => '+TLSv1.2',
-      ssl_cipher     => 'ECDHE-RSA-AES256-GCM-SHA384',
       ssl_cert       => '/etc/ssl/certs/www.hathitrust.org.crt',
       ssl_key        => '/etc/ssl/private/www.hathitrust.org.key',
     },

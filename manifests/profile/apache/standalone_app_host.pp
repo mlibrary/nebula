@@ -40,9 +40,14 @@ class nebula::profile::apache::standalone_app_host (
   include apache::mod::proxy
   include apache::mod::proxy_http
   include apache::mod::headers
-  include apache::mod::ssl
   include apache::mod::rewrite
   include apache::mod::setenvif
+
+  class { 'apache::mod::ssl':
+    ssl_protocol         => '-all +TLSv1.3',
+    ssl_openssl_conf_cmd => 'Curves X25519:prime256v1:secp384r1',
+    ssl_honorcipherorder => false
+  }
 
   apache::listen { ['80','443']: }
 }

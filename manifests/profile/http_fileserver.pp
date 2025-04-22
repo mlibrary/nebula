@@ -53,6 +53,12 @@ class nebula::profile::http_fileserver (
     }
   }
 
+  class { 'apache::mod::ssl':
+    ssl_protocol         => '-all +TLSv1.3',
+    ssl_openssl_conf_cmd => 'Curves X25519:prime256v1:secp384r1',
+    ssl_honorcipherorder => false
+  }
+
   apache::vhost { "${::networking['fqdn']} http":
     servername => $::networking['fqdn'],
     port       => 80,
