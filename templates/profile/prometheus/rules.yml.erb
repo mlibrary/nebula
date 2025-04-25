@@ -180,6 +180,13 @@ groups:
     for: 30m
     labels:
       severity: ticket
+  - alert: HTMountReadOnly
+    annotations:
+      summary: '{{$labels.hostname}}:{{$labels.mountpoint}} is READ ONLY. Remount rw to fix. '
+    expr: 'node_filesystem_readonly{role=~"nebula::role::webhost::htvm.*",mountpoint="/htapps"} > 0'
+    for: 1m
+    labels:
+      severity: page
   - alert: DiskRunningOutOfINodes
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is running out of inodes.'
