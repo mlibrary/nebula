@@ -18,6 +18,7 @@ class nebula::profile::base::motd (
       file { '/etc/update-motd.d/10-help-text': ensure => absent }
       file { '/etc/update-motd.d/50-motd-news': ensure => absent }
       file { '/etc/update-motd.d/90-updates-available': ensure => absent }
+      file { '/etc/update-motd.d/91-release-upgrade': ensure => absent }
       file { '/etc/update-motd.d/97-overlayroot': ensure => absent }
       file { '/var/lib/update-notifier/hide-esm-in-motd': content => '# managed by puppet' }
     }
