@@ -19,6 +19,8 @@ alias la='ls -AF'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
+alias rgrep='rgrep --color=auto'
+alias ip='ip -color=auto'
 
 # history
 HISTCONTROL=ignoredups:ignorespace
