@@ -24,7 +24,7 @@ vrrp_instance haproxy {
   priority 100
   <% end %>
 
-  interface <%= @networking['primary'] %>
+  interface <%= @facts['networking']['primary'] %>
   virtual_router_id 51
   virtual_ipaddress {
     <%= @public_address %>
@@ -36,5 +36,5 @@ vrrp_instance haproxy {
 <% end -%>
   }
 
-  unicast_src_ip <%= @networking['ip'] %>
+  unicast_src_ip <%= @facts['networking']['ip'] %>
   unicast_peer {

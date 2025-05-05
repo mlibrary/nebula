@@ -15,13 +15,13 @@ spec:
     - --cert-file=/etc/kubernetes/pki/server.crt
     - --client-cert-auth=true
     - --data-dir=/var/lib/etcd
-    - --initial-advertise-peer-urls=https://<%= @networking['ip'] %>:2380
+    - --initial-advertise-peer-urls=https://<%= @facts['networking']['ip'] %>:2380
     - --initial-cluster=<%= @initial_cluster %>
     - --initial-cluster-state=new
     - --key-file=/etc/kubernetes/pki/server.key
-    - --listen-client-urls=https://127.0.0.1:2379,https://<%= @networking['ip'] %>:2379
-    - --listen-peer-urls=https://<%= @networking['ip'] %>:2380
-    - --name=<%= @networking['fqdn'] %>
+    - --listen-client-urls=https://127.0.0.1:2379,https://<%= @facts['networking']['ip'] %>:2379
+    - --listen-peer-urls=https://<%= @facts['networking']['ip'] %>:2380
+    - --name=<%= @facts['fqdn'] %>
     - --peer-cert-file=/etc/kubernetes/pki/peer.crt
     - --peer-client-cert-auth=true
     - --peer-key-file=/etc/kubernetes/pki/peer.key

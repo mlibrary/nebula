@@ -10,8 +10,8 @@
 <% end -%>
     labels:
       datacenter: "<%= @datacenter %>"
-      via: "<%= @networking['hostname'] %>"
-  # lom.mgmt/ipmi -> <%= @networking['hostname'] %>:9290/ipmi?module=lom.mgmt&target=lom.mgmt
+      via: "<%= @facts['hostname'] %>"
+  # lom.mgmt/ipmi -> <%= @facts['hostname'] %>:9290/ipmi?module=lom.mgmt&target=lom.mgmt
   relabel_configs:
   - action: "replace"
     target_label: "__param_target"

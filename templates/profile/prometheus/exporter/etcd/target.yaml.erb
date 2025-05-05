@@ -1,4 +1,4 @@
-- targets: [ '<%= @networking['ip'] %>:2381' ]
+- targets: [ '<%= @facts['networking']['ip'] %>:2381' ]
   labels:
     datacenter: '<%= @datacenter %>'
-    hostname: '<%= @networking['fqdn'] %>'
+    hostname: '<%= @facts['fqdn'] %>'
