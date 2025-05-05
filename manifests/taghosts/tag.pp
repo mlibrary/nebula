@@ -5,7 +5,7 @@
 define nebula::taghosts::tag (
   String $order = '100',
 ) {
-  @@concat::fragment { "taghosts ${::networking['fqdn']} ${order} ${title}":
+  @@concat::fragment { "taghosts ${facts['fqdn']} ${order} ${title}":
     tag     => 'taghosts',
     target  => '/var/lib/ae/active-servers',
     content => " ${title}",

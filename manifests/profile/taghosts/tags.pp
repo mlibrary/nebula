@@ -15,14 +15,14 @@ class nebula::profile::taghosts::tags (
 
   # Each line starts with the fqdn, a tab, and the tag "puppet" to show
   # this host's tags are managed by puppet.
-  @@concat::fragment { "taghosts ${::networking['fqdn']} 000":
+  @@concat::fragment { "taghosts ${facts['fqdn']} 000":
     tag     => 'taghosts',
     target  => '/var/lib/ae/active-servers',
-    content => "${::networking['fqdn']}\tpuppet",
+    content => "${facts['fqdn']}\tpuppet",
   }
 
   # Each line ends with a newline.
-  @@concat::fragment { "taghosts ${::networking['fqdn']} 999":
+  @@concat::fragment { "taghosts ${facts['fqdn']} 999":
     tag     => 'taghosts',
     target  => '/var/lib/ae/active-servers',
     content => "\n",

@@ -17,10 +17,10 @@ class nebula::profile::known_host_public_keys {
     $type = $key_obj["type"]
     $key = $key_obj["key"]
 
-    @@concat_fragment { "known host ${::networking['fqdn']} ${name}":
+    @@concat_fragment { "known host ${facts['fqdn']} ${name}":
       tag     => 'known_host_public_keys',
       target  => '/etc/ssh/ssh_known_hosts',
-      content => "${::networking['fqdn']} ${type} ${key}\n",
+      content => "${facts['fqdn']} ${type} ${key}\n",
     }
   }
 }

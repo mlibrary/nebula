@@ -19,12 +19,12 @@
 # @param ipaddress The ip address HAproxy should use to reach the node
 #
 # @example
-#   @@nebula::haproxy::binding { '${::networking['hostname']} myservice':
+#   @@nebula::haproxy::binding { '${facts['hostname']} myservice':
 #     service       => 'myservice',
 #     https_offload => 'false',
-#     datacenter    => $::datacenter,
-#     hostname      => $::networking['hostname'],
-#     ipaddress     => $::networking['ip']
+#     datacenter    => $facts['datacenter'],
+#     hostname      => $facts['hostname'],
+#     ipaddress     => $facts['ip']
 #  }
 define nebula::haproxy::binding (
   String $service,

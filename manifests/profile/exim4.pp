@@ -33,7 +33,7 @@ class nebula::profile::exim4 (
   }
 
   file { '/etc/mailname':
-    content => "${::networking['fqdn']}\n",
+    content => "${facts['fqdn']}\n",
     notify  => Exec['update exim4 config'],
   }
 

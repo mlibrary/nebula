@@ -6,11 +6,11 @@ class nebula::profile::www_lib::register_for_load_balancing (
   Array[String] $services = [],
 ) {
   $services.each |$service| {
-    @@nebula::haproxy::binding { "${::networking['hostname']} ${service}":
+    @@nebula::haproxy::binding { "${facts['hostname']} ${service}":
       service       => $service,
       datacenter    => $facts['datacenter'],
-      hostname      => $::networking['hostname'],
-      ipaddress     => $::networking['ip'],
+      hostname      => $facts['hostname'],
+      ipaddress     => $facts['ip'],
       https_offload => false,
     }
   }

@@ -15,7 +15,7 @@
 #   to land (defaults to `/var/www`)
 class nebula::profile::https_to_port (
   Integer $port,
-  String $server_name = $::networking['fqdn'],
+  String $server_name = $facts['fqdn'],
   String $webroot = '/var/www',
 ) {
   include nginx

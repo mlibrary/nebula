@@ -5,10 +5,10 @@
 class nebula::profile::kubernetes::register_for_keys::worker {
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
 
-  @@concat_fragment { "cluster pki for ${::networking['hostname']}":
+  @@concat_fragment { "cluster pki for ${facts['hostname']}":
     tag     => "${cluster_name}_pki_generation",
     target  => '/var/local/generate_pki.sh',
     order   => '02',
-    content => "KUBE_WORKERS=(\"\${KUBE_WORKERS[@]}\" \"${::networking['hostname']}/${::networking['ip']}\")\n",
+    content => "KUBE_WORKERS=(\"\${KUBE_WORKERS[@]}\" \"${facts['hostname']}/${facts['ip']}\")\n",
   }
 }

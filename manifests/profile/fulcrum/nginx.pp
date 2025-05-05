@@ -6,7 +6,7 @@
 # SSL certificates with Let's Encrypt.
 class nebula::profile::fulcrum::nginx (
   Integer $port = 3000,
-  String $server_name = $::networking['fqdn'],
+  String $server_name = $facts['fqdn'],
   String $webroot = '/var/www/acme',
 ) {
   class { 'nginx':

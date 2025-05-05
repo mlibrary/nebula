@@ -24,7 +24,7 @@ class nebula::profile::prometheus::exporter::haproxy (
     content => template('nebula/profile/prometheus/exporter/haproxy/defaults.sh.erb')
   }
 
-  @@concat_fragment { "prometheus haproxy service ${::networking['hostname']}":
+  @@concat_fragment { "prometheus haproxy service ${facts['hostname']}":
     tag     => "${facts['datacenter']}_prometheus_haproxy_service_list",
     target  => '/etc/prometheus/haproxy.yml',
     content => template('nebula/profile/prometheus/exporter/haproxy/target.yaml.erb')

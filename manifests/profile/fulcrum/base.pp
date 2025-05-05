@@ -15,9 +15,9 @@ class nebula::profile::fulcrum::base (
     ip => '127.0.0.1',
   }
 
-  host { $::networking['hostname']:
-    host_aliases => [$::networking['fqdn']],
-    ip           => $::networking['ip'],
+  host { $facts['hostname']:
+    host_aliases => [$facts['fqdn']],
+    ip           => $facts['ip'],
   }
 
   host { 'ip6-localhost':

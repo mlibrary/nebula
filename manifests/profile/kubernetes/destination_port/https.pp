@@ -5,10 +5,10 @@
 class nebula::profile::kubernetes::destination_port::https {
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
 
-  @@concat_fragment { "haproxy kubernetes https ${::networking['hostname']}":
+  @@concat_fragment { "haproxy kubernetes https ${facts['hostname']}":
     target  => '/etc/haproxy/services.d/https.cfg',
     order   => '02',
-    content => "  server ${::networking['hostname']} ${::networking['ip']}:30443 check send-proxy\n",
+    content => "  server ${facts['hostname']} ${facts['ip']}:30443 check send-proxy\n",
     tag     => "${cluster_name}_haproxy_kubernetes_https",
   }
 }

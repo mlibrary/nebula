@@ -19,9 +19,9 @@ class nebula::profile::hathitrust::ingest_hosts (
   String $solr_vufind_primary,
   String $solr_vufind_failover
 ) {
-  host { $::networking['hostname']:
-    host_aliases => [$::networking['fqdn']],
-    ip           => $::networking['ip']
+  host { $facts['hostname']:
+    host_aliases => [$facts['fqdn']],
+    ip           => $facts['ip']
   }
 
   host { 'mysql-sdr':

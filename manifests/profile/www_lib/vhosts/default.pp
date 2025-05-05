@@ -31,7 +31,7 @@ class nebula::profile::www_lib::vhosts::default (
   nebula::apache::www_lib_vhost { '000-default-ssl':
     ssl         => true,
     ssl_cn      => $ssl_cn,
-    servername  => $::networking['fqdn'],
+    servername  => $facts['fqdn'],
     directories => [$nebula::profile::apache::monitoring::location],
     aliases     => [$nebula::profile::apache::monitoring::scriptalias],
     docroot     => false,

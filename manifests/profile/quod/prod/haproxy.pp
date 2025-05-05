@@ -7,11 +7,11 @@
 # @example
 #   include nebula::profile::quod::prod::haproxy
 class nebula::profile::quod::prod::haproxy {
-  @@nebula::haproxy::binding { "${::networking['hostname']} quod":
+  @@nebula::haproxy::binding { "${facts['hostname']} quod":
     service       => 'quod',
     https_offload => true,
     datacenter    => $facts['datacenter'],
-    hostname      => $::networking['hostname'],
-    ipaddress     => $::networking['ip'];
+    hostname      => $facts['hostname'],
+    ipaddress     => $facts['ip'];
   }
 }

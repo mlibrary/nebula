@@ -8,7 +8,7 @@ class nebula::profile::kubernetes::dns_client {
   $private_domain = $cluster['private_domain']
   $router_address = $cluster['router_address']
 
-  @@concat_fragment { "/etc/hosts ipv4 ${::networking['ip']}":
+  @@concat_fragment { "/etc/hosts ipv4 ${facts['ip']}":
     tag     => "${cluster_name}_etc_hosts_ip4_hostname",
     target  => '/etc/hosts',
     order   => '04',
@@ -23,10 +23,10 @@ class nebula::profile::kubernetes::dns_client {
     $type = $key_obj["type"]
     $key = $key_obj["key"]
 
-    @@concat_fragment { "known ${cluster_name} host ${::networking['hostname']} ${name}":
+    @@concat_fragment { "known ${cluster_name} host ${facts['hostname']} ${name}":
       tag     => "${cluster_name}_known_host_public_keys",
       target  => '/etc/ssh/ssh_known_hosts',
-      content => "${::networking['hostname']} ${type} ${key}\n",
+      content => "${facts['hostname']} ${type} ${key}\n",
     }
   }
 }

@@ -5,10 +5,10 @@
 class nebula::profile::kubernetes::register_for_keys::etcd {
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
 
-  @@concat_fragment { "cluster pki for ${::networking['hostname']}":
+  @@concat_fragment { "cluster pki for ${facts['hostname']}":
     tag     => "${cluster_name}_pki_generation",
     target  => '/var/local/generate_pki.sh',
     order   => '02',
-    content => "ETCD_NODES=(\"\${ETCD_NODES[@]}\" \"${::networking['hostname']}/${::networking['ip']}\")\n",
+    content => "ETCD_NODES=(\"\${ETCD_NODES[@]}\" \"${facts['hostname']}/${facts['ip']}\")\n",
   }
 }

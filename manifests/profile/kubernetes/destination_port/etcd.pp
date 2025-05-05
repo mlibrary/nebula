@@ -5,14 +5,14 @@
 class nebula::profile::kubernetes::destination_port::etcd {
   $cluster_name = lookup('nebula::profile::kubernetes::cluster')
 
-  @@concat_fragment { "haproxy kubernetes etcd ${::networking['hostname']}":
+  @@concat_fragment { "haproxy kubernetes etcd ${facts['hostname']}":
     target  => '/etc/haproxy/services.d/etcd.cfg',
     order   => '02',
-    content => "  server ${::networking['hostname']} ${::networking['ip']}:2379 check\n",
+    content => "  server ${facts['hostname']} ${facts['ip']}:2379 check\n",
     tag     => "${cluster_name}_haproxy_kubernetes_etcd",
   }
 
-  @@concat_fragment { "prometheus etcd service ${::networking['hostname']}":
+  @@concat_fragment { "prometheus etcd service ${facts['hostname']}":
     tag     => "${facts['datacenter']}_prometheus_etcd_service_list",
     target  => '/etc/prometheus/etcd.yml',
     content => template('nebula/profile/prometheus/exporter/etcd/target.yaml.erb')

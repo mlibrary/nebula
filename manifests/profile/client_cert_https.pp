@@ -20,7 +20,7 @@
 class nebula::profile::client_cert_https (
   Integer $http_port = 80,
   Integer $https_port = 443,
-  String $server_name = $::networking['fqdn'],
+  String $server_name = $facts['fqdn'],
   String $allow_cidr = '0.0.0.0/0',
   String $certs_source_prefix = 'puppet:///pki',
   Optional[String] $ca_source = undef,
@@ -35,12 +35,12 @@ class nebula::profile::client_cert_https (
 
   $full_cert_source = case $cert_source {
     String: { $cert_source }
-    default: { "${certs_source_prefix}/${::networking['fqdn']}.crt" }
+    default: { "${certs_source_prefix}/${facts['fqdn']}.crt" }
   }
 
   $full_key_source = case $key_source {
     String: { $key_source }
-    default: { "${certs_source_prefix}/${::networking['fqdn']}.key" }
+    default: { "${certs_source_prefix}/${facts['fqdn']}.key" }
   }
 
   class { 'nginx':

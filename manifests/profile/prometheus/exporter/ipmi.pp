@@ -39,7 +39,7 @@ class nebula::profile::prometheus::exporter::ipmi (
       Firewall <<| tag == "${facts['datacenter']}_prometheus_public_ipmi_exporter" |>>
     }
 
-    @@concat_fragment { "prometheus ipmi scrape config ${::networking['hostname']}":
+    @@concat_fragment { "prometheus ipmi scrape config ${facts['hostname']}":
       tag     => "${facts['datacenter']}_prometheus_ipmi_exporter",
       target  => '/etc/prometheus/ipmi.yml',
       order   => '02',
