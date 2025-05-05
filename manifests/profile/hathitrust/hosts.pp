@@ -23,7 +23,7 @@ class nebula::profile::hathitrust::hosts (
 
   host { $facts['hostname']:
     host_aliases => [$facts['fqdn']],
-    ip           => $facts['ip']
+    ip           => $facts['networking']['ip']
   }
 
   host { 'ip6-localhost':

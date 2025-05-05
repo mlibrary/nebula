@@ -17,7 +17,7 @@ class nebula::profile::fulcrum::base (
 
   host { $facts['hostname']:
     host_aliases => [$facts['fqdn']],
-    ip           => $facts['ip'],
+    ip           => $facts['networking']['ip'],
   }
 
   host { 'ip6-localhost':

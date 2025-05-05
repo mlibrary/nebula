@@ -24,7 +24,7 @@
 #     https_offload => 'false',
 #     datacenter    => $facts['datacenter'],
 #     hostname      => $facts['hostname'],
-#     ipaddress     => $facts['ip']
+#     ipaddress     => $facts['networking']['ip']
 #  }
 define nebula::haproxy::binding (
   String $service,

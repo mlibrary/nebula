@@ -8,7 +8,7 @@ class nebula::profile::kubernetes::destination_port::gelf_tcp {
   @@concat_fragment { "haproxy kubernetes gelf tcp ${facts['hostname']}":
     target  => '/etc/haproxy/services.d/gelf_tcp.cfg',
     order   => '02',
-    content => "  server ${facts['hostname']} ${facts['ip']}:32201 check\n",
+    content => "  server ${facts['hostname']} ${facts['networking']['ip']}:32201 check\n",
     tag     => "${cluster_name}_haproxy_kubernetes_gelf_tcp",
   }
 }

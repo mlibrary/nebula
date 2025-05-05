@@ -15,7 +15,7 @@ class nebula::role::webhost::htvm::prod {
     https_offload => false,
     datacenter    => $facts['datacenter'],
     hostname      => $facts['hostname'],
-    ipaddress     => $facts['ip']
+    ipaddress     => $facts['networking']['ip']
   }
 
   @nebula::taghosts::tag { 'prod': }

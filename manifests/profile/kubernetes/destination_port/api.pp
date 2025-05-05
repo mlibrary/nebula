@@ -8,7 +8,7 @@ class nebula::profile::kubernetes::destination_port::api {
   @@concat_fragment { "haproxy kubernetes api ${facts['hostname']}":
     target  => '/etc/haproxy/services.d/api.cfg',
     order   => '02',
-    content => "  server ${facts['hostname']} ${facts['ip']}:6443 check check-ssl verify none\n",
+    content => "  server ${facts['hostname']} ${facts['networking']['ip']}:6443 check check-ssl verify none\n",
     tag     => "${cluster_name}_haproxy_kubernetes_api",
   }
 }

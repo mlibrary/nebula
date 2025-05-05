@@ -12,6 +12,6 @@ class nebula::profile::quod::prod::haproxy {
     https_offload => true,
     datacenter    => $facts['datacenter'],
     hostname      => $facts['hostname'],
-    ipaddress     => $facts['ip'];
+    ipaddress     => $facts['networking']['ip'];
   }
 }

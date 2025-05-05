@@ -21,7 +21,7 @@ class nebula::profile::hathitrust::ingest_hosts (
 ) {
   host { $facts['hostname']:
     host_aliases => [$facts['fqdn']],
-    ip           => $facts['ip']
+    ip           => $facts['networking']['ip']
   }
 
   host { 'mysql-sdr':

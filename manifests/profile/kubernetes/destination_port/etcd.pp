@@ -8,7 +8,7 @@ class nebula::profile::kubernetes::destination_port::etcd {
   @@concat_fragment { "haproxy kubernetes etcd ${facts['hostname']}":
     target  => '/etc/haproxy/services.d/etcd.cfg',
     order   => '02',
-    content => "  server ${facts['hostname']} ${facts['ip']}:2379 check\n",
+    content => "  server ${facts['hostname']} ${facts['networking']['ip']}:2379 check\n",
     tag     => "${cluster_name}_haproxy_kubernetes_etcd",
   }
 

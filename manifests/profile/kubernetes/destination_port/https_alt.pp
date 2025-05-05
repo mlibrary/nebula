@@ -8,7 +8,7 @@ class nebula::profile::kubernetes::destination_port::https_alt {
   @@concat_fragment { "haproxy kubernetes https alt ${facts['hostname']}":
     target  => '/etc/haproxy/services.d/https_alt.cfg',
     order   => '02',
-    content => "  server ${facts['hostname']} ${facts['ip']}:31443 check\n",
+    content => "  server ${facts['hostname']} ${facts['networking']['ip']}:31443 check\n",
     tag     => "${cluster_name}_haproxy_kubernetes_https_alt",
   }
 }

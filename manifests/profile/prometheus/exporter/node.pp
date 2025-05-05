@@ -127,8 +127,8 @@ class nebula::profile::prometheus::exporter::node (
 
     default: {
       # If the public/private fact isn't working, fall back to assuming
-      # that the legacy `$facts['ip']` fact is public.
-      $all_public_addresses = [$facts['ip']]
+      # that the legacy `$facts['networking']['ip']` fact is public.
+      $all_public_addresses = [$facts['networking']['ip']]
       $all_private_addresses = []
     }
   }

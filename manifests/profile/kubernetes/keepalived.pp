@@ -27,7 +27,7 @@ class nebula::profile::kubernetes::keepalived (
   @@concat_fragment { "keepalived ${facts['hostname']}":
     target  => '/etc/keepalived/keepalived.conf',
     order   => '02',
-    content => "    ${facts['ip']}\n",
+    content => "    ${facts['networking']['ip']}\n",
     tag     => "${cluster_name}_keepalived",
   }
 

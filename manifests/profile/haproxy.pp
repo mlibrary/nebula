@@ -112,7 +112,7 @@ class nebula::profile::haproxy (
 
   @@concat_fragment { "keepalived node ip ${facts['hostname']}":
     target  => '/etc/keepalived/keepalived.conf',
-    content => "    ${facts['ip']}\n",
+    content => "    ${facts['networking']['ip']}\n",
     tag     => "keepalived-haproxy-ip-${facts['datacenter']}",
     order   => '02'
   }
@@ -137,7 +137,7 @@ class nebula::profile::haproxy (
   @@firewall { "200 HTTP: HAProxy ${facts['hostname']}":
     proto  => 'tcp',
     dport  => [80, 443],
-    source => $facts['ip'],
+    source => $facts['networking']['ip'],
     state  => 'NEW',
     jump   => 'accept',
     tag    => "${facts['datacenter']}_haproxy"

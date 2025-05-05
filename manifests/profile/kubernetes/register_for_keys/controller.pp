@@ -9,6 +9,6 @@ class nebula::profile::kubernetes::register_for_keys::controller {
     tag     => "${cluster_name}_pki_generation",
     target  => '/var/local/generate_pki.sh',
     order   => '02',
-    content => "KUBE_CONTROLLERS=(\"\${KUBE_CONTROLLERS[@]}\" \"${facts['hostname']}/${facts['ip']}\")\n",
+    content => "KUBE_CONTROLLERS=(\"\${KUBE_CONTROLLERS[@]}\" \"${facts['hostname']}/${facts['networking']['ip']}\")\n",
   }
 }

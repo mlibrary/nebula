@@ -25,7 +25,7 @@ class nebula::profile::networking::private (
   }
 
   if $real_interface {
-    $address = sprintf($address_template,split($facts['ip'],'\.')[-1])
+    $address = sprintf($address_template,split($facts['networking']['ip'],'\.')[-1])
 
     file { '/etc/network/interfaces.d/private':
       content      => template('nebula/profile/networking/private.erb'),

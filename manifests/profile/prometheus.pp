@@ -187,7 +187,7 @@ class nebula::profile::prometheus (
     }
 
     default: {
-      $all_public_addresses = [$facts['ip']]
+      $all_public_addresses = [$facts['networking']['ip']]
       $all_private_addresses = []
     }
   }
@@ -258,7 +258,7 @@ class nebula::profile::prometheus (
     tag    => "${facts['datacenter']}_prometheus_haproxy_exporter",
     proto  => 'tcp',
     dport  => 9101,
-    source => $facts['ip'],
+    source => $facts['networking']['ip'],
     state  => 'NEW',
     jump   => 'accept',
   }
@@ -267,7 +267,7 @@ class nebula::profile::prometheus (
     tag    => "${facts['datacenter']}_prometheus_mysql_exporter",
     proto  => 'tcp',
     dport  => 9104,
-    source => $facts['ip'],
+    source => $facts['networking']['ip'],
     state  => 'NEW',
     jump   => 'accept',
   }

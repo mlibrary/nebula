@@ -36,7 +36,7 @@ define nebula::unison::client (
   @@firewall { "200 Unison: ${title} ${facts['hostname']}":
     proto  => 'tcp',
     dport  => [$port],
-    source => $facts['ip'],
+    source => $facts['networking']['ip'],
     state  => 'NEW',
     jump   => 'accept',
     tag    => "unison-client-${title}"

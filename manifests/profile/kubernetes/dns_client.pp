@@ -8,7 +8,7 @@ class nebula::profile::kubernetes::dns_client {
   $private_domain = $cluster['private_domain']
   $router_address = $cluster['router_address']
 
-  @@concat_fragment { "/etc/hosts ipv4 ${facts['ip']}":
+  @@concat_fragment { "/etc/hosts ipv4 ${facts['networking']['ip']}":
     tag     => "${cluster_name}_etc_hosts_ip4_hostname",
     target  => '/etc/hosts',
     order   => '04',

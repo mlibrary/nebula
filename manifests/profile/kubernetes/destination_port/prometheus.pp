@@ -8,7 +8,7 @@ class nebula::profile::kubernetes::destination_port::prometheus {
   @@concat_fragment { "haproxy kubernetes prometheus ${facts['hostname']}":
     target  => '/etc/haproxy/services.d/prometheus.cfg',
     order   => '02',
-    content => "  server ${facts['hostname']} ${facts['ip']}:443 check send-proxy\n",
+    content => "  server ${facts['hostname']} ${facts['networking']['ip']}:443 check send-proxy\n",
     tag     => "${cluster_name}_haproxy_kubernetes_prometheus",
   }
 }

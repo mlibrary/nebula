@@ -10,7 +10,7 @@ class nebula::profile::www_lib::register_for_load_balancing (
       service       => $service,
       datacenter    => $facts['datacenter'],
       hostname      => $facts['hostname'],
-      ipaddress     => $facts['ip'],
+      ipaddress     => $facts['networking']['ip'],
       https_offload => false,
     }
   }
