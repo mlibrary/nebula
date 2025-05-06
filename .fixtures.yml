@@ -20,25 +20,25 @@ fixtures:
     rbenv:               {"repo": "jdowning/rbenv",             "ref": "3.1.0" }
     archive:             {"repo": "puppet/archive",             "ref": "7.1.0" }
     kmod:                {"repo": "puppet/kmod",                "ref": "4.1.0" }
-    letsencrypt:         {"repo": "puppet/letsencrypt",         "ref": "11.1.0"}
+    letsencrypt:         {"repo": "puppet/letsencrypt",         "ref": "12.0.0"}
     logrotate:           {"repo": "puppet/logrotate",           "ref": "8.0.0" }
     nginx:               {"repo": "puppet/nginx",               "ref": "6.0.1" }
-    php:                 {"repo": "puppet/php",                 "ref": "10.2.0"}
-    systemd:             {"repo": "puppet/systemd",             "ref": "8.1.0" }
+    php:                 {"repo": "puppet/php",                 "ref": "11.0.0"}
+    systemd:             {"repo": "puppet/systemd",             "ref": "8.2.0" }
     unattended_upgrades: {"repo": "puppet/unattended_upgrades", "ref": "8.2.0" }
-    apt:                 {"repo": "puppetlabs/apt",             "ref": "9.4.0" } # apt 10 blocked on php, docker
+    apt:                 {"repo": "puppetlabs/apt",             "ref": "10.0.1"}
     augeas_core:         {"repo": "puppetlabs/augeas_core",     "ref": "1.5.0" }
     concat:              {"repo": "puppetlabs/concat",          "ref": "9.1.0" }
     cron_core:           {"repo": "puppetlabs/cron_core",       "ref": "1.3.0" }
-    docker:              {"repo": "puppetlabs/docker",          "ref": "10.1.0"}
-    firewall:            {"repo": "puppetlabs/firewall",        "ref": "8.1.3" }
+    docker:              {"repo": "puppetlabs/docker",          "ref": "10.3.0"}
+    firewall:            {"repo": "puppetlabs/firewall",        "ref": "8.1.5" }
     host_core:           {"repo": "puppetlabs/host_core",       "ref": "1.3.0" }
     inifile:             {"repo": "puppetlabs/inifile",         "ref": "6.2.0" }
-    lvm:                 {"repo": "puppetlabs/lvm",             "ref": "3.0.0" }
+    lvm:                 {"repo": "puppetlabs/lvm",             "ref": "3.0.1" }
     mount_core:          {"repo": "puppetlabs/mount_core",      "ref": "1.3.0" }
     mysql:               {"repo": "puppetlabs/mysql",           "ref": "16.2.0"}
     reboot:              {"repo": "puppetlabs/reboot",          "ref": "5.1.0" }
-    sshkeys_core:        {"repo": "puppetlabs/sshkeys_core",    "ref": "2.5.0" }
+    sshkeys_core:        {"repo": "puppetlabs/sshkeys_core",    "ref": "2.5.1" }
     stdlib:              {"repo": "puppetlabs/stdlib",          "ref": "9.7.0" }
-    vcsrepo:             {"repo": "puppetlabs/vcsrepo",         "ref": "6.1.0" }
+    vcsrepo:             {"repo": "puppetlabs/vcsrepo",         "ref": "7.0.0" }
     debconf:             {"repo": "stm/debconf",                "ref": "6.1.0" }
