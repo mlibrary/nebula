@@ -12,8 +12,7 @@ global
   daemon
   ca-base /etc/ssl/certs
   crt-base /etc/ssl/private
-  # 2018-08-10; tuning for our level of usage
-  maxconn 16384
+  maxconn 32768
 
   # adapted from https://ssl-config.mozilla.org/#server=haproxy
   ssl-default-bind-curves X25519:prime256v1:secp384r1
