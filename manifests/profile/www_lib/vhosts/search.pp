@@ -14,7 +14,8 @@ class nebula::profile::www_lib::vhosts::search (
   String $ssl_cn = 'search.lib.umich.edu',
   String $docroot = '/www/search/current/public'
 ) {
-  $servername = "${prefix}search.${domain}"
+  $servername    = "${prefix}search.${domain}"
+  $serveraliases = ["test.search.${domain}"]
 
   file { "${apache::params::logroot}/search":
     ensure => 'directory',
@@ -22,6 +23,7 @@ class nebula::profile::www_lib::vhosts::search (
 
   nebula::apache::www_lib_vhost { 'search-http':
     servername     => $servername,
+    serveraliases  => $serveraliases,
     docroot        => false,
     logging_prefix => 'search/',
     usertrack      => true,
@@ -43,6 +45,7 @@ class nebula::profile::www_lib::vhosts::search (
 
   nebula::apache::www_lib_vhost { 'search-https':
     servername                  => $servername,
+    serveraliases               => $serveraliases,
     docroot                     => $docroot,
     logging_prefix              => 'search/',
 
