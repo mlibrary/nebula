@@ -44,7 +44,7 @@ groups:
     expr: 'increase(node_vmstat_oom_kill[5m]) > 0 and max_over_time(node_memory_MemAvailable_bytes[5m]) / min_over_time(node_memory_MemAvailable_bytes[5m]) > 2'
     for: 0m
     labels:
-      severity: ticket
+      severity: info
   - alert: HostUnderMemoryPressure
     annotations:
       summary: 'Linux node {{$labels.hostname}} is under memory pressure'
