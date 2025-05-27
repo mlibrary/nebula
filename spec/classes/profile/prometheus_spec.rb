@@ -125,18 +125,30 @@ describe "nebula::profile::prometheus" do
       it do
         expect(subject).to contain_file("/etc/prometheus/tls/ca.crt")
           .with_source("puppet:///ssl-certs/prometheus-pki/ca.crt")
+          .with_mode("0644")
+          .with_owner("nobody")
+          .with_group("nogroup")
+          .that_notifies("Docker::Run[prometheus]")
           .that_requires("File[/etc/prometheus/tls]")
       end
 
       it do
         expect(subject).to contain_file("/etc/prometheus/tls/client.crt")
           .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:fqdn]}.crt")
+          .with_mode("0644")
+          .with_owner("nobody")
+          .with_group("nogroup")
+          .that_notifies("Docker::Run[prometheus]")
           .that_requires("File[/etc/prometheus/tls]")
       end
 
       it do
         expect(subject).to contain_file("/etc/prometheus/tls/client.key")
           .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:fqdn]}.key")
+          .with_mode("0600")
+          .with_owner("nobody")
+          .with_group("nogroup")
+          .that_notifies("Docker::Run[prometheus]")
           .that_requires("File[/etc/prometheus/tls]")
       end
 
