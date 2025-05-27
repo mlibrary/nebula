@@ -4,6 +4,7 @@
 
 # Prometheus for hardware monitoring
 class nebula::role::prometheus () {
+  @nebula::taghosts::tag { 'prom': }
   include nebula::role::minimal_docker
   include nebula::profile::ntp
   include nebula::profile::prometheus
