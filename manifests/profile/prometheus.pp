@@ -123,14 +123,26 @@ class nebula::profile::prometheus (
 
   file { '/etc/prometheus/tls/ca.crt':
     source => 'puppet:///ssl-certs/prometheus-pki/ca.crt',
+    mode   => '0644',
+    owner  => 'nobody',
+    group  => 'nogroup',
+    notify => Docker::Run['prometheus'],
   }
 
   file { '/etc/prometheus/tls/client.crt':
     source => "puppet:///ssl-certs/prometheus-pki/${::networking['fqdn']}.crt",
+    mode   => '0644',
+    owner  => 'nobody',
+    group  => 'nogroup',
+    notify => Docker::Run['prometheus'],
   }
 
   file { '/etc/prometheus/tls/client.key':
     source => "puppet:///ssl-certs/prometheus-pki/${::networking['fqdn']}.key",
+    mode   => '0600',
+    owner  => 'nobody',
+    group  => 'nogroup',
+    notify => Docker::Run['prometheus'],
   }
 
   file { '/opt/prometheus':
