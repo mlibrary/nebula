@@ -9,7 +9,9 @@ class nebula::profile::fulcrum::app (
   String $private_address_template = '192.168.0.%s',
   String $image_magick_secret = 'secret',
 ) {
-  $jdk_version = lookup('nebula::jdk_version')
+  # let's just try installing openjdk 11 headless
+  # openjdk 8 isn't available and there is no temurin headless
+  $jdk_version = '11'
 
   class { 'nebula::profile::networking::private':
     address_template => $private_address_template

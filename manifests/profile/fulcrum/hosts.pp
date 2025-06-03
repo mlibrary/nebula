@@ -6,6 +6,7 @@
 class nebula::profile::fulcrum::hosts (
   $fedora = '127.0.0.1',
   $mysql = '127.0.0.1',
+  $keycard = '127.0.0.1',
   $redis = '127.0.0.1',
   $solr = '127.0.0.1',
 ) {
@@ -15,6 +16,10 @@ class nebula::profile::fulcrum::hosts (
 
   host { 'mysql':
     ip => $mysql,
+  }
+
+  host { 'keycard':
+    ip => $keycard,
   }
 
   host { 'redis':
