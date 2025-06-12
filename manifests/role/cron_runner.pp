@@ -15,6 +15,6 @@
 class nebula::role::cron_runner {
   include nebula::role::umich
   include nebula::profile::ruby
-  include nebula::profile::nodejs
+  include nebula::profile::apt::nodejs
   include nebula::profile::cron_runner
 }
