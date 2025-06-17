@@ -7,7 +7,7 @@ class nebula::profile::github_pull_account (
   Integer $git_gid = 100,
   String $git_homedir = '/var/lib/autogit',
 ) {
-  package { 'git': }
+  ensure_packages(['git'])
 
   user { $git_username:
     ensure     => 'present',

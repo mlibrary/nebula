@@ -1,0 +1,8 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - search_solr_monitor
+  - default
+:yaml:
+  :datadir: 'spec/fixtures/hiera'
