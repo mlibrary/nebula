@@ -82,10 +82,14 @@ class nebula::profile::apt (
       }
     }
 
-    apt::source { 'puppet':
-      ensure   => absent,
-      location => 'http://apt.puppetlabs.com',
+    apt::source { 'openvox':
+      location => 'https://apt.voxpupuli.org',
+      release  => "${facts['os']['name'].downcase()}${facts['os']['release']['major']}",
       repos    => $puppet_repo,
+      key      => {
+        name   => 'openvox.asc',
+        source => 'puppet:///modules/nebula/apt/keyrings/openvox.asc',
+      },
     }
 
     # replaced by /etc/apt/keyrings/puppetlabs.gpg, but still automatically created on new vms
