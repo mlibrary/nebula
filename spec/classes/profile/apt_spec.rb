@@ -68,16 +68,6 @@ describe "nebula::profile::apt" do
         end
 
         it do
-          # puppet apt repo is removed, but this is expected to be temporary
-          # until a replacement repo is ready
-          expect(subject).to contain_apt__source("puppet").with(
-            ensure: "absent",
-            location: "http://apt.puppetlabs.com",
-            repos: "puppet5"
-          )
-        end
-
-        it do
           expect(subject).to contain_file("/etc/apt/apt.conf.d/99force-ipv4")
             .with_content(%r{^Acquire::ForceIPv4 "true";$})
         end
@@ -94,7 +84,7 @@ describe "nebula::profile::apt" do
         context "when given a puppet_repo of PC1" do
           let(:params) { {puppet_repo: "PC1"} }
 
-          it { is_expected.to contain_apt__source("puppet").with_repos("PC1") }
+          it { is_expected.to contain_apt__source("openvox").with_repos("PC1") }
         end
       end
 
@@ -218,6 +208,25 @@ describe "nebula::profile::apt" do
               repos: "non-free"
             )
           end
+        end
+      end
+
+      case os
+      when /^debian-/
+        it "uses correct openvox release for debian" do
+          is_expected.to contain_apt__source("openvox").with(
+            location: "https://apt.voxpupuli.org",
+            repos: "openvox5",
+            release: "debian#{facts[:os]["release"]["major"]}"
+          )
+        end
+      when /^ubuntu-/
+        it "uses correct openvox release for ubuntu" do
+          is_expected.to contain_apt__source("openvox").with(
+            location: "https://apt.voxpupuli.org",
+            repos: "openvox5",
+            release: "ubuntu#{facts[:os]["release"]["major"]}"
+          )
         end
       end
     end
