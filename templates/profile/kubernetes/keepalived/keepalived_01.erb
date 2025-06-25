@@ -28,11 +28,11 @@ vrrp_instance haproxy {
   virtual_router_id 51
   virtual_ipaddress {
     <%= @public_address %>
-    <%= @router_address %> dev ens4
-    <%= @etcd_address %> dev ens4
-    <%= @kube_api_address %> dev ens4
+    <%= @router_address %> dev <%= @private_network_interface %>
+    <%= @etcd_address %> dev <%= @private_network_interface %>
+    <%= @kube_api_address %> dev <%= @private_network_interface %>
 <% unless @private_address.nil? -%>
-    <%= @private_address %> dev ens4
+    <%= @private_address %> dev <%= @private_network_interface %>
 <% end -%>
   }
 

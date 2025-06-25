@@ -4,6 +4,7 @@
 
 class nebula::profile::kubernetes::keepalived (
   Boolean $master = false,
+  String $private_network_interface = 'ens4',
 ) {
   include nebula::profile::networking::sysctl
 

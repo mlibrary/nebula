@@ -83,6 +83,19 @@ describe "nebula::profile::kubernetes::keepalived" do
           end
         end
 
+        context "when private_network_interface is enz5f9s3" do
+          let(:params) { {private_network_interface: "enz5f9s3"} }
+
+          [
+            %r{virtual_ipaddress \{[^\}]*172\.16\.0\.1 dev enz5f9s3[^\}]*\}}m,
+            %r{virtual_ipaddress \{[^\}]*172\.16\.0\.6 dev enz5f9s3[^\}]*\}}m,
+            %r{virtual_ipaddress \{[^\}]*172\.16\.0\.7 dev enz5f9s3[^\}]*\}}m,
+            %r{virtual_ipaddress \{[^\}]*192\.168\.123\.234 dev enz5f9s3[^\}]*\}}m
+          ].each do |content|
+            it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(content) }
+          end
+        end
+
         context "when master is true" do
           let(:params) { {master: true} }
 
