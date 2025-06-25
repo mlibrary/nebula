@@ -5,9 +5,7 @@
 # @example
 #   include nebula::role::hathitrust::solr::catalog
 class nebula::role::hathitrust::solr::catalog {
-  class { 'nebula::role::hathitrust':
-    afs => false,
-  }
+  include nebula::role::hathitrust
 
   include nebula::profile::hathitrust::solr6::catalog
 }

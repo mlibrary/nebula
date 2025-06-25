@@ -56,9 +56,9 @@ describe "nebula::role::webhost::htvm" do
 
       it { is_expected.to contain_class("nebula::profile::networking::firewall") }
 
-      it { is_expected.to contain_class("nebula::profile::krb5") }
-      it { is_expected.to contain_class("nebula::profile::afs") }
-      it { is_expected.to contain_class("nebula::profile::users") }
+      it { is_expected.not_to contain_class("nebula::profile::krb5") }
+      it { is_expected.not_to contain_class("nebula::profile::afs") }
+      it { is_expected.not_to contain_class("nebula::profile::users") }
 
       if os == "debian-11-x86_64"
         it { is_expected.not_to contain_package("php5-common") }

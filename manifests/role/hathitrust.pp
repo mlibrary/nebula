@@ -11,7 +11,6 @@
 #   include nebula::profile::hathitrust::hosts
 class nebula::role::hathitrust (
   String $internal_routing = '',
-  Boolean $afs = true,
 ) {
   class { 'nebula::role::minimum':
     internal_routing => $internal_routing,
@@ -19,14 +18,10 @@ class nebula::role::hathitrust (
 
   if $facts['os']['family'] == 'Debian' {
     include nebula::profile::krb5
-    if $afs {
-      include nebula::profile::afs
-    }
     include nebula::profile::duo
     include nebula::profile::exim4
     include nebula::profile::grub
     include nebula::profile::ntp
-    include nebula::profile::users
     class { 'nebula::profile::networking':
       bridge => false,
     }

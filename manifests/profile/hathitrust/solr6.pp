@@ -24,7 +24,6 @@ class nebula::profile::hathitrust::solr6 (
 
   include nebula::profile::dns::smartconnect;
 
-  include nebula::profile::users
   realize User['solr']
 
   # parent dir structure for solr mounts, not all used by every use case
