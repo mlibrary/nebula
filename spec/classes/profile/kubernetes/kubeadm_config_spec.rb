@@ -16,7 +16,7 @@ describe "nebula::profile::kubernetes::kubeadm_config" do
         it { is_expected.to compile }
 
         [
-          %r{^apiVersion: 'kubeadm\.k8s\.io/v1beta2'$},
+          %r{^apiVersion: 'kubeadm\.k8s\.io/v1beta4'$},
           %r{^kind: 'ClusterConfiguration'$},
           %r{^kubernetesVersion: '1\.14\.2'$},
           %r{^controlPlaneEndpoint: 'kube-api\.first\.cluster:6443'$},
