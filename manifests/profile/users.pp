@@ -9,5 +9,5 @@
 # @example
 #   include nebula::profile::users
 class nebula::profile::users {
-  nebula::usergroup { 'sudo': }
+  # nebula::usergroup { 'sudo': }
 }
