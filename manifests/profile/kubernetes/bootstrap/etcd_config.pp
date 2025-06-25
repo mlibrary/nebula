@@ -9,7 +9,8 @@ class nebula::profile::kubernetes::bootstrap::etcd_config {
 
   $router_address = $cluster['router_address']
   $private_domain = $cluster['private_domain']
-  $initial_cluster = $cluster['etcd_initial_cluster']
+  $initial_cluster = pick($cluster['etcd_initial_cluster'], 'none')
+  $etcd_image = pick($cluster['etcd_image'], 'none')
 
   file { '/etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf':
     content => template('nebula/profile/kubernetes/bootstrap/etcd/systemd.conf.erb'),
@@ -28,7 +29,7 @@ class nebula::profile::kubernetes::bootstrap::etcd_config {
     ensure => 'directory',
   }
 
-  if $initial_cluster {
+  if $initial_cluster != 'none' and $etcd_image != 'none' {
     file { '/tmp/etcd.yaml':
       ensure  => 'file',
       content => template('nebula/profile/kubernetes/etcd/etcd.yaml.erb'),
