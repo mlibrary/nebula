@@ -2,3 +2,6 @@
 
 fs.inotify.max_user_instances = 8192
 fs.inotify.max_user_watches = 524288
+
+# Memory map limit, raise from default of 65530 for OpenSearch/Elasticsearch
+vm.max_map_count = 524288
