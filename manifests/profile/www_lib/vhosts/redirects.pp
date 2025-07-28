@@ -41,8 +41,10 @@ class nebula::profile::www_lib::vhosts::redirects (
   }
 
   nebula::apache::redirect_vhost_https { 'digitalculture.org':
+    target        => 'https://www.press.umich.edu',
     ssl_cn        => 'digitalculture.org',
     serveraliases => [
+      'www.digitalculture.org',
       'www.digitalculturebooks.com',
       'digitalculturebooks.com',
       'www.digitalculturebooks.org',
@@ -54,8 +56,10 @@ class nebula::profile::www_lib::vhosts::redirects (
   }
 
   nebula::apache::redirect_vhost_https { 'theater-historiography.org':
+    target        => 'https://www.press.umich.edu',
     ssl_cn        => 'theater-historiography.org',
     serveraliases => [
+      'www.theater-historiography.org',
       'www.theater-historiography.com',
       'theater-historiography.com',
       'www.theatre-historiography.com',

@@ -112,10 +112,22 @@ describe "nebula::role::webhost::www_lib_vm" do
       end
 
       it do
+        expect(subject).to contain_apache__vhost("digitalculture.org-redirect-https")
+          .with_ssl_cert("/etc/ssl/certs/digitalculture.org.crt")
+          .with_redirect_dest("https://www.press.umich.edu")
+          .with_serveraliases(%w[www.digitalculture.org
+            www.digitalculturebooks.com
+            digitalculturebooks.com
+            www.digitalculturebooks.org
+            digitalculturebooks.org])
+      end
+
+      it do
         expect(subject).to contain_apache__vhost("theater-historiography.org-redirect-https")
           .with_ssl_cert("/etc/ssl/certs/theater-historiography.org.crt")
-          .with_redirect_dest("https://www.theater-historiography.org/")
-          .with_serveraliases(%w[www.theater-historiography.com
+          .with_redirect_dest("https://www.press.umich.edu")
+          .with_serveraliases(%w[www.theater-historiography.org
+            www.theater-historiography.com
             theater-historiography.com
             www.theatre-historiography.com
             theatre-historiography.com
@@ -148,40 +160,15 @@ describe "nebula::role::webhost::www_lib_vm" do
       end
 
       it do
-        expect(subject).to contain_apache__vhost("www.publishing-http")
+        expect(subject).to contain_apache__vhost("maps.publishing-http")
       end
 
       it do
         # SSL offloading
-        expect(subject).to contain_apache__vhost("www.publishing-https")
-          .with_servername("https://www.publishing.umich.edu")
+        expect(subject).to contain_apache__vhost("maps.publishing-https")
+          .with_servername("https://maps.publishing.umich.edu")
           .with_ssl(false)
           .with_port(443)
-      end
-
-      it do
-        # Name-based multi-site Wordpress
-        expect(subject).to contain_apache__vhost("publishing-partners-http")
-          .with_servername("blog.press.umich.edu")
-          .with_serveraliases([
-            "www.theater-historiography.org",
-            "www.digitalculture.org",
-            "www.digitalrhetoriccollaborative.org"
-          ])
-      end
-
-      it do
-        # SSL offloading
-        # Name-based multi-site Wordpress
-        expect(subject).to contain_apache__vhost("publishing-partners-https")
-          .with_servername("https://blog.press.umich.edu")
-          .with_ssl(false)
-          .with_port(443)
-          .with_serveraliases([
-            "www.theater-historiography.org",
-            "www.digitalculture.org",
-            "www.digitalrhetoriccollaborative.org"
-          ])
       end
 
       it do
