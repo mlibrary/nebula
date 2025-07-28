@@ -19,5 +19,7 @@ class nebula::role::aleph::marcedit {
   include nebula::profile::aleph::perl
   include nebula::profile::ruby
 
+  ensure_packages(['rclone'])
+
   @nebula::taghosts::tag { 'marcedit': }
 }
