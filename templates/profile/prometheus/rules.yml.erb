@@ -86,6 +86,8 @@ groups:
     expr: >
       predict_linear(
         node_filesystem_avail_bytes{mountpoint!="/htdataden",
+                                    device!~"ulib-archive.dataden.arc-ts.umich.edu:/gpfs/locker0/ces/dataden-aa/g/ulib-archive.*",
+                                    device!~"ulib-deepbluedata.dataden.arc-ts.umich.edu:/gpfs/locker0/ces/dataden-aa/g/ulib-deepbluedata.*",
                                     fstype=~"nfs|cifs"}[1d],
         4 * 60 * 60 * 24
       ) < 0
@@ -99,7 +101,8 @@ groups:
       predict_linear(
         node_filesystem_avail_bytes{mountpoint!="/htdataden",
                                     mountpoint!~"prep",
-                                    device!="ulib-deepbluedata.dataden.arc-ts.umich.edu:/gpfs/locker0/ces/dataden-aa/g/ulib-deepbluedata",
+                                    device!~"ulib-archive.dataden.arc-ts.umich.edu:/gpfs/locker0/ces/dataden-aa/g/ulib-archive.*",
+                                    device!~"ulib-deepbluedata.dataden.arc-ts.umich.edu:/gpfs/locker0/ces/dataden-aa/g/ulib-deepbluedata.*",
                                     fstype!="afs",
                                     fstype!="tmpfs",
                                     device!="rootfs"}[10m],
@@ -187,6 +190,24 @@ groups:
     for: 1m
     labels:
       severity: page
+  - alert: LITDataDenIsFull
+    annotations:
+      summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+    expr: >
+      (
+        (
+          avg_over_time(
+            node_filesystem_size_bytes{device=~"ulib-(deepbluedata|archive).dataden.arc-ts.umich.edu:/gpfs/locker0/ces/dataden-aa/g/ulib-(deepbluedata|archive).*"}[1m]
+          ) - avg_over_time(
+            node_filesystem_avail_bytes[1m]
+          )
+        ) / avg_over_time(
+          node_filesystem_size_bytes[1m]
+        )
+      ) > 0.99
+    for: 30m
+    labels:
+      severity: ticket
   - alert: DiskRunningOutOfINodes
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is running out of inodes.'
@@ -258,6 +279,24 @@ groups:
     annotations:
       summary: 'deepbluedata-prod ({{$labels.hostname}}:{{$labels.mountpoint}}) has less than 3T of free space'
     expr: 'node_filesystem_avail_bytes{device="deepbluedata-prod.value.storage.umich.edu:/deepbluedata-prod"} < 3 * 1024 * 1024 * 1024 * 1024'
+    for: 1d
+    labels:
+      severity: ticket
+
+  # For quod and Deep Blue Docs 1T free is sufficient, given the rate at which content is typically ingested. A 1d alert threshold is also useful in 
+  # case of transient spikes from aptrust prep or similar.
+  - alert: QuodProdStoragePressure
+    annotations:
+      summary: 'quodprod ({{$labels.hostname}}:{{$labels.mountpoint}}) has less than 1T of free space'
+    expr: 'node_filesystem_avail_bytes{device="quodprod.value.storage.umich.edu:/quodprod"} < 1024 * 1024 * 1024 * 1024'
+    for: 1d
+    labels:
+      severity: ticket
+
+  - alert: DeepBlueDocsAssetStoragePressure
+    annotations:
+      summary: 'deepblue-assetstore ({{$labels.hostname}}:{{$labels.mountpoint}}) has less than 1T of free space'
+    expr: 'node_filesystem_avail_bytes{device="//ulib-deepblue-assetstore.m.storage.umich.edu/ulib-deepblue-assetstore"} < 1024 * 1024 * 1024 * 1024'
     for: 1d
     labels:
       severity: ticket
