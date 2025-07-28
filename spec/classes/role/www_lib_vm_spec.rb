@@ -185,18 +185,6 @@ describe "nebula::role::webhost::www_lib_vm" do
       end
 
       it do
-        expect(subject).to contain_apache__vhost("press-http")
-          .with_servername("www.press.umich.edu")
-      end
-
-      it do
-        expect(subject).to contain_apache__vhost("press-https")
-          .with_servername("www.press.umich.edu")
-          .with_ssl_cert("/etc/ssl/certs/www.press.umich.edu.crt")
-          .with_setenv(["HTTPS on", "PERL_USE_UNSAFE_INC 1"])
-      end
-
-      it do
         expect(subject).to contain_apache__vhost("apps.lib-https")
           .with(servername: "apps.lib.umich.edu",
             port: 443,
@@ -228,7 +216,6 @@ describe "nebula::role::webhost::www_lib_vm" do
 
       it { is_expected.to contain_cron("purge apache access logs 1/2") }
       it { is_expected.to contain_cron("purge apache access logs 2/2") }
-      it { is_expected.to contain_cron("reload fcgi for Press site nightly") }
       it { is_expected.to contain_cron("shibd existence check") }
       it { is_expected.to contain_cron("staff.lib parse") }
       it { is_expected.to contain_cron("Proactively scan the log files for suspcious activity") }
