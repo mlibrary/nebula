@@ -28,7 +28,7 @@ spec:
     - --peer-trusted-ca-file=/etc/kubernetes/pki/ca.crt
     - --snapshot-count=10000
     - --trusted-ca-file=/etc/kubernetes/pki/ca.crt
-    - --listen-metrics-urls=http://127.0.0.1:2381
+    - --listen-metrics-urls=http://127.0.0.1:2381,http://<%= @networking['ip'] %>:2381
     image: '<%= @etcd_image %>'
     imagePullPolicy: IfNotPresent
     livenessProbe:
