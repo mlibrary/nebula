@@ -75,7 +75,6 @@ class nebula::profile::www_lib::perl {
     'libmath-bigint-perl',
     'libmouse-perl',
     'libmro-compat-perl',
-    'libmojolicious-perl',
     'libnet-daemon-perl',
     'libnet-http-perl',
     'libnet-ldap-perl',

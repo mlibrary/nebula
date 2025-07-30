@@ -60,7 +60,7 @@ class nebula::profile::www_lib::vhosts::midaily (
       },
       {
         comment      => 'Reverse proxy application to app hostname and port',
-        rewrite_cond => '%{REQUEST_URI} !^/openid-connect',
+        rewrite_cond => ['%{ENV:badrobot} !(^true$)', '%{REQUEST_URI} !^(/openid-connect)'],
         rewrite_rule => '^(/.*)$ http://app-midaily-production:30500$1 [P]',
       },
     ],

@@ -34,23 +34,22 @@ class nebula::profile::www_lib::apache::misc (
       'deepblue.lib.umich.edu',
       'developingwritersbook.com',
       'digital.bentley.umich.edu',
+      'digitalculture.org',
       'heartofdarknessarchive.org',
-      'open.umich.edu',
+      'maps.publishing.umich.edu',
       'michiganelt.org',
       'med.lib.umich.edu',
+      'open.umich.edu',
       'staff.lib.umich.edu',
       'search.lib.umich.edu',
-      'digitalculture.org',
-      'www.lib.umich.edu',
-      'www.press.umich.edu',
-      'www.publishing.umich.edu',
       'theater-historiography.org',
+      'www.lib.umich.edu',
     ]:
   }
   # depends on ssl_keypairs above (or delcared in includes like apache::fulcrum)
   include nebula::profile::www_lib::vhosts::redirects
 
-  $vhost_prefix = 'nebula::profile::www_lib::vhosts' ['default','www_lib','apps_lib','staff_lib','datamart','deepblue', 'openmich', 'mgetit', 'press', 'search'].each |$vhost| {
+  $vhost_prefix = 'nebula::profile::www_lib::vhosts' ['default','www_lib','apps_lib','staff_lib','datamart','deepblue', 'openmich', 'mgetit', 'search'].each |$vhost| {
     class { "nebula::profile::www_lib::vhosts::${vhost}":
       prefix => $prefix,
       domain => $domain,

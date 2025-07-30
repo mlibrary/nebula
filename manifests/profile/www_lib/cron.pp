@@ -52,13 +52,6 @@ class nebula::profile::www_lib::cron (
       command => '/usr/bin/find /var/log/apache2 -type f -mtime +2  -name "*log*" ! -name "*log*gz" -exec /usr/bin/pigz {} \; > /dev/null 2>&1',
       require => Package['pigz'],
     ;
-
-    'reload fcgi for Press site nightly':
-      weekday => '1-6',
-      hour    => 3,
-      minute  => 0,
-      command => '/bin/systemctl restart press',
-    ;
   }
 
   ensure_packages(['pigz'])
