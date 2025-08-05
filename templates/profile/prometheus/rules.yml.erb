@@ -41,6 +41,7 @@ groups:
   - alert: HostOomKillDetected
     annotations:
       summary: 'Linux node {{$labels.hostname}} OOM-killed a process'
+      dashboard: 'https://grafana.lib.umich.edu/d/cefqrnhyq4tfkf/server-resources?var-hostname={{$labels.hostname}}'
     expr: 'increase(node_vmstat_oom_kill[5m]) > 0 and max_over_time(node_memory_MemAvailable_bytes[5m]) / min_over_time(node_memory_MemAvailable_bytes[5m]) > 2'
     for: 0m
     labels:
@@ -48,7 +49,8 @@ groups:
   - alert: HostUnderMemoryPressure
     annotations:
       summary: 'Linux node {{$labels.hostname}} is under memory pressure'
-    expr: 'rate(node_vmstat_pgmajfault[1m]) > 1000'
+      dashboard: 'https://grafana.lib.umich.edu/d/cefqrnhyq4tfkf/server-resources?var-hostname={{$labels.hostname}}'
+    expr: 'rate(node_vmstat_pgmajfault[1m]) > 1000 and node_memory_MemAvailable_bytes < 50 * 1024 * 1024 * 1024'
     for: 2m
     labels:
       severity: info
@@ -83,6 +85,7 @@ groups:
   - alert: DiskSlowlyFillingUp
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} will fill up in a few days.'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       predict_linear(
         node_filesystem_avail_bytes{mountpoint!="/htdataden",
@@ -97,6 +100,7 @@ groups:
   - alert: DiskAboutToFillUp
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is filling up fast.'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       predict_linear(
         node_filesystem_avail_bytes{mountpoint!="/htdataden",
@@ -114,6 +118,7 @@ groups:
   - alert: DiskPressure
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -132,6 +137,7 @@ groups:
   - alert: DiskFull
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -150,6 +156,7 @@ groups:
   - alert: PrepDiskPressure
     annotations:
       summary: 'Prep filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 98% full.'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -168,6 +175,7 @@ groups:
   - alert: HTDataDenIsFull
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -193,6 +201,7 @@ groups:
   - alert: LITDataDenIsFull
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -211,6 +220,7 @@ groups:
   - alert: DiskRunningOutOfINodes
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is running out of inodes.'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       node_filesystem_files_free{fstype!="cifs",
                                  fstype!="vfat",
