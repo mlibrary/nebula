@@ -21,6 +21,7 @@ class nebula::profile::base (
   String  $timezone,
 ) {
   service { 'puppet':
+    ensure => 'running',
     enable => true,
   }
 

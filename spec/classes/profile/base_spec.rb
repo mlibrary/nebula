@@ -15,7 +15,7 @@ describe "nebula::profile::base" do
       let(:facts) { os_facts }
       let(:fqdn) { facts[:fqdn] }
 
-      it { is_expected.to contain_service("puppet").without_ensure }
+      it { is_expected.to contain_service("puppet").with_ensure("running") }
       it { is_expected.to contain_service("puppet").with_enable(true) }
 
       case os
