@@ -12,7 +12,7 @@ groups:
   - alert: PuppetBehind
     annotations:
       summary: 'Node {{$labels.host | reReplaceAll "\\.umdl\\.umich\\.edu" ""}} hasn''t recently synced with puppet.'
-      dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
+      dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host | urlquery}}'
     expr: 'puppet_report{environment="production",host!="ht-web-preview.umdl.umich.edu"} < (time() - (30 * 60))'
     for: 4h
     labels:
@@ -20,7 +20,7 @@ groups:
   - alert: PuppetResourcesFailing
     annotations:
       summary: 'Node {{$labels.host | reReplaceAll "\\.umdl\\.umich\\.edu" ""}} has failing puppet resources.'
-      dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
+      dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host | urlquery}}'
     expr: >
       sum without(name)(
         puppet_report_events{environment="production", name="Failure"}
@@ -33,7 +33,7 @@ groups:
   - alert: PuppetZeroResources
     annotations:
       summary: 'Node {{$labels.host | reReplaceAll "\\.umdl\\.umich\\.edu" ""}} has zero puppet resources.'
-      dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host}}'
+      dashboard: 'https://puppetboard.kubernetes.lib.umich.edu/node/{{$labels.host | urlquery}}'
     expr: 'puppet_report_resources{environment="production", name="Total"} == 0'
     for: 2h
     labels:
@@ -41,7 +41,7 @@ groups:
   - alert: HostOomKillDetected
     annotations:
       summary: 'Linux node {{$labels.hostname}} OOM-killed a process'
-      dashboard: 'https://grafana.lib.umich.edu/d/cefqrnhyq4tfkf/server-resources?var-hostname={{$labels.hostname}}'
+      dashboard: 'https://grafana.lib.umich.edu/d/cefqrnhyq4tfkf/server-resources?var-hostname={{$labels.hostname | urlquery}}'
     expr: 'increase(node_vmstat_oom_kill[5m]) > 0 and max_over_time(node_memory_MemAvailable_bytes[5m]) / min_over_time(node_memory_MemAvailable_bytes[5m]) > 2'
     for: 0m
     labels:
@@ -49,7 +49,7 @@ groups:
   - alert: HostUnderMemoryPressure
     annotations:
       summary: 'Linux node {{$labels.hostname}} is under memory pressure'
-      dashboard: 'https://grafana.lib.umich.edu/d/cefqrnhyq4tfkf/server-resources?var-hostname={{$labels.hostname}}'
+      dashboard: 'https://grafana.lib.umich.edu/d/cefqrnhyq4tfkf/server-resources?var-hostname={{$labels.hostname | urlquery}}'
     expr: 'rate(node_vmstat_pgmajfault[1m]) > 1000 and node_memory_MemAvailable_bytes < 50 * 1024 * 1024 * 1024'
     for: 2m
     labels:
@@ -85,7 +85,7 @@ groups:
   - alert: DiskSlowlyFillingUp
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} will fill up in a few days.'
-      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname | urlquery}}&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       predict_linear(
         node_filesystem_avail_bytes{mountpoint!="/htdataden",
@@ -100,7 +100,7 @@ groups:
   - alert: DiskAboutToFillUp
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is filling up fast.'
-      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname | urlquery}}&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       predict_linear(
         node_filesystem_avail_bytes{mountpoint!="/htdataden",
@@ -118,7 +118,7 @@ groups:
   - alert: DiskPressure
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 95% full.'
-      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname | urlquery}}&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -137,7 +137,7 @@ groups:
   - alert: DiskFull
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
-      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname | urlquery}}&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -156,7 +156,7 @@ groups:
   - alert: PrepDiskPressure
     annotations:
       summary: 'Prep filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is more than 98% full.'
-      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname | urlquery}}&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -175,7 +175,7 @@ groups:
   - alert: HTDataDenIsFull
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
-      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname | urlquery}}&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -201,7 +201,7 @@ groups:
   - alert: LITDataDenIsFull
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is full.'
-      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname | urlquery}}&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       (
         (
@@ -220,7 +220,7 @@ groups:
   - alert: DiskRunningOutOfINodes
     annotations:
       summary: 'Filesystem {{$labels.hostname}}:{{$labels.mountpoint}} is running out of inodes.'
-      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname}}f&var-mountpoint={{$labels.mountpoint | urlquery }}'
+      dashboard: 'https://grafana.lib.umich.edu/d/bel3prysytxc0a/disk-space?var-hostname={{$labels.hostname | urlquery}}&var-mountpoint={{$labels.mountpoint | urlquery }}'
     expr: >
       node_filesystem_files_free{fstype!="cifs",
                                  fstype!="vfat",
