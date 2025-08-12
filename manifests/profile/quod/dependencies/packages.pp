@@ -18,7 +18,7 @@ class nebula::profile::quod::dependencies::packages () {
       'imagemagick',
       'libapache2-mod-authz-umichlib',
       'libaprutil1-dbd-oracle',
-      'openjdk-8-jre',
+      'nvidia-openjdk-8-jre',
       'oracle-instantclient12.1-basic',
       'oracle-instantclient12.1-devel',
     ]
