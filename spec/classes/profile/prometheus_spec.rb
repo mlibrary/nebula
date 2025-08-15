@@ -24,6 +24,7 @@ describe "nebula::profile::prometheus" do
             "/etc/prometheus/mysql.yml:/etc/prometheus/mysql.yml",
             "/etc/prometheus/ipmi.yml:/etc/prometheus/ipmi.yml",
             "/etc/prometheus/etcd.yml:/etc/prometheus/etcd.yml",
+            "/etc/prometheus/catalog_search.yml:/etc/prometheus/catalog_search.yml",
             "/etc/prometheus/tls:/tls",
             "/opt/prometheus:/prometheus"])
           .that_requires("File[/opt/prometheus]")
