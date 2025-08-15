@@ -283,6 +283,10 @@ class nebula::profile::prometheus (
       "010 prometheus private search catalog serve exporter ${::networking['hostname']} ${address}":
         tag => "${facts['datacenter']}_prometheus_private_search_catalog_serve_exporter",
       ;
+
+      "010 prometheus private search catalog reindex exporter ${::networking['hostname']} ${address}":
+        tag => "${facts['datacenter']}_prometheus_private_search_catalog_reindex_exporter",
+      ;
     }
   }
 
