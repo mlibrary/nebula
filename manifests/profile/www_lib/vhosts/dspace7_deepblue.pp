@@ -8,7 +8,7 @@
 #
 # @example
 #   include nebula::profile::www_lib::vhosts::deepblue
-class nebula::profile::www_lib::vhosts::dspace7-deepblue (
+class nebula::profile::www_lib::vhosts::dspace7_deepblue (
   String $prefix = 'dspace7',
   String $domain,
   String $ssl_cn = 'deepblue.lib.umich.edu',
