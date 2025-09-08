@@ -8,13 +8,13 @@
 #
 # @example
 #   include nebula::profile::www_lib::vhosts::deepblue
-class nebula::profile::www_lib::vhosts::deepblue (
-  String $prefix,
+class nebula::profile::www_lib::vhosts::dspace7-deepblue (
+  String $prefix = 'dspace7',
   String $domain,
-  String $ssl_cn = 'dspace7.deepblue.lib.umich.edu',
+  String $ssl_cn = 'deepblue.lib.umich.edu',
   String $docroot = '/www/deepblue/web'
 ) {
-  $servername = "${prefix}deepblue.${domain}"
+  $servername = "${prefix}.deepblue.${domain}"
 
   file { "${apache::params::logroot}/deepblue":
     ensure => 'directory',
@@ -23,7 +23,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
   nebula::apache::www_lib_vhost { 'deepblue-http':
     servername     => $servername,
     docroot        => $docroot,
-    logging_prefix => 'deepblue/',
+    logging_prefix => 'dspace7-deepblue/',
     usertrack      => true,
 
     rewrites       => [
@@ -36,13 +36,14 @@ class nebula::profile::www_lib::vhosts::deepblue (
   nebula::apache::www_lib_vhost { 'deepblue-https':
     servername                  => $servername,
     docroot                     => $docroot,
-    logging_prefix              => 'deepblue/',
+    logging_prefix              => 'dspace7-deepblue/',
 
-    ssl                         => true,
-    ssl_cn                      => $ssl_cn,
-    usertrack                   => true,
-    auth_openidc                => true,
-    auth_openidc_redirect_uri   => 'https://dspace7.deepblue.lib.umich.edu/openid-connect/callback',
+    ssl                                => true,
+    ssl_cn                             => $ssl_cn,
+    usertrack                          => true,
+    auth_openidc                       => true,
+    auth_openidc_redirect_uri          => 'https://dspace7.deepblue.lib.umich.edu/openid-connect/callback',
+    ssl_proxy_machine_certificate_file => '/etc/ssl/private/machine-cert-deepblue.lib.pem',
 
     rewrites                    => [
       {
@@ -71,7 +72,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
       {
         comment      => 'Deep Blue Documents; dont proxy auth_oidc',
         rewrite_cond => ['%{ENV:badrobot} !(^true$)', '%{REQUEST_URI} !^(/openid-connect)'],
-        rewrite_rule => '^(.*)$	http://bulleit-2.umdl.umich.edu:8080$1 [P]'
+        rewrite_rule => '^(.*)$ https://production.deepblue.lib.umich.edu:8443$1 [P]'
       },
       {
         comment      => 'Deep Blue Preservation redirect',
@@ -106,15 +107,6 @@ class nebula::profile::www_lib::vhosts::deepblue (
         | EOT
       },
       {
-        provider        => 'location',
-        path            => '/webiso-login',
-        auth_type       => 'openid-connect',
-        auth_require    => 'valid-user',
-        custom_fragment => @(EOT)
-        OIDCUnAuthAction auth true
-        | EOT
-      },
-      {
         provider        => 'locationmatch',
         path            => '^/data/login',
         auth_type       => 'openid-connect',
@@ -137,6 +129,8 @@ class nebula::profile::www_lib::vhosts::deepblue (
       'set X-Remote-User "expr=%{REMOTE_USER}"',
       # Fix redirects being sent to non ssl url (https -> http)
       'set X-Forwarded-Proto "https"',
+      #Set original host name of the request.
+      'set X-Forwarded-Host "dspace7.deepblue.lib.umich.edu"',
       # Remove existing X-Forwarded-For headers; mod_proxy will automatically add the correct one.
       'unset X-Forwarded-For',
     ],
@@ -156,7 +150,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
 
     custom_fragment             => @(EOT)
       ProxyPassReverse /data https://app-deepbluedata.deepblue.lib.umich.edu:30060/
-      ProxyPassReverse / http://bulleit-2.umdl.umich.edu:8080/
+      ProxyPassReverse / https://production.deepblue.lib.umich.edu:8443/
     | EOT
   }
 }
