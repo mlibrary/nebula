@@ -34,9 +34,9 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
   }
 
   nebula::apache::www_lib_vhost { 'deepblue-https':
-    servername                  => $servername,
-    docroot                     => $docroot,
-    logging_prefix              => 'dspace7-deepblue/',
+    servername                         => $servername,
+    docroot                            => $docroot,
+    logging_prefix                     => 'dspace7-deepblue/',
 
     ssl                                => true,
     ssl_cn                             => $ssl_cn,
@@ -45,7 +45,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
     auth_openidc_redirect_uri          => 'https://dspace7.deepblue.lib.umich.edu/openid-connect/callback',
     ssl_proxy_machine_certificate_file => '/etc/ssl/private/machine-cert-deepblue.lib.pem',
 
-    rewrites                    => [
+    rewrites                           => [
       {
         comment      => 'Deep Blue Repositories home page is on www.lib now',
         rewrite_cond => '%{REQUEST_URI} ^((\/?|/index.html)$|/splash/)',
@@ -80,7 +80,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
       },
     ],
 
-    directories                 => [
+    directories                        => [
       {
         provider       => 'directory',
         path           => $docroot,
@@ -124,7 +124,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
       },
     ],
 
-    request_headers             => [
+    request_headers                    => [
       # Setting remote user for 2.4
       'set X-Remote-User "expr=%{REMOTE_USER}"',
       # Fix redirects being sent to non ssl url (https -> http)
@@ -135,20 +135,20 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
       'unset X-Forwarded-For',
     ],
 
-    headers                     => [
+    headers                            => [
       'set "Strict-Transport-Security" "max-age=3600"',
       'set "X-Frame-Options" "SAMEORIGIN"',
     ],
 
-    ssl_proxyengine             => true,
-    ssl_proxy_check_peer_name   => 'on',
-    ssl_proxy_check_peer_expire => 'on',
+    ssl_proxyengine                    => true,
+    ssl_proxy_check_peer_name          => 'on',
+    ssl_proxy_check_peer_expire        => 'on',
 
       ## Redirect Deep Blue Data to an outage
       ##    RewriteEngine On
       ##    RewriteRule   ^/data(.*)$   http://www.lib.umich.edu/outages/deep-blue-data-0     [redirect,noescape,last]
 
-    custom_fragment             => @(EOT)
+    custom_fragment                    => @(EOT)
       ProxyPassReverse /data https://app-deepbluedata.deepblue.lib.umich.edu:30060/
       ProxyPassReverse / https://production.deepblue.lib.umich.edu:8443/
     | EOT
