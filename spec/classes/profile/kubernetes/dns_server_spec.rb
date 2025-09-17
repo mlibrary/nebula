@@ -66,8 +66,13 @@ describe "nebula::profile::kubernetes::dns_server" do
         it do
           expect(subject).to contain_concat_fragment("/etc/hosts ipv6 localhost")
             .with_target("/etc/hosts")
-            .with_order("05")
             .with_content("::1 localhost ip6-localhost ip6-loopback\n")
+        end
+
+        it do
+          expect(subject).to contain_concat_fragment("/etc/hosts static entries")
+            .with_target("/etc/hosts")
+            .with_content("172.16.0.232 example.com www-232.example.com\n172.16.0.233 sql.example.com db-233.example.com\n")
         end
 
         it do
@@ -83,7 +88,6 @@ describe "nebula::profile::kubernetes::dns_server" do
         it do
           expect(subject).to contain_concat_fragment("/etc/hosts ipv6 debian")
             .with_target("/etc/hosts")
-            .with_order("06")
             .with_content("ff02::1 ip6-allnodes\nff02::2 ip6-allrouters\n")
         end
       end
