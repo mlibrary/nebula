@@ -10,6 +10,7 @@ class nebula::profile::kubernetes::dns_server {
   $node_cidr = $cluster['node_cidr']
   $private_domain = $cluster['private_domain']
   $private_zones = $cluster['private_zones']
+  $static_dns_entries = $cluster['static_dns_entries']
 
   package { 'dnsmasq': }
 
@@ -43,14 +44,19 @@ class nebula::profile::kubernetes::dns_server {
       order   => '03',
     ;
 
+    '/etc/hosts static entries':
+      content => template('nebula/profile/kubernetes/dns/hosts_20_static_entries.erb'),
+      order   => '20',
+    ;
+
     '/etc/hosts ipv6 localhost':
-      content => template('nebula/profile/kubernetes/dns/hosts_05_ipv6_localhost.erb'),
-      order   => '05',
+      content => template('nebula/profile/kubernetes/dns/hosts_50_ipv6_localhost.erb'),
+      order   => '50',
     ;
 
     '/etc/hosts ipv6 debian':
-      content => template('nebula/profile/kubernetes/dns/hosts_06_ipv6_debian.erb'),
-      order   => '06',
+      content => template('nebula/profile/kubernetes/dns/hosts_60_ipv6_debian.erb'),
+      order   => '60',
     ;
   }
 
