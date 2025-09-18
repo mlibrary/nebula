@@ -97,7 +97,16 @@ describe "nebula::profile::networking::firewall" do
         )
       end
 
-      it { is_expected.to have_firewall_resource_count(9) }
+      it do
+        expect(subject).to contain_firewall("500 allow ping").with(
+          proto: "icmp",
+          jump: "accept",
+          icmp: 8,
+          limit: "5/second"
+        )
+      end
+
+      it { is_expected.to have_firewall_resource_count(10) }
 
       it { is_expected.to contain_package("iptables-persistent") }
       it { is_expected.to contain_package("netfilter-persistent") }
