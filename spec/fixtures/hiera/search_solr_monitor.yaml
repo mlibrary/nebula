@@ -1,0 +1,2 @@
+nebula::profile::search::catalog::solr::serve_port: 8765
+nebula::profile::search::catalog::solr::reindex_port: 9876

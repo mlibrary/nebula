@@ -107,15 +107,15 @@ describe "nebula::profile::prometheus::exporter::node" do
         expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
           .with_tag("default_prometheus_node_service_list")
           .with_target("/etc/prometheus/nodes.yml")
-          .with_content(%r{'#{facts[:ipaddress]}:9100'})
+          .with_content(%r{'123.123.123.123:9100'})
       end
 
       it "exports itself to the default datacenter's pushgateway" do
-        expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} #{facts[:ipaddress]}")
+        expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 123.123.123.123")
           .with_tag("default_pushgateway_node")
           .with_proto("tcp")
           .with_dport(9091)
-          .with_source(facts[:ipaddress])
+          .with_source("123.123.123.123")
           .with_state("NEW")
           .with_jump("accept")
       end
@@ -168,9 +168,9 @@ describe "nebula::profile::prometheus::exporter::node" do
         end
 
         it "exports itself to its datacenter's pushgateway" do
-          expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} #{facts[:ipaddress]}")
+          expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 10.123.123.123")
             .with_tag("mydatacenter_pushgateway_node")
-            .with_source(facts[:ipaddress])
+            .with_source("10.123.123.123")
         end
 
         context "with both public and private mlibrary_ip_addresses" do

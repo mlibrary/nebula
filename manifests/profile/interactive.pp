@@ -12,5 +12,6 @@ class nebula::profile::interactive {
     'ripgrep',
     'tmux',
     'zsh',
+    'git',
   ])
 }

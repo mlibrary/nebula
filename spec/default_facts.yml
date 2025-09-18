@@ -15,4 +15,8 @@ ruby_versions:
 - 2.5.0
 vm_guests:
 - invalid_existing_guest
-
+mlibrary_ip_addresses:
+  public:
+  - 123.123.123.123
+  private:
+  - 10.123.123.123

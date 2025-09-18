@@ -1,0 +1,15 @@
+[Unit]
+Description=Catalog Search Solr Metrics (Serve)
+After=network.target
+
+[Service]
+User=vufind
+ExecStart=<%= @serve_metrics_bin %> -p <%= @serve_metrics_port %> -b http://localhost:<%= @serve_port %>/solr -f <%= @serve_metrics_config %>
+TimeoutStopSec=20s
+StandardOutput=journal
+StandardError=journal
+Restart=always
+SyslogIdentifier=metrics-catalog-solr-serve
+
+[Install]
+WantedBy=multi-user.target

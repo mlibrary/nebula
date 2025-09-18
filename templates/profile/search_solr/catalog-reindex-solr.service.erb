@@ -1,0 +1,14 @@
+[Unit]
+Description=Catalog Search Solr (Reindex)
+After=network.target
+
+[Service]
+User=vufind
+Type=forking
+ExecStartPre=/bin/sleep 20
+ExecStart=<%= @reindex_bin %> start -p <%= @reindex_port %> -m <%= @reindex_max_heap_size %>
+ExecStop=<%= @reindex_bin %> stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -5,4 +5,5 @@
 class nebula::role::app_host::prod_with_search_metrics {
   include nebula::role::app_host::prod
   include nebula::profile::client_cert_https
+  include nebula::profile::search::catalog::solr_monitor
 }

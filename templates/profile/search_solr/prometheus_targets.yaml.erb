@@ -1,0 +1,10 @@
+- targets: [ '<%= @ipaddress %>:<%= @serve_metrics_port %>' ]
+  labels:
+    datacenter: '<%= @facts['datacenter'] %>'
+    hostname: '<%= @networking['hostname'] %>'
+    service: 'catalog_search_serve'
+- targets: [ '<%= @ipaddress %>:<%= @reindex_metrics_port %>' ]
+  labels:
+    datacenter: '<%= @facts['datacenter'] %>'
+    hostname: '<%= @networking['hostname'] %>'
+    service: 'catalog_search_reindex'

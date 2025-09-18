@@ -7,4 +7,16 @@ class nebula::role::search::solr {
 
   include nebula::profile::ntp
   include nebula::profile::unattended_upgrades
+  include nebula::profile::kubernetes::dns_client
+
+  include nebula::profile::interactive
+  include nebula::profile::search::catalog::solr
+  include nebula::profile::search::catalog::solr_monitor
+  include nebula::profile::openjdk_java
+
+  # These three are effectively the requirements for getting user login
+  # with kerberos and duo.
+  include nebula::profile::duo
+  include nebula::profile::krb5
+  include nebula::profile::networking
 }

@@ -1,0 +1,14 @@
+[Unit]
+Description=Catalog Search Solr (Serve)
+After=network.target
+
+[Service]
+User=vufind
+Type=forking
+ExecStartPre=/bin/sleep 20
+ExecStart=<%= @serve_bin %> start -p <%= @serve_port %> -m <%= @serve_max_heap_size %>
+ExecStop=<%= @serve_bin %> stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

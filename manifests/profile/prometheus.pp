@@ -39,6 +39,7 @@ class nebula::profile::prometheus (
       '/etc/prometheus/mysql.yml:/etc/prometheus/mysql.yml',
       '/etc/prometheus/ipmi.yml:/etc/prometheus/ipmi.yml',
       '/etc/prometheus/etcd.yml:/etc/prometheus/etcd.yml',
+      '/etc/prometheus/catalog_search.yml:/etc/prometheus/catalog_search.yml',
       '/etc/prometheus/tls:/tls',
       '/opt/prometheus:/prometheus',
     ],
@@ -112,6 +113,13 @@ class nebula::profile::prometheus (
   }
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_etcd_service_list" |>>
+
+  concat_file { '/etc/prometheus/catalog_search.yml':
+    notify  => Docker::Run['prometheus'],
+    require => File['/etc/prometheus'],
+  }
+
+  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_catalog_search_service_list" |>>
 
   file { '/etc/prometheus':
     ensure => 'directory',
@@ -242,6 +250,14 @@ class nebula::profile::prometheus (
         tag   => "${facts['datacenter']}_prometheus_public_ipmi_exporter",
         dport => 9290,
       ;
+
+      "010 prometheus public search catalog serve exporter ${::networking['hostname']} ${address}":
+        tag => "${facts['datacenter']}_prometheus_public_search_catalog_serve_exporter",
+      ;
+
+      "010 prometheus public search catalog reindex exporter ${::networking['hostname']} ${address}":
+        tag => "${facts['datacenter']}_prometheus_public_search_catalog_reindex_exporter",
+      ;
     }
   }
 
@@ -262,6 +278,14 @@ class nebula::profile::prometheus (
       "010 prometheus private ipmi exporter ${::networking['hostname']} ${address}":
         tag   => "${facts['datacenter']}_prometheus_private_ipmi_exporter",
         dport => 9290,
+      ;
+
+      "010 prometheus private search catalog serve exporter ${::networking['hostname']} ${address}":
+        tag => "${facts['datacenter']}_prometheus_private_search_catalog_serve_exporter",
+      ;
+
+      "010 prometheus private search catalog reindex exporter ${::networking['hostname']} ${address}":
+        tag => "${facts['datacenter']}_prometheus_private_search_catalog_reindex_exporter",
       ;
     }
   }
