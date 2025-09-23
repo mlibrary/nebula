@@ -10,14 +10,16 @@ describe "nebula::role::minimum" do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to compile }
+      it { is_expected.to contain_class("nebula::profile::networking::firewall") }
 
-      case os
-      when "debian-8-x86_64"
+      context "manage_firewall false" do
+        let(:params) do
+          {manage_firewall: false}
+        end
+
         it { is_expected.not_to contain_class("nebula::profile::networking::firewall") }
-        it { is_expected.to have_firewall_resource_count(0) }
-      when "debian-9-x86_64"
-        it { is_expected.to contain_class("nebula::profile::networking::firewall") }
+        it { is_expected.to contain_package("netfilter-persistent").with_ensure("purged") }
+        it { is_expected.to contain_package("iptables-persistent").with_ensure("purged") }
       end
     end
   end

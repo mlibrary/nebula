@@ -4,7 +4,7 @@
 
 class nebula::role::kubernetes::etcd {
   class { 'nebula::role::minimum':
-    internal_routing => 'kubernetes_calico',
+    manage_firewall => false,
   }
 
   include nebula::profile::ntp

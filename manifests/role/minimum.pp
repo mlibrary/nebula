@@ -8,6 +8,7 @@
 #   include nebula::role::minimum
 class nebula::role::minimum (
   String $internal_routing = '',
+  Boolean $manage_firewall = true,
 ) {
   if $facts['os']['family'] == 'Debian' {
     include nebula::profile::base
@@ -17,8 +18,13 @@ class nebula::role::minimum (
     include nebula::profile::falcon
     include nebula::profile::root
 
-    class { 'nebula::profile::networking::firewall':
-      internal_routing => $internal_routing,
+    if ($manage_firewall) {
+      class { 'nebula::profile::networking::firewall':
+        internal_routing => $internal_routing,
+      }
+    } else {
+      package { 'netfilter-persistent': ensure => purged }
+      package { 'iptables-persistent': ensure => purged }
     }
 
     include nebula::profile::networking::firewall::private_ssh

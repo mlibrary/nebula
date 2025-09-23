@@ -74,37 +74,20 @@ class nebula::profile::networking::firewall (
         }
       }
 
-      'kubernetes_calico': {
-        $input_ignore = [
-          '-j cali-INPUT',
-          '-j KUBE-FIREWALL',
-          '-j KUBE-SERVICES',
-          '-j KUBE-EXTERNAL-SERVICES',
-        ]
-
-        $output_ignore = [
-          '-j cali-OUTPUT',
-          '-j KUBE-FIREWALL',
-          '-j KUBE-SERVICES',
-        ]
-
-        $forward_ignore = [
-          '-j cali-FORWARD',
-          '-j KUBE-FORWARD',
-          '-j KUBE-SERVICES',
-        ]
-      }
-
       'fwknop': {
         $input_ignore = ['-j FWKNOP_INPUT']
         $output_ignore = []
         $forward_ignore = []
       }
 
-      default: {
+      '': {
         $input_ignore = []
         $output_ignore = []
         $forward_ignore = []
+      }
+
+      default: {
+        fail('internal_routing set to an unsupported option')
       }
     }
 

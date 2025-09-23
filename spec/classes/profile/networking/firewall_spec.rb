@@ -116,21 +116,7 @@ describe "nebula::profile::networking::firewall" do
       context "when internal_routing is set to kubernetes_calico" do
         let(:params) { {internal_routing: "kubernetes_calico"} }
 
-        it { is_expected.not_to contain_resources("firewall") }
-
-        %w[INPUT OUTPUT FORWARD].each do |chain|
-          it do
-            expect(subject).to contain_firewallchain("#{chain}:filter:IPv4")
-              .with_ensure("present")
-              .with_purge(false)
-          end
-
-          it do
-            expect(subject).to contain_firewallchain("#{chain}:filter:IPv6")
-              .with_ensure("present")
-              .with_purge(false)
-          end
-        end
+        it { is_expected.not_to compile }
       end
     end
   end

@@ -61,37 +61,14 @@ end
 
         it { is_expected.to contain_class("Nebula::Profile::Ntp") }
 
-        it { is_expected.not_to contain_resources("firewall").with_purge(false) }
-
-        it do
-          expect(subject).to contain_firewallchain("INPUT:filter:IPv4").with(
-            ensure: "present",
-            purge: false,
-            ignore: ["-j cali-INPUT",
-              "-j KUBE-FIREWALL",
-              "-j KUBE-SERVICES",
-              "-j KUBE-EXTERNAL-SERVICES"]
-          )
+        it "does not configure firewall" do
+          is_expected.not_to contain_resources("firewall")
+          is_expected.not_to contain_class("nebula::profile::networking::firewall")
         end
-
-        it do
-          expect(subject).to contain_firewallchain("OUTPUT:filter:IPv4").with(
-            ensure: "present",
-            purge: false,
-            ignore: ["-j cali-OUTPUT",
-              "-j KUBE-FIREWALL",
-              "-j KUBE-SERVICES"]
-          )
-        end
-
-        it do
-          expect(subject).to contain_firewallchain("FORWARD:filter:IPv4").with(
-            ensure: "present",
-            purge: false,
-            ignore: ["-j cali-FORWARD",
-              "-j KUBE-FORWARD",
-              "-j KUBE-SERVICES"]
-          )
+        it "does not configure firewallchains" do
+          is_expected.not_to contain_firewallchain("INPUT:filter:IPv4")
+          is_expected.not_to contain_firewallchain("OUTPUT:filter:IPv4")
+          is_expected.not_to contain_firewallchain("FORWARD:filter:IPv4")
         end
 
         case role
