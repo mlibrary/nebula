@@ -16,7 +16,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
 ) {
   $servername = "${prefix}.deepblue.${domain}"
 
-  file { "${apache::params::logroot}/deepblue":
+  file { "${apache::params::logroot}/dspace7_deepblue":
     ensure => 'directory',
   }
 
