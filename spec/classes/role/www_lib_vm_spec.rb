@@ -147,7 +147,9 @@ describe "nebula::role::webhost::www_lib_vm" do
           .with_ssl_cert("/etc/ssl/certs/deepblue.lib.umich.edu.crt")
           .with_servername("deepblue.lib.umich.edu")
           .with_ssl_proxyengine(true)
+          .with_ssl_proxy_machine_certificate_file("/etc/ssl/private/machine-cert-deepblue.lib.pem")
       end
+
       it do
         expect(subject).to contain_apache__vhost("openmich-https")
           .with_ssl_cert("/etc/ssl/certs/open.umich.edu.crt")
