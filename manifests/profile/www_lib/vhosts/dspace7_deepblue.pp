@@ -20,7 +20,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
     ensure => 'directory',
   }
 
-  nebula::apache::www_lib_vhost { 'deepblue-http':
+  nebula::apache::www_lib_vhost { 'dspace7_deepblue-http':
     servername     => $servername,
     docroot        => $docroot,
     logging_prefix => 'dspace7-deepblue/',
@@ -33,7 +33,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
     ],
   }
 
-  nebula::apache::www_lib_vhost { 'deepblue-https':
+  nebula::apache::www_lib_vhost { 'dspace7_deepblue-https':
     servername                         => $servername,
     docroot                            => $docroot,
     logging_prefix                     => 'dspace7-deepblue/',
