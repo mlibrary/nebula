@@ -143,6 +143,12 @@ describe "nebula::role::webhost::www_lib_vm" do
       end
 
       it do
+        expect(subject).to contain_apache__vhost("dspace7-deepblue-https")
+          .with_ssl_cert("/etc/ssl/certs/deepblue.lib.umich.edu.crt")
+          .with_servername("deepblue.lib.umich.edu")
+          .with_ssl_proxyengine(true)
+      end
+      it do
         expect(subject).to contain_apache__vhost("openmich-https")
           .with_ssl_cert("/etc/ssl/certs/open.umich.edu.crt")
           .with_servername("open.umich.edu")
