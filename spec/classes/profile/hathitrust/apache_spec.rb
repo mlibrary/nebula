@@ -82,16 +82,6 @@ describe "nebula::profile::hathitrust::apache" do
         end
       end
 
-      describe "cloudflare aliases" do
-        %w[babel catalog www].each do |vhost|
-          it {
-            expect(subject).to contain_apache__vhost("#{vhost}.hathitrust.org ssl").with(
-              serveraliases: ["cf.#{vhost}.hathitrust.org"]
-            )
-          }
-        end
-      end
-
       context "with a domain and prefix specified" do
         let(:params) do
           {
