@@ -43,7 +43,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
     usertrack                          => true,
     auth_openidc                       => true,
     auth_openidc_redirect_uri          => 'https://dspace7.deepblue.lib.umich.edu/openid-connect/callback',
-    ssl_proxy_machine_certificate_file => '/etc/ssl/private/machine-cert-deepblue.lib.pem',
+    ssl_proxy_machine_cert             => '/etc/ssl/private/machine-cert-deepblue.lib.pem',
 
     rewrites                           => [
       {
