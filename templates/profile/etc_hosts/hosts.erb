@@ -1,0 +1,12 @@
+# Managed by puppet (nebula/profile/etc_hosts/hosts.erb)
+127.0.0.1	localhost
+<%= @networking["ip"] %>	<%= @networking["fqdn"] %>	<%= @networking["hostname"] %>
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+<% @lines.each do |line| -%>
+<%= line %>
+<% end -%>
