@@ -72,7 +72,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
       {
         comment      => 'Deep Blue Documents; dont proxy auth_oidc',
         rewrite_cond => ['%{ENV:badrobot} !(^true$)', '%{REQUEST_URI} !^(/openid-connect)'],
-        rewrite_rule => '^(.*)$ https://production.deepblue.lib.umich.edu:8443$1 [P]'
+        rewrite_rule => '^(.*)$ https://production.deepblue-documents.lib.umich.edu:8443$1 [P]'
       },
       {
         comment      => 'Deep Blue Preservation redirect',
@@ -150,7 +150,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
 
     custom_fragment             => @(EOT)
       ProxyPassReverse /data https://app-deepbluedata.deepblue.lib.umich.edu:30060/
-      ProxyPassReverse / https://production.deepblue.lib.umich.edu:8443/
+      ProxyPassReverse / https://production.deepblue-documents.lib.umich.edu:8443/
     | EOT
   }
 }
