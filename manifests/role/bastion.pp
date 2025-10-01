@@ -9,6 +9,7 @@ class nebula::role::bastion {
   include nebula::profile::root_ssh_private_keys
   include nebula::profile::interactive
   include nebula::profile::taghosts::index
+  include nebula::profile::etc_hosts
 
   class { 'nebula::profile::puppet::query':
     ssl_group => 'sudo',
