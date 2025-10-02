@@ -10,11 +10,11 @@
 #   include nebula::profile::www_lib::vhosts::deepblue
 class nebula::profile::www_lib::vhosts::dspace7_deepblue (
   String $domain,
-  String $prefix = 'dspace7',
+  String $prefix,
   String $ssl_cn = 'deepblue.lib.umich.edu',
   String $docroot = '/www/deepblue/web'
 ) {
-  $servername = "${prefix}.deepblue.${domain}"
+  $servername = "${prefix}dspace7.deepblue.${domain}"
 
   file { "${apache::params::logroot}/dspace7-deepblue":
     ensure => 'directory',
