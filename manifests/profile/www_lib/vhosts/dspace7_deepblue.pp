@@ -78,6 +78,18 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
         comment      => 'Deep Blue Preservation redirect',
         rewrite_rule => '^/static/about/deepbluepreservation.html https://www.lib.umich.edu/about-us/policies/digital-repository-services-digital-preservation-policy/registered-formats-and [R=permanent,L]'
       },
+      {
+        comment => 'new path in DSpace 7 REST-API'
+        rewrite_rule => '^/RESTapi https://backend.production-deepblue-documents.lib.mich.edu/rest [R=permanent,L]'
+      },
+      {
+        comment => 'new path in DSpace 7 for OAI'
+        rewrite_rule => '^/dspace-oai https://backend.production-deepblue-documents.lib.mich.edu/oai [R=permanent,L]'
+      },
+      {
+        comment => 'new path in DSpace 7 for SWORDV2'
+        rewrite_rule => '^/swordv2 https://backend.production-deepblue-documents.lib.mich.edu/swardv2 [R=permanent,L]'
+      },
     ],
 
     directories                 => [
