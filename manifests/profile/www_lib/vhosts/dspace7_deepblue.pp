@@ -88,7 +88,7 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
       },
       {
         comment      => 'new path in DSpace 7 for SWORDV2',
-        rewrite_rule => '^/swordv2 https://backend.production.deepblue-documents.lib.mich.edu/swardv2 [R=permanent,L]',
+        rewrite_rule => '^/swordv2 https://backend.production.deepblue-documents.lib.mich.edu/swordv2 [R=permanent,L]',
       },
     ],
 
