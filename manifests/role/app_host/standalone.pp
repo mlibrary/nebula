@@ -17,5 +17,4 @@ class nebula::role::app_host::standalone {
   include nebula::profile::apache::standalone_app_host
 
   include nebula::profile::mysql
-  include nebula::profile::redis
 }
