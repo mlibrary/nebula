@@ -51,6 +51,11 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
         rewrite_cond => '%{REQUEST_URI} ^((\/?|/index.html)$|/splash/)',
         rewrite_rule => '^(.*)$	https://www.lib.umich.edu/collections/deep-blue-repositories [redirect=permanent,last]'
       },
+      #{
+      #  comment      => 'Temporarily disable login for go live',
+      #  rewrite_cond => '%{REQUEST_URI} !^(/data|/openid-connect)',
+      #  rewrite_rule => '^(.*)$ https://lib.umich.edu/outages [L]',
+      #},
       {
         # XXX: Is this really still an issue?
         # Workaround critical DSpace security bug until there is a patch.
