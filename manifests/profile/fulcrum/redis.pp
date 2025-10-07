@@ -5,5 +5,5 @@
 # nebula::profile::fulcrum::redis
 
 class nebula::profile::fulcrum::redis {
-  include nebula::profile::redis
+  package { 'redis-server': }
 }
