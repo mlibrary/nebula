@@ -8,6 +8,7 @@ class nebula::profile::kubernetes::haproxy {
   $node_cidr = pick($cluster['node_cidr'], lookup('nebula::profile::kubernetes::node_cidr'))
 
   $public_address = $cluster['public_address']
+  $private_address = $cluster['private_address']
   $etcd_address = $cluster['etcd_address']
   $kube_api_address = $cluster['kube_api_address']
   $monitoring_user = lookup('nebula::profile::haproxy::monitoring_user')
@@ -34,7 +35,7 @@ class nebula::profile::kubernetes::haproxy {
     notify  => Service['haproxy'],
   }
 
-  ['api', 'etcd', 'gelf_tcp', 'http', 'https', 'https_alt', 'prometheus'].each |$service| {
+  ['api', 'etcd', 'gelf_tcp', 'http', 'https', 'https_alt', 'postgres_tcp', 'prometheus'].each |$service| {
     concat { "/etc/haproxy/services.d/${service}.cfg":
       notify => Service['haproxy'],
     }

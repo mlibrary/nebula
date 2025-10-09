@@ -1,0 +1,11 @@
+# Managed by puppet (nebula/profile/kubernetes/haproxy/services.d/postgres_tcp.cfg.erb)
+frontend kubernetes-postgres-tcp-front
+  bind <%= @private_address %>:5432
+  mode tcp
+  option tcplog
+  default_backend kubernetes-postgres-tcp-back
+
+backend kubernetes-postgres-tcp-back
+  mode tcp
+  option tcp-check
+  balance roundrobin
