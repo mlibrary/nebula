@@ -85,15 +85,15 @@ class nebula::profile::www_lib::vhosts::dspace7_deepblue (
       },
       {
         comment      => 'new path in DSpace 7 REST-API',
-        rewrite_rule => '^/RESTapi https://backend.production.deepblue-documents.lib.mich.edu/rest [R=permanent,L]',
+        rewrite_rule => '^/RESTapi https://backend.production.deepblue-documents.lib.umich.edu/rest [R=permanent,L]',
       },
       {
         comment      => 'new path in DSpace 7 for OAI',
-        rewrite_rule => '^/dspace-oai https://backend.production.deepblue-documents.lib.mich.edu/oai [R=permanent,L]',
+        rewrite_rule => '^/dspace-oai https://backend.production.deepblue-documents.lib.umich.edu/oai [R=permanent,L]',
       },
       {
         comment      => 'new path in DSpace 7 for SWORDV2',
-        rewrite_rule => '^/swordv2 https://backend.production.deepblue-documents.lib.mich.edu/swordv2 [R=permanent,L]',
+        rewrite_rule => '^/swordv2 https://backend.production.deepblue-documents.lib.umich.edu/swordv2 [R=permanent,L]',
       },
     ],
 
