@@ -9,8 +9,8 @@
 # @example
 #   include nebula::profile::www_lib::vhosts::deepblue
 class nebula::profile::www_lib::vhosts::deepblue (
-  String $prefix,
   String $domain,
+  String $prefix,
   String $ssl_cn = 'deepblue.lib.umich.edu',
   String $docroot = '/www/deepblue/web'
 ) {
@@ -43,6 +43,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
     usertrack                   => true,
     auth_openidc                => true,
     auth_openidc_redirect_uri   => 'https://deepblue.lib.umich.edu/openid-connect/callback',
+    ssl_proxy_machine_cert      => '/etc/ssl/private/machine-cert-deepblue.lib.pem',
 
     rewrites                    => [
       {
@@ -50,11 +51,11 @@ class nebula::profile::www_lib::vhosts::deepblue (
         rewrite_cond => '%{REQUEST_URI} ^((\/?|/index.html)$|/splash/)',
         rewrite_rule => '^(.*)$	https://www.lib.umich.edu/collections/deep-blue-repositories [redirect=permanent,last]'
       },
-      {
-        comment      => 'Temporarily disable login for go live',
-        rewrite_cond => '%{REQUEST_URI} !^(/data|/openid-connect)',
-        rewrite_rule => '^(.*)$ https://lib.umich.edu/outages [L]',
-      },
+      #{
+      #  comment      => 'Temporarily disable login for go live',
+      #  rewrite_cond => '%{REQUEST_URI} !^(/data|/openid-connect)',
+      #  rewrite_rule => '^(.*)$ https://lib.umich.edu/outages [L]',
+      #},
       {
         # XXX: Is this really still an issue?
         # Workaround critical DSpace security bug until there is a patch.
@@ -76,11 +77,23 @@ class nebula::profile::www_lib::vhosts::deepblue (
       {
         comment      => 'Deep Blue Documents; dont proxy auth_oidc',
         rewrite_cond => ['%{ENV:badrobot} !(^true$)', '%{REQUEST_URI} !^(/openid-connect)'],
-        rewrite_rule => '^(.*)$	http://bulleit-2.umdl.umich.edu:8080$1 [P]'
+        rewrite_rule => '^(.*)$ https://production.deepblue-documents.lib.umich.edu:8443$1 [P]',
       },
       {
         comment      => 'Deep Blue Preservation redirect',
-        rewrite_rule => '^/static/about/deepbluepreservation.html https://www.lib.umich.edu/about-us/policies/digital-repository-services-digital-preservation-policy/registered-formats-and [R=permanent,L]'
+        rewrite_rule => '^/static/about/deepbluepreservation.html https://www.lib.umich.edu/about-us/policies/digital-repository-services-digital-preservation-policy/registered-formats-and [R=permanent,L]',
+      },
+      {
+        comment      => 'new path in DSpace 7 REST-API',
+        rewrite_rule => '^/RESTapi https://backend.production.deepblue-documents.lib.umich.edu/rest [R=permanent,L]',
+      },
+      {
+        comment      => 'new path in DSpace 7 for OAI',
+        rewrite_rule => '^/dspace-oai https://backend.production.deepblue-documents.lib.umich.edu/oai [R=permanent,L]',
+      },
+      {
+        comment      => 'new path in DSpace 7 for SWORDV2',
+        rewrite_rule => '^/swordv2 https://backend.production.deepblue-documents.lib.umich.edu/swordv2 [R=permanent,L]',
       },
     ],
 
@@ -111,15 +124,6 @@ class nebula::profile::www_lib::vhosts::deepblue (
         | EOT
       },
       {
-        provider        => 'location',
-        path            => '/webiso-login',
-        auth_type       => 'openid-connect',
-        auth_require    => 'valid-user',
-        custom_fragment => @(EOT)
-        OIDCUnAuthAction auth true
-        | EOT
-      },
-      {
         provider        => 'locationmatch',
         path            => '^/data/login',
         auth_type       => 'openid-connect',
@@ -142,6 +146,8 @@ class nebula::profile::www_lib::vhosts::deepblue (
       'set X-Remote-User "expr=%{REMOTE_USER}"',
       # Fix redirects being sent to non ssl url (https -> http)
       'set X-Forwarded-Proto "https"',
+      #Set original host name of the request.
+      'set X-Forwarded-Host "deepblue.lib.umich.edu"',
       # Remove existing X-Forwarded-For headers; mod_proxy will automatically add the correct one.
       'unset X-Forwarded-For',
     ],
@@ -161,7 +167,7 @@ class nebula::profile::www_lib::vhosts::deepblue (
 
     custom_fragment             => @(EOT)
       ProxyPassReverse /data https://app-deepbluedata.deepblue.lib.umich.edu:30060/
-      ProxyPassReverse / http://bulleit-2.umdl.umich.edu:8080/
+      ProxyPassReverse / https://production.deepblue-documents.lib.umich.edu:8443/
     | EOT
   }
 }
