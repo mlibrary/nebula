@@ -75,11 +75,6 @@ class nebula::profile::www_lib::vhosts::deepblue (
         rewrite_rule => '^(/data.*)$ http://app-deepbluedata:30060$1 [P]',
       },
       {
-        comment      => 'Deep Blue Documents; dont proxy auth_oidc',
-        rewrite_cond => ['%{ENV:badrobot} !(^true$)', '%{REQUEST_URI} !^(/openid-connect)'],
-        rewrite_rule => '^(.*)$ https://production.deepblue-documents.lib.umich.edu:8443$1 [P]',
-      },
-      {
         comment      => 'Deep Blue Preservation redirect',
         rewrite_rule => '^/static/about/deepbluepreservation.html https://www.lib.umich.edu/about-us/policies/digital-repository-services-digital-preservation-policy/registered-formats-and [R=permanent,L]',
       },
@@ -94,6 +89,11 @@ class nebula::profile::www_lib::vhosts::deepblue (
       {
         comment      => 'new path in DSpace 7 for SWORDV2',
         rewrite_rule => '^/swordv2 https://backend.production.deepblue-documents.lib.umich.edu/swordv2 [R=permanent,L]',
+      },
+      {
+        comment      => 'Deep Blue Documents; dont proxy auth_oidc',
+        rewrite_cond => ['%{ENV:badrobot} !(^true$)', '%{REQUEST_URI} !^(/openid-connect)'],
+        rewrite_rule => '^(.*)$ https://production.deepblue-documents.lib.umich.edu:8443$1 [P]',
       },
     ],
 
