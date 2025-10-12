@@ -80,15 +80,15 @@ class nebula::profile::www_lib::vhosts::deepblue (
       },
       {
         comment      => 'new path in DSpace 7 REST-API',
-        rewrite_rule => '^/RESTapi https://backend.production.deepblue-documents.lib.umich.edu/rest [R=permanent,L]',
+        rewrite_rule => '^/RESTapi/(.*)$ https://backend.production.deepblue-documents.lib.umich.edu/rest/$1 [R=permanent,L]',
       },
       {
         comment      => 'new path in DSpace 7 for OAI',
-        rewrite_rule => '^/dspace-oai https://backend.production.deepblue-documents.lib.umich.edu/server/oai [R=permanent,L]',
+        rewrite_rule => '^/dspace-oai/(.*)$ https://backend.production.deepblue-documents.lib.umich.edu/server/oai/$1 [R=permanent,L]',
       },
       {
         comment      => 'new path in DSpace 7 for SWORDV2',
-        rewrite_rule => '^/swordv2 https://backend.production.deepblue-documents.lib.umich.edu/server/swordv2 [R=permanent,L]',
+        rewrite_rule => '^/swordv2/(.*)$ https://backend.production.deepblue-documents.lib.umich.edu/server/swordv2/$1 [R=permanent,L]',
       },
       {
         comment      => 'Deep Blue Documents; dont proxy auth_oidc',
