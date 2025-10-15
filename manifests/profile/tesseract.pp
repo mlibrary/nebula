@@ -21,4 +21,9 @@ class nebula::profile::tesseract (
   package { 'tesseract-ocr':
     require => Apt::Source['tesseract'],
   }
+
+  package { 'tesseract for modern Greek':
+    name    => 'tesseract-ocr-ell',
+    require => Package['tesseract-ocr'],
+  }
 }
