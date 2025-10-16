@@ -99,4 +99,13 @@ class nebula::profile::kubernetes::haproxy {
     home => $monitoring_user['home'],
     key  => $monitoring_user['key'],
   }
+
+  logrotate::rule { 'haproxy':
+    path         => '/var/log/haproxy.log',
+    rotate_every => 'day',
+    rotate       => 5,
+    missingok    => true,
+    ifempty      => false,
+    compress     => true,
+  }
 }
