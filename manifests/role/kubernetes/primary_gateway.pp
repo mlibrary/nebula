@@ -15,4 +15,8 @@ class nebula::role::kubernetes::primary_gateway {
   class { 'nebula::profile::kubernetes::keepalived':
     master => true,
   }
+
+  class { 'nebula::profile::prometheus::exporter::haproxy':
+    master => true,
+  }
 }
