@@ -412,6 +412,20 @@ groups:
     annotations:
       summary: "{{$labels.datacenter}} etcd db larger than 500Mi"
       dashboard: "https://grafana.lib.umich.edu/d/aeihrf5qwmccge/all-etcd-clusters"
+  - alert: "HAProxyRunningCloseToFrontendSessionLimit"
+    expr: "haproxy_frontend_limit_sessions - haproxy_frontend_current_sessions < 5000"
+    for: "30m"
+    labels:
+      severity: "ticket"
+    annotations:
+      summary: "{{$labels.frontend}} frontend on {{$labels.hostname}} approaching its maxconn limit"
+  - alert: "HAProxyRunningCloseToBackendSessionLimit"
+    expr: "haproxy_backend_limit_sessions - haproxy_backend_current_sessions < 500"
+    for: "30m"
+    labels:
+      severity: "ticket"
+    annotations:
+      summary: "{{$labels.backend}} backend on {{$labels.hostname}} approaching its session limit and we don't know if that's something we can configure"
 
   # These are aggregate rules for federated collection across our full
   # system. By putting them here, we essentially precompile them.

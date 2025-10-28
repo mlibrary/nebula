@@ -4,6 +4,7 @@
 
 class nebula::profile::prometheus::exporter::haproxy (
   Boolean $master,
+  String $servers = 'unset in hiera',
 ) {
   package { 'prometheus-haproxy-exporter': }
 
