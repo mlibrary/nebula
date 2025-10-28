@@ -108,4 +108,10 @@ class nebula::profile::kubernetes::haproxy {
     ifempty      => false,
     compress     => true,
   }
+
+  file { '/etc/haproxy/services.d/stats.cfg':
+    require => 'Package[haproxy]',
+    notify  => 'Service[haproxy]',
+    content => template('nebula/profile/haproxy/stats_frontend.cfg.erb'),
+  }
 }
