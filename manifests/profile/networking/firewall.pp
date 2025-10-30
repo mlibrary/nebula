@@ -148,7 +148,7 @@ class nebula::profile::networking::firewall (
   firewall { '500 allow ping':
     proto => 'icmp',
     icmp  => 8,
-    limit => '5/second',
+    limit => '5/sec',
     jump  => 'accept',
   }
 

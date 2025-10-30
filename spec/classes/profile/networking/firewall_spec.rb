@@ -102,7 +102,7 @@ describe "nebula::profile::networking::firewall" do
           proto: "icmp",
           jump: "accept",
           icmp: 8,
-          limit: "5/second"
+          limit: "5/sec"
         )
       end
 
