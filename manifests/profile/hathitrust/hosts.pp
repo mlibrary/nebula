@@ -15,7 +15,8 @@ class nebula::profile::hathitrust::hosts (
   Array[String] $solr_search,
   String $solr_catalog,
   String $solr_vufind_primary,
-  String $solr_vufind_failover
+  String $solr_vufind_failover,
+  String $truenas
 ) {
   host { 'localhost':
     ip => '127.0.0.1'
@@ -68,5 +69,9 @@ class nebula::profile::hathitrust::hosts (
   host { 'solr-vufind-failover':
     comment => 'solr (vufind failover)',
     ip      => $solr_vufind_failover
+  }
+
+  host { 'truenas':
+    ip => $truenas
   }
 }

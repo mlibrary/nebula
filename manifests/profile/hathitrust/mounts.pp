@@ -14,6 +14,7 @@
 class nebula::profile::hathitrust::mounts (
   String $ramdisk_size = '4g',
   Array[String] $smartconnect_mounts = ['/htapps'],
+  Boolean $use_truenas = false,
   Hash $other_nfs_mounts = {},
   Boolean $readonly = true
 ) {
@@ -52,12 +53,27 @@ class nebula::profile::hathitrust::mounts (
     $sdr_options = 'auto,hard,nfsvers=3'
   }
 
-  Integer[1, 24].each |$partition| {
-    nebula::nfs_mount { "/sdr${partition}":
-      options       => $sdr_options,
-      remote_target => "nas-${facts['datacenter']}.sc:/ifs/sdr/${partition}",
-      tag           => 'smartconnect',
+  if($use_truenas) {
+    nebula::nfs_mount { '/sdr':
+      options       => 'auto,hard',
+      remote_target => 'truenas:/mnt/tank/sdr',
       monitored     => true
+    }
+    Integer[1, 24].each |$partition| {
+      file { "/sdr${partition}":
+        ensure => 'link',
+        target => "/sdr/${partition}"
+      }
+    }
+  }
+  else {
+    Integer[1, 24].each |$partition| {
+      nebula::nfs_mount { "/sdr${partition}":
+        options       => $sdr_options,
+        remote_target => "nas-${facts['datacenter']}.sc:/ifs/sdr/${partition}",
+        tag           => 'smartconnect',
+        monitored     => true
+      }
     }
   }
 }

@@ -39,6 +39,38 @@ describe "nebula::profile::hathitrust::mounts" do
           )
         end
       end
+
+      context "with use_truenas = true" do
+        let(:params) do
+          {
+            use_truenas: true
+          }
+        end
+
+        it "mounts /sdr" do
+          is_expected.to contain_mount("/sdr").with(
+            device: "truenas:/mnt/tank/sdr",
+            fstype: "nfs"
+          )
+        end
+
+        it "symlinks /sdr#" do
+          is_expected.to contain_file("/sdr1").with(
+            ensure: "link",
+            target: "/sdr/1"
+          )
+
+          is_expected.to contain_file("/sdr12").with(
+            ensure: "link",
+            target: "/sdr/12"
+          )
+
+          is_expected.to contain_file("/sdr24").with(
+            ensure: "link",
+            target: "/sdr/24"
+          )
+        end
+      end
     end
   end
 end
