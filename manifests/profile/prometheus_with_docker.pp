@@ -15,7 +15,7 @@
 # @param rules_variables A hash of values to make available to the rules
 #   template
 # @param version The version of prometheus to run.
-class nebula::profile::prometheus (
+class nebula::profile::prometheus_with_docker (
   Array $alert_managers = [],
   Array $static_nodes = [],
   Array $static_wmi_nodes = [],
