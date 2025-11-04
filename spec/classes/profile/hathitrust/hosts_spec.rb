@@ -22,7 +22,8 @@ describe "nebula::profile::hathitrust::hosts" do
           solr_search: solr_ips,
           solr_catalog: "4.4.4.4",
           solr_vufind_primary: "7.7.7.7",
-          solr_vufind_failover: "8.8.8.8"
+          solr_vufind_failover: "8.8.8.8",
+          truenas: "10.9.8.6"
         }
       end
 
