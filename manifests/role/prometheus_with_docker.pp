@@ -3,7 +3,7 @@
 # BSD License. See LICENSE.txt for details.
 
 # Prometheus for hardware monitoring
-class nebula::role::prometheus () {
+class nebula::role::prometheus_with_docker () {
   @nebula::taghosts::tag { 'prom': }
   include nebula::role::minimal_docker
   include nebula::profile::ntp
