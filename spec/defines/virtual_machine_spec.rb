@@ -47,7 +47,7 @@ describe "nebula::virtual_machine" do
           %r{^d-i netcfg/get_hostname string vmname\.default\.invalid$},
           %r{^d-i netcfg/get_domain string default\.invalid$},
           %r{^d-i netcfg/hostname string vmname\.default\.invalid$},
-          %r{^d-i apt-setup/local0/repository string https://apt\.lib\.umich\.edu bullseye main$.*^d-i apt-setup/local0/key string https://apt\.lib\.umich\.edu/mlibrary-archive-keyring\.asc$}m,
+          %r{^d-i apt-setup/local0/repository string https://apt\.voxpupuli\.org debian11 openvox8$.*^d-i apt-setup/local0/key string https://apt\.voxpupuli\.org/openvox-keyring\.gpg$}m,
           %r{\swget -O /target/etc/puppetlabs/puppet/puppet\.conf\s.*https://files\.default\.invalid/puppet\.conf}m
         ].each do |line|
           it { is_expected.to contain_preseed.with_content(line) }
