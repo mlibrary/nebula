@@ -103,7 +103,7 @@ define nebula::virtual_machine (
     }
   } else {
     # If the VM does not already exist, create it.
-    if $build == 'bullseye' {
+    if $build == 'bullseye' or $build == 'bookworm' {
       file { "${tmpdir}/preseed.cfg":
         content => template("nebula/virtual_machine/${build}.cfg.erb"),
       }
