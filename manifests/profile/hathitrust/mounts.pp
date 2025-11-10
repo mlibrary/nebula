@@ -36,12 +36,23 @@ class nebula::profile::hathitrust::mounts (
     options => "size=${ramdisk_size}"
   }
 
+  # TODO: rename smartconnect_mounts, remove support for smartconnect
   $smartconnect_mounts.each |$mount| {
-    nebula::nfs_mount { $mount:
-      remote_target   => "nas-${facts['datacenter']}.sc:/ifs${mount}",
-      tag             => 'smartconnect',
-      private_network => true,
-      monitored       => true
+    if($use_truenas) {
+      nebula::nfs_mount { $mount:
+        options         => 'auto,hard',
+        remote_target   => "truenas:/mnt/tank${mount}",
+        private_network => true,
+        monitored       => true
+      }
+    }
+    else {
+      nebula::nfs_mount { $mount:
+        remote_target   => "nas-${facts['datacenter']}.sc:/ifs${mount}",
+        tag             => 'smartconnect',
+        private_network => true,
+        monitored       => true
+      }
     }
   }
 
