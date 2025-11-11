@@ -12,6 +12,7 @@ nebula::usergroup::membership:
 nebula::profile::groups::all_groups:
   examplegroup1: 1234
   examplegroup2: 2468
+  gidlessgroup: null
 
 nebula::virtual::users::default_group: staff
 nebula::virtual::users::all_users:

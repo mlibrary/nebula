@@ -11,7 +11,7 @@
 # @example
 #   include nebula::profile::groups
 class nebula::profile::groups (
-  Hash[String, Integer] $all_groups,
+  Hash[String, Optional[Integer]] $all_groups,
 ) {
   $all_groups.each |$group, $gid| {
     group { $group:
