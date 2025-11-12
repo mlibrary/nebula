@@ -15,6 +15,7 @@ describe "nebula::profile::groups" do
 
       it { is_expected.to contain_group("examplegroup1").with_gid(1234) }
       it { is_expected.to contain_group("examplegroup2").with_gid(2468) }
+      it { is_expected.to contain_group("gidlessgroup") }
 
       context "when given different_group with a gid of 2358" do
         let(:params) { {all_groups: {"different_group" => 2358}} }
