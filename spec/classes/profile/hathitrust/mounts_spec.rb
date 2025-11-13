@@ -52,6 +52,10 @@ describe "nebula::profile::hathitrust::mounts" do
             device: "truenas:/mnt/tank/sdr",
             fstype: "nfs"
           )
+          is_expected.to contain_mount("/htapps").with(
+            device: "truenas:/mnt/tank/htapps",
+            fstype: "nfs"
+          )
         end
 
         it "symlinks /sdr#" do
