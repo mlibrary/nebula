@@ -103,12 +103,22 @@ define nebula::virtual_machine (
     }
   } else {
     # If the VM does not already exist, create it.
-    if $build == 'bullseye' or $build == 'bookworm' {
+    if $build == 'bullseye' or $build == 'bookworm' or $build == 'trixie' {
       file { "${tmpdir}/preseed.cfg":
         content => template("nebula/virtual_machine/${build}.cfg.erb"),
       }
 
       $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
+    }
+
+    # After bullseye, virt-install no longer supports specific debian
+    # variants. To install bookworm, trixie, or presumably anything
+    # newer, set the variant to bullseye but set the location to the
+    # installer that you actually want.
+    $os_variant = case $build {
+      'bookworm': { 'debianbullseye' }
+      'trixie': { 'debianbullseye' }
+      default: { "debian${build}" }
     }
 
     exec { "${prefix}::virt-install":
@@ -131,7 +141,7 @@ define nebula::virtual_machine (
           -r ${ram_in_mb}                                             \
           --vcpus ${cpus}                                             \
           --location ${location}                                      \
-          --os-variant=debian${build}                                 \
+          --os-variant=${os_variant}                                  \
           --disk '${full_image_path},size=${disk}'                    \
           --network bridge=${internet_bridge},model=virtio            \
           --network bridge=${lan_bridge},model=virtio                 \

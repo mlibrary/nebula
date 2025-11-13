@@ -36,7 +36,7 @@
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
-      "operatingsystemrelease": ["11","12"]
+      "operatingsystemrelease": ["11","12","13"]
     },
     {
       "operatingsystem": "Ubuntu",

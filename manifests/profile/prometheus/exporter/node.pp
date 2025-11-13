@@ -46,9 +46,19 @@ class nebula::profile::prometheus::exporter::node (
     require => Package['prometheus-node-exporter'],
   }
 
+  # That we have to create this almost certainly means it's no longer in
+  # use and doesn't do anything. This is all a holdover from a time when
+  # the node exporter was unstable and we did not trust it---the best
+  # fix before deleting this block (along with all the log deletion that
+  # goes with it) is to upgrade the node exporter.
+  file { '/etc/rsyslog.d':
+    ensure => 'directory',
+  }
+
   file { '/etc/rsyslog.d/prometheus-node-exporter.conf':
     content => template('nebula/profile/prometheus/exporter/node/rsyslog.conf.erb'),
     notify  => Service['prometheus-node-exporter', 'rsyslog'],
+    require => File['/etc/rsyslog.d'],
   }
 
   $prometheus_errors_total = $facts['prometheus_errors_total']
