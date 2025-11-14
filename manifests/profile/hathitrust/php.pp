@@ -49,19 +49,6 @@ class nebula::profile::hathitrust::php () {
       'Pager'                 => { package_prefix => '', provider => 'pear' },
       'PHP_Compat'            => { package_prefix => '', provider => 'pear' },
       'Structures_LinkedList' => { ensure => 'beta', package_prefix => '', provider => 'pear' },
-
-      'Auth_SASL'             => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'HTTP_Request'          => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'Mail'                  => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'Net_SMTP'              => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'Net_Socket'            => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'Net_URL'               => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'Net_URL_Mapper'        => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'PhpDocumentor'         => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'Structures_DataGrid'   => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'XML_Beautifier'        => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'XML_Parser'            => { ensure => 'absent', package_prefix => '', provider => 'pear' },
-      'XML_Serializer'        => { ensure => 'absent', package_prefix => '', provider => 'pear' },
     },
   }
 
