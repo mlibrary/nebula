@@ -11,13 +11,14 @@
 class nebula::profile::www_lib::vhosts::www_lib (
   String $prefix,
   String $domain,
-  String $ssl_cn = 'www.lib.umich.edu',
+  String $ssl_cn = 'lib.umich.edu',
   String $www_lib_root = '/www/www.lib-fallback',
   String $docroot = "${www_lib_root}/web"
 ) {
   nebula::apache::www_lib_vhost { 'www.lib-ssl':
     servername  => "${prefix}www.${domain}",
     ssl         => true,
+    ssl_cn      => $ssl_cn,
     usertrack   => true,
     docroot     => $docroot,
     directories => [

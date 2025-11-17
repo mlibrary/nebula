@@ -11,7 +11,7 @@
 class nebula::profile::www_lib::vhosts::mgetit (
   String $prefix,
   String $domain,
-  String $ssl_cn = 'www.lib.umich.edu',
+  String $ssl_cn = 'lib.umich.edu',
   String $docroot = '/www/mgetit/current/public'
 ) {
   $servername = "${prefix}mgetit.${domain}"

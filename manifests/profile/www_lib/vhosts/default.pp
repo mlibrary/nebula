@@ -12,7 +12,7 @@
 class nebula::profile::www_lib::vhosts::default (
   String $prefix,
   String $domain,
-  String $ssl_cn = 'www.lib.umich.edu'
+  String $ssl_cn = 'lib.umich.edu'
 ) {
   nebula::apache::www_lib_vhost { '000-default':
     ssl        => false,
