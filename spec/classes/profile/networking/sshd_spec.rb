@@ -7,7 +7,7 @@ require "spec_helper"
 
 describe "nebula::profile::networking::sshd" do
   def contain_sshd
-    contain_file("/etc/ssh/sshd_config")
+    contain_file("/etc/ssh/sshd_config.d/50-lit.conf")
   end
 
   on_supported_os.each do |os, os_facts|
@@ -25,7 +25,6 @@ describe "nebula::profile::networking::sshd" do
       end
 
       [
-        %r{^#Port 22$},
         %r{^PermitRootLogin (prohibit|without)-password$},
         %r{^PubkeyAuthentication no$},
         %r{^PasswordAuthentication no$},
@@ -33,11 +32,7 @@ describe "nebula::profile::networking::sshd" do
         %r{^GSSAPIAuthentication no$},
         %r{^GSSAPICleanupCredentials yes$},
         %r{^UsePAM yes$},
-        %r{^X11Forwarding yes$},
-        %r{^PrintMotd no$},
         %r{^UsePrivilegeSeparation yes$},
-        %r{^AcceptEnv LANG LC_\*$},
-        %r{^Subsystem\s+sftp\s+/usr/lib/openssh/sftp-server$},
         %r{^Match Address 10\.1\.1\.0/24,10\.2\.2\.0/24,!10\.2\.2\.2\n\s*PubkeyAuthentication yes$}m
       ].each do |line|
         it { is_expected.to contain_sshd.with_content(line) }
