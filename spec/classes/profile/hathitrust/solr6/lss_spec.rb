@@ -37,7 +37,7 @@ describe "nebula::profile::hathitrust::solr6::lss" do
           {is_primary_site: true}
         end
 
-        it {
+        xit {
           expect(subject).to contain_file("/usr/local/bin/index-release")
             .with_content(%r|^if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/lss-release-\${TODAY} --resolve "babel.hathitrust.org:443:5.4.3.2"|)
         }

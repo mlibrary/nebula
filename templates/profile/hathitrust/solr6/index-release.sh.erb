@@ -29,11 +29,11 @@ if [ -f $BASE/flags/${SNAP}/busy ]; then
 fi
 
 <% if @is_primary_site %>
-# check whether release happened at mirror site
-if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/<%= @solr_name %>-release-${TODAY} --resolve "babel.hathitrust.org:443:<%= @mirror_site_ip %>" >& /dev/null; then
-  /bin/echo "Mirror site index release appears to have failed...skip release today"
-  exit 1
-fi
+# # check whether release happened at mirror site
+# if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/<%= @solr_name %>-release-${TODAY} --resolve "babel.hathitrust.org:443:<%= @mirror_site_ip %>" >& /dev/null; then
+#   /bin/echo "Mirror site index release appears to have failed...skip release today"
+#   exit 1
+# fi
 <% end %>
 
 for s in $CORES; do
