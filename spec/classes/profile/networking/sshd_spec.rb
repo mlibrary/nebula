@@ -81,7 +81,7 @@ describe "nebula::profile::networking::sshd" do
         end
       end
 
-      it { is_expected.to contain_file("/etc/pam.d/sshd-defaults") }
+      it { is_expected.to contain_exec("divert pam.d/sshd").with_creates("/etc/pam.d/sshd-defaults") }
 
       it { is_expected.to contain_concat_file("/etc/pam.d/sshd").with_path("/etc/pam.d/sshd") }
 
