@@ -11,6 +11,12 @@ describe "nebula::profile::prometheus" do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
+      it { is_expected.to contain_package("prometheus") }
+      it { is_expected.to contain_service("prometheus") }
+      it { is_expected.to contain_package("prometheus-pushgateway") }
+      it { is_expected.to contain_service("prometheus-pushgateway") }
+
+      it { is_expected.to contain_file("/etc/prometheus/prometheus.yml").that_notifies("Service[prometheus]") }
     end
   end
 end
