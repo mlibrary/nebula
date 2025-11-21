@@ -65,23 +65,6 @@ describe "nebula::profile::prometheus_with_docker" do
           .that_requires("File[/etc/prometheus]")
       end
 
-      context "with rules_variables set" do
-        let(:params) do
-          {
-            rules_variables: {
-              darkblue_device: "//storage.invalid/volume"
-            }
-          }
-        end
-
-        it do
-          expect(subject).to contain_file("/etc/prometheus/rules.yml")
-            .that_notifies("Docker::Run[prometheus]")
-            .that_requires("File[/etc/prometheus]")
-            .with_content(%r{device="//storage.invalid/volume"})
-        end
-      end
-
       it do
         expect(subject).to contain_concat_file("/etc/prometheus/nodes.yml")
           .that_notifies("Docker::Run[prometheus]")

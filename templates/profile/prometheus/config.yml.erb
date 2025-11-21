@@ -11,9 +11,9 @@ alerting:
   alertmanagers:
   - scheme: https
     tls_config:
-      ca_file: /tls/ca.crt
-      cert_file: /tls/client.crt
-      key_file: /tls/client.key
+      ca_file: <%= @client_ca %>
+      cert_file: <%= @client_cert %>
+      key_file: <%= @client_key %>
     static_configs:
     - targets:
 <% @alert_managers.each do |alert_manager| -%>
@@ -23,8 +23,8 @@ alerting:
 remote_write:
   - url: https://mimir.lib.umich.edu/push
     tls_config:
-      cert_file: /tls/client.crt
-      key_file: /tls/client.key
+      cert_file: <%= @client_cert %>
+      key_file: <%= @client_key %>
     # Temporarily restrict to very recent samples while stabilizing the tuning
     queue_config:
       sample_age_limit: 300s
