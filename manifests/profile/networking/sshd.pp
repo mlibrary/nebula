@@ -37,12 +37,9 @@ class nebula::profile::networking::sshd (
     notify  => Service['sshd'],
   }
 
-  concat { '/etc/ssh/ssh_config': }
-
-  concat_fragment { 'main ssh client config':
-    target  => '/etc/ssh/ssh_config',
-    order   => '01',
-    content => template('nebula/profile/networking/ssh_config.erb'),
+  # Reset ssh_config to original distro config. May be deleted once this has been applied to existing hosts.
+  file { '/etc/ssh/ssh_config':
+    source => "puppet:///modules/nebula/default/${facts['os']['distro']['codename']}/etc/ssh/ssh_config",
   }
 
   # The PAM defaults for sshd have been unchanged between jessie and buster...
