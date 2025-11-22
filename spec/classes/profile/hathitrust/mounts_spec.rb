@@ -15,8 +15,11 @@ describe "nebula::profile::hathitrust::mounts" do
       it { is_expected.to contain_mount("/sdr1").with_options("auto,hard,nfsvers=3,ro") }
       it { is_expected.to contain_nebula__nfs_mount("/sdr1") }
 
-      it { is_expected.to contain_mount("/htapps").that_requires("File[/etc/resolv.conf]") }
-      it { is_expected.to contain_mount("/htapps").that_requires("Service[bind9]") }
+      it {
+        is_expected.to contain_mount("/htapps")
+          .that_requires("File[/etc/resolv.conf]")
+          .that_requires("Service[bind9]")
+      }
       it { is_expected.to contain_nebula__nfs_mount("/htapps") }
 
       it { is_expected.to contain_file("/etc/resolv.conf").with_content(%r{nameserver 127.0.0.1}) }

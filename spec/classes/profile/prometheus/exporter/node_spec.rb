@@ -82,8 +82,11 @@ describe "nebula::profile::prometheus::exporter::node" do
       context "with promfile_owner set to brlglph" do
         let(:params) { {promfile_owner: "brlglph"} }
 
-        it { is_expected.to contain_file("/var/lib/prometheus/node-exporter").with_owner("brlglph") }
-        it { is_expected.to contain_file("/var/lib/prometheus/node-exporter").with_group("prometheus") }
+        it {
+          is_expected.to contain_file("/var/lib/prometheus/node-exporter")
+            .with_owner("brlglph")
+            .with_group("prometheus")
+        }
       end
 
       it do

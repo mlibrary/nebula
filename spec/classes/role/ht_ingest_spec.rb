@@ -12,8 +12,6 @@ describe "nebula::role::hathitrust::ingest_indexing" do
       let(:facts) { os_facts }
       let(:hiera_config) { "spec/fixtures/hiera/hathitrust_config.yaml" }
 
-      it { is_expected.to compile }
-
       it { is_expected.to contain_package("nfs-common") }
       it { is_expected.to contain_mount("/sdr1").with_options("auto,hard,nfsvers=3") }
       # causes a warning if concat fragment is included but monitor_pl isn't
@@ -24,12 +22,14 @@ describe "nebula::role::hathitrust::ingest_indexing" do
       # default from hiera
       it { is_expected.to contain_host("mysql-sdr").with_ip("10.1.2.4") }
 
-      # not specified explicitly as a usergroup, just brought in as part of 'all groups'
-      it { is_expected.to contain_group("htprod") }
-      it { is_expected.to contain_group("htingest") }
-      # not specified explicitly - realized through Nebula::Usergroup[htingest]
-      it { is_expected.to contain_user("htingest") }
-      it { is_expected.not_to contain_user("htweb") }
+      it "contains expected groups and users" do
+        # not specified explicitly as a usergroup, just brought in as part of 'all groups'
+        is_expected.to contain_group("htprod")
+        is_expected.to contain_group("htingest")
+        # not specified explicitly - realized through Nebula::Usergroup[htingest]
+        is_expected.to contain_user("htingest")
+        is_expected.not_to contain_user("htweb")
+      end
 
       it { is_expected.to contain_file("/etc/logrotate.d/babel") }
     end

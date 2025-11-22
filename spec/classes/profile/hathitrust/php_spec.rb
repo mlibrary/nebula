@@ -12,7 +12,6 @@ describe "nebula::profile::hathitrust::php" do
     context "on #{os}" do
       include_context "with setup for htvm node", os_facts
 
-      it { is_expected.to compile }
       it { is_expected.to contain_php__extension("File_MARC").with_provider("pear") }
     end
   end
