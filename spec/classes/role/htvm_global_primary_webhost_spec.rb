@@ -11,13 +11,12 @@ describe "nebula::role::webhost::htvm::global_primary" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       include_context "with setup for htvm node", os_facts
-      it { is_expected.to compile }
 
-      # includes cron jobs that run on only one node in cluster
-      it { is_expected.to contain_class("nebula::profile::hathitrust::cron::catalog") }
-      it { is_expected.to contain_class("nebula::role::webhost::htvm::site_primary") }
+      it "contains expected nebula manifests, crons" do
+        # includes cron jobs that run on only one node in cluster
+        is_expected.to contain_class("nebula::profile::hathitrust::cron::catalog")
+        is_expected.to contain_class("nebula::role::webhost::htvm::site_primary")
 
-      it do
         expect(subject).to contain_cron("wordpress cron")
           .with(user: "nobody",
             command: %r{.*wp-cron.php.*},
