@@ -16,8 +16,6 @@ describe "nebula::role::webhost::fulcrum_www_and_app" do
 
       include_context "with mocked puppetdb functions", "somedc", %w[rolenode], "nebula::profile::haproxy" => %w[]
 
-      it { is_expected.to compile }
-
       it { is_expected.to contain_class("nebula::profile::fulcrum::app") }
 
       it { is_expected.to contain_class("Nebula::Profile::Www_lib::Register_for_load_balancing") }

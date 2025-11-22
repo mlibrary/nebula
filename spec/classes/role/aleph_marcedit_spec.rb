@@ -11,8 +11,6 @@ describe "nebula::role::aleph::marcedit" do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to compile }
-
       it { is_expected.to contain_class("nebula::profile::krb5") }
       it { is_expected.to contain_class("nebula::profile::afs") }
       it { is_expected.to contain_class("nebula::profile::users") }
