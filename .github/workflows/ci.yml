@@ -13,7 +13,15 @@ jobs:
       matrix:
         target:
         - "lint"
-        - "specs"
+        - "all_roles_1"
+        - "all_roles_2"
+        - "classes"
+        - "defines_and_functions"
+        - "ht_profiles"
+        - "ht_roles"
+        - "profiles_1"
+        - "profiles_2"
+        - "roles"
     steps:
     - uses: actions/checkout@v5
     - name: Run tests

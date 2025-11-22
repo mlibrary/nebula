@@ -1,8 +1,62 @@
-version: '3'
 services:
   specs:
     build: .
     command: 'bundle exec rake parallel_spec'
+
+  all_roles_1:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake spec_prep && bundle exec parallel_rspec --pattern "^spec\/classes\/all_roles_[1-4]_spec\.rb$"'
+  all_roles_2:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake spec_prep && bundle exec parallel_rspec --pattern "^spec\/classes\/all_roles.*_spec\.rb$" --exclude-pattern "^spec\/classes\/all_roles_[1-4].*$"'
+  classes:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake spec_prep && bundle exec parallel_rspec --pattern "^spec\/classes\/.*_spec\.rb$" --exclude-pattern "^spec\/classes\/(profile\/|role\/|all_roles_).*$"'
+  defines_and_functions:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake spec_prep && bundle exec parallel_rspec --pattern "^spec\/(defines|functions)\/.*_spec\.rb$"'
+  ht_profiles:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake spec_prep && bundle exec parallel_rspec --pattern "^spec\/classes\/profile\/(hathi|ht).*_spec\.rb$"'
+  ht_roles:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake spec_prep && bundle exec parallel_rspec --pattern "^spec\/classes\/role\/(hathi|ht).*_spec\.rb$"'
+  profiles_1:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake spec_prep && bundle exec parallel_rspec --pattern "^spec\/classes\/profile\/[a-k].*_spec\.rb$" --exclude-pattern "^spec\/classes\/profile\/(hathi|ht).*$"'
+  profiles_2:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake spec_prep && bundle exec parallel_rspec --pattern "^spec\/classes\/profile\/.*_spec\.rb$" --exclude-pattern "^spec\/classes\/profile\/[a-k].*$"'
+  roles:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake spec_prep && bundle exec parallel_rspec --pattern "^spec\/classes\/role\/.*_spec\.rb$" --exclude-pattern "^spec\/classes\/role\/(hathi|ht).*$"'
 
   lint:
     build: .
