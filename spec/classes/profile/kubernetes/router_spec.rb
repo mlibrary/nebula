@@ -50,6 +50,11 @@ describe "nebula::profile::kubernetes::router" do
           .with_tosource("10.0.0.1")
       end
 
+      it "configures sshd MaxStartups" do
+        is_expected.to contain_file("/etc/ssh/sshd_config.d/70-MaxStartups.conf")
+          .with_content(/^MaxStartups 100$/)
+      end
+
       context "with cluster set to second_cluster" do
         let(:hiera_config) { "spec/fixtures/hiera/kubernetes/second_cluster_config.yaml" }
 

@@ -46,4 +46,18 @@ class nebula::profile::kubernetes::router {
     source   => $node_cidr,
     tosource => $public_address,
   }
+
+  service { 'sshd':
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+  }
+
+  file { '/etc/ssh/sshd_config.d/70-MaxStartups.conf':
+    content => @("EOT"),
+    # allow >10 simultaneous pending connections so Puppet Bolt can reach worker nodes _en masse_
+    MaxStartups 100
+    | EOT
+    notify  => Service['sshd'],
+  }
 }
