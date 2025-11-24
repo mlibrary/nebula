@@ -18,20 +18,9 @@ describe "nebula::role::webhost::htvm" do
           .with(watchdog_minutes: "*/30")
       end
 
-      it do
-        expect(subject).to contain_class("nebula::profile::hathitrust::dependencies")
-        expect(subject).to contain_class("nebula::profile::hathitrust::hosts")
-        expect(subject).to contain_class("nebula::profile::hathitrust::mounts")
-        expect(subject).to contain_class("nebula::profile::hathitrust::perl")
-        expect(subject).to contain_class("nebula::profile::hathitrust::php")
-      end
-
-      it do
+      it "contains nfs monitor concat fragments" do
         expect(subject).to contain_concat_fragment("monitor nfs /sdr1")
           .with(tag: "monitor_config", content: {"nfs" => ["/sdr1"]}.to_yaml)
-      end
-
-      it do
         expect(subject).to contain_concat_fragment("monitor nfs /htapps")
           .with(tag: "monitor_config", content: {"nfs" => ["/htapps"]}.to_yaml)
       end
@@ -52,25 +41,37 @@ describe "nebula::role::webhost::htvm" do
         it { is_expected.to contain_service("bind9").that_requires("Exec[ifup ens4]") }
       end
 
-      it { is_expected.to contain_class("nebula::profile::networking::firewall") }
+      it "contains expected nebula profiles" do
+        expect(subject).to contain_class("nebula::profile::hathitrust::dependencies")
+        expect(subject).to contain_class("nebula::profile::hathitrust::hosts")
+        expect(subject).to contain_class("nebula::profile::hathitrust::mounts")
+        expect(subject).to contain_class("nebula::profile::hathitrust::perl")
+        expect(subject).to contain_class("nebula::profile::hathitrust::php")
 
-      it { is_expected.to contain_class("nebula::profile::krb5") }
-      it { is_expected.to contain_class("nebula::profile::afs") }
-      it { is_expected.to contain_class("nebula::profile::users") }
+        is_expected.to contain_class("nebula::profile::networking::firewall")
 
-      if os == "debian-11-x86_64"
-        it { is_expected.not_to contain_package("php5-common") }
-        it { is_expected.not_to contain_package("php5-dev") }
-        it { is_expected.to contain_package("libapache2-mod-shib") }
-        it { is_expected.not_to contain_package("libapache2-mod-shib2") }
+        is_expected.to contain_class("nebula::profile::krb5")
+        is_expected.to contain_class("nebula::profile::afs")
+        is_expected.to contain_class("nebula::profile::users")
       end
 
-      # not specified explicitly as a usergroup, just brought in as part of 'all groups'
-      it { is_expected.to contain_group("htprod") }
-      it { is_expected.to contain_group("htingest") }
-      # not specified explicitly - realized through Nebula::Usergroup[htprod]
-      it { is_expected.to contain_user("htingest") }
-      it { is_expected.to contain_user("htweb") }
+      if os == "debian-11-x86_64"
+        it "contains expected php and apache packages" do
+          is_expected.not_to contain_package("php5-common")
+          is_expected.not_to contain_package("php5-dev")
+          is_expected.to contain_package("libapache2-mod-shib")
+          is_expected.not_to contain_package("libapache2-mod-shib2")
+        end
+      end
+
+      it "contains expected groups" do
+        # not specified explicitly as a usergroup, just brought in as part of 'all groups'
+        is_expected.to contain_group("htprod")
+        is_expected.to contain_group("htingest")
+        # not specified explicitly - realized through Nebula::Usergroup[htprod]
+        is_expected.to contain_user("htingest")
+        is_expected.to contain_user("htweb")
+      end
 
       it { is_expected.to contain_nebula__cpan("Prometheus::Tiny::Shared") }
     end
