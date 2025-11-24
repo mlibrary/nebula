@@ -120,18 +120,24 @@ describe "nebula::profile::haproxy" do
       end
 
       describe "service" do
-        it { is_expected.to contain_service(service).that_requires("Package[keepalived]") }
-        it { is_expected.to contain_service(service).with(enable: true) }
-        it { is_expected.to contain_service(service).with(ensure: "running") }
+        it {
+          is_expected.to contain_service(service)
+            .that_requires("Package[keepalived]")
+            .with(enable: true)
+            .with(ensure: "running")
+        }
       end
 
       describe "haproxy default file" do
         let(:file) { default_file }
 
-        it { is_expected.to contain_file(file).with(ensure: "file") }
-        it { is_expected.to contain_file(file).with(require: "Package[haproxy]") }
-        it { is_expected.to contain_file(file).with(notify: "Service[haproxy]") }
-        it { is_expected.to contain_file(file).with(mode: "0644") }
+        it {
+          is_expected.to contain_file(file)
+            .with(ensure: "file")
+            .with(require: "Package[haproxy]")
+            .with(notify: "Service[haproxy]")
+            .with(mode: "0644")
+        }
 
         it "says it is managed by puppet" do
           expect(subject).to contain_file(file).with_content(
@@ -166,10 +172,14 @@ describe "nebula::profile::haproxy" do
       describe "base haproxy config file" do
         let(:file) { haproxy_conf }
 
-        it { is_expected.to contain_file(file).with(ensure: "file") }
-        it { is_expected.to contain_file(file).with(require: "Package[haproxy]") }
-        it { is_expected.to contain_file(file).with(notify: "Service[haproxy]") }
-        it { is_expected.to contain_file(file).with(mode: "0644") }
+        it {
+          is_expected.to contain_file(file)
+            .with(ensure: "file")
+            .with(require: "Package[haproxy]")
+            .with(notify: "Service[haproxy]")
+            .with(mode: "0644")
+        }
+
         it { is_expected.to contain_file("/etc/haproxy/services.d").with(ensure: "directory") }
 
         it "says it is managed by puppet" do
@@ -264,16 +274,21 @@ describe "nebula::profile::haproxy" do
           )
         end
 
-        it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(%r{interface #{facts[:networking][:primary]}}) }
-
-        it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m) }
-        it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(%r{notification_email_from root@default.invalid}) }
+        it {
+          is_expected.to contain_concat_fragment("keepalived preamble")
+            .with_content(%r{interface #{facts[:networking][:primary]}})
+            .with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m)
+            .with_content(%r{notification_email_from root@default.invalid})
+        }
 
         context "when on a master node" do
           let(:params) { base_params.merge(master: true) }
 
-          it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(%r{priority 101}) }
-          it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(%r{state MASTER}) }
+          it {
+            is_expected.to contain_concat_fragment("keepalived preamble")
+              .with_content(%r{priority 101})
+              .with_content(%r{state MASTER})
+          }
 
           it do
             expect(subject).to contain_class("Nebula::Profile::Prometheus::Exporter::Haproxy")
@@ -284,8 +299,11 @@ describe "nebula::profile::haproxy" do
         context "when on a backup node" do
           let(:params) { base_params.merge(master: false) }
 
-          it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(%r{priority 100}) }
-          it { is_expected.to contain_concat_fragment("keepalived preamble").with_content(%r{state BACKUP}) }
+          it {
+            is_expected.to contain_concat_fragment("keepalived preamble")
+              .with_content(%r{priority 100})
+              .with_content(%r{state BACKUP})
+          }
 
           it do
             expect(subject).to contain_class("Nebula::Profile::Prometheus::Exporter::Haproxy")
@@ -297,8 +315,11 @@ describe "nebula::profile::haproxy" do
       describe "sysctl conf" do
         let(:file) { "/etc/sysctl.d/keepalived.conf" }
 
-        it { is_expected.to contain_file(file).with(ensure: "file") }
-        it { is_expected.to contain_file(file).with(mode: "0644") }
+        it {
+          is_expected.to contain_file(file)
+            .with(ensure: "file")
+            .with(mode: "0644")
+        }
 
         it "says it is managed by puppet" do
           expect(subject).to contain_file(file).with_content(
@@ -339,13 +360,16 @@ describe "nebula::profile::haproxy" do
       describe "log rotation" do
         let(:rotate_logs) { contain_logrotate__rule("haproxy") }
 
-        it { is_expected.to rotate_logs.with_path("/var/log/haproxy.log") }
-        it { is_expected.to rotate_logs.with_rotate_every("day") }
-        it { is_expected.to rotate_logs.with_rotate(5) }
-        it { is_expected.to rotate_logs.with_missingok(true) }
-        it { is_expected.to rotate_logs.with_ifempty(false) }
-        it { is_expected.to rotate_logs.with_compress(true) }
-        it { is_expected.to rotate_logs.with_postrotate(["/usr/lib/rsyslog/rsyslog-rotate", "/bin/systemctl restart filebeat"]) }
+        it {
+          is_expected.to rotate_logs
+            .with_path("/var/log/haproxy.log")
+            .with_rotate_every("day")
+            .with_rotate(5)
+            .with_missingok(true)
+            .with_ifempty(false)
+            .with_compress(true)
+            .with_postrotate(["/usr/lib/rsyslog/rsyslog-rotate", "/bin/systemctl restart filebeat"])
+        }
       end
     end
   end
