@@ -25,7 +25,7 @@ describe "nebula::role::webhost::www_lib_vm" do
 
       it { is_expected.to contain_apache__vhost("000-default").with(port: 80, ssl: false) }
 
-      it { is_expected.to contain_apache__vhost("000-default-ssl").with(ssl: true, ssl_cert: "/etc/ssl/certs/www.lib.umich.edu.crt") }
+      it { is_expected.to contain_apache__vhost("000-default-ssl").with(ssl: true, ssl_cert: "/etc/ssl/certs/lib.umich.edu.crt") }
 
       it "configures shibboleth" do
         expect(subject).to contain_class("nebula::profile::shibboleth")
@@ -49,7 +49,7 @@ describe "nebula::role::webhost::www_lib_vm" do
           .with(servername: "www.lib.umich.edu",
             port: 443,
             ssl: true,
-            ssl_cert: "/etc/ssl/certs/www.lib.umich.edu.crt")
+            ssl_cert: "/etc/ssl/certs/lib.umich.edu.crt")
           .with_error_log_file("error.log")
           .with_custom_fragment(%r{CookieName skynet})
       end
@@ -64,7 +64,7 @@ describe "nebula::role::webhost::www_lib_vm" do
 
       it do
         expect(subject).to contain_concat_fragment("www.lib-ssl-ssl")
-          .with_content(%r{^\s*SSLCertificateFile\s*"/etc/ssl/certs/www.lib.umich.edu.crt"$})
+          .with_content(%r{^\s*SSLCertificateFile\s*"/etc/ssl/certs/lib.umich.edu.crt"$})
       end
 
       it do

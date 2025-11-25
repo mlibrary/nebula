@@ -43,7 +43,7 @@ class nebula::profile::www_lib::apache::misc (
       'staff.lib.umich.edu',
       'search.lib.umich.edu',
       'theater-historiography.org',
-      'www.lib.umich.edu',
+      'lib.umich.edu',
     ]:
   }
   # depends on ssl_keypairs above (or delcared in includes like apache::fulcrum)

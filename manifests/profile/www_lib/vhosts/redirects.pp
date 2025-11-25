@@ -14,7 +14,7 @@ class nebula::profile::www_lib::vhosts::redirects (
   }
 
   nebula::apache::redirect_vhost_https { 'lib.umich.edu':
-    ssl_cn        => 'www.lib.umich.edu',
+    ssl_cn        => 'lib.umich.edu',
     serveraliases => ['lib', 'library.umich.edu', 'www.library.umich.edu'],
   }
 
