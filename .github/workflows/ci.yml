@@ -6,17 +6,59 @@ on:
   pull_request:
 
 jobs:
-  test:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - name: lint with Standard Ruby style guide
+      run: bundle exec standardrb
+    - name: check Puppet syntax
+      run: bundle exec rake syntax
+    - name: Run puppet-lint
+      run: bundle exec rake lint
+    - name: lint metadata.json
+      run: bundle exec rake metadata_lint
+  spec:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         target:
-        - "lint"
-        - "specs"
+        - name: all roles (1)
+          pattern: '"^spec\/classes\/all_roles_[1-4]_spec\.rb$"'
+        - name: all roles (2)
+          pattern: '"^spec\/classes\/all_roles_[5-8]_spec\.rb$"'
+        - name: classes
+          pattern: '"^spec\/.*_spec\.rb$" --exclude-pattern "^spec\/(fixtures|classes\/(profile\/|role\/|all_roles_))"'
+        - name: profiles (1)
+          pattern: '"^spec\/classes\/profile\/[a-h].*_spec\.rb$"'
+        - name: profiles (2)
+          pattern: '"^spec\/classes\/profile\/.*_spec\.rb$" --exclude-pattern "^spec\/classes\/profile\/[a-h].*_spec\.rb$"'
+        - name: roles
+          pattern: '"^spec\/classes\/role\/.*_spec\.rb$"'
+    env:
+      PARALLEL_RSPEC_FLAGS: --verbose-process-command --verbose-rerun-command --serialize-stdout
     steps:
     - uses: actions/checkout@v6
-    - name: Run tests
-      run: |
-        docker compose --file docker-compose.test.yml build
-        docker compose --file docker-compose.test.yml run ${{ matrix.target }}
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - name: Restore fixtures cache
+      uses: actions/cache/restore@v4
+      id: cache-fixtures-modules-restore
+      with:
+        path: spec/fixtures/modules
+        key: cache-fixtures-modules-${{ hashFiles('.fixtures.yml') }}
+    - name: rake spec_prep
+      run: bundle exec rake spec_prep
+    - if: ${{ steps.cache-fixtures-modules-restore.outputs.cache-hit != 'true' }}
+      name: Save fixtures cache
+      uses: actions/cache/save@v4
+      with:
+        path: spec/fixtures/modules
+        key: cache-fixtures-modules-${{ hashFiles('.fixtures.yml') }}
+    - name: Run rspec on ${{ matrix.target.name }}
+      run: bundle exec parallel_rspec --pattern ${{ matrix.target.pattern }} ${{ env.PARALLEL_RSPEC_FLAGS }}
