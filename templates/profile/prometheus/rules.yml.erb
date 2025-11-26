@@ -419,13 +419,13 @@ groups:
       severity: "ticket"
     annotations:
       summary: "{{$labels.frontend}} frontend on {{$labels.hostname}} approaching its maxconn limit"
-  - alert: "HAProxyRunningCloseToBackendSessionLimit"
-    expr: "haproxy_backend_limit_sessions - haproxy_backend_current_sessions < 500"
+  - alert: "DramaticIncreaseInHAProxyTraffic"
+    expr: "avg_over_time(haproxy_frontend_current_sessions[30m]) - avg_over_time(haproxy_frontend_current_sessions[3h]) > 1000"
     for: "30m"
     labels:
-      severity: "ticket"
+      severity: "info"
     annotations:
-      summary: "{{$labels.backend}} backend on {{$labels.hostname}} approaching its session limit and we don't know if that's something we can configure"
+      summary: "{{$labels.frontend}} frontend on {{$labels.hostname}} is getting slammed"
 
   # These are aggregate rules for federated collection across our full
   # system. By putting them here, we essentially precompile them.
