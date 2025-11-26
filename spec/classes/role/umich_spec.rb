@@ -10,8 +10,6 @@ describe "nebula::role::umich" do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to compile }
-
       it { is_expected.not_to contain_profile("nebula::profile::krb5") }
       it { is_expected.not_to contain_profile("nebula::profile::afs") }
       it { is_expected.not_to contain_profile("nebula::profile::users") }

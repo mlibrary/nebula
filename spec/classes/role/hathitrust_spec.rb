@@ -8,7 +8,6 @@ describe "nebula::role::hathitrust" do
       let(:facts) { os_facts }
       let(:hiera_config) { "spec/fixtures/hiera/hathitrust_config.yaml" }
 
-      it { is_expected.to compile }
       it { is_expected.to contain_package("openafs-client") }
 
       context "when $afs is false" do

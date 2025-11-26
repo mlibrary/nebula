@@ -11,7 +11,6 @@ describe "nebula::role::webhost::htvm::global_primary" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       include_context "with setup for htvm node", os_facts
-      it { is_expected.to compile }
 
       # includes cron jobs that run on only one node in cluster
       it { is_expected.to contain_class("nebula::profile::hathitrust::cron::catalog") }

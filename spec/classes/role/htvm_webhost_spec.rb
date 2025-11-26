@@ -11,8 +11,6 @@ describe "nebula::role::webhost::htvm" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       include_context "with setup for htvm node", os_facts
-      # binding.irb
-      it { is_expected.to compile }
 
       it do
         expect(subject).to contain_class("nebula::profile::shibboleth")

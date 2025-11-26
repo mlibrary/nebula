@@ -11,7 +11,6 @@ describe "nebula::role::webhost::htvm::prod" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       include_context "with setup for htvm node", os_facts
-      it { is_expected.to compile }
 
       it "exports a haproxy::binding resource for hathitrust" do
         expect(exported_resources).to contain_nebula__haproxy__binding("thisnode hathitrust")

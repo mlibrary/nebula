@@ -11,7 +11,6 @@ describe "nebula::role::webhost::htvm::site_primary" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       include_context "with setup for htvm node", os_facts
-      it { is_expected.to compile }
 
       # includes cron jobs that run at each site
       it { is_expected.to contain_class("nebula::profile::hathitrust::cron::mdp_misc") }

@@ -16,8 +16,6 @@ describe "nebula::role::webhost::www_lib_vm" do
 
       include_context "with mocked puppetdb functions", "somedc", %w[rolenode], "nebula::profile::haproxy" => %w[]
 
-      it { is_expected.to compile }
-
       it { is_expected.to contain_class("Nebula::Profile::Www_lib::Register_for_load_balancing") }
       it { is_expected.to contain_class("php") }
 

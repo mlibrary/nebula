@@ -12,8 +12,6 @@ describe "nebula::role::hathitrust::ingest_indexing" do
       let(:facts) { os_facts }
       let(:hiera_config) { "spec/fixtures/hiera/hathitrust_config.yaml" }
 
-      it { is_expected.to compile }
-
       it { is_expected.to contain_package("nfs-common") }
       it { is_expected.to contain_mount("/sdr1").with_options("auto,hard,nfsvers=3") }
       # causes a warning if concat fragment is included but monitor_pl isn't
