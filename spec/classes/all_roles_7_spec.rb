@@ -3,4 +3,4 @@
 require "spec_helper"
 require_relative "./all_roles"
 
-test_roles(3, 8)
+test_roles(7, 8)

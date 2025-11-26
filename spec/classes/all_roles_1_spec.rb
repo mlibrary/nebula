@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "./all_roles_spec"
+require_relative "./all_roles"
 
-test_roles(1, 5)
+test_roles(1, 8)

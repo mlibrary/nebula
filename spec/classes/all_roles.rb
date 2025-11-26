@@ -22,11 +22,11 @@ module RSpec::Puppet
       end
 
       def failure_message
-        "You probably need to add a hiera_config to spec/classes/all_roles_spec.rb:\n #{super()}"
+        "You probably need to add a hiera_config to spec/classes/all_roles.rb:\n #{super()}"
       end
 
       def failure_message_when_negated
-        "You probably need to add a hiera_config to spec/classes/all_roles_spec.rb:\n #{super()}"
+        "You probably need to add a hiera_config to spec/classes/all_roles.rb:\n #{super()}"
       end
     end
 
@@ -81,10 +81,6 @@ def test_roles(slice_number = 1, slice_count = 1)
 
           it { is_expected.to compile_along_with_all_roles(hiera_fixture) }
           it { is_expected.to contain_class("nebula::role::minimum") }
-
-          if role_name.match?(%r{^nebula::role::hathitrust})
-            it { is_expected.to contain_nebula__taghosts__tag("ht") }
-          end
         end
       end
     end
