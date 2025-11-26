@@ -2,21 +2,70 @@ name: Run CI
 
 on:
   push:
-    branches: [$default-branch]
+    branches:
+    - production
   pull_request:
 
 jobs:
-  test:
+  cache_fixtures:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: cache fixtures
+      uses: actions/cache@v4
+      id: cache-fixtures
+      with:
+        path: spec/fixtures/modules
+        key: cache-fixtures-modules-${{ hashFiles('.fixtures.yml') }}
+    - if: ${{ steps.cache-fixtures.outputs.cache-hit != 'true' }}
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - if: ${{ steps.cache-fixtures.outputs.cache-hit != 'true' }}
+      name: rake spec_prep
+      run: bundle exec rake spec_prep
+  lint:
+    needs: cache_fixtures
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - name: lint with Standard Ruby style guide
+      run: bundle exec standardrb
+    - name: check Puppet syntax
+      run: bundle exec rake syntax
+    - name: Run puppet-lint
+      run: bundle exec rake lint
+    - name: lint metadata.json
+      run: bundle exec rake metadata_lint
+  spec:
+    name: "rspec: ${{ matrix.filegroup }}"
+    needs: cache_fixtures
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        target:
-        - "lint"
-        - "specs"
+        filegroup:
+        # each key in rakelib/ci.rake MUST be listed here
+        - all_roles_1
+        - all_roles_2
+        - profiles_1
+        - profiles_2
+        - roles
+        - classes
     steps:
     - uses: actions/checkout@v6
-    - name: Run tests
-      run: |
-        docker compose --file docker-compose.test.yml build
-        docker compose --file docker-compose.test.yml run ${{ matrix.target }}
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - name: Restore fixtures cache
+      uses: actions/cache/restore@v4
+      with:
+        path: spec/fixtures/modules
+        key: cache-fixtures-modules-${{ hashFiles('.fixtures.yml') }}
+    - name: rake spec_prep
+      run: bundle exec rake spec_prep
+    - name: "Run rake ci[${{ matrix.filegroup }}]"
+      run: bundle exec rake ci[${{ matrix.filegroup }}]
