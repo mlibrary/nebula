@@ -23,7 +23,7 @@ jobs:
         - "profiles_2"
         - "roles"
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Run tests
       run: |
         docker compose --file docker-compose.test.yml build
