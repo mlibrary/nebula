@@ -11,7 +11,7 @@ jobs:
   librarian:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Resolve Dependencies
       run: |
         docker compose --file docker-compose.test.yml build
