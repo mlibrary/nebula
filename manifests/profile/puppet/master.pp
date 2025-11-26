@@ -51,6 +51,11 @@ class nebula::profile::puppet::master (
     require => Package['puppetserver'],
   }
 
+  package { 'hiera-eyaml':
+    ensure   => 'installed',
+    provider => 'puppetserver_gem',
+  }
+
   package { 'puppetserver':
     require => Rbenv::Gem['r10k', 'librarian-puppet'],
   }

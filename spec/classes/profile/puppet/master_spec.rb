@@ -83,6 +83,8 @@ describe "nebula::profile::puppet::master" do
         )
       end
 
+      it { is_expected.to contain_package("hiera-eyaml").with_provider("puppetserver_gem") }
+
       it do
         expect(subject).to contain_rbenv__gem("librarian-puppet").with(
           ruby_version: "2.4.3",
