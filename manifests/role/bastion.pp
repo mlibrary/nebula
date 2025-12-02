@@ -10,6 +10,7 @@ class nebula::role::bastion {
   include nebula::profile::interactive
   include nebula::profile::taghosts::index
   include nebula::profile::etc_hosts
+  @nebula::taghosts::tag { 'bastion': }
 
   class { 'nebula::profile::puppet::query':
     ssl_group => 'sudo',
