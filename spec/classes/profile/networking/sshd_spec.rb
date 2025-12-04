@@ -16,6 +16,8 @@ describe "nebula::profile::networking::sshd" do
 
       it { is_expected.to contain_sshd.that_notifies("Service[sshd]") }
 
+      it { is_expected.to contain_file("/etc/ssh/ssh_config.d/80-lit.conf") }
+
       it do
         expect(subject).to contain_service("sshd").only_with(
           ensure: "running",

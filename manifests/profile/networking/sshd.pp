@@ -26,6 +26,10 @@ class nebula::profile::networking::sshd (
     hasrestart => true,
   }
 
+  file { '/etc/ssh/ssh_config.d/80-lit.conf':
+    content => template('nebula/profile/networking/ssh_config.erb'),
+  }
+
   # Reset sshd_config to original distro config. May be deleted once this has been applied to existing hosts.
   file { '/etc/ssh/sshd_config':
     source => "puppet:///modules/nebula/default/${facts['os']['distro']['codename']}/etc/ssh/sshd_config",
