@@ -6,7 +6,7 @@
 require "spec_helper"
 
 describe "nebula::profile::networking::private" do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) do
         os_facts.merge(networking: {ip: "1.2.3.123"})

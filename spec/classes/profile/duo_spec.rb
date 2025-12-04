@@ -10,7 +10,7 @@ describe "nebula::profile::duo" do
     contain_file("/etc/security/pam_duo.conf")
   end
 
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 

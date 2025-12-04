@@ -7,7 +7,7 @@ require "spec_helper"
 require "faker"
 
 describe "nebula::role::app_host::dev" do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 

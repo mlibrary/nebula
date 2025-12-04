@@ -9,7 +9,7 @@ describe "nebula::firewall_allow" do
   let(:title) { "my_firewall_allow" }
   let(:params) { {} }
 
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:hiera_config) { "spec/fixtures/hiera/firewall_allow_config.yaml" }

@@ -6,7 +6,7 @@
 require "spec_helper"
 
 describe "nebula::profile::users" do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:hiera_config) { "spec/fixtures/hiera/ssh_keys_config.yaml" }

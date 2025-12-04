@@ -6,7 +6,7 @@
 require "spec_helper"
 
 describe "nebula::profile::elastic::filebeat::configs::ulib" do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:file) { "/etc/filebeat/configs/ulib.yml" }

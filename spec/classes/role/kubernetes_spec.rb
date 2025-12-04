@@ -7,7 +7,7 @@ require "spec_helper"
 
 %w[primary backup].each do |tier|
   describe "nebula::role::kubernetes::#{tier}_gateway" do
-    on_supported_os.each do |os, os_facts|
+    on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
       next if os == "debian-8-x86_64"
 
       context "on #{os}" do
@@ -38,7 +38,7 @@ end
 
 %w[controller etcd worker].each do |role|
   describe "nebula::role::kubernetes::#{role}" do
-    on_supported_os.each do |os, os_facts|
+    on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
       next if os == "debian-8-x86_64"
 
       context "on #{os}" do
