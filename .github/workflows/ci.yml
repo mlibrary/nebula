@@ -49,10 +49,8 @@ jobs:
       matrix:
         filegroup:
         # each key in rakelib/ci.rake MUST be listed here
-        - all_roles_1
-        - all_roles_2
-        - profiles_1
-        - profiles_2
+        - all_roles
+        - profiles
         - roles
         - classes
     steps:
