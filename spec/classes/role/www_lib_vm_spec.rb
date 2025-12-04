@@ -8,7 +8,7 @@ require "spec_helper"
 require_relative "../../support/contexts/with_mocked_nodes"
 
 describe "nebula::role::webhost::www_lib_vm" do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts.merge(hostname: "thisnode", datacenter: "somedc") }
       let(:rolenode) { {"ip" => Faker::Internet.ip_v4_address, "hostname" => "rolenode"} }

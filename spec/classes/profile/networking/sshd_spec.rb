@@ -10,7 +10,7 @@ describe "nebula::profile::networking::sshd" do
     contain_file("/etc/ssh/sshd_config.d/50-lit.conf")
   end
 
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 

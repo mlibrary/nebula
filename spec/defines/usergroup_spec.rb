@@ -11,7 +11,7 @@ describe "nebula::usergroup" do
     {}
   end
 
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:hiera_config) { "spec/fixtures/hiera/usergroups_config.yaml" }
       let(:facts) { os_facts }

@@ -11,7 +11,7 @@ describe "nebula::file::ssh_keys" do
     {}
   end
 
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 

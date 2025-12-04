@@ -10,7 +10,7 @@ describe "nebula::profile::vmhost::host" do
     contain_nebula__virtual_machine(name)
   end
 
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 
