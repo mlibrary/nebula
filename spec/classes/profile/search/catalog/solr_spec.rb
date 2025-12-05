@@ -10,7 +10,7 @@ describe "nebula::profile::search::catalog::solr" do
     context "on #{os}" do
       let(:facts) do
         os_facts.merge(mlibrary_ip_addresses: {
-          "public" => [os_facts[:ipaddress]],
+          "public" => [os_facts[:networking]["ip"]],
           "private" => []
         })
       end

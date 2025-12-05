@@ -31,7 +31,7 @@ describe "nebula::profile::kubernetes::dns_client" do
         expect(exported_resources).to contain_concat_fragment("/etc/hosts ipv4 #{facts[:networking]["ip"]}")
           .with_target("/etc/hosts")
           .with_order("04")
-          .with_content("#{facts[:networking]["ip"]} #{facts[:fqdn]} #{facts[:hostname]}\n")
+          .with_content("#{facts[:networking]["ip"]} #{facts[:networking]["fqdn"]} #{facts[:networking]["hostname"]}\n")
       end
 
       it do

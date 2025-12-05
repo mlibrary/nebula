@@ -33,7 +33,7 @@ describe "nebula::profile::prometheus::exporter::haproxy" do
       end
 
       it "exports target data" do
-        expect(exported_resources).to contain_concat_fragment("prometheus haproxy service #{facts[:hostname]}")
+        expect(exported_resources).to contain_concat_fragment("prometheus haproxy service #{facts[:networking]["hostname"]}")
           .with_target("/etc/prometheus/haproxy.yml")
           .with_tag("mydatacenter_prometheus_haproxy_service_list")
       end
@@ -42,7 +42,7 @@ describe "nebula::profile::prometheus::exporter::haproxy" do
         let(:params) { {master: false} }
 
         it "exports target data with priority backup" do
-          expect(exported_resources).to contain_concat_fragment("prometheus haproxy service #{facts[:hostname]}")
+          expect(exported_resources).to contain_concat_fragment("prometheus haproxy service #{facts[:networking]["hostname"]}")
             .with_content(%r{priority: 'backup'})
         end
       end
@@ -51,7 +51,7 @@ describe "nebula::profile::prometheus::exporter::haproxy" do
         let(:params) { {master: true} }
 
         it "exports target data with priority primary" do
-          expect(exported_resources).to contain_concat_fragment("prometheus haproxy service #{facts[:hostname]}")
+          expect(exported_resources).to contain_concat_fragment("prometheus haproxy service #{facts[:networking]["hostname"]}")
             .with_content(%r{priority: 'primary'})
         end
       end
@@ -66,7 +66,7 @@ describe "nebula::profile::prometheus::exporter::haproxy" do
         let(:facts) { os_facts.merge(datacenter: "fakedatacenter") }
 
         it do
-          expect(exported_resources).to contain_concat_fragment("prometheus haproxy service #{facts[:hostname]}")
+          expect(exported_resources).to contain_concat_fragment("prometheus haproxy service #{facts[:networking]["hostname"]}")
             .with_tag("fakedatacenter_prometheus_haproxy_service_list")
         end
       end

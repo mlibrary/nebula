@@ -107,14 +107,14 @@ describe "nebula::profile::prometheus::exporter::node" do
       end
 
       it "exports itself to the default datacenter's service discovery" do
-        expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
+        expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
           .with_tag("default_prometheus_node_service_list")
           .with_target("/etc/prometheus/nodes.yml")
           .with_content(%r{'123.123.123.123:9100'})
       end
 
       it "exports itself to the default datacenter's pushgateway" do
-        expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 123.123.123.123")
+        expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:networking]["hostname"]} 123.123.123.123")
           .with_tag("default_pushgateway_node")
           .with_proto("tcp")
           .with_dport(9091)
@@ -132,20 +132,20 @@ describe "nebula::profile::prometheus::exporter::node" do
         end
 
         it "exports itself to the default datacenter's service discovery" do
-          expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
+          expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
             .with_tag("default_prometheus_node_service_list")
             .with_target("/etc/prometheus/nodes.yml")
             .with_content(%r{'100\.100\.100\.100:9100'})
         end
 
         it "exports itself[0] to the default datacenter's pushgateway" do
-          expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 100.100.100.100")
+          expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:networking]["hostname"]} 100.100.100.100")
             .with_tag("default_pushgateway_node")
             .with_source("100.100.100.100")
         end
 
         it "exports itself[1] to the default datacenter's pushgateway" do
-          expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 200.200.200.200")
+          expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:networking]["hostname"]} 200.200.200.200")
             .with_tag("default_pushgateway_node")
             .with_source("200.200.200.200")
         end
@@ -166,12 +166,12 @@ describe "nebula::profile::prometheus::exporter::node" do
         let(:params) { {covered_datacenters: %w[mydatacenter]} }
 
         it "exports itself to its datacenter's service discovery" do
-          expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
+          expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
             .with_tag("mydatacenter_prometheus_node_service_list")
         end
 
         it "exports itself to its datacenter's pushgateway" do
-          expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 10.123.123.123")
+          expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:networking]["hostname"]} 10.123.123.123")
             .with_tag("mydatacenter_pushgateway_node")
             .with_source("10.123.123.123")
         end
@@ -185,20 +185,20 @@ describe "nebula::profile::prometheus::exporter::node" do
           end
 
           it "exports itself to the default datacenter's service discovery" do
-            expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
+            expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
               .with_tag("mydatacenter_prometheus_node_service_list")
               .with_target("/etc/prometheus/nodes.yml")
               .with_content(%r{'10\.1\.2\.3:9100'})
           end
 
           it "exports itself[0] to its datacenter's pushgateway" do
-            expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 10.1.2.3")
+            expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:networking]["hostname"]} 10.1.2.3")
               .with_tag("mydatacenter_pushgateway_node")
               .with_source("10.1.2.3")
           end
 
           it "exports itself[1] to its datacenter's pushgateway" do
-            expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 10.4.5.6")
+            expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:networking]["hostname"]} 10.4.5.6")
               .with_tag("mydatacenter_pushgateway_node")
               .with_source("10.4.5.6")
           end
@@ -213,20 +213,20 @@ describe "nebula::profile::prometheus::exporter::node" do
           end
 
           it "exports itself to the default datacenter's service discovery" do
-            expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:hostname]}")
+            expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
               .with_tag("mydatacenter_prometheus_node_service_list")
               .with_target("/etc/prometheus/nodes.yml")
               .with_content(%r{'100\.100\.100\.100:9100'})
           end
 
           it "exports itself[0] to the default datacenter's pushgateway" do
-            expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 100.100.100.100")
+            expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:networking]["hostname"]} 100.100.100.100")
               .with_tag("mydatacenter_pushgateway_node")
               .with_source("100.100.100.100")
           end
 
           it "exports itself[1] to the default datacenter's pushgateway" do
-            expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:hostname]} 200.200.200.200")
+            expect(exported_resources).to contain_firewall("300 pushgateway #{facts[:networking]["hostname"]} 200.200.200.200")
               .with_tag("mydatacenter_pushgateway_node")
               .with_source("200.200.200.200")
           end

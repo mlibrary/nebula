@@ -41,7 +41,7 @@ describe "nebula::unison::server" do
 
       it "exports client" do
         expect(exported_resources).to contain_nebula__unison__client("myinstance").with(
-          server: facts[:fqdn],
+          server: facts[:networking]["fqdn"],
           # from hiera
           port: 12_345,
           root: "/myroot",

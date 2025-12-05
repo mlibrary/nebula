@@ -16,7 +16,7 @@ describe "nebula::taghosts::tag" do
         it { is_expected.to compile }
 
         it do
-          expect(exported_resources).to contain_concat__fragment("taghosts #{facts[:fqdn]} 100 apache")
+          expect(exported_resources).to contain_concat__fragment("taghosts #{facts[:networking]["fqdn"]} 100 apache")
             .with_tag("taghosts")
             .with_target("/var/lib/ae/active-servers")
             .with_content(" apache")
@@ -27,13 +27,13 @@ describe "nebula::taghosts::tag" do
         let(:title) { "python" }
 
         it { is_expected.to compile }
-        it { expect(exported_resources).to contain_concat__fragment("taghosts #{facts[:fqdn]} 100 python") }
+        it { expect(exported_resources).to contain_concat__fragment("taghosts #{facts[:networking]["fqdn"]} 100 python") }
 
         context "with order set to 500" do
           let(:params) { {order: "500"} }
 
           it { is_expected.to compile }
-          it { expect(exported_resources).to contain_concat__fragment("taghosts #{facts[:fqdn]} 500 python") }
+          it { expect(exported_resources).to contain_concat__fragment("taghosts #{facts[:networking]["fqdn"]} 500 python") }
         end
       end
     end

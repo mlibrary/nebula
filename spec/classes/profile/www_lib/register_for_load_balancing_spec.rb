@@ -18,26 +18,26 @@ describe "nebula::profile::www_lib::register_for_load_balancing" do
           let(:params) { {services: ["www-lib"]} }
 
           it do
-            expect(subject).to contain_nebula__haproxy__binding("#{facts[:hostname]} www-lib")
+            expect(subject).to contain_nebula__haproxy__binding("#{facts[:networking]["hostname"]} www-lib")
               .with_service("www-lib")
           end
 
-          it { is_expected.not_to contain_nebula__haproxy__binding("#{facts[:hostname]} deepblue") }
+          it { is_expected.not_to contain_nebula__haproxy__binding("#{facts[:networking]["hostname"]} deepblue") }
         end
 
         context "with services set to www-lib and deepblue" do
           let(:params) { {services: %w[www-lib deepblue]} }
 
-          it { is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} www-lib") }
-          it { is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} deepblue") }
+          it { is_expected.to contain_nebula__haproxy__binding("#{facts[:networking]["hostname"]} www-lib") }
+          it { is_expected.to contain_nebula__haproxy__binding("#{facts[:networking]["hostname"]} deepblue") }
         end
 
         context "with services set to www-lib-testing" do
           let(:params) { {services: ["www-lib-testing"]} }
 
-          it { is_expected.to contain_nebula__haproxy__binding("#{facts[:hostname]} www-lib-testing") }
-          it { is_expected.not_to contain_nebula__haproxy__binding("#{facts[:hostname]} www-lib") }
-          it { is_expected.not_to contain_nebula__haproxy__binding("#{facts[:hostname]} deepblue") }
+          it { is_expected.to contain_nebula__haproxy__binding("#{facts[:networking]["hostname"]} www-lib-testing") }
+          it { is_expected.not_to contain_nebula__haproxy__binding("#{facts[:networking]["hostname"]} www-lib") }
+          it { is_expected.not_to contain_nebula__haproxy__binding("#{facts[:networking]["hostname"]} deepblue") }
         end
       end
     end
