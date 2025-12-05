@@ -9,7 +9,7 @@ describe "nebula::profile::https_to_port" do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
-      let(:server_name) { facts[:fqdn] }
+      let(:server_name) { facts[:networking]["fqdn"] }
       let(:letsencrypt_directory) { "/etc/letsencrypt/live/#{server_name}" }
 
       context "when port is set to 1234" do

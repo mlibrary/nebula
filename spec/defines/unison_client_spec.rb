@@ -57,10 +57,10 @@ describe "nebula::unison::client" do
       end
 
       it "exports firewall resource" do
-        expect(exported_resources).to contain_firewall("200 Unison: myinstance #{facts[:hostname]}").with(
+        expect(exported_resources).to contain_firewall("200 Unison: myinstance #{facts[:networking]["hostname"]}").with(
           proto: "tcp",
           dport: [12_345],
-          source: facts[:ipaddress],
+          source: facts[:networking]["ip"],
           tag: "unison-client-myinstance"
         )
       end

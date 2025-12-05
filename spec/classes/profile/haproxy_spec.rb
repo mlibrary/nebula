@@ -28,7 +28,7 @@ describe "nebula::profile::haproxy" do
       let(:keepalived_conf) { "/etc/keepalived/keepalived.conf" }
       let(:service) { "keepalived" }
 
-      let(:thisnode) { {"ip" => facts[:networking][:ip], "hostname" => facts[:hostname]} }
+      let(:thisnode) { {"ip" => facts[:networking][:ip], "hostname" => facts[:networking]["hostname"]} }
       let(:base_params) do
         {
           cert_source: "/some/where",

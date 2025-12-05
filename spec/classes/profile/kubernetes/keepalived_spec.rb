@@ -39,10 +39,10 @@ describe "nebula::profile::kubernetes::keepalived" do
         end
 
         it "exports its ip address for first_cluster keepalived peers" do
-          expect(exported_resources).to contain_concat_fragment("keepalived #{os_facts[:hostname]}")
+          expect(exported_resources).to contain_concat_fragment("keepalived #{os_facts[:networking]["hostname"]}")
             .with_target(file)
             .with_order("02")
-            .with_content(%r{^\s*#{os_facts[:ipaddress]}\s*$}m)
+            .with_content(%r{^\s*#{os_facts[:networking]["ip"]}\s*$}m)
             .with_tag("first_cluster_keepalived")
         end
 
@@ -56,7 +56,7 @@ describe "nebula::profile::kubernetes::keepalived" do
           %r{root@default.invalid},
           %r{state BACKUP},
           %r{priority 100},
-          %r{unicast_src_ip #{os_facts[:ipaddress]}},
+          %r{unicast_src_ip #{os_facts[:networking]["ip"]}},
           %r{virtual_ipaddress \{[^\}]*10\.0\.0\.1[^\}]*\}}m,
           %r{virtual_ipaddress \{[^\}]*172\.16\.0\.1 dev ens4[^\}]*\}}m,
           %r{virtual_ipaddress \{[^\}]*172\.16\.0\.6 dev ens4[^\}]*\}}m,
@@ -70,7 +70,7 @@ describe "nebula::profile::kubernetes::keepalived" do
           let(:hiera_config) { "spec/fixtures/hiera/kubernetes/second_cluster_config.yaml" }
 
           it "exports its ip address for second_cluster keepalived peers" do
-            expect(exported_resources).to contain_concat_fragment("keepalived #{os_facts[:hostname]}")
+            expect(exported_resources).to contain_concat_fragment("keepalived #{os_facts[:networking]["hostname"]}")
               .with_tag("second_cluster_keepalived")
           end
 

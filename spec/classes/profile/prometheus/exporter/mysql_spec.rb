@@ -32,10 +32,10 @@ describe "nebula::profile::prometheus::exporter::mysql" do
       end
 
       it "exports itself to the default datacenter's service discovery" do
-        expect(exported_resources).to contain_concat_fragment("prometheus mysql service #{facts[:hostname]}")
+        expect(exported_resources).to contain_concat_fragment("prometheus mysql service #{facts[:networking]["hostname"]}")
           .with_tag("mydatacenter_prometheus_mysql_service_list")
           .with_target("/etc/prometheus/mysql.yml")
-          .with_content(%r{'#{facts[:ipaddress]}:9104'})
+          .with_content(%r{'#{facts[:networking]["ip"]}:9104'})
       end
     end
   end
