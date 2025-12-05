@@ -22,6 +22,7 @@ class nebula::profile::hathitrust::php () {
       'php-mdb2',
       'php-mdb2-driver-mysql',
       'php-smarty',
+      'smarty3',
       'php-xml',
       'php-mbstring',
       'php-yaml',
