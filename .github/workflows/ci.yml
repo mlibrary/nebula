@@ -47,6 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: ["Debian 11","Debian 12","Debian 13","Ubuntu 22.04"]
         filegroup:
         # each key in rakelib/ci.rake MUST be listed here
         - all_roles
@@ -65,5 +66,7 @@ jobs:
         key: cache-fixtures-modules-${{ hashFiles('.fixtures.yml') }}
     - name: rake spec_prep
       run: bundle exec rake spec_prep
-    - name: "Run rake ci[${{ matrix.filegroup }}]"
+    - name: "Run [${{ matrix.os }}] rake ci[${{ matrix.filegroup }}]"
+      env:
+        SUPPORTED_OS: ${{ matrix.os }}
       run: bundle exec rake ci[${{ matrix.filegroup }}]
