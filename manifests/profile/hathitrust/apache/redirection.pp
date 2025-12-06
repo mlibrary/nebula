@@ -25,7 +25,7 @@ class nebula::profile::hathitrust::apache::redirection (
     apache::vhost { "${servername} non-ssl":
       servername        => $servername,
       docroot           => false,
-      port              => '80',
+      port              => 80,
       redirect_source   => '/',
       redirect_status   => 'permanent',
       redirect_dest     => "https://${servername}/",
@@ -51,7 +51,7 @@ class nebula::profile::hathitrust::apache::redirection (
 
     'hathitrust canonical name redirection':
       servername      => $domain,
-      port            => '80',
+      port            => 80,
       serveraliases   => $alias_domains + $alias_domains.map |$alias_domain| { "www.${alias_domain}" },
       redirect_source => '/',
       redirect_status => 'permanent',
@@ -59,7 +59,7 @@ class nebula::profile::hathitrust::apache::redirection (
 
     'hathitrust canonical name redirection ssl':
       servername      => $domain,
-      port            => '443',
+      port            => 443,
       serveraliases   => $alias_domains + $alias_domains.map |$alias_domain| { "www.${alias_domain}" },
       redirect_source => '/',
       redirect_status => 'permanent',
@@ -68,14 +68,14 @@ class nebula::profile::hathitrust::apache::redirection (
 
     "m.${catalog_servername} redirection":
       servername      => "m.${catalog_servername}",
-      port            => '80',
+      port            => 80,
       redirect_source => '/',
       redirect_status => 'permanent',
       redirect_dest   => "https://m.${prefix}${domain}/";
 
     "${prefix}m.${domain} https redirection":
       servername => "${prefix}m.${domain}",
-      port       => '443',
+      port       => 443,
       rewrites   => [
         {
           rewrite_rule => ["^/?$ https://${www_servername} [last,redirect=permanent]"],

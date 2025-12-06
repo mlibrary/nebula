@@ -42,7 +42,7 @@ class nebula::profile::apache (
     trace_enable           => 'Off',
     root_directory_secured => true,
     scriptalias            => undef,
-    docroot                => false,
+    docroot                => undef,
     default_mods           => false,
     user                   => 'nobody',
     group                  => 'nogroup',

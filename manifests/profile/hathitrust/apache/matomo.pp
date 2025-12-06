@@ -37,7 +37,7 @@ class nebula::profile::hathitrust::apache::matomo (
   apache::vhost { "${servername} ssl":
     servername                  => $servername,
     use_canonical_name          => 'On',
-    port                        => '443',
+    port                        => 443,
     docroot                     => $sdrroot,
     manage_docroot              => false,
     error_log_file              => 'matomo/error.log',

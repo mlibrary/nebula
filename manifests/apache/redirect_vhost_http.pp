@@ -8,7 +8,7 @@ define nebula::apache::redirect_vhost_http (
   $priority = false,
 ) {
   apache::vhost { "${title}-redirect-http":
-    port            => '80',
+    port            => 80,
     priority        => $priority,
     docroot         => false,
     servername      => $title,
