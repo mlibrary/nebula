@@ -7,8 +7,10 @@ on:
   pull_request:
 
 jobs:
-  cache_fixtures:
+  setup_tests:
     runs-on: ubuntu-latest
+    outputs:
+      os_matrix: ${{ steps.define_matrix.outputs.os_matrix }}
     steps:
     - uses: actions/checkout@v6
     - name: cache fixtures
@@ -17,15 +19,17 @@ jobs:
       with:
         path: spec/fixtures/modules
         key: cache-fixtures-modules-${{ hashFiles('.fixtures.yml') }}
-    - if: ${{ steps.cache-fixtures.outputs.cache-hit != 'true' }}
-      uses: ruby/setup-ruby@v1
+    - uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
+    - name: get supported os list
+      id: define_matrix
+      run: echo os_matrix=`bundle exec rake supported_os` >> "$GITHUB_OUTPUT"
     - if: ${{ steps.cache-fixtures.outputs.cache-hit != 'true' }}
       name: rake spec_prep
       run: bundle exec rake spec_prep
   lint:
-    needs: cache_fixtures
+    needs: setup_tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
@@ -42,12 +46,13 @@ jobs:
       run: bundle exec rake metadata_lint
   spec:
     name: "${{ matrix.os }}: ${{ matrix.filegroup }}"
-    needs: cache_fixtures
+    needs: setup_tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: ["Debian 11","Debian 12","Debian 13","Ubuntu 22.04"]
+        os: ${{ fromJSON(needs.setup_tests.outputs.os_matrix) }}
+        # os: ["Debian 11","Debian 12","Debian 13","Ubuntu 22.04"]
         filegroup:
         # each key in rakelib/ci.rake MUST be listed here
         - all_roles
