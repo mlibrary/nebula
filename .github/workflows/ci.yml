@@ -10,7 +10,8 @@ jobs:
   setup_tests:
     runs-on: ubuntu-latest
     outputs:
-      os_matrix: ${{ steps.define_matrix.outputs.os_matrix }}
+      filegroup: ${{ steps.define_matrix.outputs.filegroup }}
+      os: ${{ steps.define_matrix.outputs.os }}
     steps:
     - uses: actions/checkout@v6
     - name: cache fixtures
@@ -24,7 +25,7 @@ jobs:
         bundler-cache: true
     - name: get supported os list
       id: define_matrix
-      run: echo os_matrix=`bundle exec rake supported_os` >> "$GITHUB_OUTPUT"
+      run: bundle exec rake ci:matrix >> "$GITHUB_OUTPUT"
     - if: ${{ steps.cache-fixtures.outputs.cache-hit != 'true' }}
       name: rake spec_prep
       run: bundle exec rake spec_prep
@@ -51,14 +52,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJSON(needs.setup_tests.outputs.os_matrix) }}
-        # os: ["Debian 11","Debian 12","Debian 13","Ubuntu 22.04"]
-        filegroup:
-        # each key in rakelib/ci.rake MUST be listed here
-        - all_roles
-        - profiles
-        - roles
-        - classes
+        filegroup: ${{ fromJSON(needs.setup_tests.outputs.filegroup) }}
+        os: ${{ fromJSON(needs.setup_tests.outputs.os) }}
     steps:
     - uses: actions/checkout@v6
     - uses: ruby/setup-ruby@v1
