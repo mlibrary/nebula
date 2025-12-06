@@ -12,10 +12,10 @@ fixtures:
   #repositories:
   #  module_name:
   #    repo: "https://github.com/mlibrary/repo_name"
-  repositories:
-    apache:
-      repo: "https://github.com/mlibrary/puppetlabs-apache"
-      ref: "v7.1.1"
+  # repositories:
+  #   apache:
+  #     repo: "https://github.com/mlibrary/puppetlabs-apache"
+  #     ref: "v7.1.1"
   forge_modules:
     rbenv:               {"repo": "jdowning/rbenv",             "ref": "3.1.0" }
     archive:             {"repo": "puppet/archive",             "ref": "7.1.0" } # puppet-php requires archive < 8
@@ -26,6 +26,7 @@ fixtures:
     php:                 {"repo": "puppet/php",                 "ref": "11.0.0"}
     systemd:             {"repo": "puppet/systemd",             "ref": "8.3.1" }
     unattended_upgrades: {"repo": "puppet/unattended_upgrades", "ref": "8.2.0" }
+    apache:              {"repo": "puppetlabs/apache",          "ref": "13.1.0"}
     apt:                 {"repo": "puppetlabs/apt",             "ref": "10.0.1"}
     augeas_core:         {"repo": "puppetlabs/augeas_core",     "ref": "1.5.0" }
     concat:              {"repo": "puppetlabs/concat",          "ref": "9.1.0" }
