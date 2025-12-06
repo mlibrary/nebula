@@ -8,6 +8,7 @@ on:
 
 jobs:
   setup_tests:
+    name: _setup
     runs-on: ubuntu-latest
     outputs:
       filegroup: ${{ steps.define_matrix.outputs.filegroup }}
@@ -23,13 +24,14 @@ jobs:
     - uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
-    - name: get supported os list
+    - name: Define test matrix
       id: define_matrix
       run: bundle exec rake ci:matrix >> "$GITHUB_OUTPUT"
     - if: ${{ steps.cache-fixtures.outputs.cache-hit != 'true' }}
       name: rake spec_prep
       run: bundle exec rake spec_prep
   lint:
+    name: "All OSes: lint"
     needs: setup_tests
     runs-on: ubuntu-latest
     steps:
