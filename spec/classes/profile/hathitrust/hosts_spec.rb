@@ -6,7 +6,7 @@
 require "spec_helper"
 
 describe "nebula::profile::hathitrust::hosts" do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:my_ip) { Faker::Internet.ip_v4_address }
       let(:mysql_ip) { Faker::Internet.ip_v4_address }

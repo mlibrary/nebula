@@ -47,7 +47,7 @@ def test_roles(slice_number = 1, slice_count = 1)
   slice.each do |file_path|
     role_name = puppet_role_name_from(file_path)
     describe role_name do
-      on_supported_os.each do |os, os_facts|
+      on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
         context "on #{os}" do
           let(:facts) { os_facts }
 

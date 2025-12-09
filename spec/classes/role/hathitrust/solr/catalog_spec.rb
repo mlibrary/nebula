@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe "nebula::role::hathitrust::solr::catalog" do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:hiera_config) { "spec/fixtures/hiera/hathitrust_config.yaml" }

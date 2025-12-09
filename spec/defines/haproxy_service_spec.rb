@@ -9,7 +9,7 @@ describe "nebula::haproxy::service" do
   let(:title) { "svc1" }
   let(:params) { {} }
 
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:params) do
         super().merge(floating_ip: "1.2.3.4")

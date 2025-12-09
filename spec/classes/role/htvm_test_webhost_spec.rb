@@ -7,7 +7,7 @@ require "spec_helper"
 require_relative "../../support/contexts/with_htvm_setup"
 
 describe "nebula::role::webhost::htvm::test" do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       include_context "with setup for htvm node", os_facts
       it { is_expected.to contain_package("nodejs") }

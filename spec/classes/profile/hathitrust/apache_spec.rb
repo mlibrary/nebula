@@ -11,7 +11,7 @@ describe "nebula::profile::hathitrust::apache" do
     Regexp.new(string.split("\n").map { |line| Regexp.escape(line.lstrip) }.join('\n\s*'))
   end
 
-  on_supported_os.each do |os, os_facts|
+  on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:vhost_config) { "babel.hathitrust.org ssl-directories" }
