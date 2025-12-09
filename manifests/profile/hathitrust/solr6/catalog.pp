@@ -20,11 +20,10 @@ class nebula::profile::hathitrust::solr6::catalog (
 
   # solr nfs mounts
   nebula::nfs_mount { '/htsolr/catalog':
-    tag             => 'smartconnect',
+    options         => 'auto,hard',
     private_network => true,
-    monitored       => true,
     before          => Service['solr'],
-    remote_target   => "nas-${facts['datacenter']}.sc:/ifs/htsolr/catalog";
+    remote_target   => 'truenas:/mnt/tank/catalog',
   }
 
   # link to core in solr home
