@@ -46,7 +46,6 @@ class nebula::profile::hathitrust::solr6::lss (
   # lss release script
   $solr_name = 'lss'
   $solr_stop_flag = 'STOPLSSRELEASE'
-  $core_data_dir_template = 'core-${s}x/data'
   $core_link_prefix = 'lss-'
   $is_lss = true
   file { '/usr/local/bin/index-release':

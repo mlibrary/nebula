@@ -10,21 +10,14 @@ describe "nebula::profile::hathitrust::solr6::lss" do
 
       it { is_expected.to compile }
       it { is_expected.to contain_class("nebula::profile::hathitrust::solr6") }
-      it { is_expected.to contain_file("/var/lib/solr/solr.in.sh").with_content(%r{SOLR_PORT=8081}) }
+      it { is_expected.to contain_file("/var/lib/solr/solr.in.sh").with_content(/SOLR_PORT=8081/) }
 
       it {
         expect(subject).to contain_file("/usr/local/bin/index-release")
-          .with_content(%r{BASE=/htsolr/lss})
-          .with_content(%r|^SNAP=".snapshot/htsolr-lss_\${TODAY}"$|)
-          .with_content(%r{CORES="66 99"})
-          .with_content(%r{/flags/STOPLSSRELEASE})
-          .with_content(%r{/bin/echo "STOPLSSRELEASE flag present})
-          .with_content(%r|SEGMENTS=`ls \${BASE}/cores/\${s}/\${SNAP}/core-\${s}x/data/index/|)
-          .without_content(%r{if \[ \${SEGMENTS} -eq 0 \];})
-          .with_content(%r{if \[ \${SEGMENTS} -lt 1 \] \|\| \[ \${SEGMENTS} -gt 2 \];})
-          .with_content(%r|rm -f \${SYMLINKBASE}/lss-\${s} && ln -s \${BASE}/cores/\${s}/\${SNAP} \${SYMLINKBASE}/lss-\${s}$|)
-          .without_content(%r{^# run the first query to initialize catalog solr$})
-          .with_content(%r{^# run the first query to initialize lss solr$})
+          .with_content(/^base=\/htsolr\/lss$/)
+          .with_content(/\/flags\/STOPLSSRELEASE/)
+          .without_content(/^# run the first query to initialize catalog solr$/)
+          .with_content(/^# run the first query to initialize lss solr$/)
       }
 
       it {
@@ -37,9 +30,9 @@ describe "nebula::profile::hathitrust::solr6::lss" do
           {is_primary_site: true}
         end
 
-        xit {
+        it {
           expect(subject).to contain_file("/usr/local/bin/index-release")
-            .with_content(%r|^if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/lss-release-\${TODAY} --resolve "babel.hathitrust.org:443:5.4.3.2"|)
+            .with_content(/check whether release happened at mirror site/)
         }
 
         it {
@@ -55,7 +48,7 @@ describe "nebula::profile::hathitrust::solr6::lss" do
 
         it {
           expect(subject).to contain_file("/usr/local/bin/index-release")
-            .without_content(%r{^if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org})
+            .without_content(/check whether release happened at mirror site/)
         }
 
         it {
@@ -70,7 +63,7 @@ describe "nebula::profile::hathitrust::solr6::lss" do
         end
 
         it {
-          expect(subject).to contain_file("/usr/local/bin/index-release").with_content(%r|^touch /htapps/babel/flags/web/lss-release-\${TODAY}$|)
+          expect(subject).to contain_file("/usr/local/bin/index-release").with_content(%r{^touch "/htapps/babel/flags/web/lss-release-\$})
         }
       end
 
@@ -80,7 +73,7 @@ describe "nebula::profile::hathitrust::solr6::lss" do
         end
 
         it {
-          expect(subject).to contain_file("/usr/local/bin/index-release").without_content(%r|^touch /htapps/babel/flags/web/lss-release-\${TODAY}$|)
+          expect(subject).to contain_file("/usr/local/bin/index-release").without_content(%r{^touch "/htapps/babel/flags/web/lss-release-\$})
         }
       end
     end

@@ -37,7 +37,6 @@ class nebula::profile::hathitrust::solr6::catalog (
   $solr_name = 'catalog'
   $solr_stop_flag = 'STOPCATALOGRELEASE'
   $solr_cores = ['catalog']
-  $core_data_dir_template = 'data'
   $core_link_prefix = ''
   $is_catalog = true
   $is_primary_node = true # catalog solr is only one node per site
