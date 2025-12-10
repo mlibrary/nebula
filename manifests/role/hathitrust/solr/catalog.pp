@@ -6,7 +6,8 @@
 #   include nebula::role::hathitrust::solr::catalog
 class nebula::role::hathitrust::solr::catalog {
   class { 'nebula::role::hathitrust':
-    afs => false,
+    afs          => false,
+    smartconnect => false,
   }
 
   include nebula::profile::hathitrust::solr6::catalog

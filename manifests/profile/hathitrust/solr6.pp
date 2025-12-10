@@ -22,12 +22,10 @@ class nebula::profile::hathitrust::solr6 (
     'solr',
   ])
 
-  include nebula::profile::dns::smartconnect;
-
   include nebula::profile::users
   realize User['solr']
 
-  # parent dir structure for solr mounts, not all used by every use case
+  # parent dir structure for solr mounts
   file {
     default:
       ensure => 'directory',
@@ -35,18 +33,12 @@ class nebula::profile::hathitrust::solr6 (
       mode   => '0755',
     ;
     '/htsolr':;
-    '/htsolr/lss':;
-    '/htsolr/lss/cores':;
     '/htsolr/serve':;
   }
-  nebula::nfs_mount {
-    default:
-      tag             => 'smartconnect',
-      private_network => true,
-      monitored       => true,
-      before          => Service['solr'],
-    ;
-    '/htapps':            remote_target => "nas-${facts['datacenter']}.sc:/ifs/htapps";
+  nebula::nfs_mount { '/htapps':
+    options         => 'auto,hard',
+    remote_target   => 'truenas:/mnt/tank/htapps',
+    private_network => true
   }
 
   # solr config files

@@ -1,117 +1,108 @@
-#! /bin/bash
+#!/bin/bash
 
-TODAY=`date +%Y-%m-%d`
-#TODAY="2019-08-31"
+onoe () {
+  echo "${1}"
+  exit 1
+}
 
-BASE=/htsolr/<%= @solr_name %>
-SYMLINKBASE=/htsolr/serve
-SNAP=".snapshot/<%= @snapshot_name %>_${TODAY}"
-CORES="<%= @solr_cores.join(' ') %>"
+base=/htsolr/<%= @solr_name %>
+serve=/htsolr/serve
+manual_snap="$1"
+if [[ -n "${manual_snap}" ]]; then
+  snap="${base}/.zfs/snapshot/${manual_snap}"
+  if ! [[ -d "${snap}" ]]; then
+    echo "can't find snapshot: '${manual_snap}'"
+    echo "valid snapshots are: "
+    \ls ${base}/.zfs/snapshot/
+    exit 1
+  fi
+else
+  snaps=( "${base}/.zfs/snapshot/htsolr-<%= @solr_name %>_"* )
+  snap="${snaps[-1]}"
+  pat="htsolr-<%= @solr_name %>_$(date +%Y-%m-%d)"
+  [[ "$snap" =~ "$pat" ]] || onoe "latest snap was not made today, refusing to run automatic release"
+fi
+snapname="$(basename "${snap}")"
 
 # check if the administrative release stop flag is set
-if [ -f ${BASE}/flags/<%= @solr_stop_flag %> ]; then
-  /bin/echo "<%= @solr_stop_flag %> flag present...skip release today"
-  exit 1
-fi
+[[ -f "${base}/flags/<%= @solr_stop_flag %>" ]] && onoe "<%= @solr_stop_flag %> flag present...skip release today"
 
 # check that today's snap exists
-for s in $CORES; do
-  if [ ! -d $BASE/cores/${s}/${SNAP} ]; then
-    /bin/echo "missing today's snapshot...aborting release"
-    exit 1
-  fi
-done
+[[ ! -d ${snap}/cores/ ]] && onoe "can't read snapshot dir...aborting release"
+[[ ! -d ${snap}/flags/ ]] && onoe "can't read snapshot dir...aborting release"
 
 # check today's snap for 'busy' flag
-if [ -f $BASE/flags/${SNAP}/busy ]; then
-  /bin/echo "indexing and/or optimization ocurring...skip release today"
-  exit 1
-fi
+[[ -f "${snap}/flags/busy" ]] && onoe "indexing or optimization ocurring...skip release today"
 
-<% if @is_primary_site %>
-# # check whether release happened at mirror site
-# if ! curl -A SOLR -s --retry 5 --fail https://babel.hathitrust.org/flags/web/<%= @solr_name %>-release-${TODAY} --resolve "babel.hathitrust.org:443:<%= @mirror_site_ip %>" >& /dev/null; then
-#   /bin/echo "Mirror site index release appears to have failed...skip release today"
-#   exit 1
-# fi
-<% end %>
+<% if @is_primary_site -%>
+# TODO: check whether release happened at mirror site
+# ...
 
-for s in $CORES; do
-  SEGMENTS=`ls ${BASE}/cores/${s}/${SNAP}/<%= @core_data_dir_template %>/index/*.fdt | wc -l`
-  <% if @is_catalog %>if [ ${SEGMENTS} -eq 0 ]; then<% end %>
-  <% if @is_lss     %>if [ ${SEGMENTS} -lt 1 ] || [ ${SEGMENTS} -gt 2 ]; then<% end %>
-    /bin/echo "at least one core served by `hostname -s` has an improper number of segments...aborting release"
-    exit 1
-  fi
-done
+<% end -%>
+# check that cores appear valid
+<% @solr_cores.each do |core| %>
+<% if @is_lss -%>
+[[ ! -d ${snap}/cores/<%= core %>/core-<%= core %>x/data/index ]] && onoe "core data missing...aborting release"
+segments=( "${snap}/cores/<%= core %>/core-<%= core %>x/data/index/"*.fdt )
+(( (${#segments[@]} > 0) && (${#segments[@]} <= 2) )) || onoe "core '<%= core %>' served by $(hostname -s) has an improper number of segments...aborting release"
+<% else -%>
+[[ ! -d ${snap}/cores/<%= core %>/data/index ]] && onoe "core data missing...aborting release"
+segments=( "${snap}/cores/<%= core %>/data/index/"*.fdt )
+(( ${#segments[@]} > 0 )) || onoe "core '<%= core %>' served by $(hostname -s) has an improper number of segments...aborting release"
+<% end -%>
+<% end -%>
 
 # stop solr
-systemctl stop solr
-if [ $? -ne 0 ]; then
-  /bin/echo "error stopping lss solr on `hostname -s`"
-  exit 1
-fi
+systemctl stop solr || onoe "error stopping solr on $(hostname -s)"
 
 # replace the snapshot symlinks
-<% if @is_lss %>
-rm -f ${SYMLINKBASE}/lss-shared && ln -s ${BASE}/shared/${SNAP} ${SYMLINKBASE}/lss-shared
-if [ $? -ne 0 ]; then
-    /bin/echo "error removing or creating /htsolr/serve/lss-shared symlink...solr-current-lss WILL NOT be started on `hostname -s`"
-    exit 1
-fi
-<% end %>
-for s in ${CORES}; do
-  rm -f ${SYMLINKBASE}/<%= @core_link_prefix %>${s} && ln -s ${BASE}/cores/${s}/${SNAP} ${SYMLINKBASE}/<%= @core_link_prefix %>${s}
-  if [ $? -ne 0 ]; then
-    /bin/echo "error removing or creating symlink for core ${s}...solr-current-lss WILL NOT be started on `hostname -s`"
-    exit 1
-  fi
-done
+<% if @is_lss -%>
+rm -f ${serve}/lss-shared && ln -s "${snap}/shared" ${serve}/lss-shared || \
+  onoe "error removing or creating /htsolr/serve/lss-shared symlink...solr WILL NOT be started on $(hostname -s)"
+<% end -%>
+<% @solr_cores.each do |core| -%>
+rm -f ${serve}/<%= @core_link_prefix %><%= core %> && ln -s "${snap}/cores/<%= core %>" ${serve}/<%= @core_link_prefix %><%= core %> || \
+  onoe "error removing or creating symlink for core <%= core %>...solr WILL NOT be started on $(hostname -s)"
+<% end -%>
 
 # if all went well, start solr
-systemctl start solr
-if [ $? -ne 0 ]; then
-  /bin/echo "error starting solr on `hostname -s`"
-  exit 1
-fi
+systemctl start solr || onoe "error starting solr on $(hostname -s)"
 
-<% if @is_primary_node %>
+<% if @is_primary_node -%>
 # touch release flag (only on first core/node, so it happens once per datacenter)
-rm -f /htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-*
-touch /htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-${TODAY}
-<% end %>
+rm -f "/htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-"*
+touch "/htapps/babel/flags/web/<%= @release_flag_prefix %><%= @solr_name %>-release-${snapname}"
 
-<% if @is_lss %>
+<% end -%>
+<% if @is_lss -%>
 # run the first query to initialize lss solr
 INITQUERY=0
-for s in $CORES; do
-  sleep 5
-  if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-${s}:8081/solr/core-${s}x/select/?q=aardvark&version=2.2&start=0&rows=10&indent=on" >& /dev/null; then
-    /bin/echo "WARN: failed to perform initial query against core ${s}x after successful release"
-    INITQUERY=1
-  fi
-  if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-${s}:8081/solr/core-${s}y/select?indent=on&q=*:*&rows=0" >& /dev/null; then
-    /bin/echo "WARN: failed to perform initial query against core ${s}y after successful release"
-    INITQUERY=1
-  fi
-done
+sleep 5
+<% @solr_cores.each do |core| -%>
+if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-<%= core %>:8081/solr/core-<%= core %>x/select/?q=aardvark&version=2.2&start=0&rows=10&indent=on" >& /dev/null; then
+  echo "WARN: failed to perform initial query against core <%= core %>x after successful release"
+  INITQUERY=1
+fi
+if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-search-<%= core %>:8081/solr/core-<%= core %>y/select?indent=on&q=*:*&rows=0" >& /dev/null; then
+  echo "WARN: failed to perform initial query against core <%= core %>y after successful release"
+  INITQUERY=1
+fi
+<% end -%>
 
-<% if @is_primary_node %>
+<% if @is_primary_node -%>
 # cache warming, after delay to avoid racing with other nodes
 sleep 30
-/usr/bin/wget -nv -i ${BASE}/prep/cacheWarm169Common.txt -O - 2>/tmp/cache-warming-lss.log 1>/dev/null
-rm -f /htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-*
-touch /htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-${TODAY}
-<% end %>
+wget -nv -i ${base}/prep/cacheWarm169Common.txt -O - 2>/tmp/cache-warming-lss.log 1>/dev/null
+rm -f "/htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-"*
+touch "/htapps/babel/flags/web/<%= @release_flag_prefix %>lss-warming-${snapname}"
 
+<% end -%>
 exit ${INITQUERY}
-<% end %>
-
-<% if @is_catalog %>
+<% end -%>
+<% if @is_catalog -%>
 # run the first query to initialize catalog solr
 sleep 5
 if ! wget -q -T 60 -t 5 -O - "http://solr-sdr-catalog:9033/solr/catalog/select?q=*:*" >& /dev/null; then
-  /bin/echo "WARN: failed to perform initial query after successful release"
-  exit 1
+  onoe "WARN: failed to perform initial query after successful release"
 fi
-<% end %>
+<% end -%>

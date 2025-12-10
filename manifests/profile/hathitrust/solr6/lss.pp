@@ -21,25 +21,11 @@ class nebula::profile::hathitrust::solr6::lss (
   }
 
   # solr nfs mounts
-  $solr_cores.each |$core| {
-    nebula::nfs_mount { "/htsolr/lss/cores/${core}":
-      tag             => 'smartconnect',
-      private_network => true,
-      monitored       => true,
-      before          => Service['solr'],
-      remote_target   => "nas-${facts['datacenter']}.sc:/ifs/htsolr/lss/cores/${core}";
-    }
-  }
-  nebula::nfs_mount {
-    default:
-      tag             => 'smartconnect',
-      private_network => true,
-      monitored       => true,
-      before          => Service['solr'],
-    ;
-    '/htsolr/lss/flags':  remote_target => "nas-${facts['datacenter']}.sc:/ifs/htsolr/lss/flags";
-    '/htsolr/lss/prep':   remote_target => "nas-${facts['datacenter']}.sc:/ifs/htsolr/lss/prep";
-    '/htsolr/lss/shared': remote_target => "nas-${facts['datacenter']}.sc:/ifs/htsolr/lss/shared";
+  nebula::nfs_mount { '/htsolr/lss':
+    options         => 'auto,hard',
+    private_network => true,
+    before          => Service['solr'],
+    remote_target   => 'truenas:/mnt/tank/htsolr/lss';
   }
 
   # core configs require jars to be available in solr home as well as /htsolr/serve
@@ -60,7 +46,6 @@ class nebula::profile::hathitrust::solr6::lss (
   # lss release script
   $solr_name = 'lss'
   $solr_stop_flag = 'STOPLSSRELEASE'
-  $core_data_dir_template = 'core-${s}x/data'
   $core_link_prefix = 'lss-'
   $is_lss = true
   file { '/usr/local/bin/index-release':
