@@ -8,7 +8,20 @@ describe "nebula::profile::loki" do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
-      it { is_expected.to contain_apt__source("grafana") }
+
+      it do
+        is_expected.to contain_apt__source("grafana").with(
+          source_format: "sources",
+          keyring: "/etc/apt/keyrings/grafana.asc"
+        )
+      end
+
+      it do
+        is_expected.to contain_apt__keyring("grafana.asc").with(
+          source: "puppet:///modules/nebula/apt/keyrings/grafana.asc"
+        )
+      end
+
       it { is_expected.to contain_package("alloy") }
       it { is_expected.to contain_service("alloy") }
 

@@ -32,8 +32,14 @@ describe "nebula::profile::kubelet" do
 
       it do
         expect(subject).to contain_apt__source("kubernetes")
-          .with_location("https://pkgs.k8s.io/core:/stable:/vX.YZ/deb/")
+          .with_location(["https://pkgs.k8s.io/core:/stable:/vX.YZ/deb/"])
           .with_release("/")
+          .with_keyring("/etc/apt/keyrings/k8s.io.asc")
+      end
+
+      it do
+        expect(subject).to contain_apt__keyring("k8s.io.asc")
+          .with_source("puppet:///modules/nebula/apt/keyrings/k8s.io.asc")
       end
 
       it do

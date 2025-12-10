@@ -9,9 +9,17 @@ describe "nebula::profile::apt::mono" do
 
       it do
         expect(subject).to contain_apt__source("mono-official-stable").with(
-          location: "https://download.mono-project.com/repo/debian",
+          source_format: "sources",
+          location: ["https://download.mono-project.com/repo/debian"],
           release: "stable-buster",
-          repos: "main"
+          repos: ["main"],
+          keyring: "/etc/apt/keyrings/mono-project.asc"
+        )
+      end
+
+      it do
+        expect(subject).to contain_apt__keyring("mono-project.asc").with(
+          source: "puppet:///modules/nebula/apt/keyrings/mono-project.asc"
         )
       end
     end

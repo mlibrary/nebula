@@ -12,14 +12,22 @@ describe "nebula::profile::elastic" do
 
       it do
         expect(subject).to contain_apt__source("elastic.co").with(
+          source_format: "sources",
           comment: "Elastic.co apt source for beats and elastic search",
-          location: "https://artifacts.elastic.co/packages/7.x/apt",
+          location: ["https://artifacts.elastic.co/packages/7.x/apt"],
           release: "stable",
-          repos: "main",
+          repos: ["main"],
+          keyring: "/etc/apt/keyrings/elastic.co.asc",
           include: {
             "src" => false,
             "deb" => true
           }
+        )
+      end
+
+      it do
+        expect(subject).to contain_apt__keyring("elastic.co.asc").with(
+          source: "puppet:///modules/nebula/apt/keyrings/elastic.co.asc"
         )
       end
 
