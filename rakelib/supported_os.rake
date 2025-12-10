@@ -12,5 +12,5 @@ task :supported_os do |t|
     end
   end
 
-  puts list.to_json
+  puts "os=#{list.to_json}"
 end
