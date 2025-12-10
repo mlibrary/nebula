@@ -23,7 +23,7 @@ class nebula::profile::hathitrust::solr6::catalog (
     options         => 'auto,hard',
     private_network => true,
     before          => Service['solr'],
-    remote_target   => 'truenas:/mnt/tank/catalog',
+    remote_target   => 'truenas:/mnt/tank/htsolr/catalog',
   }
 
   # link to core in solr home
