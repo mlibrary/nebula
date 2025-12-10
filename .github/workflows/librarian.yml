@@ -1,18 +1,20 @@
-name: Run CI
+name: Check Dependencies
 
 on:
   push:
-    branches: [$default-branch]
+    branches:
+    - production
   pull_request:
     paths:
-      - metadata.json
+    - metadata.json
 
 jobs:
   librarian:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
-    - name: Resolve Dependencies
-      run: |
-        docker compose --file docker-compose.test.yml build
-        docker compose --file docker-compose.test.yml run librarian
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - name: Resolve dependencies with librarian-puppet
+      run: bundle exec librarian-puppet install --verbose
