@@ -22,20 +22,22 @@ class nebula::profile::nodejs (
   include nebula::profile::apt
 
     apt::source { 'nodesource.com':
+      source_format => 'sources',
       comment       => 'Nodesource apt source for recent nodejs',
-      location      => "https://deb.nodesource.com/node_${version}.x",
+      location      => ["https://deb.nodesource.com/node_${version}.x"],
       release       => $facts['os']['distro']['codename'],
-      repos         => 'main',
+      repos         => ['main'],
+      keyring       => '/etc/apt/keyrings/nodesource.asc',
       notify_update => true,
-      key           => {
-        'name'   => 'nodesource.asc',
-        'source' => 'puppet:///modules/nebula/apt/keyrings/nodesource0.asc',
-      },
       include       => {
         'src' => false,
         'deb' => true,
+      },
     }
-  }
+
+    apt::keyring { 'nodesource.asc':
+      source => 'puppet:///modules/nebula/apt/keyrings/nodesource0.asc',
+    }
 
   package { 'nodejs': }
 }

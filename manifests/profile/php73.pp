@@ -8,14 +8,16 @@
 class nebula::profile::php73 (
 ) {
   apt::source { 'php-community':
-    location     => 'https://packages.sury.org/php/',
-    key          => {
-      name   => 'php-community-sury.org.gpg',
-      source => 'https://packages.sury.org/php/apt.gpg'
-    },
-    release      => $facts['os']['distro']['codename'],
-    repos        => 'main',
-    architecture => $facts['os']['architecture'],
+    source_format => 'sources',
+    location      => ['https://packages.sury.org/php/'],
+    release       => $facts['os']['distro']['codename'],
+    repos         => ['main'],
+    architecture  => $facts['os']['architecture'],
+    keyring       => '/etc/apt/keyrings/php-community-sury.org.gpg',
+  }
+
+  apt::keyring { 'php-community-sury.org.gpg':
+    source => 'https://packages.sury.org/php/apt.gpg',
   }
 
   ensure_packages (

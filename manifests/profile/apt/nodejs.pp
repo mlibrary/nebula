@@ -35,14 +35,16 @@ class nebula::profile::apt::nodejs (
     }
 
     apt::source { 'nodesource.com':
-      comment  => 'Nodesource apt source for recent nodejs',
-      location => "https://deb.nodesource.com/node_${requested}.x",
-      release  => $release,
-      repos    => 'main',
-      key      => {
-        name   => 'nodesource.asc',
-        source => $keyring,
-      }
+      source_format => 'sources',
+      comment       => 'Nodesource apt source for recent nodejs',
+      location      => ["https://deb.nodesource.com/node_${requested}.x"],
+      release       => $release,
+      repos         => ['main'],
+      keyring       => '/etc/apt/keyrings/nodesource.asc',
+    }
+
+    apt::keyring { 'nodesource.asc':
+      source => $keyring,
     }
   } elsif $requested == $dist_version {
     warning("Skipping nodejs apt source: ${requested} is your OS default!")

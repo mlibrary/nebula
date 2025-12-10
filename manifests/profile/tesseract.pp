@@ -8,14 +8,16 @@
 class nebula::profile::tesseract (
 ) {
   apt::source { 'tesseract':
-    location     => 'https://notesalexp.org/debian/bullseye/',
-    key          => {
-      name   => 'tesseract-notesalexp.org.asc',
-      source => 'https://notesalexp.org/debian/alexp_key.asc'
-    },
-    release      => 'bullseye',
-    repos        => 'main',
-    architecture => $facts['os']['architecture'],
+    source_format => 'sources',
+    location      => ['https://notesalexp.org/debian/bullseye/'],
+    release       => 'bullseye',
+    repos         => ['main'],
+    architecture  => $facts['os']['architecture'],
+    keyring       => '/etc/apt/keyrings/tesseract-notesalexp.org.asc',
+  }
+
+  apt::keyring { 'tesseract-notesalexp.org.asc':
+    source => 'https://notesalexp.org/debian/alexp_key.asc',
   }
 
   package { 'tesseract-ocr':

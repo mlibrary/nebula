@@ -72,24 +72,28 @@ class nebula::profile::apt (
       }
 
       apt::source { 'hpe':
-        location => 'https://downloads.linux.hpe.com/SDR/repo/mcp',
-        release  => "${facts['os']['distro']['codename']}/current",
-        repos    => 'non-free',
-        key      => {
-          'name'   => $hpe_key,
-          'source' => "puppet:///modules/nebula/apt/keyrings/${hpe_key}",
-        },
+        source_format => 'sources',
+        location      => ['https://downloads.linux.hpe.com/SDR/repo/mcp'],
+        release       => "${facts['os']['distro']['codename']}/current",
+        repos         => ['non-free'],
+        keyring       => "/etc/apt/keyrings/${hpe_key}",
+      }
+
+      apt::keyring { $hpe_key:
+        source => "puppet:///modules/nebula/apt/keyrings/${hpe_key}",
       }
     }
 
     apt::source { 'openvox':
-      location => 'https://apt.voxpupuli.org',
-      release  => "${facts['os']['name'].downcase()}${facts['os']['release']['major']}",
-      repos    => $puppet_repo,
-      key      => {
-        name   => 'openvox.asc',
-        source => 'puppet:///modules/nebula/apt/keyrings/openvox.asc',
-      },
+      source_format => 'sources',
+      location      => ['https://apt.voxpupuli.org'],
+      release       => "${facts['os']['name'].downcase()}${facts['os']['release']['major']}",
+      repos         => [$puppet_repo],
+      keyring       => '/etc/apt/keyrings/openvox.asc',
+    }
+
+    apt::keyring { 'openvox.asc':
+      source => 'puppet:///modules/nebula/apt/keyrings/openvox.asc',
     }
 
     # replaced by /etc/apt/keyrings/puppetlabs.gpg, but still automatically created on new vms
@@ -108,20 +112,23 @@ class nebula::profile::apt (
     # TODO: remove non-free where we're not using it
     # TODO: remove branch when we're off bullseye
     $debian_repos = $facts['os']['distro']['codename'] ? {
-      'bullseye' => 'main contrib non-free',
-      default    => 'main contrib non-free non-free-firmware',
+      'bullseye' => ['main', 'contrib', 'non-free'],
+      default    => ['main', 'contrib', 'non-free', 'non-free-firmware'],
     }
+
     apt::source { 'main':
-      location => $mirror,
-      repos    => $debian_repos,
+      source_format => 'sources',
+      location      => [$mirror],
+      repos         => $debian_repos,
     }
 
     $security_release = "${facts['os']['distro']['codename']}-security"
 
     apt::source { 'security':
-      location => 'http://security.debian.org/debian-security',
-      release  => $security_release,
-      repos    => $debian_repos,
+      source_format => 'sources',
+      location      => ['http://security.debian.org/debian-security'],
+      release       => $security_release,
+      repos         => $debian_repos,
     }
 
     unless empty($facts['installed_backports']) {
@@ -131,26 +138,30 @@ class nebula::profile::apt (
     }
 
     apt::source { 'updates':
-      location => $mirror,
-      release  => "${facts['os']['distro']['codename']}-updates",
-      repos    => $debian_repos,
+      source_format => 'sources',
+      location      => [$mirror],
+      release       => "${facts['os']['distro']['codename']}-updates",
+      repos         => $debian_repos,
     }
 
     apt::source { 'adoptium':
-      location => 'https://packages.adoptium.net/artifactory/deb/',
-      release  => $facts['os']['distro']['codename'],
-      repos    => 'main',
-      key      => {
-        'name'   => 'adoptium.asc',
-        'source' => 'puppet:///modules/nebula/apt/keyrings/adoptium.asc',
-      }
+      source_format => 'sources',
+      location      => ['https://packages.adoptium.net/artifactory/deb/'],
+      release       => $facts['os']['distro']['codename'],
+      repos         => ['main'],
+      keyring       => '/etc/apt/keyrings/adoptium.asc',
+    }
+
+    apt::keyring { 'adoptium.asc':
+      source => 'puppet:///modules/nebula/apt/keyrings/adoptium.asc',
     }
   } elsif($facts['os']['name'] == 'Ubuntu') {
     # port to DEB822 before upgrade to 24.04
     apt::source {
       default:
-        location => $ubuntu_mirror,
-        repos    => 'main restricted universe',
+        source_format => 'sources',
+        location      => [$ubuntu_mirror],
+        repos         => ['main', 'restricted', 'universe'],
       ;
       'main'     : release => $facts['os']['distro']['codename'];
       'updates'  : release => "${facts['os']['distro']['codename']}-updates";

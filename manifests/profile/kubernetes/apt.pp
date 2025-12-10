@@ -8,11 +8,14 @@ class nebula::profile::kubernetes::apt (
   String $location,
 ) {
   apt::source { 'kubernetes':
-    location => $location,
-    release  => '/',
-    key      => {
-      'name'   => 'k8s.io.asc',
-      'source' => 'puppet:///modules/nebula/apt/keyrings/k8s.io.asc',
-    },
+    source_format => 'sources',
+    location      => [$location],
+    release       => '/',
+    repos         => ['main'],
+    keyring       => '/etc/apt/keyrings/k8s.io.asc',
+  }
+
+  apt::keyring { 'k8s.io.asc':
+    source => 'puppet:///modules/nebula/apt/keyrings/k8s.io.asc',
   }
 }
