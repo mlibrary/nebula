@@ -36,7 +36,7 @@ class nebula::profile::hathitrust::apache::www (
   apache::vhost { "${servername} ssl":
     servername         => $servername,
     use_canonical_name => 'On',
-    port               => '443',
+    port               => 443,
     manage_docroot     => false,
     docroot            => $docroot,
     error_log_file     => 'www/error.log',
@@ -86,6 +86,6 @@ class nebula::profile::hathitrust::apache::www (
       }
     ],
 
-    headers            => 'set "Strict-Transport-Security" "max-age=31536000"',
+    headers            => ['set "Strict-Transport-Security" "max-age=31536000"'],
   }
 }

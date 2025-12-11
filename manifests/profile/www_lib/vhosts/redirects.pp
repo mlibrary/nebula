@@ -88,7 +88,7 @@ class nebula::profile::www_lib::vhosts::redirects (
 
   apache::vhost { 'lgbtheritage.org-redirect-http-all':
     priority   => false,
-    port       => '80',
+    port       => 80,
     docroot    => false,
     servername => 'www.lgbtheritage.org',
     rewrites   => [
@@ -100,7 +100,7 @@ class nebula::profile::www_lib::vhosts::redirects (
 
   apache::vhost { 'searchtools.lib.umich.edu-redirect-http':
     priority      => false,
-    port          => '80',
+    port          => 80,
     docroot       => false,
     servername    => 'searchtools.lib.umich.edu',
     serveraliases => ['searchtools.lib'],

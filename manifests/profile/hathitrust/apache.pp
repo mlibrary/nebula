@@ -58,7 +58,7 @@ class nebula::profile::hathitrust::apache (
     trace_enable           => 'Off',
     root_directory_secured => true,
     scriptalias            => undef,
-    docroot                => false,
+    docroot                => undef,
     default_mods           => false,
     user                   => 'nobody',
     group                  => 'nogroup',
@@ -96,7 +96,7 @@ class nebula::profile::hathitrust::apache (
     ],
   }
   class { 'apache::mod::expires':
-    expires_active  => 'true',
+    expires_active  => true,
     expires_by_type => [
       { 'application/javascript' => 'access plus 6 hours' },
       { 'text/css' => 'access plus 6 hours' }

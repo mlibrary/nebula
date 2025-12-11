@@ -51,7 +51,7 @@ class nebula::profile::www_lib::apache::base {
   include apache::mod::negotiation
 
   class { 'apache::mod::proxy':
-    proxy_timeout => '300',
+    proxy_timeout => 300,
   }
 
   include apache::mod::proxy_fcgi
