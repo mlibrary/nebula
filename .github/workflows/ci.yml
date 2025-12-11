@@ -47,13 +47,16 @@ jobs:
     - name: lint metadata.json
       run: bundle exec rake metadata_lint
   spec:
-    name: "${{ matrix.os }}"
+    name: "${{ matrix.os }}: ${{ matrix.ci_task }}"
     needs: setup_tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         os: ${{ fromJSON(needs.setup_tests.outputs.os) }}
+        ci_task:
+        - classes
+        - profiles
     steps:
     - uses: actions/checkout@v6
     - uses: ruby/setup-ruby@v1
@@ -66,7 +69,7 @@ jobs:
         key: cache-fixtures-modules-${{ hashFiles('.fixtures.yml') }}
     - name: rake spec_prep
       run: bundle exec rake spec_prep
-    - name: "Run SUPPORTED_OS=\"${{ matrix.os }}\" rake ci:spec"
+    - name: "Run SUPPORTED_OS=\"${{ matrix.os }}\" rake ci:spec_${{ matrix.ci_task }}"
       env:
         SUPPORTED_OS: ${{ matrix.os }}
-      run: bundle exec rake ci:spec
+      run: bundle exec rake ci:spec_${{ matrix.ci_task }}
