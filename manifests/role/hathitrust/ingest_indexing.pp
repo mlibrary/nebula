@@ -25,8 +25,7 @@ class nebula::role::hathitrust::ingest_indexing () {
   }
 
   class { 'nebula::profile::hathitrust::mounts':
-    smartconnect_mounts => ['/htapps','/htprep','/htsolr/lss','/htsolr/lss-reindex'],
-    readonly            => false,
+    nas_mounts => ['/htapps','/htprep','/htsolr/lss','/htsolr/lss-reindex'],
   }
 
   include nebula::profile::hathitrust::dependencies

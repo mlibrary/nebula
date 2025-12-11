@@ -4,8 +4,7 @@
 
 # nebula::nfs_mount
 #
-# Configure an NFS mount. Optionally, configure requirements for smartconnect
-# and configure web server monitoring for the mount.
+# Configure an NFS mount. Optionally configure web server monitoring for the mount.
 #
 # @param remote_target The address of the server and path to mount
 # @param options The options to pass to the mount command

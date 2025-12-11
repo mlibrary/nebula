@@ -19,8 +19,8 @@ describe "nebula::role::webhost::htvm" do
       end
 
       it "contains nfs monitor concat fragments" do
-        expect(subject).to contain_concat_fragment("monitor nfs /sdr1")
-          .with(tag: "monitor_config", content: {"nfs" => ["/sdr1"]}.to_yaml)
+        expect(subject).to contain_concat_fragment("monitor nfs /sdr")
+          .with(tag: "monitor_config", content: {"nfs" => ["/sdr"]}.to_yaml)
         expect(subject).to contain_concat_fragment("monitor nfs /htapps")
           .with(tag: "monitor_config", content: {"nfs" => ["/htapps"]}.to_yaml)
       end
@@ -37,8 +37,7 @@ describe "nebula::role::webhost::htvm" do
         end
 
         it { is_expected.to contain_mount("/htapps").that_requires("Exec[ifup ens4]") }
-        it { is_expected.to contain_mount("/sdr1").that_requires("Exec[ifup ens4]") }
-        it { is_expected.to contain_service("bind9").that_requires("Exec[ifup ens4]") }
+        it { is_expected.to contain_mount("/sdr").that_requires("Exec[ifup ens4]") }
       end
 
       it "contains expected nebula profiles" do

@@ -14,8 +14,7 @@ class nebula::role::hathitrust::datasets () {
   include nebula::profile::hathitrust::hosts
 
   class { 'nebula::profile::hathitrust::mounts':
-    smartconnect_mounts => ['/htapps','/htprep'],
-    readonly            => true,
+    nas_mounts => ['/htapps','/htprep'],
   }
 
   include nebula::profile::hathitrust::rsync

@@ -12,23 +12,36 @@ describe "nebula::profile::hathitrust::mounts" do
       let(:hiera_config) { "spec/fixtures/hiera/hathitrust_config.yaml" }
 
       it { is_expected.to contain_package("nfs-common") }
-      it { is_expected.to contain_mount("/sdr1").with_options("auto,hard,nfsvers=3,ro") }
-      it { is_expected.to contain_nebula__nfs_mount("/sdr1") }
+      it "mounts /sdr and /htapps" do
+        is_expected.to contain_nebula__nfs_mount("/sdr").with(
+          remote_target: "truenas:/mnt/tank/sdr"
+        )
+        is_expected.to contain_nebula__nfs_mount("/htapps").with(
+          remote_target: "truenas:/mnt/tank/htapps"
+        )
+      end
 
-      it {
-        is_expected.to contain_mount("/htapps")
-          .that_requires("File[/etc/resolv.conf]")
-          .that_requires("Service[bind9]")
-      }
-      it { is_expected.to contain_nebula__nfs_mount("/htapps") }
+      it "symlinks /sdr#" do
+        is_expected.to contain_file("/sdr1").with(
+          ensure: "link",
+          target: "/sdr/1"
+        )
 
-      it { is_expected.to contain_file("/etc/resolv.conf").with_content(%r{nameserver 127.0.0.1}) }
-      it { is_expected.to contain_service("bind9") }
+        is_expected.to contain_file("/sdr12").with(
+          ensure: "link",
+          target: "/sdr/12"
+        )
 
-      context "with /htapps specified as a non-smartconnect mount" do
+        is_expected.to contain_file("/sdr24").with(
+          ensure: "link",
+          target: "/sdr/24"
+        )
+      end
+
+      context "with /htapps specified as a non-nas mount" do
         let(:params) do
           {
-            smartconnect_mounts: [],
+            nas_mounts: [],
             other_nfs_mounts: {
               "/htapps" => {"remote_target" => "somehost:/htapps"}
             }
@@ -39,42 +52,6 @@ describe "nebula::profile::hathitrust::mounts" do
           expect(subject).to contain_mount("/htapps").with(
             device: "somehost:/htapps",
             fstype: "nfs"
-          )
-        end
-      end
-
-      context "with use_truenas = true" do
-        let(:params) do
-          {
-            use_truenas: true
-          }
-        end
-
-        it "mounts /sdr" do
-          is_expected.to contain_mount("/sdr").with(
-            device: "truenas:/mnt/tank/sdr",
-            fstype: "nfs"
-          )
-          is_expected.to contain_mount("/htapps").with(
-            device: "truenas:/mnt/tank/htapps",
-            fstype: "nfs"
-          )
-        end
-
-        it "symlinks /sdr#" do
-          is_expected.to contain_file("/sdr1").with(
-            ensure: "link",
-            target: "/sdr/1"
-          )
-
-          is_expected.to contain_file("/sdr12").with(
-            ensure: "link",
-            target: "/sdr/12"
-          )
-
-          is_expected.to contain_file("/sdr24").with(
-            ensure: "link",
-            target: "/sdr/24"
           )
         end
       end
