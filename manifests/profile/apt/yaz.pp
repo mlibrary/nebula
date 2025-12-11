@@ -19,6 +19,6 @@ class nebula::profile::apt::yaz {
   }
 
   apt::keyring { 'yaz-indexdata.dk.gpg':
-    source => 'https://download.indexdata.com/debian/indexdata.gpg',
+    source => 'puppet:///modules/nebula/apt/keyrings/yaz-indexdata.dk.gpg',
   }
 }

@@ -17,7 +17,7 @@ class nebula::profile::php73 (
   }
 
   apt::keyring { 'php-community-sury.org.gpg':
-    source => 'https://packages.sury.org/php/apt.gpg',
+    source => 'puppet:///modules/nebula/apt/keyrings/php-community-sury.org.gpg',
   }
 
   ensure_packages (

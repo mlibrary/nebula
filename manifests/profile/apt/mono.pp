@@ -22,6 +22,6 @@ class nebula::profile::apt::mono {
   }
 
   apt::keyring { 'mono-project.asc':
-    source => 'https://download.mono-project.com/repo/xamarin.gpg',
+    source => 'puppet:///modules/nebula/apt/keyrings/mono-project.asc',
   }
 }

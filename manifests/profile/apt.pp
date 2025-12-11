@@ -108,7 +108,6 @@ class nebula::profile::apt (
   }
 
   if($facts['os']['name'] == 'Debian') {
-    # TODO: port to DEB822
     # TODO: remove non-free where we're not using it
     # TODO: remove branch when we're off bullseye
     $debian_repos = $facts['os']['distro']['codename'] ? {
@@ -116,6 +115,7 @@ class nebula::profile::apt (
       default    => ['main', 'contrib', 'non-free', 'non-free-firmware'],
     }
 
+    # TODO: add keyring parameter to match default Debian configuration
     apt::source { 'main':
       source_format => 'sources',
       location      => [$mirror],

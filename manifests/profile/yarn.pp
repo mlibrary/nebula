@@ -17,7 +17,7 @@ class nebula::profile::yarn (
   }
 
   apt::keyring { 'yarnpkg.asc':
-    source => 'https://dl.yarnpkg.com/debian/pubkey.gpg',
+    source => 'puppet:///modules/nebula/apt/keyrings/yarnpkg.asc',
   }
 
   package { 'yarn':

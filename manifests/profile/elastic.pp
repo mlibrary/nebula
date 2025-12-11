@@ -32,7 +32,7 @@ class nebula::profile::elastic (
     },
   }
   apt::keyring { 'elastic.co.asc':
-    source => 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
+    source => 'puppet:///modules/nebula/apt/keyrings/elastic.co.asc',
   }
 
   if $logstash_auth_cert != '' {

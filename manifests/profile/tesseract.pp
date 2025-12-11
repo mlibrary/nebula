@@ -17,7 +17,7 @@ class nebula::profile::tesseract (
   }
 
   apt::keyring { 'tesseract-notesalexp.org.asc':
-    source => 'https://notesalexp.org/debian/alexp_key.asc',
+    source => 'puppet:///modules/nebula/apt/keyrings/tesseract-notesalexp.org.asc',
   }
 
   package { 'tesseract-ocr':

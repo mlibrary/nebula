@@ -23,7 +23,7 @@ class nebula::profile::loki (
   }
 
   apt::keyring { 'grafana.asc':
-    source => 'https://apt.grafana.com/gpg.key',
+    source => 'puppet:///modules/nebula/apt/keyrings/grafana.asc',
   }
 
   package { 'alloy':
