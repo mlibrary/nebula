@@ -91,11 +91,11 @@ nebula::virtual::users::all_users:
     comment: Solr user
     uid: 123458
     home: /var/lib/solr
-  prometheus:
+  jdoe:
     uid: 108
-    gid: prometheus
-    comment: Prometheus
-    home: /var/lib/prometheus
+    gid: nullgroup
+    comment: Jon Doe
+    home: /home/jdoe
 
 nebula::hathitrust::monitor::solr_cores:
   - solrcore1

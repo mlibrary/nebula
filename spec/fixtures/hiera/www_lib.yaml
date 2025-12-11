@@ -49,11 +49,11 @@ nebula::apache::ssl_keypair::chain_crt: foo.crt
 nebula::virtual::users::all_users:
   default_invalid: {}
   cron_friend: {}
-  prometheus:
+  jdoe:
     uid: 108
-    gid: prometheus
-    comment: Prometheus
-    home: /var/lib/prometheus
+    gid: nullgroup
+    comment: Jon Doe
+    home: /home/jdoe
   docker:
     uid: 999
     gid: docker

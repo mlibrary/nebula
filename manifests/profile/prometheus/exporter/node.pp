@@ -21,50 +21,34 @@
 #   in the covered_datacenters list, it will be scraped by the scraper
 #   in this datacenter instead.
 class nebula::profile::prometheus::exporter::node (
-  Optional[String] $version = undef,
   Array $covered_datacenters = [],
   String $default_datacenter = 'default',
-  String $promfile_owner = 'prometheus',
 ) {
-  $log_file = '/var/log/prometheus-node-exporter.log'
-
-  include nebula::virtual::users
-  include nebula::profile::apt
-  include nebula::profile::groups
   include nebula::subscriber::rsyslog
   include nebula::subscriber::systemctl_daemon_reload
 
-  file { '/etc/default/prometheus-node-exporter':
-    content => template('nebula/profile/prometheus/exporter/node/defaults.sh.erb'),
-    notify  => Service['prometheus-node-exporter'],
-    require => Package['prometheus-node-exporter'],
+  file {
+    default:
+      ensure => absent,
+    ;
+    '/etc/default/prometheus-node-exporter':
+    ;
+    '/etc/systemd/system/prometheus-node-exporter.service':
+      notify => Exec['systemctl daemon-reload'],
+    ;
+    '/etc/rsyslog.d/prometheus-node-exporter.conf':
+      notify  => Service['rsyslog'],
+    ;
+    '/var/log/prometheus-node-exporter.log':
+    ;
+    '/etc/apt/preferences.d/prometheus-node-exporter.pref':
+    ;
   }
 
-  file { '/etc/systemd/system/prometheus-node-exporter.service':
-    content => template('nebula/profile/prometheus/exporter/node/systemd.ini.erb'),
-    notify  => [Service['prometheus-node-exporter'], Exec['systemctl daemon-reload']],
-    require => Package['prometheus-node-exporter'],
-  }
-
-  # That we have to create this almost certainly means it's no longer in
-  # use and doesn't do anything. This is all a holdover from a time when
-  # the node exporter was unstable and we did not trust it---the best
-  # fix before deleting this block (along with all the log deletion that
-  # goes with it) is to upgrade the node exporter.
-  file { '/etc/rsyslog.d':
-    ensure => 'directory',
-  }
-
-  file { '/etc/rsyslog.d/prometheus-node-exporter.conf':
-    content => template('nebula/profile/prometheus/exporter/node/rsyslog.conf.erb'),
-    notify  => Service['prometheus-node-exporter', 'rsyslog'],
-    require => File['/etc/rsyslog.d'],
-  }
-
-  $prometheus_errors_total = $facts['prometheus_errors_total']
-  file { '/var/lib/prometheus/node-exporter/node_exporter_errors.prom':
-    content => template('nebula/profile/prometheus/exporter/node/node_exporter_errors.prom.erb'),
-  }
+  # $prometheus_errors_total = $facts['prometheus_errors_total']
+  # file { '/var/lib/prometheus/node-exporter/node_exporter_errors.prom':
+  #   content => template('nebula/profile/prometheus/exporter/node/node_exporter_errors.prom.erb'),
+  # }
 
   file { '/etc/cron.daily/check-reboot':
     owner   => 'root',
@@ -73,46 +57,25 @@ class nebula::profile::prometheus::exporter::node (
     content => template('nebula/profile/prometheus/exporter/node/check_reboot.sh.erb'),
   }
 
-  file { $log_file:
-    owner   => 'root',
-    group   => 'adm',
-    mode    => '0640',
-    content => '',
-  }
-
   service { 'prometheus-node-exporter':
-    ensure => 'running',
-    enable => true,
+    ensure => stopped,
+    before => [User['prometheus'], Package['prometheus-node-exporter']],
   }
 
   package { 'prometheus-node-exporter':
-    ensure  => pick($version, 'installed'),
-    require => [User['prometheus'], File['/var/lib/prometheus/node-exporter']],
+    ensure => purged,
   }
 
-  if $version != undef {
-    apt::pin { 'prometheus-node-exporter':
-      packages => ['prometheus-node-exporter'],
-      version  => $version,
-      priority => 999,
-    }
+  user { 'prometheus' :
+    ensure => absent,
   }
 
-  file { '/var/lib/prometheus/node-exporter':
-    ensure => 'directory',
-    mode   => '2775',
-    owner  => $promfile_owner,
-    group  => 'prometheus',
-  }
-
-  file { '/var/lib/prometheus':
-    ensure => 'directory',
-    mode   => '2775',
-    owner  => 'prometheus',
-    group  => 'prometheus',
-  }
-
-  realize User['prometheus']
+  # file { '/var/lib/prometheus/node-exporter':
+  #   ensure => 'directory',
+  #   mode   => '2775',
+  #   owner  => 'prometheus',
+  #   group  => 'prometheus',
+  # }
 
   $role = lookup_role()
   $datacenter = $facts['datacenter']
