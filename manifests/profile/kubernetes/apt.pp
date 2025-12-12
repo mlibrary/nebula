@@ -11,7 +11,7 @@ class nebula::profile::kubernetes::apt (
     source_format => 'sources',
     location      => [$location],
     release       => '/',
-    repos         => ['main'],
+    repos         => [],
     keyring       => '/etc/apt/keyrings/k8s.io.asc',
   }
 

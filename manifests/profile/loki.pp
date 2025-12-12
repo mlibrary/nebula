@@ -17,8 +17,8 @@ class nebula::profile::loki (
   apt::source { 'grafana':
     source_format => 'sources',
     location      => ['https://apt.grafana.com/'],
-    release       => '',
-    repos         => ['stable', 'main'],
+    release       => 'stable',
+    repos         => ['main'],
     keyring       => '/etc/apt/keyrings/grafana.asc',
   }
 
