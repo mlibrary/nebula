@@ -76,12 +76,15 @@ describe "nebula::profile::kubernetes::kubelet" do
 
         it do
           expect(subject).to contain_apt__source("kubernetes").with(
-            location: "https://pkgs.k8s.io/core:/stable:/v1.29/deb/",
+            location: ["https://pkgs.k8s.io/core:/stable:/v1.29/deb/"],
             release: "/",
-            key: {
-              "name" => "k8s.io.asc",
-              "source" => "puppet:///modules/nebula/apt/keyrings/k8s.io.asc"
-            }
+            keyring: "/etc/apt/keyrings/k8s.io.asc"
+          )
+        end
+
+        it do
+          expect(subject).to contain_apt__keyring("k8s.io.asc").with(
+            source: "puppet:///modules/nebula/apt/keyrings/k8s.io.asc"
           )
         end
 

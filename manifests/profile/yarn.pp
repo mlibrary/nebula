@@ -8,14 +8,16 @@
 class nebula::profile::yarn (
 ) {
   apt::source { 'yarn':
-    location     => 'https://dl.yarnpkg.com/debian/',
-    key          => {
-      name   => 'yarnpkg.asc',
-      source => 'https://dl.yarnpkg.com/debian/pubkey.gpg'
-    },
-    release      => 'stable',
-    repos        => 'main',
-    architecture => $facts['os']['architecture'],
+    source_format => 'sources',
+    location      => ['https://dl.yarnpkg.com/debian/'],
+    release       => 'stable',
+    repos         => ['main'],
+    architecture  => $facts['os']['architecture'],
+    keyring       => '/etc/apt/keyrings/yarnpkg.asc',
+  }
+
+  apt::keyring { 'yarnpkg.asc':
+    source => 'puppet:///modules/nebula/apt/keyrings/yarnpkg.asc',
   }
 
   package { 'yarn':

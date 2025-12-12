@@ -8,15 +8,17 @@
 #   include nebula::profile::apt::yaz
 class nebula::profile::apt::yaz {
   apt::source { 'yaz-official-stable':
-    location => 'http://ftp.indexdata.dk/debian',
-    repos    => 'main',
-    include  => {
+    source_format => 'sources',
+    location      => ['http://ftp.indexdata.dk/debian'],
+    repos         => ['main'],
+    keyring       => '/etc/apt/keyrings/yaz-indexdata.dk.gpg',
+    include       => {
       'src' => true,
       'deb' => true,
     },
-    key      => {
-      'name'   => 'yaz-indexdata.dk.gpg',
-      'source' => 'https://download.indexdata.com/debian/indexdata.gpg',
-    },
+  }
+
+  apt::keyring { 'yaz-indexdata.dk.gpg':
+    source => 'puppet:///modules/nebula/apt/keyrings/yaz-indexdata.dk.gpg',
   }
 }

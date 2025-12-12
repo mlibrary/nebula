@@ -20,18 +20,19 @@ class nebula::profile::elastic (
   include nebula::profile::apt
 
   apt::source { 'elastic.co':
-    comment  => 'Elastic.co apt source for beats and elastic search',
-    location => 'https://artifacts.elastic.co/packages/7.x/apt',
-    release  => 'stable',
-    repos    => 'main',
-    key      => {
-      'name'   => 'elastic.co.asc',
-      'source' => 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
-    },
-    include  => {
+    source_format => 'sources',
+    comment       => 'Elastic.co apt source for beats and elastic search',
+    location      => ['https://artifacts.elastic.co/packages/7.x/apt'],
+    release       => 'stable',
+    repos         => ['main'],
+    keyring       => '/etc/apt/keyrings/elastic.co.asc',
+    include       => {
       'src' => false,
       'deb' => true,
     },
+  }
+  apt::keyring { 'elastic.co.asc':
+    source => 'puppet:///modules/nebula/apt/keyrings/elastic.co.asc',
   }
 
   if $logstash_auth_cert != '' {

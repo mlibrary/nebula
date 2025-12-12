@@ -13,8 +13,15 @@ describe "nebula::profile::apt::nodejs" do
 
       it "configures nodejs apt source" do
         is_expected.to contain_apt__source("nodesource.com")
-          .with_location("https://deb.nodesource.com/node_22.x")
+          .with_source_format("sources")
+          .with_location(["https://deb.nodesource.com/node_22.x"])
           .with_release("nodistro")
+          .with_keyring("/etc/apt/keyrings/nodesource.asc")
+      end
+
+      it "configures nodejs apt keyring" do
+        is_expected.to contain_apt__keyring("nodesource.asc")
+          .with_source("puppet:///modules/nebula/apt/keyrings/nodesource.asc")
       end
 
       context "nodejs 10" do

@@ -15,13 +15,15 @@ class nebula::profile::loki (
   $group = 'alloy'
 
   apt::source { 'grafana':
-    location => 'https://apt.grafana.com/',
-    release  => '',
-    repos    => 'stable main',
-    key      => {
-      name   => 'grafana.asc',
-      source => 'https://apt.grafana.com/gpg.key',
-    },
+    source_format => 'sources',
+    location      => ['https://apt.grafana.com/'],
+    release       => '',
+    repos         => ['stable', 'main'],
+    keyring       => '/etc/apt/keyrings/grafana.asc',
+  }
+
+  apt::keyring { 'grafana.asc':
+    source => 'puppet:///modules/nebula/apt/keyrings/grafana.asc',
   }
 
   package { 'alloy':

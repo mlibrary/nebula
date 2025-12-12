@@ -11,7 +11,20 @@ describe "nebula::profile::containerd" do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
-      it { is_expected.to contain_apt__source("docker") }
+
+      it do
+        is_expected.to contain_apt__source("docker").with(
+          source_format: "sources",
+          keyring: "/etc/apt/keyrings/docker.asc"
+        )
+      end
+
+      it do
+        is_expected.to contain_apt__keyring("docker.asc").with(
+          source: "puppet:///modules/nebula/apt/keyrings/docker.asc"
+        )
+      end
+
       it { is_expected.to contain_package("containerd.io").that_requires("Apt::Source[docker]") }
       it { is_expected.to contain_service("containerd").that_requires("Package[containerd.io]") }
       it { is_expected.to contain_file("/etc/containerd/config.toml").with_content(%r{^disabled_plugins = \[\]$}) }

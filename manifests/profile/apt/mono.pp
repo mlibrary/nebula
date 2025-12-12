@@ -14,12 +14,14 @@ class nebula::profile::apt::mono {
   $apt_release = 'buster'
 
   apt::source { 'mono-official-stable':
-    location => 'https://download.mono-project.com/repo/debian',
-    release  => "stable-${apt_release}",
-    repos    => 'main',
-    key      => {
-      'name'   => 'mono-project.asc',
-      'source' => 'https://download.mono-project.com/repo/xamarin.gpg',
-    },
+    source_format => 'sources',
+    location      => ['https://download.mono-project.com/repo/debian'],
+    release       => "stable-${apt_release}",
+    repos         => ['main'],
+    keyring       => '/etc/apt/keyrings/mono-project.asc',
+  }
+
+  apt::keyring { 'mono-project.asc':
+    source => 'puppet:///modules/nebula/apt/keyrings/mono-project.asc',
   }
 }
