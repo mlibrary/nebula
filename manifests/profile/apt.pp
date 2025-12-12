@@ -67,7 +67,7 @@ class nebula::profile::apt (
       # it has been included in this repo as a dearmored binary key.
       # See also: https://downloads.linux.hpe.com/SDR/keys.html
       $hpe_key = $facts['os']['name'] ? {
-        'Debian' => 'hpe1.asc',
+        'Debian' => 'hpe1.gpg',
         'Ubuntu' => 'hpe2.gpg',
       }
 

@@ -216,13 +216,13 @@ describe "nebula::profile::apt" do
               location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
               release: "#{facts[:lsbdistcodename]}/current",
               repos: ["non-free"],
-              keyring: "/etc/apt/keyrings/hpe1.asc"
+              keyring: "/etc/apt/keyrings/hpe1.gpg"
             )
           end
 
           it do
-            expect(subject).to contain_apt__keyring("hpe1.asc").with(
-              source: "puppet:///modules/nebula/apt/keyrings/hpe1.asc"
+            expect(subject).to contain_apt__keyring("hpe1.gpg").with(
+              source: "puppet:///modules/nebula/apt/keyrings/hpe1.gpg"
             )
           end
 
@@ -238,13 +238,13 @@ describe "nebula::profile::apt" do
                 location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
                 release: "#{facts[:lsbdistcodename]}/current",
                 repos: ["non-free"],
-                keyring: "/etc/apt/keyrings/hpe1.asc"
+                keyring: "/etc/apt/keyrings/hpe1.gpg"
               )
             end
 
             it do
-              expect(subject).to contain_apt__keyring("hpe1.asc").with(
-                source: "puppet:///modules/nebula/apt/keyrings/hpe1.asc"
+              expect(subject).to contain_apt__keyring("hpe1.gpg").with(
+                source: "puppet:///modules/nebula/apt/keyrings/hpe1.gpg"
               )
             end
           end

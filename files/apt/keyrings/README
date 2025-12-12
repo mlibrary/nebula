@@ -3,7 +3,7 @@ adoptium.asc                  https://packages.adoptium.net/artifactory/api/gpg/
 docker.asc                    https://download.docker.com/linux/debian/gpg
 elastic.co.asc                https://artifacts.elastic.co/GPG-KEY-elasticsearch
 grafana.asc                   https://apt.grafana.com/gpg.key
-hpe1.asc                      https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub
+hpe1.gpg                      https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub
 hpe2.gpg                      https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key2.pub
 k8s.io.asc                    https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
 mono-project.asc              https://download.mono-project.com/repo/xamarin.gpg
