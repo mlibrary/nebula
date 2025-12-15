@@ -419,13 +419,16 @@ groups:
       severity: "ticket"
     annotations:
       summary: "{{$labels.frontend}} frontend on {{$labels.hostname}} approaching its maxconn limit"
-  - alert: "DramaticIncreaseInHAProxyTraffic"
-    expr: "avg_over_time(haproxy_frontend_current_sessions[30m]) - avg_over_time(haproxy_frontend_current_sessions[3h]) > 1000"
-    for: "30m"
-    labels:
-      severity: "info"
-    annotations:
-      summary: "{{$labels.frontend}} frontend on {{$labels.hostname}} is getting slammed"
+
+  # This alert is something we want to know in theory but is way too
+  # noisy in its current form.
+  # alert: "DramaticIncreaseInHAProxyTraffic"
+  # expr: "avg_over_time(haproxy_frontend_current_sessions[30m]) - avg_over_time(haproxy_frontend_current_sessions[3h]) > 1000"
+  # for: "30m"
+  # labels:
+  #   severity: "info"
+  # annotations:
+  #   summary: "{{$labels.frontend}} frontend on {{$labels.hostname}} is getting slammed"
 
   # These are aggregate rules for federated collection across our full
   # system. By putting them here, we essentially precompile them.
