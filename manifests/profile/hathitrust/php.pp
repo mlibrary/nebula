@@ -11,6 +11,10 @@
 class nebula::profile::hathitrust::php () {
   include nebula::profile::hathitrust::apache
 
+  package { 'php-smarty':
+    ensure => 'absent'
+  }
+
   package {
     [
       'php-curl',
@@ -21,7 +25,6 @@ class nebula::profile::hathitrust::php () {
       'php-mysql',
       'php-mdb2',
       'php-mdb2-driver-mysql',
-      'php-smarty',
       'smarty3',
       'php-xml',
       'php-mbstring',
