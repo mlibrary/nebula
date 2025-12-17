@@ -16,7 +16,7 @@ Gemfile:
       - gem: librarian-puppet
         version: '>= 5.0'
       - gem: pdk
-        version: '>= 3.3.0'
+        version: '>= 3.4.0'
       - gem: standard
       # Silence bundler errors. It's expected that newer PDK will
       # add syslog. When that happens, remove this line.
