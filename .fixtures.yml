@@ -14,12 +14,12 @@ fixtures:
   #    repo: "https://github.com/mlibrary/repo_name"
   forge_modules:
     rbenv:               {"repo": "jdowning/rbenv",             "ref": "3.1.0" }
-    archive:             {"repo": "puppet/archive",             "ref": "7.1.0" } # puppet-php requires archive < 8
+    archive:             {"repo": "puppet/archive",             "ref": "8.1.0" }
     kmod:                {"repo": "puppet/kmod",                "ref": "4.1.0" }
     letsencrypt:         {"repo": "puppet/letsencrypt",         "ref": "12.0.0"}
     logrotate:           {"repo": "puppet/logrotate",           "ref": "8.0.0" }
     nginx:               {"repo": "puppet/nginx",               "ref": "7.0.1" }
-    php:                 {"repo": "puppet/php",                 "ref": "11.0.0"}
+    php:                 {"repo": "puppet/php",                 "ref": "12.0.0"}
     systemd:             {"repo": "puppet/systemd",             "ref": "8.3.1" }
     unattended_upgrades: {"repo": "puppet/unattended_upgrades", "ref": "8.2.0" }
     apache:              {"repo": "puppetlabs/apache",          "ref": "13.1.0"}
