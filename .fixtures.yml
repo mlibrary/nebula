@@ -33,7 +33,7 @@ fixtures:
       ref: 13.1.0
     apt:
       repo: puppetlabs/apt
-      ref: 11.2.0
+      ref: 10.0.1
     augeas_core:
       repo: puppetlabs/augeas_core
       ref: 2.0.1
