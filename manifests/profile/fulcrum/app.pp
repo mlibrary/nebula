@@ -190,4 +190,9 @@ class nebula::profile::fulcrum::app (
       File['/etc/systemd/system/fulcrum.target'],
     ],
   }
+
+  service { 'clamav-freshclam':
+    ensure  => 'running',
+    require => Package['clamav-freshclam'],
+  }
 }

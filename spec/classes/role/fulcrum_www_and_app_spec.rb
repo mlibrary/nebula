@@ -47,6 +47,12 @@ describe "nebula::role::webhost::fulcrum_www_and_app" do
       it { is_expected.to contain_cron("purge apache access logs 1/2") }
       it { is_expected.to contain_cron("purge apache access logs 2/2") }
       it { is_expected.to contain_cron("shibd existence check") }
+
+      it do
+        is_expected.to contain_service("clamav-freshclam")
+          .with_ensure("running")
+          .that_requires("Package[clamav-freshclam]")
+      end
     end
   end
 end
