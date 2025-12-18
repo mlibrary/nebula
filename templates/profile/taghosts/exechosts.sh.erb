@@ -1,10 +1,11 @@
 #!/bin/sh
 set -e
 PROG="$0"
-USAGE="[-1fhps] TAGS COMMAND [ARGS...]"
+USAGE="[-1fhpPs] TAGS COMMAND [ARGS...]"
 STRATEGY="parallel"
 STREAM_OUTPUT=false
 ASK_ARE_YOU_SURE=true
+BOLT_SUBCOMMAND="command"
 
 errorout() {
   echo "usage: $PROG $USAGE" >&2
@@ -24,6 +25,7 @@ optional arguments:
  -f           Run command without waiting for confirmation
  -h           Show this help message and exit
  -p           Run command on all matching servers in parallel (default)
+ -P           Use \`bolt plan run\` instead of \`bolt command run\`
  -s           Stream output in real time
 EOF
 }
@@ -33,7 +35,7 @@ if [ "$1" = "--help" ]; then
   exit 0
 fi
 
-while getopts ':1fhps' opt; do
+while getopts ':1fhpPs' opt; do
   case "$opt" in
     1)
       STRATEGY="serial"
@@ -50,6 +52,10 @@ while getopts ':1fhps' opt; do
 
     p)
       STRATEGY="parallel"
+      ;;
+
+    P)
+      BOLT_SUBCOMMAND="plan"
       ;;
 
     s)
@@ -87,9 +93,13 @@ validate_arguments() {
 confirm_plan() {
   if $ASK_ARE_YOU_SURE; then
     printf 'Selector is: %s\n' "$TAGS"
-    printf 'Hosts are: %s\n' "`/usr/local/bin/taghosts -j ' ' $TAGS`"
-    echo "Command is: $@"
-    echo "Strategy is: $STRATEGY"
+    if [ "$BOLT_SUBCOMMAND" = "command" ]; then
+      printf 'Hosts are: %s\n' "`/usr/local/bin/taghosts -j ' ' $TAGS`"
+      echo "Command is: $@"
+      echo "Strategy is: $STRATEGY"
+    else
+      echo "Will run: bolt $BOLT_SUBCOMMAND run $@ -t `/usr/local/bin/taghosts -j ',' $TAGS`"
+    fi
     read -p "Do you want to continue? [Y/n] " CONTINUE
     if ! echo "$CONTINUE"y | sed -e 's/[^Yy].*$//' | grep -q .; then
       echo "Abort." >&2
@@ -99,6 +109,15 @@ confirm_plan() {
 }
 
 run_bolt() {
+  if [ "$BOLT_SUBCOMMAND" = "command" ]; then
+    run_bolt_command "$@"
+  else
+    exec /usr/local/bin/bolt "$BOLT_SUBCOMMAND" run "$@" \
+      -t "`/usr/local/bin/taghosts -b $TAGS`"
+  fi
+}
+
+run_bolt_command() {
   build_bolt_args
   case "$STRATEGY" in
     "serial")
@@ -134,4 +153,8 @@ build_bolt_args() {
   fi
 }
 
-main "$@"
+# These braces force /bin/sh to not read from this file until reaching
+# `}`, which it never will, because it exits first. This makes it safe
+# to edit it while it's running (or for puppet to change it while
+# someone is running it).
+{ main "$@"; exit "$?"; }
