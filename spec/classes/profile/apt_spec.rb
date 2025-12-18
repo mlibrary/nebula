@@ -36,10 +36,10 @@ describe "nebula::profile::apt" do
             source_format: "sources",
             location: ["http://ftp.us.debian.org/debian/"],
             repos: case os
-                   when "debian-12-x86_64"
-                     ["main", "contrib", "non-free", "non-free-firmware"]
-                   else
+                   when "debian-11-x86_64"
                      ["main", "contrib", "non-free"]
+                   else
+                     ["main", "contrib", "non-free", "non-free-firmware"]
                    end
           )
         end
@@ -48,10 +48,10 @@ describe "nebula::profile::apt" do
           expect(subject).to contain_apt__source("security").with(
             source_format: "sources",
             repos: case os
-                   when "debian-12-x86_64"
-                     ["main", "contrib", "non-free", "non-free-firmware"]
-                   else
+                   when "debian-11-x86_64"
                      ["main", "contrib", "non-free"]
+                   else
+                     ["main", "contrib", "non-free", "non-free-firmware"]
                    end
           )
         end
@@ -60,11 +60,11 @@ describe "nebula::profile::apt" do
           expect(subject).to contain_apt__source("security").with_release(
             case os
             when "debian-9-x86_64"
-              "#{facts[:lsbdistcodename]}/updates"
+              "#{facts[:os]["distro"]["codename"]}/updates"
             when "debian-10-x86_64"
-              "#{facts[:lsbdistcodename]}/updates"
+              "#{facts[:os]["distro"]["codename"]}/updates"
             else
-              "#{facts[:lsbdistcodename]}-security"
+              "#{facts[:os]["distro"]["codename"]}-security"
             end
           )
         end
@@ -108,12 +108,12 @@ describe "nebula::profile::apt" do
           expect(subject).to contain_apt__source("updates").with(
             source_format: "sources",
             location: ["http://ftp.us.debian.org/debian/"],
-            release: "#{facts[:lsbdistcodename]}-updates",
+            release: "#{facts[:os]["distro"]["codename"]}-updates",
             repos: case os
-                   when "debian-12-x86_64"
-                     ["main", "contrib", "non-free", "non-free-firmware"]
-                   else
+                   when "debian-11-x86_64"
                      ["main", "contrib", "non-free"]
+                   else
+                     ["main", "contrib", "non-free", "non-free-firmware"]
                    end
           )
         end
@@ -153,7 +153,7 @@ describe "nebula::profile::apt" do
             expect(subject).to contain_apt__source("foobar").with(
               location: ["https://foobar.example.invalid/debs"],
               architecture: "amd64",
-              release: facts[:lsbdistcodename].to_s,
+              release: facts[:os]["distro"]["codename"].to_s,
               repos: ["main"]
             )
             expect(subject).to contain_apt__source("foobaz").with(
@@ -178,22 +178,22 @@ describe "nebula::profile::apt" do
             .with_source_format("sources")
             .with_location(["http://us.archive.ubuntu.com/ubuntu"])
             .with_repos(["main", "restricted", "universe"])
-            .with_release(facts[:lsbdistcodename].to_s)
+            .with_release(facts[:os]["distro"]["codename"].to_s)
           expect(subject).to contain_apt__source("updates")
             .with_source_format("sources")
             .with_location(["http://us.archive.ubuntu.com/ubuntu"])
             .with_repos(["main", "restricted", "universe"])
-            .with_release("#{facts[:lsbdistcodename]}-updates")
+            .with_release("#{facts[:os]["distro"]["codename"]}-updates")
           expect(subject).to contain_apt__source("security")
             .with_source_format("sources")
             .with_location(["http://us.archive.ubuntu.com/ubuntu"])
             .with_repos(["main", "restricted", "universe"])
-            .with_release("#{facts[:lsbdistcodename]}-security")
+            .with_release("#{facts[:os]["distro"]["codename"]}-security")
           expect(subject).to contain_apt__source("backports")
             .with_source_format("sources")
             .with_location(["http://us.archive.ubuntu.com/ubuntu"])
             .with_repos(["main", "restricted", "universe"])
-            .with_release("#{facts[:lsbdistcodename]}-backports")
+            .with_release("#{facts[:os]["distro"]["codename"]}-backports")
         end
 
         it "disables 20apt-esm-hook.conf" do
@@ -214,7 +214,7 @@ describe "nebula::profile::apt" do
             expect(subject).to contain_apt__source("hpe").with(
               source_format: "sources",
               location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
-              release: "#{facts[:lsbdistcodename]}/current",
+              release: "#{facts[:os]["distro"]["codename"]}/current",
               repos: ["non-free"],
               keyring: "/etc/apt/keyrings/hpe1.gpg"
             )
@@ -236,7 +236,7 @@ describe "nebula::profile::apt" do
               expect(subject).to contain_apt__source("hpe").with(
                 source_format: "sources",
                 location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
-                release: "#{facts[:lsbdistcodename]}/current",
+                release: "#{facts[:os]["distro"]["codename"]}/current",
                 repos: ["non-free"],
                 keyring: "/etc/apt/keyrings/hpe1.gpg"
               )
@@ -253,7 +253,7 @@ describe "nebula::profile::apt" do
             expect(subject).to contain_apt__source("hpe").with(
               source_format: "sources",
               location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
-              release: "#{facts[:lsbdistcodename]}/current",
+              release: "#{facts[:os]["distro"]["codename"]}/current",
               repos: ["non-free"],
               keyring: "/etc/apt/keyrings/hpe2.gpg"
             )
