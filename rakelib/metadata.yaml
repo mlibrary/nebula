@@ -1,0 +1,65 @@
+---
+name: mlibrary-nebula
+version: 3.0.0
+author: MLibrary
+summary: Central MLibrary module
+license: BSD-3-Clause
+source: https://github.com/mlibrary/nebula
+dependencies:
+# examples:
+# # add a module from a puppet forge, use latest version
+# - name: example/foobar
+# # add a module from a puppet forge, pinned to a specific version
+# - name: example/foobar
+#   # set version to ">= 10.1.0 < 11.0.0"; if you want something more specific,
+#   # you'll have to hand-edit config after it's generated
+#   version: 10.1.0 # optional, only affects .fixtures.yml
+# # add a module from a git repo (note: must also add module control repo!)
+# - name: private_module
+#   repo: https://github.com/mlibrary/repo_name
+#   ref: some_git_ref # optional
+# # print additional info while checking this module
+# - name: example/foobar
+#   info: example/foobar 1.2.3 blocks example/baz 4.0.0
+- name: jdowning/rbenv
+- name: puppet/archive
+- name: puppet/kmod
+- name: puppet/letsencrypt
+- name: puppet/logrotate
+- name: puppet/nginx
+- name: puppet/php
+- name: puppet/systemd
+- name: puppet/unattended_upgrades
+- name: puppetlabs/apache
+- name: puppetlabs/apt
+  ref: 10.0.1
+  info: puppetlabs/apt 11.0.0 blocked by puppetlabs/docker 10.3.0
+- name: puppetlabs/augeas_core
+- name: puppetlabs/concat
+- name: puppetlabs/cron_core
+- name: puppetlabs/docker
+  info: puppetlabs/docker 10.3.0 blocks puppetlabs/apt 11.0.0
+- name: puppetlabs/firewall
+- name: puppetlabs/host_core
+- name: puppetlabs/inifile
+- name: puppetlabs/lvm
+- name: puppetlabs/mount_core
+- name: puppetlabs/mysql
+- name: puppetlabs/reboot
+- name: puppetlabs/sshkeys_core
+- name: puppetlabs/stdlib
+- name: puppetlabs/vcsrepo
+- name: stm/debconf
+operatingsystem_support:
+- operatingsystem: Debian
+  operatingsystemrelease:
+  - "11"
+  - "12"
+  - "13"
+- operatingsystem: Ubuntu
+  operatingsystemrelease:
+  - "22.04"
+  - "24.04"
+requirements:
+- name: puppet
+  version_requirement: ">= 8.0.0 < 9.0.0"
