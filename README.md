@@ -18,7 +18,7 @@ bundle
 bundle exec rake parallel_spec
 
 # run any single test
-bundle exec rake spec_prep
+bundle exec rake fixtures:prep
 bundle exec rspec specs/path/to/a_spec.rb
 
 # lint

@@ -27,8 +27,8 @@ jobs:
       id: define_matrix
       run: bundle exec rake supported_os >> "$GITHUB_OUTPUT"
     - if: ${{ steps.cache-fixtures.outputs.cache-hit != 'true' }}
-      name: rake spec_prep
-      run: bundle exec rake spec_prep
+      name: rake fixtures:prep
+      run: bundle exec rake fixtures:prep
   lint:
     name: "All OSes: lint"
     needs: setup_tests
@@ -64,8 +64,8 @@ jobs:
       with:
         path: spec/fixtures/modules
         key: cache-fixtures-modules-${{ hashFiles('.fixtures.yml') }}
-    - name: rake spec_prep
-      run: bundle exec rake spec_prep
+    - name: rake fixtures:prep
+      run: bundle exec rake fixtures:prep
     - name: "Run SUPPORTED_OS=\"${{ matrix.os }}\" rake ci:spec"
       env:
         SUPPORTED_OS: ${{ matrix.os }}
