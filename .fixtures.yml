@@ -1,41 +1,81 @@
-# This file can be used to install module depdencies for unit testing
-# See https://github.com/puppetlabs/puppetlabs_spec_helper#using-fixtures for details
 ---
 fixtures:
-  # I'm leaving this here for next time, since it comes up so rarely
-  # that I always have to look it up. If we fork something and want to
-  # include our fork (the same applies to anything not in the forge), we
-  # add it to our fixtures under `repositories` instead of under
-  # `forge_modules`. Also, we add it to the Puppetfile in the control
-  # repo; not to metadata.json in nebula.
-  #
-  #repositories:
-  #  module_name:
-  #    repo: "https://github.com/mlibrary/repo_name"
   forge_modules:
-    rbenv:               {"repo": "jdowning/rbenv",             "ref": "3.1.0" }
-    archive:             {"repo": "puppet/archive",             "ref": "8.1.0" }
-    kmod:                {"repo": "puppet/kmod",                "ref": "5.0.0" }
-    letsencrypt:         {"repo": "puppet/letsencrypt",         "ref": "13.1.0"}
-    logrotate:           {"repo": "puppet/logrotate",           "ref": "9.0.0" }
-    nginx:               {"repo": "puppet/nginx",               "ref": "7.0.1" }
-    php:                 {"repo": "puppet/php",                 "ref": "12.0.0"}
-    systemd:             {"repo": "puppet/systemd",             "ref": "9.4.0" }
-    unattended_upgrades: {"repo": "puppet/unattended_upgrades", "ref": "9.1.0" }
-    apache:              {"repo": "puppetlabs/apache",          "ref": "13.1.0"}
-    apt:                 {"repo": "puppetlabs/apt",             "ref": "10.0.1"}
-    augeas_core:         {"repo": "puppetlabs/augeas_core",     "ref": "2.0.1" }
-    concat:              {"repo": "puppetlabs/concat",          "ref": "9.1.0" }
-    cron_core:           {"repo": "puppetlabs/cron_core",       "ref": "2.0.2" }
-    docker:              {"repo": "puppetlabs/docker",          "ref": "10.3.0"}
-    firewall:            {"repo": "puppetlabs/firewall",        "ref": "8.2.0" }
-    host_core:           {"repo": "puppetlabs/host_core",       "ref": "2.0.1" }
-    inifile:             {"repo": "puppetlabs/inifile",         "ref": "6.2.0" }
-    lvm:                 {"repo": "puppetlabs/lvm",             "ref": "3.0.1" }
-    mount_core:          {"repo": "puppetlabs/mount_core",      "ref": "2.0.1" }
-    mysql:               {"repo": "puppetlabs/mysql",           "ref": "16.3.0"}
-    reboot:              {"repo": "puppetlabs/reboot",          "ref": "5.1.0" }
-    sshkeys_core:        {"repo": "puppetlabs/sshkeys_core",    "ref": "3.0.1" }
-    stdlib:              {"repo": "puppetlabs/stdlib",          "ref": "9.7.0" }
-    vcsrepo:             {"repo": "puppetlabs/vcsrepo",         "ref": "7.0.0" }
-    debconf:             {"repo": "stm/debconf",                "ref": "7.0.1" }
+    rbenv:
+      repo: jdowning/rbenv
+      ref: 3.1.0
+    archive:
+      repo: puppet/archive
+      ref: 8.1.0
+    kmod:
+      repo: puppet/kmod
+      ref: 5.0.0
+    letsencrypt:
+      repo: puppet/letsencrypt
+      ref: 13.1.0
+    logrotate:
+      repo: puppet/logrotate
+      ref: 9.0.0
+    nginx:
+      repo: puppet/nginx
+      ref: 7.0.1
+    php:
+      repo: puppet/php
+      ref: 12.0.0
+    systemd:
+      repo: puppet/systemd
+      ref: 9.4.0
+    unattended_upgrades:
+      repo: puppet/unattended_upgrades
+      ref: 9.1.0
+    apache:
+      repo: puppetlabs/apache
+      ref: 13.1.0
+    apt:
+      repo: puppetlabs/apt
+      ref: 10.0.1
+    augeas_core:
+      repo: puppetlabs/augeas_core
+      ref: 2.0.1
+    concat:
+      repo: puppetlabs/concat
+      ref: 9.1.0
+    cron_core:
+      repo: puppetlabs/cron_core
+      ref: 2.0.2
+    docker:
+      repo: puppetlabs/docker
+      ref: 10.3.0
+    firewall:
+      repo: puppetlabs/firewall
+      ref: 8.2.0
+    host_core:
+      repo: puppetlabs/host_core
+      ref: 2.0.1
+    inifile:
+      repo: puppetlabs/inifile
+      ref: 6.2.0
+    lvm:
+      repo: puppetlabs/lvm
+      ref: 3.0.1
+    mount_core:
+      repo: puppetlabs/mount_core
+      ref: 2.0.1
+    mysql:
+      repo: puppetlabs/mysql
+      ref: 16.3.0
+    reboot:
+      repo: puppetlabs/reboot
+      ref: 5.1.0
+    sshkeys_core:
+      repo: puppetlabs/sshkeys_core
+      ref: 3.0.1
+    stdlib:
+      repo: puppetlabs/stdlib
+      ref: 9.7.0
+    vcsrepo:
+      repo: puppetlabs/vcsrepo
+      ref: 7.0.0
+    debconf:
+      repo: stm/debconf
+      ref: 7.0.1
