@@ -90,6 +90,7 @@ class nebula::profile::apt (
       release       => "${facts['os']['name'].downcase()}${facts['os']['release']['major']}",
       repos         => [$puppet_repo],
       keyring       => '/etc/apt/keyrings/openvox.asc',
+      architecture  => $facts['os']['architecture'],
     }
 
     apt::keyring { 'openvox.asc':
