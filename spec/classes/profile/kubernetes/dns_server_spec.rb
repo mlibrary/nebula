@@ -11,13 +11,14 @@ describe "nebula::profile::kubernetes::dns_server" do
       context "with cluster set to first_cluster" do
         let(:hiera_config) { "spec/fixtures/hiera/kubernetes/first_cluster_config.yaml" }
         let(:facts) do
-          os_facts.merge(
-            "networking" => {
-              "interfaces" => {
-                "ens4" => {
-                  "ip" => "10.123.234.5"
+          os_facts.deep_merge(
+            networking: {
+              interfaces: {
+                ens4: {
+                  ip: "10.123.234.5"
                 }
-              }
+              },
+              ip: "10.123.234.5"
             }
           )
         end

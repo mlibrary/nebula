@@ -14,7 +14,8 @@ describe "nebula::profile::known_host_public_keys" do
         let(:facts) do
           {
             networking: {
-              "fqdn" => "example.invalid"
+              ip: "0.1.2.3",
+              fqdn: "example.invalid"
             },
             ssh: {
               "ecdsa" => {

@@ -11,15 +11,13 @@ describe "nebula::profile::haproxy" do
       let(:my_ip) { Faker::Internet.ip_v4_address }
 
       let(:facts) do
-        os_facts.merge(
+        os_facts.deep_merge(
           datacenter: "somedc",
           networking: {
             ip: my_ip,
             primary: "eth0",
             hostname: "thisnode"
-          },
-          ipaddress: "INVALID_DO_NOT_USE",
-          hostname: "INVALID_DO_NOT_USE"
+          }
         )
       end
 

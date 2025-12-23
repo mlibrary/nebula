@@ -48,7 +48,8 @@ describe "nebula::profile::kubernetes::dns_client" do
                 "type" => "ssh-rsa",
                 "key" => "abc123"
               }
-            }
+            },
+            :networking => {ip: "0.1.2.3"}
           }
         end
 
