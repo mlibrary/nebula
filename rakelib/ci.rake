@@ -14,4 +14,9 @@ namespace "ci" do
 
     ParallelTests::CLI.new.run([parallel_test_args, all_spec_files].flatten)
   end
+
+  desc "List all spec files"
+  task :files do |t|
+    puts all_spec_files
+  end
 end

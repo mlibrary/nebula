@@ -9,7 +9,7 @@ describe "nebula::profile::networking::private" do
   on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) do
-        os_facts.merge(networking: {ip: "1.2.3.123"})
+        os_facts.deep_merge(networking: {ip: "1.2.3.123"})
       end
 
       context "with fully-specified parameters" do

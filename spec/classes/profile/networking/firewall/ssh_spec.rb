@@ -12,9 +12,10 @@ describe "nebula::profile::networking::firewall::ssh" do
 
       context "when publicly accessible" do
         let(:facts) do
-          super().merge(
-            "networking" => {
-              "interfaces" => {"eth0" => {"ip" => "123.45.67.89"}}
+          super().deep_merge(
+            networking: {
+              interfaces: {"eth0" => {"ip" => "123.45.67.89"}},
+              ip: "123.45.67.89"
             }
           )
         end
@@ -31,9 +32,10 @@ describe "nebula::profile::networking::firewall::ssh" do
 
       context "when publicly inaccessible" do
         let(:facts) do
-          super().merge(
-            "networking" => {
-              "interfaces" => {"eth0" => {"ip" => "10.45.67.89"}}
+          super().deep_merge(
+            networking: {
+              interfaces: {"eth0" => {"ip" => "10.45.67.89"}},
+              ip: "123.45.67.89"
             }
           )
         end

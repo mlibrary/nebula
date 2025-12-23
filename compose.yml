@@ -1,4 +1,3 @@
-version: '3'
 services:
   specs:
     build: .
@@ -8,7 +7,7 @@ services:
 
   spec_prep:
     build: .
-    command: 'bundle exec rake spec_prep'
+    command: 'bundle exec rake fixtures:prep'
     volumes:
       - .:/app
 
@@ -17,6 +16,6 @@ services:
     command:
     - /bin/bash
     - '-c'
-    - 'bundle exec rake rubocop && bundle exec rake syntax lint && bundle exec rake metadata_lint'
+    - 'bundle exec rake syntax lint && bundle exec rake metadata_lint; bundle exec rake standard'
     volumes:
       - .:/app

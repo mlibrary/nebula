@@ -16,7 +16,7 @@ describe "nebula::haproxy::service" do
       end
 
       let(:facts) do
-        os_facts.merge(
+        os_facts.deep_merge(
           datacenter: "dc1",
           networking: {
             ip: "40.41.42.43"

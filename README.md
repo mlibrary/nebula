@@ -18,7 +18,7 @@ bundle
 bundle exec rake parallel_spec
 
 # run any single test
-bundle exec rake spec_prep
+bundle exec rake fixtures:prep
 bundle exec rspec specs/path/to/a_spec.rb
 
 # lint
@@ -28,10 +28,6 @@ bundle exec rake lint # lint .pp files
 # puppet module dependencies
 bundle exec rake outdated
 bundle exec rake librarian
-
-# update gems, pdk
-vi .sync.yml
-pdk update
 ```
 
 ### with `docker compose`
@@ -43,3 +39,7 @@ docker compose run specs
 docker compose run specs bundle exec rspec specs/path/to/a_spec.rb
 docker compose run specs bundle exec rake spec_standalone
 ```
+
+## Repo maintenance
+* `Gemfile` is copied from voxpupuli defaults, with some local additions. See one of their module repos for a template.
+* `/spec/spec_helper.rb` is from the PDK, which we used to use. TODO: use voxpupuli template here as well.

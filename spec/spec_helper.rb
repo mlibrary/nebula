@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
+# TODO: replace this file with voxpupuli spec_helper.rb
+#       This will require:
+#         - removing default_facts, or porting the logic to our own spec_helper
+#         - move spec_helper/* and spec_helper_local.rb to /spec/support/spec/
+
 RSpec.configure do |c|
   c.mock_with :rspec
 end
 
-require 'puppetlabs_spec_helper/module_spec_helper'
+require 'voxpupuli/test/spec_helper'
 require 'rspec-puppet-facts'
 
 require 'spec_helper_local' if File.file?(File.join(File.dirname(__FILE__), 'spec_helper_local.rb'))
@@ -44,7 +49,7 @@ RSpec.configure do |c|
     Puppet.settings[:strict] = :warning
     Puppet.settings[:strict_variables] = true
   end
-  c.filter_run_excluding(bolt: true) unless ENV['GEM_BOLT']
+
   c.after(:suite) do
     RSpec::Puppet::Coverage.report!(0)
   end
@@ -59,15 +64,6 @@ RSpec.configure do |c|
     c.backtrace_exclusion_patterns = backtrace_exclusion_patterns
   elsif c.respond_to?(:backtrace_clean_patterns)
     c.backtrace_clean_patterns = backtrace_exclusion_patterns
-  end
-end
-
-# Ensures that a module is defined
-# @param module_name Name of the module
-def ensure_module_defined(module_name)
-  module_name.split('::').reduce(Object) do |last_module, next_module|
-    last_module.const_set(next_module, Module.new) unless last_module.const_defined?(next_module, false)
-    last_module.const_get(next_module, false)
   end
 end
 
