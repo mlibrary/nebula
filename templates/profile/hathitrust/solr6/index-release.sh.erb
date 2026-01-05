@@ -65,6 +65,11 @@ rm -f ${serve}/<%= @core_link_prefix %><%= core %> && ln -s "${snap}/cores/<%= c
   onoe "error removing or creating symlink for core <%= core %>...solr WILL NOT be started on $(hostname -s)"
 <% end -%>
 
+# umount stale snaps
+for x in $(findmnt --mountpoint $base -RJ | jq -r '.filesystems[] | select(.children) | .children[].target | select(. != "'"${snap}"'")'); do
+  umount "$x"
+done
+
 # if all went well, start solr
 systemctl start solr || onoe "error starting solr on $(hostname -s)"
 
