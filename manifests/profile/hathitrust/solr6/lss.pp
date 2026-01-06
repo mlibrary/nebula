@@ -48,6 +48,7 @@ class nebula::profile::hathitrust::solr6::lss (
   $solr_stop_flag = 'STOPLSSRELEASE'
   $core_link_prefix = 'lss-'
   $is_lss = true
+  ensure_packages(['jq'])
   file { '/usr/local/bin/index-release':
     owner   => 'root',
     mode    => '0755',

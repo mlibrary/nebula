@@ -13,16 +13,16 @@ if [[ -n "${manual_snap}" ]]; then
   if ! [[ -d "${snap}" ]]; then
     echo "can't find snapshot: '${manual_snap}'"
     echo "valid snapshots are: "
-    \ls ${base}/.zfs/snapshot/
+    /bin/ls ${base}/.zfs/snapshot/
     exit 1
   fi
+  snapname="$(basename "${snap}")"
 else
   snaps=( "${base}/.zfs/snapshot/htsolr-<%= @solr_name %>_"* )
   snap="${snaps[-1]}"
-  pat="htsolr-<%= @solr_name %>_$(date +%Y-%m-%d)"
-  [[ "$snap" =~ "$pat" ]] || onoe "latest snap was not made today, refusing to run automatic release"
+  snapname="$(basename "${snap}")"
+  [[ "$snapname" = "htsolr-<%= @solr_name %>_$(date +%Y-%m-%d)"* ]] || onoe "latest snap was not made today, refusing to run automatic release"
 fi
-snapname="$(basename "${snap}")"
 
 # check if the administrative release stop flag is set
 [[ -f "${base}/flags/<%= @solr_stop_flag %>" ]] && onoe "<%= @solr_stop_flag %> flag present...skip release today"
@@ -64,6 +64,11 @@ rm -f ${serve}/lss-shared && ln -s "${snap}/shared" ${serve}/lss-shared || \
 rm -f ${serve}/<%= @core_link_prefix %><%= core %> && ln -s "${snap}/cores/<%= core %>" ${serve}/<%= @core_link_prefix %><%= core %> || \
   onoe "error removing or creating symlink for core <%= core %>...solr WILL NOT be started on $(hostname -s)"
 <% end -%>
+
+# umount stale snaps
+for x in $(findmnt --mountpoint $base -RJ | jq -r '.filesystems[] | select(.children) | .children[].target | select(. != "'"${snap}"'")'); do
+  umount "$x"
+done
 
 # if all went well, start solr
 systemctl start solr || onoe "error starting solr on $(hostname -s)"

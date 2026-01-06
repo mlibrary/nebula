@@ -40,6 +40,7 @@ class nebula::profile::hathitrust::solr6::catalog (
   $core_link_prefix = ''
   $is_catalog = true
   $is_primary_node = true # catalog solr is only one node per site
+  ensure_packages(['jq'])
   file { '/usr/local/bin/index-release':
     owner   => 'root',
     mode    => '0755',
