@@ -29,7 +29,6 @@ class nebula::profile::www_lib::vhosts::staff_lib (
     servername                => "${prefix}apps.staff.${domain}",
     ssl_cn                    => 'apps.staff.lib.umich.edu',
     ssl                       => true,
-    usertrack                 => true,
     auth_openidc              => true,
     auth_openidc_redirect_uri => 'https://apps.staff.lib.umich.edu/openid-connect/callback',
     docroot                   => $docroot,

@@ -25,7 +25,6 @@ class nebula::profile::www_lib::vhosts::med (
     servername     => $servername,
     docroot        => $docroot,
     logging_prefix => 'dromedary-production/',
-    usertrack      => true,
 
     rewrites       => [
       {
@@ -49,7 +48,6 @@ class nebula::profile::www_lib::vhosts::med (
 
     ssl             => true,
     port_override   => 443,
-    usertrack       => true,
 
     rewrites        => [
       {

@@ -36,7 +36,6 @@ class nebula::profile::www_lib::vhosts::fulcrum (
     servername     => $servername,
     docroot        => false,
     logging_prefix => "${logging_prefix}/",
-    usertrack      => true,
 
     rewrites       => [
       {
@@ -65,7 +64,6 @@ class nebula::profile::www_lib::vhosts::fulcrum (
     # ServerName is really www.fulcrum.org, but this cert filename is odd: fulcrum.org.crt
     ssl_cn          => 'fulcrum.org',
     port_override   => 443,
-    usertrack       => true,
 
     setenv          => ['HTTPS on'],
 

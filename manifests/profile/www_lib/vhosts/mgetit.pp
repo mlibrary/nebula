@@ -24,7 +24,6 @@ class nebula::profile::www_lib::vhosts::mgetit (
     servername     => $servername,
     docroot        => false,
     logging_prefix => 'mgetit/',
-    usertrack      => true,
 
     rewrites       => [
       {
@@ -48,7 +47,6 @@ class nebula::profile::www_lib::vhosts::mgetit (
 
     ssl                         => true,
     ssl_cn                      => $ssl_cn,
-    usertrack                   => true,
 
     setenv                      => ['HTTPS on'],
 

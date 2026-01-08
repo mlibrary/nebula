@@ -49,14 +49,12 @@ describe "nebula::role::webhost::www_lib_vm" do
             ssl: true,
             ssl_cert: "/etc/ssl/certs/lib.umich.edu.crt")
           .with_error_log_file("error.log")
-          .with_custom_fragment(%r{CookieName skynet})
       end
 
-      it "www.lib vhost has clickstream and access log" do
+      it "www.lib vhost has access log" do
         expect(catalogue.resource("apache::vhost", "www.lib-ssl")[:access_logs])
           .to contain_exactly(
-            {"file" => "access.log", "format" => "combined"},
-            "file" => "clickstream.log", "format" => "usertrack"
+            {"file" => "access.log", "format" => "combined"}
           )
       end
 
@@ -176,7 +174,6 @@ describe "nebula::role::webhost::www_lib_vm" do
             ssl: true,
             ssl_cert: "/etc/ssl/certs/apps.lib.umich.edu.crt")
           .with_error_log_file("error.log")
-          .with_custom_fragment(%r{CookieName skynet})
       end
 
       # Files
