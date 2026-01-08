@@ -22,7 +22,6 @@ class nebula::profile::www_lib::vhosts::midaily (
     servername     => $servername,
     docroot        => false,
     logging_prefix => 'midaily/',
-    usertrack      => true,
 
     rewrites       => [
       {
@@ -46,7 +45,6 @@ class nebula::profile::www_lib::vhosts::midaily (
 
     ssl                         => true,
     ssl_cn                      => $ssl_cn,
-    usertrack                   => true,
     auth_openidc                => true,
     auth_openidc_redirect_uri   => 'https://digital.bentley.umich.edu/openid-connect/callback',
 

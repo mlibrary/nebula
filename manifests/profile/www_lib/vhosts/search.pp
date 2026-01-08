@@ -26,7 +26,6 @@ class nebula::profile::www_lib::vhosts::search (
     serveraliases  => $serveraliases,
     docroot        => false,
     logging_prefix => 'search/',
-    usertrack      => true,
 
     rewrites       => [
       {
@@ -51,7 +50,6 @@ class nebula::profile::www_lib::vhosts::search (
 
     ssl                         => true,
     ssl_cn                      => $ssl_cn,
-    usertrack                   => true,
 
     rewrites                    => [
       {

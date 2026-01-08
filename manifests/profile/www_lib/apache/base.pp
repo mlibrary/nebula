@@ -14,9 +14,8 @@ class nebula::profile::www_lib::apache::base {
 
   class { 'nebula::profile::apache':
     log_formats => {
-      vhost_combined => '%v:%p %a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D \"%{skynet}C\"',
-      combined       => '%a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D \"%{skynet}C\"',
-      usertrack      => '{\"user\":\"%u\",\"session\":\"%{skynet}C\",\"request\":\"%r\",\"time\":\"%t\",\"domain\":\"%V\"}'
+      vhost_combined => '%v:%p %a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D',
+      combined       => '%a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D'
     }
   }
 
@@ -31,7 +30,7 @@ class nebula::profile::www_lib::apache::base {
     mysql         => lookup('nebula::www_lib::monitor::mysql')
   }
 
-  apache::mod { ['access_compat','asis','authz_groupfile','usertrack']: }
+  apache::mod { ['access_compat','asis','authz_groupfile', 'usertrack']: } # TODO: remove usertrack after making sure it's not needed anymore
   include apache::mod::auth_basic
   include apache::mod::authn_file
   include apache::mod::authn_core

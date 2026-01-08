@@ -24,7 +24,6 @@ class nebula::profile::www_lib::vhosts::deepblue (
     servername     => $servername,
     docroot        => $docroot,
     logging_prefix => 'deepblue/',
-    usertrack      => true,
 
     rewrites       => [
       {
@@ -40,7 +39,6 @@ class nebula::profile::www_lib::vhosts::deepblue (
 
     ssl                         => true,
     ssl_cn                      => $ssl_cn,
-    usertrack                   => true,
     auth_openidc                => true,
     auth_openidc_redirect_uri   => 'https://deepblue.lib.umich.edu/openid-connect/callback',
     ssl_proxy_machine_cert      => '/etc/ssl/private/machine-cert-deepblue.lib.pem',
