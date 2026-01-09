@@ -6,20 +6,16 @@
 #
 # Mount storage for HathiTrust
 #
-# $readonly - mount repository read-only (default)
 # $ramdisk_size - size of temporary scratch space
+# $nas_mounts - list of filesystems to mount from primary ht nas
 #
 # @example
 #   include nebula::profile::hathitrust::mounts
 class nebula::profile::hathitrust::mounts (
   String $ramdisk_size = '4g',
-  Array[String] $smartconnect_mounts = ['/htapps'],
-  Boolean $use_truenas = false,
+  Array[String] $nas_mounts = ['/htapps'],
   Hash $other_nfs_mounts = {},
-  Boolean $readonly = true
 ) {
-  include nebula::profile::dns::smartconnect;
-
 # TODO - extract somewhere else common when we need ramdisks set up in other
 # puppet profiles
   file { '/ram':
@@ -36,55 +32,26 @@ class nebula::profile::hathitrust::mounts (
     options => "size=${ramdisk_size}"
   }
 
-  # TODO: rename smartconnect_mounts, remove support for smartconnect
-  $smartconnect_mounts.each |$mount| {
-    if($use_truenas) {
-      nebula::nfs_mount { $mount:
-        options         => 'auto,hard',
-        remote_target   => "truenas:/mnt/tank${mount}",
-        private_network => true,
-        monitored       => true
-      }
-    }
-    else {
-      nebula::nfs_mount { $mount:
-        remote_target   => "nas-${facts['datacenter']}.sc:/ifs${mount}",
-        tag             => 'smartconnect',
-        private_network => true,
-        monitored       => true
-      }
+  $nas_mounts.each |$mount| {
+    nebula::nfs_mount { $mount:
+      options         => 'auto,hard',
+      remote_target   => "truenas:/mnt/tank${mount}",
+      private_network => true,
+      monitored       => true
     }
   }
 
   create_resources(nebula::nfs_mount,$other_nfs_mounts)
 
-  if($readonly) {
-    $sdr_options = 'auto,hard,nfsvers=3,ro'
-  } else {
-    $sdr_options = 'auto,hard,nfsvers=3'
+  nebula::nfs_mount { '/sdr':
+    options       => 'auto,hard',
+    remote_target => 'truenas:/mnt/tank/sdr',
+    monitored     => true
   }
-
-  if($use_truenas) {
-    nebula::nfs_mount { '/sdr':
-      options       => 'auto,hard',
-      remote_target => 'truenas:/mnt/tank/sdr',
-      monitored     => true
-    }
-    Integer[1, 24].each |$partition| {
-      file { "/sdr${partition}":
-        ensure => 'link',
-        target => "/sdr/${partition}"
-      }
-    }
-  }
-  else {
-    Integer[1, 24].each |$partition| {
-      nebula::nfs_mount { "/sdr${partition}":
-        options       => $sdr_options,
-        remote_target => "nas-${facts['datacenter']}.sc:/ifs/sdr/${partition}",
-        tag           => 'smartconnect',
-        monitored     => true
-      }
+  Integer[1, 24].each |$partition| {
+    file { "/sdr${partition}":
+      ensure => 'link',
+      target => "/sdr/${partition}"
     }
   }
 }

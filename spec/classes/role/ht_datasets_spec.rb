@@ -13,7 +13,7 @@ describe "nebula::role::hathitrust::datasets" do
       let(:hiera_config) { "spec/fixtures/hiera/hathitrust_config.yaml" }
 
       it { is_expected.to contain_package("nfs-common") }
-      it { is_expected.to contain_mount("/sdr1").with_options("auto,hard,nfsvers=3,ro") }
+      it { is_expected.to contain_mount("/sdr") }
       it { is_expected.to contain_mount("/htprep") }
 
       describe "unencrypted rsync" do

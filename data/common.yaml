@@ -6,12 +6,6 @@
 nebula::profile::afs::allow_auto_reboot_until: '1970-01-01'
 nebula::profile::afs::cache_size: 50000
 
-nebula::profile::dns::smartconnect::master_zones:
-- localhost:        local
-- 127.in-addr.arpa: 127
-- 0.in-addr.arpa:   0
-- 255.in-addr.arpa: 255
-
 nebula::profile::elastic::period: 90
 nebula::profile::haproxy::services: {}
 

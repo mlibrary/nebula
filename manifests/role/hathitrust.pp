@@ -12,7 +12,6 @@
 class nebula::role::hathitrust (
   String $internal_routing = '',
   Boolean $afs = true,
-  Boolean $smartconnect = true,
 ) {
   class { 'nebula::role::minimum':
     internal_routing => $internal_routing,
@@ -33,9 +32,6 @@ class nebula::role::hathitrust (
     }
   }
 
-  if $smartconnect {
-    include nebula::profile::dns::smartconnect
-  }
   include nebula::profile::elastic::metricbeat
   include nebula::profile::elastic::filebeat::configs::ulib
 

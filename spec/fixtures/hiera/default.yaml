@@ -13,13 +13,6 @@ nebula::profile::afs::allow_auto_reboot_until: '1970-01-01'
 nebula::profile::afs::cache_size: 50000
 nebula::profile::afs::cell: cell.default.invalid
 nebula::profile::krb5::realm: REALM.DEFAULT.INVALID
-nebula::profile::dns::smartconnect::master_zones:
-- localhost:        local
-- 127.in-addr.arpa: 127
-- 0.in-addr.arpa:   0
-- 255.in-addr.arpa: 255
-nebula::profile::dns::smartconnect::domain: smartconnect.default.invalid
-nebula::profile::dns::smartconnect::nameserver: 1.2.3.4
 nebula::profile::elastic::logstash_auth_cert: ''
 nebula::profile::elastic::logstash_hosts:
 - logstash.default.invalid:1234
