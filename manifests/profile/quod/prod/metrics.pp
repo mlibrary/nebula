@@ -47,6 +47,7 @@ class nebula::profile::quod::prod::metrics (
   file { '/etc/mtail/quod_apache.mtail':
     content => 'nebula/mtail/quod_apache.mtail',
     notify  => Service['mtail'],
+    require => Package['mtail'],
   }
 
   file { '/etc/default/mtail':
@@ -54,7 +55,7 @@ class nebula::profile::quod::prod::metrics (
     notify  => Service['mtail'],
     content => @("MTAILCONF")
       PORT=${mtail_port}
-      LOGS=/var/apache2/access.log
+      LOGS=/var/log/apache2/access.log
       | MTAILCONF
   }
 }
