@@ -45,7 +45,7 @@ class nebula::profile::quod::prod::metrics (
   }
 
   file { '/etc/mtail/quod_apache.mtail':
-    content => 'nebula/mtail/quod_apache.mtail',
+    content => file('nebula/mtail/quod_apache.mtail'),
     notify  => Service['mtail'],
     require => Package['mtail'],
   }
