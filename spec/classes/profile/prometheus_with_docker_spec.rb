@@ -107,6 +107,12 @@ describe "nebula::profile::prometheus_with_docker" do
       end
 
       it do
+        expect(subject).to contain_concat_file("/etc/prometheus/quod.yml")
+          .that_notifies("Docker::Run[prometheus]")
+          .that_requires("File[/etc/prometheus]")
+      end
+
+      it do
         expect(subject).to contain_concat_fragment("prometheus ipmi scrape config first line")
           .with_target("/etc/prometheus/ipmi.yml")
           .with_order("01")
