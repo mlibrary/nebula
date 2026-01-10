@@ -1,0 +1,110 @@
+# Copyright (c) 2026 The Regents of the University of Michigan.
+# All Rights Reserved. Licensed according to the terms of the Revised
+# BSD License. See LICENSE.txt for details.
+
+# This file is an adaptation of the apache_combined.mtail example from the mtail project,
+# formerly hosted at https://github.com/google/mtail, now: https://github.com/jaqx0r/mtail
+#
+# It carried the following copyright and license notice:
+#
+#   Copyright 2015 Ben Kochie <superq@gmail.com>. All Rights Reserved.
+#   This file is available under the Apache license.
+#
+# The "Apache license" mentioned is the Apache License, Version 2.0 -- SPDX Apache-2.0:
+#
+#   https://www.apache.org/licenses/LICENSE-2.0
+#   https://opensource.org/license/apache-2-0
+#
+########
+
+# Parser for the common apache "NCSA extended/combined" log format
+# LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"
+
+counter quod_http_requests_total by request_method, request_status, prefix, collection
+counter quod_http_bytes_total by request_method, request_status, prefix, collection
+histogram quod_http_request_time_seconds buckets 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50 by request_method, request_status, prefix, collection
+
+hidden text prefix
+hidden text collid
+
+#### Component constants - These are inlined into the constants below, and the compiler complains if we defined but don't use them
+# const PATH_COLLECTION  /\/(?P<collection>[0-9A-Za-z_]+)/
+# const QUERY_COLLECTION /(\?(\S+=\S+(&|;|%3B))*(cc=(?P<collection>[0-9A-Za-z_]+)))?/
+
+# const IIIF_BASE     /(?P<base>\/cgi\/(i\/image|t\/text)\/api\/)/
+# const IMAGE_BASE    /(?P<base>\/cgi\/i\/image\/)/ 
+# const TEXT_BASE     /(?P<base>\/cgi\/t\/text\/)/
+# const BIB_BASE      /(?P<base>\/cgi\/b\/bib\/)/
+# const PAGEFIND_BASE /(?P<base>\/a-z\/pagefind\/)/
+
+# const IIIF_RESOURCE /(?P<iiif_resource>image|tile|thumb)/
+# const IMAGE_SCRIPT  /(?P<script>download-pdf-ix|getimage-idx|idx|image-idx|pdf-idx|pdf-idx-reduced)/
+# const TEXT_SCRIPT   /(?P<script>download-pfx-idx|idx|obj-idx|pageviewer-idx|pdf-idx|text-idx)/
+# const BIB_SCRIPT    /(?P<script>bib-idx)/
+
+
+# These are workarounds... For some reason, we can't use explicit comparison with concatenated constants... ???
+
+const IIIF_REQUEST     /(?P<base>\/cgi\/(i\/image|t\/text)\/api\/)(?P<iiif_resource>image|tile|thumb)\/(?P<collection>[0-9A-Za-z_]+)/
+const IMAGE_REQUEST    /(?P<base>\/cgi\/i\/image\/)(?P<script>download-pdf-ix|getimage-idx|idx|image-idx|pdf-idx|pdf-idx-reduced)(\?(\S+=\S+(&|;|%3B))*(cc=(?P<collection>[0-9A-Za-z_]+)))?/
+const TEXT_REQUEST     /(?P<base>\/cgi\/t\/text\/)(?P<script>download-pfx-idx|idx|obj-idx|pageviewer-idx|pdf-idx|text-idx)(\?(\S+=\S+(&|;|%3B))*(cc=(?P<collection>[0-9A-Za-z_]+)))?/
+const BIB_REQUEST      /(?P<base>\/cgi\/b\/bib\/)(?P<script>bib-idx)(\?(\S+=\S+(&|;|%3B))*(cc=(?P<collection>[0-9A-Za-z_]+)))?/
+const PAGEFIND_REQUEST /(?P<base>\/a-z\/pagefind)\//
+
+/^/ +
+/(?P<hostname>[0-9A-Za-z\.:-]+) / + # %h
+/(?P<remote_logname>[0-9A-Za-z-]+) / + # %l
+/(?P<remote_username>([0-9A-Za-z-]+|"")) / + # %u
+/\[(?P<timestamp>\d{2}\/\w{3}\/\d{4}:\d{2}:\d{2}:\d{2} (\+|-)\d{4})\] / + # %t
+/"(?P<request_method>[A-Z]+) (?P<URI>\S+) (?P<http_version>HTTP\/[0-9\.]+)" / + # \"%r\"
+/(?P<request_status>\d{3}) / + # %>s
+/((?P<response_size>\d+)|-) / + # %b
+/"(?P<referer>\S+)" / + # \"%{Referer}i\"
+/"(?P<user_agent>[[:print:]]+)" / + # \"%{User-agent}i\"
+/(?P<server_name>\S+) / +
+/(?P<micro_time>\d+)/ +
+/$/ {
+  strptime($timestamp, "02/Jan/2006:15:04:05 -0700") # for tests
+
+  # handles thumb/coll/item as well as image/coll:item
+  #$URI =~ IIIF_BASE + IIIF_RESOURCE + PATH_COLLECTION {
+  $URI =~ IIIF_REQUEST {
+    prefix = $base + $iiif_resource
+    collid = $collection
+  }
+
+  #$URI =~ IMAGE_BASE + IMAGE_SCRIPT + QUERY_COLLECTION {
+  $URI =~ IMAGE_REQUEST {
+    prefix = $base + $script
+    collid = $collection
+  }
+
+  #$URI =~ TEXT_BASE + TEXT_SCRIPT + QUERY_COLLECTION {
+  $URI =~ TEXT_REQUEST {
+    prefix = $base + $script
+    collid = $collection
+  }
+
+  #$URI =~ BIB_BASE + BIB_SCRIPT + QUERY_COLLECTION {
+  $URI =~ BIB_REQUEST {
+    prefix = $base + $script
+    collid = $collection
+  }
+
+  $URI =~ PAGEFIND_REQUEST {
+    prefix = $base
+    collid = ""
+  }
+
+  otherwise {
+    prefix = "/"
+    collid = ""
+  }
+
+  quod_http_request_time_seconds[$request_method][$request_status][prefix][collid] = $micro_time / 1000000.0
+
+  quod_http_requests_total[$request_method][$request_status][prefix][collid]++
+  $response_size > 0 {
+      quod_http_bytes_total[$request_method][$request_status][prefix][collid] += $response_size
+  }
+}
