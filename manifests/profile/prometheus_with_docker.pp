@@ -1,4 +1,4 @@
-# Copyright (c) 2019 The Regents of the University of Michigan.
+# Copyright (c) 2019-2026 The Regents of the University of Michigan.
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
@@ -40,6 +40,7 @@ class nebula::profile::prometheus_with_docker (
       '/etc/prometheus/ipmi.yml:/etc/prometheus/ipmi.yml',
       '/etc/prometheus/etcd.yml:/etc/prometheus/etcd.yml',
       '/etc/prometheus/catalog_search.yml:/etc/prometheus/catalog_search.yml',
+      '/etc/prometheus/quod.yml:/etc/prometheus/quod.yml',
       '/etc/prometheus/tls:/tls',
       '/opt/prometheus:/prometheus',
     ],
@@ -120,6 +121,13 @@ class nebula::profile::prometheus_with_docker (
   }
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_catalog_search_service_list" |>>
+
+  concat_file { '/etc/prometheus/quod.yml':
+    notify  => Docker::Run['prometheus'],
+    require => File['/etc/prometheus'],
+  }
+
+  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_quod_service_list" |>>
 
   file { '/etc/prometheus':
     ensure => 'directory',
@@ -286,6 +294,10 @@ class nebula::profile::prometheus_with_docker (
 
       "010 prometheus private search catalog reindex exporter ${::networking['hostname']} ${address}":
         tag => "${facts['datacenter']}_prometheus_private_search_catalog_reindex_exporter",
+      ;
+
+      "010 prometheus quod exporter ${::networking['hostname']} ${address}":
+        tag => "${facts['datacenter']}_prometheus_private_quod_exporter"
       ;
     }
   }

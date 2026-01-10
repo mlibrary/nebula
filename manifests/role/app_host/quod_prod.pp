@@ -16,6 +16,7 @@ class nebula::role::app_host::quod_prod {
   include nebula::profile::tsm
   include nebula::profile::quod::prod::perl
   include nebula::profile::quod::prod::haproxy
+  include nebula::profile::quod::prod::metrics
   include nebula::profile::networking::firewall::http
 
   # We put the machine certificate in a statically named file because the rdist

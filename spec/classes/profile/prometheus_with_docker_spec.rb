@@ -25,6 +25,7 @@ describe "nebula::profile::prometheus_with_docker" do
             "/etc/prometheus/ipmi.yml:/etc/prometheus/ipmi.yml",
             "/etc/prometheus/etcd.yml:/etc/prometheus/etcd.yml",
             "/etc/prometheus/catalog_search.yml:/etc/prometheus/catalog_search.yml",
+            "/etc/prometheus/quod.yml:/etc/prometheus/quod.yml",
             "/etc/prometheus/tls:/tls",
             "/opt/prometheus:/prometheus"])
           .that_requires("File[/opt/prometheus]")
