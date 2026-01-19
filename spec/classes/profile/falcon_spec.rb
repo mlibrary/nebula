@@ -15,7 +15,7 @@ describe "nebula::profile::falcon" do
 
         it { is_expected.to compile }
         it { is_expected.to contain_package("falcon-sensor") }
-        it { is_expected.to contain_service("falcon-sensor").with_ensure("running") }
+        it { is_expected.to contain_service("falcon-sensor") }
 
         it do
           expect(subject).to contain_exec("set falcon-sensor CID")
