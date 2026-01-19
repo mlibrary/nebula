@@ -9,7 +9,7 @@
 class nebula::role::combine (
 ) {
   include nebula::role::umich
-  include nebula::class:https_to_port
+  include nebula::class::https_to_port
 
 }
 
