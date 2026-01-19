@@ -6,9 +6,7 @@ class nebula::profile::falcon (
   String $cid,
 ) {
   ensure_packages(['falcon-sensor'])
-  service { 'falcon-sensor':
-    ensure => 'running',
-  }
+  service { 'falcon-sensor': }
 
   exec { 'set falcon-sensor CID':
     command => "/opt/CrowdStrike/falconctl -s '--cid=${cid}'",
