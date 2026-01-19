@@ -7,10 +7,11 @@
 # @example
 #   include nebula::role::combine
 class nebula::role::combine (
+  Integer $port = 8080,
 ) {
   include nebula::role::umich
   class { 'nebula::profile::https_to_port':
-    port => 80,
+    port => $port,
   }
 
 }
