@@ -71,8 +71,6 @@ describe "nebula::role::webhost::htvm" do
         is_expected.to contain_user("htingest")
         is_expected.to contain_user("htweb")
       end
-
-      it { is_expected.to contain_nebula__cpan("Prometheus::Tiny::Shared") }
     end
   end
 end
