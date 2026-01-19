@@ -15,7 +15,6 @@ describe "nebula::role::webhost::htvm::site_primary" do
       it "includes crons, rdist package" do
         # includes cron jobs that run at each site
         is_expected.to contain_class("nebula::profile::hathitrust::cron::mdp_misc")
-        is_expected.to contain_package("rdist")
       end
     end
   end

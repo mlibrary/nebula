@@ -20,7 +20,7 @@ class nebula::profile::hathitrust::dependencies () {
       'kakadu',
       'libjs-jquery',
       'libxerces-c-samples',
-      'netpbm-sf',
+      'netpbm',
       'rsync',
       'unzip',
       'zip'
@@ -57,7 +57,7 @@ class nebula::profile::hathitrust::dependencies () {
 
   package {
     [
-      'openjdk-11-jdk-headless',
+      'default-jre-headless',
       'lftp',
     ]:
   }

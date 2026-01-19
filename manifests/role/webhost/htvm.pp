@@ -37,7 +37,4 @@ class nebula::role::webhost::htvm (
   }
 
   nebula::usergroup { 'htprod': }
-
-  # for HathiTrust deployment scripts
-  package { 'rdist': }
 }
