@@ -11,7 +11,7 @@
 class nebula::profile::imagemagick {
   package { 'imagemagick': }
 
-  file { '/etc/ImageMagick-6/policy.xml':
+  file { '/etc/ImageMagick-7/policy.xml':
     content => template('nebula/profile/imagemagick/policy.xml.erb'),
     require => Package['imagemagick'],
   }
