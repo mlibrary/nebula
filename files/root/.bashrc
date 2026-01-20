@@ -27,3 +27,6 @@ HISTCONTROL=ignoredups:ignorespace
 shopt -s histappend
 HISTSIZE=10000
 HISTFILESIZE=10000
+
+# env
+export EDITOR=/usr/bin/vi
