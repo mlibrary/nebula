@@ -10,27 +10,27 @@ describe "nebula::profile::prometheus::exporter::node" do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to contain_file("/etc/default/prometheus-node-exporter").with_ensure("absent") }
-      it { is_expected.to contain_file("/etc/systemd/system/prometheus-node-exporter.service").with_ensure("absent") }
-      it { is_expected.to contain_file("/etc/rsyslog.d/prometheus-node-exporter.conf").with_ensure("absent") }
-      it { is_expected.to contain_file("/var/log/prometheus-node-exporter.log").with_ensure("absent") }
-
-      it { is_expected.to contain_package("prometheus-node-exporter").with_ensure("purged") }
+      it { is_expected.to contain_package("prometheus-node-exporter") }
+      it { is_expected.to contain_service("prometheus-node-exporter") }
 
       it do
-        expect(subject).not_to contain_file("/var/lib/prometheus/node-exporter")
-        # expect(subject).to contain_file("/var/lib/prometheus/node-exporter")
-        #   .with_ensure("directory")
-        #   .with_mode("2775")
-        # .with_owner("prometheus")
-        # .with_group("prometheus")
-        # .that_requires("Package[prometheus-node-exporter]")
+        expect(subject).to contain_file("/etc/default/prometheus-node-exporter")
+          .that_notifies("Service[prometheus-node-exporter]")
+          .that_requires("Package[prometheus-node-exporter]")
+      end
+
+      it do
+        expect(subject).to contain_file("/var/lib/prometheus/node-exporter")
+          .with_ensure("directory")
+          .with_mode("2775")
+          .with_owner("prometheus")
+          .with_group("prometheus")
+          .that_requires("Package[prometheus-node-exporter]")
+          .that_notifies("Service[prometheus-node-exporter]")
       end
 
       # don't manage this directory at all, it's owned by exporter packages, possibly more than 1
       it { is_expected.not_to contain_file("/var/lib/prometheus") }
-
-      it { is_expected.to contain_file("/etc/apt/preferences.d/prometheus-node-exporter.pref").with_ensure("absent") }
 
       it { is_expected.to contain_package("curl") }
       it { is_expected.to contain_package("jq") }
