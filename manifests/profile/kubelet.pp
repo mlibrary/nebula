@@ -35,6 +35,25 @@ class nebula::profile::kubelet (
     require => Package['kubelet'],
   }
 
+  exec { 'kubelet reload daemon':
+    command     => '/bin/systemctl daemon-reload',
+    refreshonly => true,
+    notify      => Service['kubelet'],
+  }
+
+  if($facts['os']['distro']['codename'] == 'bookworm') {
+    file { '/etc/systemd/system/kubelet.service.d':
+      ensure  => 'directory',
+      require => Package['kubelet'],
+    }
+
+    file { '/etc/systemd/system/kubelet.service.d/30-kubelet.conf':
+      content => template('nebula/profile/kubernetes/30-kubelet.conf.erb'),
+      require => Package['kubelet'],
+      notify  => Exec['kubelet reload daemon'],
+    }
+  }
+
   if $manage_pods_with_puppet {
     file { $pod_manifest_path:
       ensure  => 'directory',
@@ -58,12 +77,6 @@ class nebula::profile::kubelet (
       content => template('nebula/profile/kubelet/config.yaml.erb'),
       require => Package['kubelet'],
       notify  => Service['kubelet'],
-    }
-
-    exec { 'kubelet reload daemon':
-      command     => '/bin/systemctl daemon-reload',
-      refreshonly => true,
-      notify      => Service['kubelet'],
     }
   }
 }
