@@ -25,8 +25,12 @@ class nebula::profile::kubernetes::bootstrap::etcd_config {
     notify  => Service['kubelet'],
   }
 
-  file { '/etc/systemd/system/kubelet.service.d':
-    ensure => 'directory',
+  # we are selectively declaring this directory in profiles/kubelet.pp
+  # and declaring it twice creates an error
+  unless($facts['os']['distro']['codename'] in ['bookworm', 'bullseye']) {
+    file { '/etc/systemd/system/kubelet.service.d':
+      ensure  => 'directory',
+    }
   }
 
   if $initial_cluster != 'none' and $etcd_image != 'none' {
