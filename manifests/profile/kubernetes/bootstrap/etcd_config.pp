@@ -25,11 +25,17 @@ class nebula::profile::kubernetes::bootstrap::etcd_config {
     notify  => Service['kubelet'],
   }
 
-  # we are selectively declaring this directory in profiles/kubelet.pp
-  # and declaring it twice creates an error
+  # we are selectively declaring this directory and exec in profiles/kubelet.pp
+  # and declaring them twice creates an error
   unless($facts['os']['distro']['codename'] in ['bookworm', 'bullseye']) {
     file { '/etc/systemd/system/kubelet.service.d':
       ensure  => 'directory',
+    }
+
+    exec { 'kubelet reload daemon':
+      command     => '/bin/systemctl daemon-reload',
+      refreshonly => true,
+      notify      => Service['kubelet'],
     }
   }
 
@@ -38,11 +44,5 @@ class nebula::profile::kubernetes::bootstrap::etcd_config {
       ensure  => 'file',
       content => template('nebula/profile/kubernetes/etcd/etcd.yaml.erb'),
     }
-  }
-
-  exec { 'kubelet reload daemon':
-    command     => '/bin/systemctl daemon-reload',
-    refreshonly => true,
-    notify      => Service['kubelet'],
   }
 }
