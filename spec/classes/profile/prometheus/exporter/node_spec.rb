@@ -10,93 +10,27 @@ describe "nebula::profile::prometheus::exporter::node" do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it do
-        expect(subject).to contain_file("/etc/default/prometheus-node-exporter")
-          .that_notifies("Service[prometheus-node-exporter]")
-          .that_requires("Package[prometheus-node-exporter]")
-      end
+      it { is_expected.to contain_file("/etc/default/prometheus-node-exporter").with_ensure("absent") }
+      it { is_expected.to contain_file("/etc/systemd/system/prometheus-node-exporter.service").with_ensure("absent") }
+      it { is_expected.to contain_file("/etc/rsyslog.d/prometheus-node-exporter.conf").with_ensure("absent") }
+      it { is_expected.to contain_file("/var/log/prometheus-node-exporter.log").with_ensure("absent") }
+
+      it { is_expected.to contain_package("prometheus-node-exporter").with_ensure("purged") }
 
       it do
-        expect(subject).to contain_file("/etc/systemd/system/prometheus-node-exporter.service")
-          .that_notifies("Service[prometheus-node-exporter]")
-          .that_requires("Package[prometheus-node-exporter]")
+        expect(subject).not_to contain_file("/var/lib/prometheus/node-exporter")
+        # expect(subject).to contain_file("/var/lib/prometheus/node-exporter")
+        #   .with_ensure("directory")
+        #   .with_mode("2775")
+        # .with_owner("prometheus")
+        # .with_group("prometheus")
+        # .that_requires("Package[prometheus-node-exporter]")
       end
 
-      it do
-        expect(subject).to contain_file("/etc/rsyslog.d/prometheus-node-exporter.conf")
-          .that_notifies("Service[prometheus-node-exporter]")
-          .that_notifies("Service[rsyslog]")
-      end
+      # don't manage this directory at all, it's owned by exporter packages, possibly more than 1
+      it { is_expected.not_to contain_file("/var/lib/prometheus") }
 
-      it do
-        expect(subject).to contain_file("/var/log/prometheus-node-exporter.log")
-          .with_owner("root")
-          .with_group("adm")
-          .with_mode("0640")
-          .with_content("")
-      end
-
-      it { is_expected.to contain_service("prometheus-node-exporter") }
-
-      it do
-        expect(subject).to contain_package("prometheus-node-exporter")
-          .that_requires("User[prometheus]")
-          .that_requires("File[/var/lib/prometheus/node-exporter]")
-      end
-
-      context "with no version set" do
-        it { is_expected.not_to contain_apt__pin("prometheus-node-exporter") }
-
-        it do
-          expect(subject).to contain_package("prometheus-node-exporter")
-            .with_ensure("installed")
-        end
-      end
-
-      context "with version set to v1.2.3" do
-        let(:params) { {version: "v1.2.3"} }
-
-        it do
-          expect(subject).to contain_package("prometheus-node-exporter")
-            .with_ensure("v1.2.3")
-        end
-
-        it do
-          expect(subject).to contain_apt__pin("prometheus-node-exporter")
-            .with_packages(["prometheus-node-exporter"])
-            .with_version("v1.2.3")
-            .with_priority(999)
-        end
-      end
-
-      it do
-        expect(subject).to contain_file("/var/lib/prometheus/node-exporter")
-          .with_ensure("directory")
-          .with_mode("2775")
-          .with_owner("prometheus")
-          .with_group("prometheus")
-          .that_requires("User[prometheus]")
-          .that_requires("File[/var/lib/prometheus]")
-      end
-
-      context "with promfile_owner set to brlglph" do
-        let(:params) { {promfile_owner: "brlglph"} }
-
-        it {
-          is_expected.to contain_file("/var/lib/prometheus/node-exporter")
-            .with_owner("brlglph")
-            .with_group("prometheus")
-        }
-      end
-
-      it do
-        expect(subject).to contain_file("/var/lib/prometheus")
-          .with_ensure("directory")
-          .with_mode("2775")
-          .with_owner("prometheus")
-          .with_group("prometheus")
-          .that_requires("User[prometheus]")
-      end
+      it { is_expected.to contain_file("/etc/apt/preferences.d/prometheus-node-exporter.pref").with_ensure("absent") }
 
       it { is_expected.to contain_package("curl") }
       it { is_expected.to contain_package("jq") }

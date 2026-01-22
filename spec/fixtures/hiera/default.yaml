@@ -119,14 +119,14 @@ nebula::profile::authorized_keys::ssh_keys: {}
 
 nebula::usergroup::membership: {sudo: []}
 nebula::profile::groups::all_groups:
-  prometheus: 108
+  nullgroup: 1234
 nebula::virtual::users::default_group: staff
 nebula::virtual::users::all_users:
-  prometheus:
+  jdoe:
     uid: 108
-    gid: prometheus
-    comment: Prometheus
-    home: /var/lib/prometheus
+    gid: nullgroup
+    comment: Jon Doe
+    home: /home/jdoe
   docker:
     uid: 999
     gid: docker
