@@ -41,7 +41,7 @@ class nebula::profile::kubelet (
     notify      => Service['kubelet'],
   }
 
-  if($facts['os']['distro']['codename'] == 'bookworm') {
+  if($facts['os']['distro']['codename'] in ['bookworm', 'bullseye]) {
     file { '/etc/systemd/system/kubelet.service.d':
       ensure  => 'directory',
       require => Package['kubelet'],
