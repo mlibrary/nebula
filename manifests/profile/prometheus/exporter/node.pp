@@ -4,10 +4,7 @@
 
 # Prometheus node exporter
 #
-# Every node we want metrics on needs a node exporter installed, and
-# it's best if they all have the same version of the exporter even if
-# they're on different OS versions. So we maintain our own deb and
-# maintain all configuration through puppet.
+# Every node we want metrics on needs a node exporter installed.
 #
 # Each node exports some service discovery lines to a scraper in the
 # same datacenter if it can. It also opens port 9100 to that same
@@ -24,31 +21,10 @@ class nebula::profile::prometheus::exporter::node (
   Array $covered_datacenters = [],
   String $default_datacenter = 'default',
 ) {
-  include nebula::subscriber::rsyslog
-  include nebula::subscriber::systemctl_daemon_reload
-
-  file {
-    default:
-      ensure => absent,
-    ;
-    '/etc/default/prometheus-node-exporter':
-    ;
-    '/etc/systemd/system/prometheus-node-exporter.service':
-      notify => Exec['systemctl daemon-reload'],
-    ;
-    '/etc/rsyslog.d/prometheus-node-exporter.conf':
-      notify  => Service['rsyslog'],
-    ;
-    '/var/log/prometheus-node-exporter.log':
-    ;
-    '/etc/apt/preferences.d/prometheus-node-exporter.pref':
-    ;
+  $prometheus_errors_total = $facts['prometheus_errors_total']
+  file { '/var/lib/prometheus/node-exporter/node_exporter_errors.prom':
+    content => template('nebula/profile/prometheus/exporter/node/node_exporter_errors.prom.erb'),
   }
-
-  # $prometheus_errors_total = $facts['prometheus_errors_total']
-  # file { '/var/lib/prometheus/node-exporter/node_exporter_errors.prom':
-  #   content => template('nebula/profile/prometheus/exporter/node/node_exporter_errors.prom.erb'),
-  # }
 
   file { '/etc/cron.daily/check-reboot':
     owner   => 'root',
@@ -57,25 +33,35 @@ class nebula::profile::prometheus::exporter::node (
     content => template('nebula/profile/prometheus/exporter/node/check_reboot.sh.erb'),
   }
 
+  file { '/var/lib/prometheus/node-exporter':
+    ensure  => 'directory',
+    mode    => '2775',
+    owner   => 'prometheus',
+    group   => 'prometheus',
+    notify  => Service['prometheus-node-exporter'],
+    require => Package['prometheus-node-exporter'],
+  }
+
   service { 'prometheus-node-exporter':
-    ensure => stopped,
-    before => [User['prometheus'], Package['prometheus-node-exporter']],
+    ensure  => 'running',
+    enable  => true,
+    require => Package['prometheus-node-exporter'],
   }
 
-  package { 'prometheus-node-exporter':
-    ensure => purged,
+  exec { 'divert /etc/default/prometheus-node-exporter':
+    creates => '/etc/default/prometheus-node-exporter.dist',
+    timeout => 30,
+    command => '/usr/bin/dpkg-divert --rename --divert /etc/default/prometheus-node-exporter.dist --add /etc/default/prometheus-node-exporter',
+    notify  => Service['prometheus-node-exporter'],
+    require => Package['prometheus-node-exporter'],
+    before  => File['/etc/default/prometheus-node-exporter'],
   }
 
-  user { 'prometheus' :
-    ensure => absent,
+  file { '/etc/default/prometheus-node-exporter':
+    content => template('nebula/profile/prometheus/exporter/node/defaults.sh.erb'),
+    notify  => Service['prometheus-node-exporter'],
+    require => Package['prometheus-node-exporter'],
   }
-
-  # file { '/var/lib/prometheus/node-exporter':
-  #   ensure => 'directory',
-  #   mode   => '2775',
-  #   owner  => 'prometheus',
-  #   group  => 'prometheus',
-  # }
 
   $role = lookup_role()
   $datacenter = $facts['datacenter']
@@ -132,7 +118,7 @@ class nebula::profile::prometheus::exporter::node (
     }
   }
 
-  ensure_packages(['curl', 'jq'])
+  ensure_packages(['curl', 'jq', 'prometheus-node-exporter'])
 
   file { '/usr/local/bin/pushgateway':
     content => template('nebula/profile/prometheus/exporter/node/pushgateway.sh.erb'),
