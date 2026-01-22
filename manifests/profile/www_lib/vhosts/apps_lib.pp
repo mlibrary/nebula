@@ -43,7 +43,6 @@ class nebula::profile::www_lib::vhosts::apps_lib (
   nebula::apache::www_lib_vhost { 'apps.lib-http':
     servername => $servername,
     docroot    => $docroot,
-    usertrack  => true,
 
     rewrites   => [
       {
@@ -55,7 +54,6 @@ class nebula::profile::www_lib::vhosts::apps_lib (
   nebula::apache::www_lib_vhost { 'apps.lib-https':
     servername                => $servername,
     ssl                       => true,
-    usertrack                 => true,
     auth_openidc              => true,
     auth_openidc_redirect_uri => 'https://apps.lib.umich.edu/openid-connect/callback',
     docroot                   => $docroot,

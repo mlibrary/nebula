@@ -9,7 +9,6 @@ define nebula::apache::www_lib_vhost (
   Boolean $ssl = false,
   Optional[Integer] $port_override = undef,
   Boolean $auth_openidc = false,
-  Boolean $usertrack = false,
   Optional[String] $auth_openidc_redirect_uri = undef,
   String $ssl_cn = $servername,
   Array[Hash] $directories = [],
@@ -56,23 +55,6 @@ define nebula::apache::www_lib_vhost (
     $setenv_with_perl = $setenv + 'PERL_USE_UNSAFE_INC 1'
   } else {
     $setenv_with_perl = ['PERL_USE_UNSAFE_INC 1']
-  }
-
-  if($usertrack) {
-    $usertrack_fragment = @(EOT)
-      CookieTracking on
-      CookieDomain .lib.umich.edu
-      CookieName skynet
-    |EOT
-    $usertrack_log = [
-      {
-        file   => "${logging_prefix}clickstream.log",
-        format => 'usertrack'
-      },
-    ]
-  } else {
-    $usertrack_fragment = ''
-    $usertrack_log = []
   }
 
   if($auth_openidc) {
@@ -124,10 +106,9 @@ define nebula::apache::www_lib_vhost (
         file   => "${logging_prefix}access.log",
         format => 'combined'
       },
-    ] + $usertrack_log,
+    ],
     custom_fragment             => @("EOT"),
       ${custom_fragment}
-      ${usertrack_fragment}
       ${auth_openidc_fragment}
     | EOT
     redirect_source             => $redirect_source,
