@@ -227,6 +227,7 @@ groups:
                                  fstype!="fuse.lxcfs",
                                  fstype!="fuse.s3fs",
                                  fstype!="rpc_pipefs",
+                                 device!="none",
                                  mountpoint!="/mnt/local-pvs"} < 10000
     for: 30m
     labels:
