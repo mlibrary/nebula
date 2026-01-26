@@ -18,6 +18,7 @@ class nebula::role::webhost::htvm::test {
   }
 
   ensure_packages([
+    'composer',
     'libxml2-utils',
     'perl-doc',
     'ripgrep',
