@@ -3,7 +3,7 @@ Description=Catalog Search Solr (Serve)
 After=network.target
 
 [Service]
-User=vufind
+User=<%= @solr_user_name %>
 Type=forking
 ExecStartPre=/bin/sleep 20
 ExecStart=<%= @serve_bin %> start -p <%= @serve_port %> -m <%= @serve_max_heap_size %>

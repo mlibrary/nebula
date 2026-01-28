@@ -155,3 +155,6 @@ nebula::jdk_version: '11'
 nebula::profile::kubelet::kubelet_version: default.invalid
 
 nebula::profile::kubernetes::apt::location: 'https://pkgs.k8s.io/core:/stable:/vX.YZ/deb/'
+
+nebula::profile::search::catalog::solr::solr_user:
+  name: "nebula-hiera-default-search-solr-user"
