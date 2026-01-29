@@ -17,7 +17,6 @@ class nebula::profile::quod::dependencies::packages () {
       'git',
       'imagemagick',
       'libapache2-mod-authz-umichlib',
-      'libaprutil1-dbd-oracle',
       'oracle-instantclient12.1-basic',
       'oracle-instantclient12.1-devel',
     ]
