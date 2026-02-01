@@ -116,33 +116,26 @@ class nebula::profile::apt (
       default    => ['main', 'contrib', 'non-free', 'non-free-firmware'],
     }
 
-    # TODO: add keyring parameter to match default Debian configuration
-    apt::source { 'main':
-      source_format => 'sources',
-      location      => [$mirror],
-      repos         => $debian_repos,
-    }
-
-    $security_release = "${facts['os']['distro']['codename']}-security"
-
-    apt::source { 'security':
-      source_format => 'sources',
-      location      => ['http://security.debian.org/debian-security'],
-      release       => $security_release,
-      repos         => $debian_repos,
+    apt::source {
+      default:
+        source_format => 'sources',
+        location      => [$mirror],
+        repos         => $debian_repos,
+        keyring       => '/usr/share/keyrings/debian-archive-keyring.gpg',
+      ;
+      'main': ;
+      'security':
+        release  => "${facts['os']['distro']['codename']}-security",
+        location => ['http://security.debian.org/debian-security'],
+      ;
+      # remove updates?
+      'updates'  : release => "${facts['os']['distro']['codename']}-updates";
     }
 
     unless empty($facts['installed_backports']) {
       class { 'apt::backports':
         location => $mirror,
       }
-    }
-
-    apt::source { 'updates':
-      source_format => 'sources',
-      location      => [$mirror],
-      release       => "${facts['os']['distro']['codename']}-updates",
-      repos         => $debian_repos,
     }
 
     apt::source { 'adoptium':
@@ -157,17 +150,18 @@ class nebula::profile::apt (
       source => 'puppet:///modules/nebula/apt/keyrings/adoptium.asc',
     }
   } elsif($facts['os']['name'] == 'Ubuntu') {
-    # port to DEB822 before upgrade to 24.04
     apt::source {
       default:
         source_format => 'sources',
         location      => [$ubuntu_mirror],
         repos         => ['main', 'restricted', 'universe'],
+        keyring       => '/usr/share/keyrings/ubuntu-archive-keyring.gpg',
       ;
       'main'     : release => $facts['os']['distro']['codename'];
+      'security' : release => "${facts['os']['distro']['codename']}-security";
+      # remove updates and backports?
       'updates'  : release => "${facts['os']['distro']['codename']}-updates";
       'backports': release => "${facts['os']['distro']['codename']}-backports";
-      'security' : release => "${facts['os']['distro']['codename']}-security";
     }
 
     # remove unwanted recommends from `ubuntu-server` package
