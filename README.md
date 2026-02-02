@@ -9,10 +9,13 @@
 % cat .ruby-version
 3.2
 % ruby -v
-ruby 3.2.6
+ruby 3.2.10
 
 # bundle
 bundle
+
+# list all rake tasks
+bundle exec rake -T
 
 # run all tests
 bundle exec rake parallel_spec
@@ -25,8 +28,11 @@ bundle exec rspec specs/path/to/a_spec.rb
 bundle exec standardrb # lint .rb files
 bundle exec rake lint # lint .pp files
 
-# puppet module dependencies
-bundle exec rake outdated
+# check puppet module dependencies for available updates
+bundle exec rake forge:outdated
+# update dependencies
+bundle exec rake forge:update
+# test for dependency conflicts
 bundle exec rake librarian
 ```
 
