@@ -4,7 +4,7 @@
 
 # nebula::profile::vmhost::host
 #
-# Assert the existance of any number of virtual machines.
+# Assert the existence of any number of virtual machines.
 #
 # @param defaults Default virtual machine settings
 # @param vms VMs to set up as a mapping of vm names to their settings

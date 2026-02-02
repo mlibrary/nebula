@@ -9,7 +9,7 @@
 # @param oidc_metadata The OIDC provider metadata URL, for example:
 #   "https://weblogin.lib.umich.edu/.well-known/openid-configuration"
 #
-# @param oidc_client_id The OIDC client ID, foir example
+# @param oidc_client_id The OIDC client ID, for example
 #   "darkblue"
 #
 # @param oidc_client_secret The value of the secret shared by the client and provider
