@@ -7,6 +7,9 @@
 # DO NOT PUT ANYTHING IN THIS FILE THAT IS ACTUALLY CRITICAL TO MAKE A SYSTEM
 # WORK. THESE ARE ONLY CREATURE COMFORTS.
 
+# ensure puppet is in $PATH, even in non-interactive sessions
+[[ :$PATH: == *:/opt/puppetlabs/bin:* ]] || PATH=/opt/puppetlabs/bin:$PATH
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
