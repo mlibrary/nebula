@@ -17,13 +17,13 @@ class nebula::profile::hathitrust::dependencies () {
       'emacs',
       'geoip-bin',
       'git',
-      'kakadu',
+      'grokj2k',
       'libjs-jquery',
       'libxerces-c-samples',
       'netpbm',
       'rsync',
       'unzip',
-      'zip'
+      'zip',
     ]
   )
 
