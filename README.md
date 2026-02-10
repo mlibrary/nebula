@@ -31,6 +31,7 @@ bundle exec rake lint # lint .pp files
 # check puppet module dependencies for available updates
 bundle exec rake forge:outdated
 # update dependencies
+vi rakelib/metadata.yaml
 bundle exec rake forge:update
 # test for dependency conflicts
 bundle exec rake librarian
