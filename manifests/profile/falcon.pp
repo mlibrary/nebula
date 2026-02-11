@@ -7,6 +7,11 @@ class nebula::profile::falcon (
 ) {
   ensure_packages(['falcon-sensor'])
   service { 'falcon-sensor': }
+  apt::mark {
+    'falcon-sensor':
+      setting => hold,
+      require => Package['falcon-sensor'],
+  }
 
   exec { 'set falcon-sensor CID':
     command => "/opt/CrowdStrike/falconctl -s '--cid=${cid}'",
