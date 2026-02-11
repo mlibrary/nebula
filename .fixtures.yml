@@ -12,7 +12,7 @@ fixtures:
       ref: 5.0.0
     letsencrypt:
       repo: puppet/letsencrypt
-      ref: 13.1.0
+      ref: 13.2.0
     logrotate:
       repo: puppet/logrotate
       ref: 9.0.0
@@ -33,7 +33,7 @@ fixtures:
       ref: 13.1.0
     apt:
       repo: puppetlabs/apt
-      ref: 10.0.1
+      ref: 11.2.0
     augeas_core:
       repo: puppetlabs/augeas_core
       ref: 2.0.1
@@ -45,16 +45,16 @@ fixtures:
       ref: 2.0.2
     docker:
       repo: puppetlabs/docker
-      ref: 10.3.0
+      ref: 10.4.0
     firewall:
       repo: puppetlabs/firewall
-      ref: 8.2.0
+      ref: 8.3.0
     host_core:
       repo: puppetlabs/host_core
       ref: 2.0.1
     inifile:
       repo: puppetlabs/inifile
-      ref: 6.2.0
+      ref: 6.3.0
     lvm:
       repo: puppetlabs/lvm
       ref: 3.0.1
