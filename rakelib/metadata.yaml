@@ -1,7 +1,7 @@
 ---
 # used by forge.rake tasks to generate metadata.json and .fixtures.yml
 name: mlibrary-nebula
-version: 3.1.0
+version: 3.1.1
 author: MLibrary
 summary: Central MLibrary module
 license: BSD-3-Clause
@@ -33,6 +33,8 @@ dependencies:
 - name: puppet/unattended_upgrades
 - name: puppetlabs/apache
 - name: puppetlabs/apt
+  ref: 10.0.1
+  info: regression in puppetlabs/apt 11 breaks hpe repo
 - name: puppetlabs/augeas_core
 - name: puppetlabs/concat
 - name: puppetlabs/cron_core
