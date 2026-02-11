@@ -14,7 +14,7 @@ We have a number of applications and servers that need numerous Perl libraries
 installed. We have historically managed the libraries at a system level and
 coordinated versions with application teams. While there are now compelling
 options like [Carton](https://metacpan.org/pod/Carton), which allow an
-appliction to manage and isolate its dependencies, most of our apps would
+application to manage and isolate its dependencies, most of our apps would
 require changes to be ready to use something like this.
 
 To aid in keeping the versions stable and ensuring that underlying system

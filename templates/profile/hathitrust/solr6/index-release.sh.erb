@@ -32,7 +32,7 @@ fi
 [[ ! -d ${snap}/flags/ ]] && onoe "can't read snapshot dir...aborting release"
 
 # check today's snap for 'busy' flag
-[[ -f "${snap}/flags/busy" ]] && onoe "indexing or optimization ocurring...skip release today"
+[[ -f "${snap}/flags/busy" ]] && onoe "indexing or optimization occurring...skip release today"
 
 <% if @is_primary_site -%>
 # TODO: check whether release happened at mirror site

@@ -1,0 +1,24 @@
+# config file for [typos](https://github.com/crate-ci/typos) spell checker
+# see above link for installation and usage
+
+# most (simple one-word) exceptions go here
+[default.extend-words]
+facter = "facter"
+hpe = "hpe"
+tripel = "tripel"
+
+# exceptions using alternative tokenizer; see docs
+[default.extend-identifiers]
+
+[files]
+extend-exclude = ["files/apt/keyrings/*.asc"]
+
+[default]
+# exceptions where punctuation or case matters
+extend-ignore-re = [
+  "AKS",
+  "edu\\.harvard\\.hul\\.ois", "OISConsolidator",
+  "goin'",
+  "r00tme",
+  "tivsm-ba",
+]

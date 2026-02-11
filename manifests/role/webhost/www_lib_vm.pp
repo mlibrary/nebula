@@ -32,7 +32,7 @@ class nebula::role::webhost::www_lib_vm (
   include nebula::profile::afs
   include nebula::profile::www_lib::users
 
-  # This is only for the global constant of $default_accesss, used in the more
+  # This is only for the global constant of $default_access, used in the more
   # specific profiles, where all of the resources are defined.
   include nebula::profile::www_lib::apache
 

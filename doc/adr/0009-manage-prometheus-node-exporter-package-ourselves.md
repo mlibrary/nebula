@@ -29,7 +29,7 @@ baring the same name.
 
 Not only would this be cumbersome to aggregate, but also if someone at
 Debian or Ubuntu did upgrade the exporter in a repo, then all time
-serieses for computers using that repo would essentially be reset.
+series for computers using that repo would essentially be reset.
 
 Decision
 --------

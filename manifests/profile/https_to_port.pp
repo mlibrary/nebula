@@ -26,7 +26,7 @@ class nebula::profile::https_to_port (
   $letsencrypt_directory = $facts['letsencrypt_directory'][$server_name]
 
   if $letsencrypt_directory {
-    # Only serve the HTTPS site if the cert aleady exists.
+    # Only serve the HTTPS site if the cert already exists.
     nginx::resource::server { 'https-forwarder':
       server_name => [$server_name],
       listen_port => 443,

@@ -46,7 +46,7 @@ class nebula::profile::www_lib::apache::misc (
       'lib.umich.edu',
     ]:
   }
-  # depends on ssl_keypairs above (or delcared in includes like apache::fulcrum)
+  # depends on ssl_keypairs above (or declared in includes like apache::fulcrum)
   include nebula::profile::www_lib::vhosts::redirects
 
   $vhost_prefix = 'nebula::profile::www_lib::vhosts' ['default','www_lib','apps_lib','staff_lib','datamart','deepblue', 'openmich', 'mgetit', 'search'].each |$vhost| {

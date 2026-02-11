@@ -63,7 +63,7 @@ class nebula::profile::apt (
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
       # `hpe1` is deprecated, but as of this writing is still used to sign HPE's Debian repos.
       # At some point in 2025 this key should stop working, at which point we can move Debian
-      # to hpe2 as well. Due to an apparant bug in apt, hpe2 does not work when armored, so
+      # to hpe2 as well. Due to an apparent bug in apt, hpe2 does not work when armored, so
       # it has been included in this repo as a dearmored binary key.
       # See also: https://downloads.linux.hpe.com/SDR/keys.html
       $hpe_key = $facts['os']['name'] ? {
@@ -170,7 +170,7 @@ class nebula::profile::apt (
       'security' : release => "${facts['os']['distro']['codename']}-security";
     }
 
-    # remove unwanted recommendeds from `ubuntu-server` package
+    # remove unwanted recommends from `ubuntu-server` package
     package { 'landscape-common': ensure => purged }
     package { 'open-vm-tools': ensure => purged }
 

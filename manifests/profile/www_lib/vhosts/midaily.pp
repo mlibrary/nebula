@@ -76,7 +76,7 @@ class nebula::profile::www_lib::vhosts::midaily (
         allow_override => 'None',
         require        => $nebula::profile::www_lib::apache::default_access,
       },
-      # Standard mod_auth_openidc pasive login
+      # Standard mod_auth_openidc passive login
       {
         provider        => 'location',
         path            => '/',

@@ -1,6 +1,6 @@
 # nebula::profile::apt
 #
-# install kubernets apt source
+# install kubernetes apt source
 #
 # @example
 #   include nebula::profile::apt

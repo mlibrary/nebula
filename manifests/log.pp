@@ -1,7 +1,7 @@
 # nebula::log
 #
 # Send logs from a service to log server.
-# Currently implimented with Alloy and Loki
+# Currently implemented with Alloy and Loki
 #
 # @example
 #
