@@ -11,7 +11,7 @@ describe "nebula::profile::bolt" do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
-      it { is_expected.to contain_package("puppet-bolt") }
+      it { is_expected.to contain_package("openbolt") }
       it { is_expected.to contain_file("/opt/bolt").with_ensure("directory") }
       it { is_expected.to contain_vcsrepo("/opt/bolt").with_ensure("latest") }
     end
