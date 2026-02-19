@@ -4,7 +4,10 @@
 
 # nebula::profile::nodejs
 #
-# Install the LTS release of nodejs
+# Install nodejs
+#
+# Don't expect default version to remain static. Use an explicit version
+# when calling this class if you don't want it upgraded.
 #
 # @param version The major version of Node.js to install, e.g., 14.
 #   This is used to select the version-specific repository, e.g., node_14.x
@@ -17,27 +20,15 @@
 #     version => '14',
 #   }
 class nebula::profile::nodejs (
-  $version = '18',
+  Integer $version = 22,
 ) {
   include nebula::profile::apt
 
-    apt::source { 'nodesource.com':
-      source_format => 'sources',
-      comment       => 'Nodesource apt source for recent nodejs',
-      location      => ["https://deb.nodesource.com/node_${version}.x"],
-      release       => 'nodistro',
-      repos         => ['main'],
-      keyring       => '/etc/apt/keyrings/nodesource.asc',
-      notify_update => true,
-      include       => {
-        'src' => false,
-        'deb' => true,
-      },
-    }
+  class { 'nebula::profile::apt::nodejs':
+    version => $version,
+  }
 
-    apt::keyring { 'nodesource.asc':
-      source => 'puppet:///modules/nebula/apt/keyrings/nodesource0.asc',
-    }
-
-  package { 'nodejs': }
+  package { 'nodejs':
+    require => Class['nebula::profile::apt::nodejs'],
+  }
 }
