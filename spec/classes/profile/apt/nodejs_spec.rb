@@ -39,16 +39,8 @@ describe "nebula::profile::apt::nodejs" do
           {version: 14}
         end
 
-        case os
-        when "debian-11-x86_64", "ubuntu-22.04-x86_64"
-          it "configures legacy repo" do
-            is_expected.to contain_apt__source("nodesource.com")
-              .with_release(facts[:os]["distro"]["codename"])
-          end
-        when "debian-12-x86_64", "ubuntu-24.04-x86_64", "debian-13-x86_64"
-          it "fails" do
-            is_expected.not_to compile
-          end
+        it "fails" do
+          is_expected.not_to compile
         end
       end
 
@@ -61,13 +53,71 @@ describe "nebula::profile::apt::nodejs" do
         when "debian-11-x86_64", "ubuntu-22.04-x86_64"
           it "configures repo" do
             is_expected.to contain_apt__source("nodesource.com")
+              .with_location(["https://deb.nodesource.com/node_18.x"])
               .with_release("nodistro")
+          end
+
+          it "configures nodejs apt keyring" do
+            is_expected.to contain_apt__keyring("nodesource.asc")
+              .with_source("puppet:///modules/nebula/apt/keyrings/nodesource.asc")
           end
         when "debian-12-x86_64", "ubuntu-24.04-x86_64"
           it "uses os repo" do
             is_expected.not_to contain_apt__source("nodesource.com")
           end
+        else
+          it "fails" do
+            is_expected.not_to compile
+          end
+        end
+      end
+
+      context "nodejs 20" do
+        let(:params) do
+          {version: 20}
+        end
+
+        case os
+        when "debian-11-x86_64", "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64"
+          it "configures repo" do
+            is_expected.to contain_apt__source("nodesource.com")
+              .with_location(["https://deb.nodesource.com/node_20.x"])
+              .with_release("nodistro")
+          end
+
+          it "configures nodejs apt keyring" do
+            is_expected.to contain_apt__keyring("nodesource.asc")
+              .with_source("puppet:///modules/nebula/apt/keyrings/nodesource.asc")
+          end
         when "debian-13-x86_64"
+          it "uses os repo" do
+            is_expected.not_to contain_apt__source("nodesource.com")
+          end
+        else
+          it "fails" do
+            is_expected.not_to compile
+          end
+        end
+      end
+
+      context "nodejs 22" do
+        let(:params) do
+          {version: 22}
+        end
+
+        case os
+        when "debian-11-x86_64", "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64", "debian-13-x86_64"
+          it "configures repo" do
+            is_expected.to contain_apt__source("nodesource.com")
+              .with_location(["https://deb.nodesource.com/node_22.x"])
+              .with_release("nodistro")
+          end
+
+          it "configures nodejs apt keyring" do
+            is_expected.to contain_apt__keyring("nodesource.asc")
+              .with_source("puppet:///modules/nebula/apt/keyrings/nodesource.asc")
+          end
+        else
           it "fails" do
             is_expected.not_to compile
           end
