@@ -6,7 +6,7 @@ class nebula::profile::bolt {
   include nebula::profile::managed_known_hosts
   include nebula::profile::github_pull_account
   include nebula::virtual::users
-  package { 'puppet-bolt': }
+  package { 'openbolt': }
 
   $users = lookup('nebula::profile::authorized_keys::ssh_keys').keys
   $all_users = lookup('nebula::virtual::users::all_users')
