@@ -31,6 +31,7 @@ class nebula::profile::apt::nodejs (
       release       => 'nodistro',
       repos         => ['main'],
       keyring       => '/etc/apt/keyrings/nodesource.asc',
+      architecture  => $facts['os']['architecture'],
     }
 
     apt::keyring { 'nodesource.asc':
