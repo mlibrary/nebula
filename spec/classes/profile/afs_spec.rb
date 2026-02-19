@@ -21,13 +21,27 @@ describe "nebula::profile::afs" do
 
       it { is_expected.to contain_class("nebula::profile::krb5") }
 
-      it do
-        expect(subject).to contain_exec("reinstall kernel to enable afs").with(
-          command: "/usr/bin/apt-get -y install --reinstall linux-headers-amd64",
-          creates: "/lib/modules/#{kernelrelease}/updates/dkms/openafs.ko",
-          timeout: 600,
-          require: "Package[openafs-modules-dkms]"
-        )
+      case os
+      when "debian-11-x86_64", "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64"
+        it do
+          expect(subject).to contain_exec("reinstall kernel to enable afs").with(
+            command: "/usr/bin/apt-get -y install --reinstall linux-headers-amd64",
+            creates: "/lib/modules/#{kernelrelease}/updates/dkms/openafs.ko",
+            timeout: 600,
+            require: "Package[openafs-modules-dkms]"
+          )
+        end
+      when "debian-13-x86_64"
+        it do
+          expect(subject).to contain_exec("reinstall kernel to enable afs").with(
+            command: "/usr/bin/apt-get -y install --reinstall linux-headers-amd64",
+            creates: "/lib/modules/#{kernelrelease}/updates/dkms/openafs.ko.xz",
+            timeout: 600,
+            require: "Package[openafs-modules-dkms]"
+          )
+        end
+      else
+        raise "expected afs dkms behavior not defined in spec for current os version"
       end
 
       it { is_expected.not_to contain_reboot("afs") }

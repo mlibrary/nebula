@@ -44,9 +44,18 @@ class nebula::profile::afs (
   package { 'openafs-krb5': }
   package { 'openafs-modules-dkms': }
 
+  $kmod = $facts['os']['distro']['codename'] ? {
+    'jammy'    => 'openafs.ko',
+    'bullseye' => 'openafs.ko',
+    'bookworm' => 'openafs.ko',
+    'noble'    => 'openafs.ko',
+    'trixie'   => 'openafs.ko.xz',
+    default    => 'openafs.ko.xz'
+  }
+
   exec { 'reinstall kernel to enable afs':
     command => '/usr/bin/apt-get -y install --reinstall linux-headers-amd64',
-    creates => "/lib/modules/${facts['kernelrelease']}/updates/dkms/openafs.ko",
+    creates => "/lib/modules/${facts['kernelrelease']}/updates/dkms/${$kmod}",
     timeout => 600,
     require => Package['openafs-modules-dkms'],
   }
