@@ -14,7 +14,6 @@ class nebula::profile::kubernetes::haproxy {
   $monitoring_user = lookup('nebula::profile::haproxy::monitoring_user')
 
   package { 'haproxy': }
-  package { 'haproxyctl': }
 
   service { 'haproxy':
     ensure  => 'running',

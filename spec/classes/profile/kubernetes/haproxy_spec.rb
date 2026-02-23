@@ -14,7 +14,6 @@ describe "nebula::profile::kubernetes::haproxy" do
       it { is_expected.to compile }
 
       it { is_expected.to contain_package("haproxy") }
-      it { is_expected.to contain_package("haproxyctl") }
 
       it do
         expect(subject).to contain_service("haproxy")
