@@ -4,3 +4,5 @@ export ETCDCTL_ENDPOINTS="<%= @etcdctl_endpoints %>"
 export ETCDCTL_CACERT="/etc/etcd/ca.crt"
 export ETCDCTL_CERT="/etc/etcd/peer.crt"
 export ETCDCTL_KEY="/etc/etcd/peer.key"
+
+eval -- "$(etcdctl completion bash 2>/dev/null)"
