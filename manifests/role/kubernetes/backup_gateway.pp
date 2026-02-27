@@ -12,6 +12,8 @@ class nebula::role::kubernetes::backup_gateway {
   include nebula::profile::kubernetes::bootstrap::source
   include nebula::profile::kubernetes::etcdctl
 
+  @nebula::taghosts::tag { 'gateway': }
+
   class { 'nebula::profile::kubernetes::keepalived':
     master => false,
   }
