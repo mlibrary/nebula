@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-[ $# = 1 ] && set $1
+[ $# = 1 ] && set -- $1
 set -eo pipefail
 IFS=$'\n\t'
 PROG="$0"
@@ -42,7 +42,7 @@ optional arguments:
  -h           Show this help message and exit
  -j DELIMITER Join results in one line, separated by the given delimiter
  -r HOST      List all tags for host
- -v           Invert all tags after -v
+ -v [TAG...]  Invert all tags after -v
 EOF
 }
 
@@ -88,7 +88,7 @@ while getopts ':aAbdhj:r:v' opt; do
       ;;
 
     ?)
-      errorout "unrecognized argument: \`-$opt'"
+      errorout "unrecognized argument: \`-$OPTARG'"
       ;;
   esac
 done
