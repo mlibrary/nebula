@@ -49,6 +49,18 @@ class nebula::profile::taghosts::index (
     content => template('nebula/profile/taghosts/taghosts.sh.erb'),
   }
 
+  file { '/etc/bash_completion.d/_taghosts':
+    owner   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/taghosts/bash_completion.erb'),
+  }
+
+  file { '/usr/local/share/zsh/site-functions/_taghosts':
+    owner   => 'root',
+    mode    => '0755',
+    content => template('nebula/profile/taghosts/zsh_completion.erb'),
+  }
+
   file { '/usr/local/bin/exechosts':
     owner   => 'root',
     mode    => '0755',

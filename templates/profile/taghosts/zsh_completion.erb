@@ -1,0 +1,81 @@
+#compdef taghosts
+
+local context state state_descr line
+typeset -A opt_args
+
+local -a args tag_args
+args=(
+  '(-a -A    -d -h    -r -u -v)-a[print all tags]'
+  '(-a -A       -h    -r -u -v)-A[print all hosts]'
+  '(      -b -d -h -j         )-b[bolt mode (same as -dj,)]'
+  '(-a       -d -h -j -r -u   )-d[leave fqdns in output]'
+  '(-)-h[print usage]'
+  '(            -h -j    -u   )-j+[join results in one line, separated by DELIMITER]: :'
+  '(-a -A    -d -h    -r -u -v)-r[list all tags for HOST]: :->hosts'
+  '(-a -A    -d -h    -r -u   )-u[list all tags that will further narrow query]'
+)
+tag_args=(
+  '-v[invert all tags after -v]'
+  '*: :->tags'
+)
+
+# get flag states, check if we're on positional args yet
+local seen_positional=0 
+local seen_v=0
+local no_tags=0
+local w
+local -a seen_tags=()
+for w in $words[2,(( CURRENT - 1 ))]; do
+  case $w in
+  -*v*)
+    seen_v=1
+    seen_tags+=( -v )
+    ;|
+  -*[aArh]*)
+    no_tags=1
+    ;;
+  --|[^-]*)
+    seen_positional=1
+    seen_tags+=( $w )
+    ;;
+  esac
+done
+
+if (( seen_positional )); then
+  if (( no_tags )); then
+    return
+  else
+    _arguments -s $tag_args
+  fi
+else
+  if (( no_tags )); then
+    _arguments -s -S $args
+  else
+    _arguments -s -S $args $tag_args
+  fi
+fi
+
+case $state in
+  tags)
+    local -a tag_list
+    if (( seen_positional )); then
+      tag_list=( $(taghosts -u $seen_tags) )
+    else
+      tag_list=( $(sed -e 's/^.*\t//' -e 's/ /\n/g' /var/lib/ae/active-servers | sort -u) )
+    fi
+    _describe -t taghosts-tags 'tag' tag_list
+    ;;
+  hosts)
+    local trim_domains=(
+      <% @known_domains.each do |domain| -%>
+      <%= domain %>
+      <% end -%>
+    )
+    local td
+    local -a host_list=( $(sed -E 's/\t.*$//' /var/lib/ae/active-servers) )
+    for td in $trim_domains; do
+      host_list=( ${host_list%.$td} )
+    done
+    _describe -t taghosts-hosts 'host' host_list
+    ;;
+esac

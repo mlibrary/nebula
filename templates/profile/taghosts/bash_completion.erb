@@ -1,0 +1,54 @@
+_taghosts()
+{
+  local cur
+  local -a left tags
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+
+  left="${COMP_WORDS[@]:1:$COMP_CWORD}"
+  left=( ${left%$cur} )
+
+  if [[ ${cur} == -* ]] ; then
+    # only complete options in first position (technically wrong, but close enough)
+    if [[ $COMP_CWORD = 1 ]]; then
+      COMPREPLY=( $(compgen -W "-a -A -b -d -h -j -r -u -v" -- ${cur}) )
+      return 0
+    else
+      # -v allowed anywhere
+      COMPREPLY=( $(compgen -W "-v" -- ${cur}) )
+      return 0
+    fi
+  else
+    case "${left[@]}" in
+    # -r needs a hostname
+    -r)
+      if [[ $COMP_CWORD = 2 ]]; then
+        COMPREPLY=( $(compgen -W "$(taghosts -A)" -- ${cur}) )
+        return 0
+      else
+        return 1
+      fi
+      ;;
+    # -h, -a, and -A only make sense alone
+    -[haA]) return 1 ;;
+    # assume we're completing tags now
+    *)
+      tags=()
+      for x in "${left[@]}"; do
+        if [[ $x != -* || $x = -v ]]; then
+          tags=( "${tags[@]}" $x )
+        fi
+      done
+      if (( ${#tags[@]} < 1 )); then
+        COMPREPLY=( $(compgen -W "$(taghosts -a)" -- ${cur}) )
+        return 0
+      else
+        COMPREPLY=( $(compgen -W "$(taghosts -u ${tags[@]})" -- ${cur}) )
+        return 0
+      fi
+      ;;
+    esac
+  fi
+}
+
+complete -F _taghosts taghosts
