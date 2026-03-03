@@ -60,8 +60,6 @@ def test_roles(slice_number = 1, slice_count = 1)
               # The first pair that matches will be chosen.
               %w[nebula::role::webhost::htvm hathitrust],
               %w[nebula::role::hathitrust hathitrust],
-              %w[nebula::role::chipmunk chipmunk],
-              %w[nebula::role::app_host::standalone chipmunk],
               %w[nebula::role::deb_server deb_server],
               %w[nebula::role::kubernetes kubernetes/first_cluster],
               %w[nebula::role::search::solr kubernetes/first_cluster],
