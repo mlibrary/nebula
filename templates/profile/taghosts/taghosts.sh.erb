@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-[ $# = 1 ] && set $1
+[ $# = 1 ] && set -- $1
 set -eo pipefail
 IFS=$'\n\t'
 PROG="$0"
@@ -10,6 +10,7 @@ ALL_TAGS=false
 ALL_HOSTS=false
 INVERT_TAGS=false
 REVERSE=""
+UNIQ_TAGS=false
 STRIP_KNOWN_DOMAINS=true
 KNOWN_DOMAINS=()
 <% @known_domains.each do |domain| -%>
@@ -42,7 +43,8 @@ optional arguments:
  -h           Show this help message and exit
  -j DELIMITER Join results in one line, separated by the given delimiter
  -r HOST      List all tags for host
- -v           Invert all tags after -v
+ -u [TAG...]  List tags that will further narrow the specified query
+ -v [TAG...]  Invert all tags after -v
 EOF
 }
 
@@ -51,7 +53,7 @@ if [ "$1" = "--help" ]; then
   exit 0
 fi
 
-while getopts ':aAbdhj:r:v' opt; do
+while getopts ':aAbduhj:r:v' opt; do
   case "$opt" in
     a)
       ALL_TAGS=true
@@ -83,12 +85,16 @@ while getopts ':aAbdhj:r:v' opt; do
       REVERSE="$OPTARG"
       ;;
 
+    u)
+      UNIQ_TAGS=true
+      ;;
+
     v)
       INVERT_TAGS=true
       ;;
 
     ?)
-      errorout "unrecognized argument: \`-$opt'"
+      errorout "unrecognized argument: \`-$OPTARG'"
       ;;
   esac
 done
@@ -111,6 +117,8 @@ list_hosts_or_tags() {
     get_all_tags
   elif $ALL_HOSTS; then
     get_all_hosts
+  elif $UNIQ_TAGS; then
+    get_uniq_tags "$@"
   else
     get_all_hosts_with_tags "$@"
   fi
@@ -120,6 +128,7 @@ validate_arguments() {
   if [ -n "$REVERSE" ]; then
     if $ALL_TAGS; then errorout "cannot use both -r and -a"; fi
     if $ALL_HOSTS; then errorout "cannot use both -r and -A"; fi
+    if $UNIQ_TAGS; then errorout "cannot use both -r and -u"; fi
     if [ -n "$*" ]; then errorout "no arguments expected after -r $REVERSE"; fi
   fi
 
@@ -130,6 +139,11 @@ validate_arguments() {
 
   if $ALL_TAGS; then
     if $ALL_HOSTS; then errorout "cannot use both -a and -A"; fi
+    if $UNIQ_TAGS; then errorout "cannot use both -a and -u"; fi
+  fi
+
+  if $ALL_HOSTS; then
+    if $UNIQ_TAGS; then errorout "cannot use both -A and -u"; fi
   fi
 }
 
@@ -152,6 +166,24 @@ get_all_tags_for_host() {
 
 get_all_tags() {
   sed -e 's/^.*\t//' -e 's/ /\n/g' "$ACTIVE_SERVERS" | sort -u
+}
+
+get_uniq_tags() {
+  # get all unique tag sets
+  lines="`sed -e 's/^.*\t//' "$ACTIVE_SERVERS" | sort -u`"
+  for tag in "$@"; do
+    if [ "$tag" = "-v" ]; then
+      INVERT_TAGS=true
+    elif $INVERT_TAGS; then
+      lines="`echo "$lines" | happy_grep -v "\\<$tag\\>"`"
+    else
+      lines="`echo "$lines" | happy_grep "\\<$tag\\>"`"
+    fi
+  done
+
+  # skip tags that are in every set
+  lc=`echo "$lines" | wc -l`
+  echo "$lines" | sed 's/ /\n/g' | sort | uniq -c | grep -E -v "^\s*${lc} " | sed -E 's/^\s*[0-9]+ //'
 }
 
 get_all_hosts() {
