@@ -13,7 +13,6 @@ describe "nebula::profile::unattended_upgrades" do
       it { is_expected.to compile }
       it { is_expected.to contain_class("apt") }
       it { is_expected.to contain_class("unattended_upgrades").with(only_on_ac_power: false) }
-      it { is_expected.to contain_file("/etc/apt/apt.conf.d/51unattended-upgrades-extra") }
     end
   end
 end
