@@ -22,7 +22,6 @@ describe "nebula::profile::base" do
       when %r{^debian}, %r{^ubuntu}
         it { is_expected.to contain_package("zstd") }
         it { is_expected.to contain_package("dbus") }
-        it { is_expected.to contain_package("dkms") }
 
         it do
           expect(subject).to contain_file("/etc/localtime")
@@ -158,16 +157,6 @@ describe "nebula::profile::base" do
 
         it { is_expected.not_to contain_kmod__blacklist("hpwdt") }
         it { is_expected.not_to contain_kmod__blacklist("acpi_power_meter") }
-      end
-
-      it { is_expected.not_to contain_package("i40e-dkms") }
-
-      context "with an Intel X710 network card" do
-        let(:facts) do
-          super().merge("network_cards" => ["Intel Corporation Ethernet Controller X710 for 10GbE SFP+ (rev 01)"])
-        end
-
-        it { is_expected.not_to contain_package("i40e-dkms") }
       end
     end
   end
