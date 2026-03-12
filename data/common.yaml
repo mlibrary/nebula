@@ -26,7 +26,7 @@ nebula::profile::ruby::gems:
 nebula::profile::vmhost::host::vms: {}
 nebula::profile::vmhost::host::defaults: {}
 
-nebula::profile::base::timezone: US/Eastern
+nebula::profile::base::timezone: America/Detroit
 
 nebula::profile::apt::mirror: http://ftp.us.debian.org/debian/
 nebula::profile::apt::puppet_repo: openvox5
