@@ -17,13 +17,13 @@ class nebula::profile::hathitrust::dependencies () {
       'emacs',
       'geoip-bin',
       'git',
-      'kakadu',
+      'grokj2k',
       'libjs-jquery',
       'libxerces-c-samples',
-      'netpbm-sf',
+      'netpbm',
       'rsync',
       'unzip',
-      'zip'
+      'zip',
     ]
   )
 
@@ -57,7 +57,7 @@ class nebula::profile::hathitrust::dependencies () {
 
   package {
     [
-      'openjdk-11-jdk-headless',
+      'default-jre-headless',
       'lftp',
     ]:
   }

@@ -13,20 +13,28 @@ class nebula::profile::hathitrust::php () {
 
   package {
     [
-      'php-curl',
-      'php-gd',
-      'php-geoip', # PECL
-      'php-http', # PECL
-      'php-ldap',
-      'php-mysql',
+      'php-geoip',
       'php-mdb2',
       'php-mdb2-driver-mysql',
-      'smarty3',
-      'php-xml',
+      'pear-channels'
+    ]:
+      ensure => 'absent'
+  }
+
+  package {
+    [
+      'php-curl',
+      'php-gd',
+      'php-http', # PECL
+      'php-ldap',
       'php-mbstring',
+      'php-mysql',
+      # n.b. php-pear is automatically installed via class php below
+      'php-raphf',
+      'php-xml',
       'php-yaml',
       'libapache2-mod-php',
-      'pear-channels'
+      'smarty3',
     ]:
   }
 
@@ -39,16 +47,9 @@ class nebula::profile::hathitrust::php () {
     phpunit      => true,       # Unsure whether this should be system or app-level
 
     extensions   => {
-      'DB'                    => { package_prefix => '', provider => 'pear' },
-      'DB_DataObject'         => { package_prefix => '', provider => 'pear' },
-      'File_CSV'              => { package_prefix => '', provider => 'pear' },
-      'File_MARC'             => { package_prefix => '', provider => 'pear' },
-      'HTTP_Request2'         => { package_prefix => '', provider => 'pear' },
-      'HTTP_Session2'         => { ensure => 'beta', package_prefix => '', provider => 'pear' },
-      'Log'                   => { package_prefix => '', provider => 'pear' },
-      'Pager'                 => { package_prefix => '', provider => 'pear' },
-      'PHP_Compat'            => { package_prefix => '', provider => 'pear' },
-      'Structures_LinkedList' => { ensure => 'beta', package_prefix => '', provider => 'pear' },
+      'File_MARC'     => { package_prefix => '', provider => 'pear' },
+      'HTTP_Request2' => { package_prefix => '', provider => 'pear' },
+      'Pager'         => { package_prefix => '', provider => 'pear' },
     },
   }
 

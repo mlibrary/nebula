@@ -18,9 +18,7 @@ describe "nebula::profile::imagemagick" do
         # thought. I chose not to make it a variable because I don't
         # expect it to ever need to change, and, if it ever does, I
         # don't expect it to need to be different on different machines.
-        #
-        # Other values were taken from the default jessie config.
-        expect(subject).to contain_file("/etc/ImageMagick-6/policy.xml").with(
+        expect(subject).to contain_file("/etc/ImageMagick-7/policy.xml").with(
           require: "Package[imagemagick]",
           content: %r{domain="resource" name="width" value="1MP"}
         )
