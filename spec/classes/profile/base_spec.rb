@@ -27,26 +27,26 @@ describe "nebula::profile::base" do
         it do
           expect(subject).to contain_file("/etc/localtime")
             .with_ensure("link")
-            .with_target("/usr/share/zoneinfo/US/Eastern")
+            .with_target("/usr/share/zoneinfo/America/Detroit")
         end
 
         it do
           expect(subject).to contain_file("/etc/timezone")
-            .with_content("US/Eastern\n")
+            .with_content("America/Detroit\n")
         end
 
-        context "with timezone set to America/Detroit" do
-          let(:params) { {timezone: "America/Detroit"} }
+        context "with timezone set to Mars/UtopiaPlanitia" do
+          let(:params) { {timezone: "Mars/UtopiaPlanitia"} }
 
           it do
             expect(subject).to contain_file("/etc/localtime")
               .with_ensure("link")
-              .with_target("/usr/share/zoneinfo/America/Detroit")
+              .with_target("/usr/share/zoneinfo/Mars/UtopiaPlanitia")
           end
 
           it do
             expect(subject).to contain_file("/etc/timezone")
-              .with_content("America/Detroit\n")
+              .with_content("Mars/UtopiaPlanitia\n")
           end
         end
 

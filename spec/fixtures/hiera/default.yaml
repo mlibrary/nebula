@@ -48,7 +48,7 @@ nebula::profile::vmhost::host::defaults: {}
 
 nebula::profile::base::sysadmin_dept: Default Incorrect Dept
 nebula::profile::base::contact_email: contact@default.invalid
-nebula::profile::base::timezone: US/Eastern
+nebula::profile::base::timezone: America/Detroit
 
 nebula::profile::apt::mirror: http://ftp.us.debian.org/debian/
 nebula::profile::apt::puppet_repo: openvox5
