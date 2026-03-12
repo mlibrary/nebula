@@ -6,8 +6,12 @@
 #
 # @example
 #   include nebula::role::webhost::htvm::prod
-class nebula::role::webhost::htvm::prod {
-  include nebula::role::webhost::htvm
+class nebula::role::webhost::htvm::prod (
+  Boolean $afs = false,
+) {
+  class { 'nebula::role::webhost::htvm':
+    afs => $afs,
+  }
   include nebula::profile::hathitrust::apache::logs
 
   @@nebula::haproxy::binding { "${::networking['hostname']} hathitrust":

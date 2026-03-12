@@ -7,9 +7,12 @@
 # @example
 #   include nebula::role::webhost::htvm
 class nebula::role::webhost::htvm (
-  String $shibboleth_config_source = 'puppet:///shibboleth'
+  String $shibboleth_config_source = 'puppet:///shibboleth',
+  Boolean $afs = true,
 ) {
-  include nebula::role::hathitrust
+  class { 'nebula::role::hathitrust':
+    afs => $afs,
+  }
 
   include nebula::profile::hathitrust::networking
 
