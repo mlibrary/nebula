@@ -31,7 +31,6 @@ class nebula::profile::base (
 
   ensure_packages([
     'dbus', # ??
-    'dkms', # afs?
     'zstd', # prevent warnings about fallback on `apt dist-upgrade`
   ])
 
