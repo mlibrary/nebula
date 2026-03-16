@@ -209,7 +209,7 @@ describe "nebula::profile::apt" do
         let(:facts) { os_facts.merge("dmi" => {"manufacturer" => "HPE"}) }
 
         case os
-        when %r{^debian}
+        when %r{^debian-11}
           it do
             expect(subject).to contain_apt__source("hpe").with(
               source_format: "sources",
@@ -226,29 +226,7 @@ describe "nebula::profile::apt" do
             )
           end
 
-          context "with ubuntu instead of debian" do
-            let(:facts) do
-              os_facts.merge("dmi" => {"manufacturer" => "HPE"},
-                "operatingsystem" => "Ubuntu")
-            end
-
-            it do
-              expect(subject).to contain_apt__source("hpe").with(
-                source_format: "sources",
-                location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
-                release: "#{facts[:os]["distro"]["codename"]}/current",
-                repos: ["non-free"],
-                keyring: "/etc/apt/keyrings/hpe1.gpg"
-              )
-            end
-
-            it do
-              expect(subject).to contain_apt__keyring("hpe1.gpg").with(
-                source: "puppet:///modules/nebula/apt/keyrings/hpe1.gpg"
-              )
-            end
-          end
-        when %r{^ubuntu}
+        else
           it do
             expect(subject).to contain_apt__source("hpe").with(
               source_format: "sources",
