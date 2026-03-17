@@ -21,6 +21,18 @@ class nebula::profile::duo (
   String $pushinfo,
   String $failmode,
 ) {
+  apt::source { 'duo':
+    source_format => 'sources',
+    location      => ['https://pkg.duosecurity.com/Debian'],
+    release       => $facts['os']['distro']['codename'],
+    repos         => ['main'],
+    keyring       => '/etc/apt/keyrings/duo.asc',
+  }
+
+  apt::keyring { 'duo.asc':
+    source => 'puppet:///modules/nebula/apt/keyrings/duo.asc',
+  }
+
   ensure_packages([
     'sudo',
     'libpam-duo'

@@ -1,5 +1,6 @@
 key_name                      source_url
 adoptium.asc                  https://packages.adoptium.net/artifactory/api/gpg/key/public
+duo.asc                       https://duo.com/DUO-GPG-PUBLIC-KEY.asc
 docker.asc                    https://download.docker.com/linux/debian/gpg
 elastic.co.asc                https://artifacts.elastic.co/GPG-KEY-elasticsearch
 grafana.asc                   https://apt.grafana.com/gpg.key
