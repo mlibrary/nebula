@@ -216,7 +216,7 @@ get_servers() {
     done
   fi
 
-  sed "${sed_args[@]}" -e '/^$/d'
+  sed "${sed_args[@]}" -e '/^$/d' | sort -V
 }
 
 main "$@"
