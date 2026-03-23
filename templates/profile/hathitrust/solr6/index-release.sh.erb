@@ -24,12 +24,12 @@ else
   [[ "$snapname" = "htsolr-<%= @solr_name %>_$(date +%Y-%m-%d)"* ]] || onoe "latest snap was not made today, refusing to run automatic release"
 fi
 
-# check if the administrative release stop flag is set
-[[ -f "${base}/flags/<%= @solr_stop_flag %>" ]] && onoe "<%= @solr_stop_flag %> flag present...skip release today"
-
 # check that today's snap exists
 [[ ! -d ${snap}/cores/ ]] && onoe "can't read snapshot dir...aborting release"
 [[ ! -d ${snap}/flags/ ]] && onoe "can't read snapshot dir...aborting release"
+
+# check if the administrative release stop flag is set
+[[ -f "${snap}/flags/<%= @solr_stop_flag %>" ]] && onoe "<%= @solr_stop_flag %> flag present...skip release today"
 
 # check today's snap for 'busy' flag
 [[ -f "${snap}/flags/busy" ]] && onoe "indexing or optimization occurring...skip release today"
