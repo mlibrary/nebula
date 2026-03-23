@@ -12,6 +12,7 @@ class nebula::profile::hathitrust::solr6::catalog (
   String $release_flag_prefix = lookup('nebula::profile::hathitrust::solr6::release_flag_prefix', default_value => ''),
   String $mirror_site_ip = lookup('nebula::profile::hathitrust::solr6::mirror_site_ip'),
   String $mail_recipient = lookup('nebula::profile::hathitrust::solr6::mail_recipient'),
+  String $nfs_options = 'auto,hard',
 ) {
   class { 'nebula::profile::hathitrust::solr6':
     port      => $port,
@@ -20,7 +21,7 @@ class nebula::profile::hathitrust::solr6::catalog (
 
   # solr nfs mounts
   nebula::nfs_mount { '/htsolr/catalog':
-    options         => 'auto,hard',
+    options         => $nfs_options,
     private_network => true,
     before          => Service['solr'],
     remote_target   => 'truenas:/mnt/tank/htsolr/catalog',
