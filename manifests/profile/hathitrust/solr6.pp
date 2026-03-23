@@ -13,6 +13,7 @@ class nebula::profile::hathitrust::solr6 (
   String $heap = '16G',
   String $timezone = 'America/Detroit',
   String $solr_bin = '/opt/solr/bin/solr',
+  String $nfs_options = 'auto,hard',
 ) {
   include nebula::profile::hathitrust::networking
   include nebula::profile::hathitrust::hosts
@@ -36,7 +37,7 @@ class nebula::profile::hathitrust::solr6 (
     '/htsolr/serve':;
   }
   nebula::nfs_mount { '/htapps':
-    options         => 'auto,hard',
+    options         => $nfs_options,
     remote_target   => 'truenas:/mnt/tank/htapps',
     private_network => true
   }
