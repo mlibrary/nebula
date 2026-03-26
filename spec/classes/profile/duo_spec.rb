@@ -7,26 +7,25 @@ require "spec_helper"
 
 describe "nebula::profile::duo" do
   def contain_pam_duo
-    contain_file("/etc/security/pam_duo.conf")
+    contain_file("/etc/duo/pam_duo.conf")
   end
 
   on_supported_os(supported_os: Nebula.supported_os).each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to contain_package("sudo") }
-      it { is_expected.to contain_package("libpam-duo") }
+      it { is_expected.to contain_package("duo-unix") }
 
       it do
         expect(subject).to contain_concat_fragment("/etc/pam.d/sshd: pam_duo")
           .with_target("/etc/pam.d/sshd")
-          .with_content(%r{auth required pam_duo.so})
+          .with_content(%r{auth required /lib64/security/pam_duo.so})
       end
 
       it do
         expect(subject).to contain_pam_duo
           .with_mode("0600")
-          .that_requires("Package[libpam-duo]")
+          .that_requires("Package[duo-unix]")
       end
 
       [
