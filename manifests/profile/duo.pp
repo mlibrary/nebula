@@ -23,7 +23,7 @@ class nebula::profile::duo (
 ) {
   apt::source { 'duo':
     source_format => 'sources',
-    location      => ['https://pkg.duosecurity.com/Debian'],
+    location      => ["https://pkg.duosecurity.com/${$facts['os']['name']}"],
     release       => $facts['os']['distro']['codename'],
     repos         => ['main'],
     keyring       => '/etc/apt/keyrings/duo.asc',
