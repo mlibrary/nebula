@@ -16,6 +16,19 @@ describe "nebula::profile::duo" do
 
       it { is_expected.to contain_package("duo-unix") }
 
+      case os
+      when /^ubuntu/
+        it {
+          is_expected.to contain_apt__source("duo")
+            .with_location(["https://pkg.duosecurity.com/Ubuntu"])
+        }
+      else
+        it {
+          is_expected.to contain_apt__source("duo")
+            .with_location(["https://pkg.duosecurity.com/Debian"])
+        }
+      end
+
       it do
         expect(subject).to contain_concat_fragment("/etc/pam.d/sshd: pam_duo")
           .with_target("/etc/pam.d/sshd")
