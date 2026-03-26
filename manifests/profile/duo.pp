@@ -21,23 +21,43 @@ class nebula::profile::duo (
   String $pushinfo,
   String $failmode,
 ) {
-  ensure_packages([
-    'sudo',
-    'libpam-duo'
-  ])
+  apt::source { 'duo':
+    source_format => 'sources',
+    location      => ['https://pkg.duosecurity.com/Debian'],
+    release       => $facts['os']['distro']['codename'],
+    repos         => ['main'],
+    keyring       => '/etc/apt/keyrings/duo.asc',
+  }
+
+  apt::keyring { 'duo.asc':
+    source => 'puppet:///modules/nebula/apt/keyrings/duo.asc',
+  }
+
+  package { default:
+    ensure  => purged,
+    require => Package['duo-unix'],
+    ;
+    'libpam-duo': ;
+    'libduo3': ;
+    'libduo3t64': ;
+  }
+
+  package { 'duo-unix':
+    require => Apt::Source['duo'],
+  }
 
   concat_fragment { '/etc/pam.d/sshd: pam_duo':
     target  => '/etc/pam.d/sshd',
     content => @("EOT")
 
       # Require Duo 2FA for password logins; public-key bypasses PAM
-      auth required pam_duo.so
+      auth required /lib64/security/pam_duo.so
       | EOT
   }
 
-  file { '/etc/security/pam_duo.conf':
+  file { '/etc/duo/pam_duo.conf':
     content => template('nebula/profile/duo/pam_duo.conf.erb'),
     mode    => '0600',
-    require => Package['libpam-duo'],
+    require => Package['duo-unix'],
   }
 }
