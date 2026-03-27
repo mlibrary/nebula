@@ -74,4 +74,18 @@ class nebula::profile::www_lib::apache::fulcrum (
       '*.fulcrumservices.net'
     ],
   }
+
+  class { 'apache::mod::shib': }
+
+  file { '/etc/apache2/mods-available/shib2.conf':
+    ensure  => 'file',
+    content => template('nebula/profile/www_lib/shib2.conf.erb'),
+    require => File['/etc/apache2/mods-available'],
+  }
+
+  file { '/etc/apache2/mods-enabled/shib2.conf':
+    ensure  => 'link',
+    target  => '/etc/apache2/mods-available/shib2.conf',
+    require => File['/etc/apache2/mods-available/shib2.conf'],
+  }
 }

@@ -8,7 +8,6 @@
 #   include nebula::role::webhost::www_lib_vm
 class nebula::role::webhost::www_lib_vm (
   String $private_address_template = '192.168.0.%s',
-  String $shibboleth_config_source = 'puppet:///shibboleth-www-lib',
   Hash $hosts = {}
 ) {
   include nebula::role::umich
@@ -37,10 +36,4 @@ class nebula::role::webhost::www_lib_vm (
 
   include nebula::profile::www_lib::apache::base
   include nebula::profile::www_lib::apache::misc
-  include nebula::profile::www_lib::apache::fulcrum
-
-  class { 'nebula::profile::shibboleth':
-    config_source    => $shibboleth_config_source,
-    watchdog_minutes => '*/30',
-  }
 }

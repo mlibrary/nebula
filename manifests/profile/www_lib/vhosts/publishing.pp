@@ -11,7 +11,6 @@
 # @example
 #   include nebula::profile::www_lib::vhosts::publishing
 class nebula::profile::www_lib::vhosts::publishing (
-  String $ssl_cn = 'maps.publishing.umich.edu',
   String $docroot = '/www/maps.publishing/web',
 ) {
   apache::vhost { 'maps.publishing-http':
