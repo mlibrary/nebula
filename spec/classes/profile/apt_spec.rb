@@ -208,40 +208,20 @@ describe "nebula::profile::apt" do
       context "when on an HPE machine" do
         let(:facts) { os_facts.merge("dmi" => {"manufacturer" => "HPE"}) }
 
-        case os
-        when %r{^debian-11}
-          it do
-            expect(subject).to contain_apt__source("hpe").with(
-              source_format: "sources",
-              location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
-              release: "#{facts[:os]["distro"]["codename"]}/current",
-              repos: ["non-free"],
-              keyring: "/etc/apt/keyrings/hpe1.gpg"
-            )
-          end
+        it do
+          expect(subject).to contain_apt__source("hpe").with(
+            source_format: "sources",
+            location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
+            release: "#{facts[:os]["distro"]["codename"]}/current",
+            repos: ["non-free"],
+            keyring: "/etc/apt/keyrings/hpe1_hpe2.gpg"
+          )
+        end
 
-          it do
-            expect(subject).to contain_apt__keyring("hpe1.gpg").with(
-              source: "puppet:///modules/nebula/apt/keyrings/hpe1.gpg"
-            )
-          end
-
-        else
-          it do
-            expect(subject).to contain_apt__source("hpe").with(
-              source_format: "sources",
-              location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
-              release: "#{facts[:os]["distro"]["codename"]}/current",
-              repos: ["non-free"],
-              keyring: "/etc/apt/keyrings/hpe2.gpg"
-            )
-          end
-
-          it do
-            expect(subject).to contain_apt__keyring("hpe2.gpg").with(
-              source: "puppet:///modules/nebula/apt/keyrings/hpe2.gpg"
-            )
-          end
+        it do
+          expect(subject).to contain_apt__keyring("hpe1_hpe2.gpg").with(
+            source: "puppet:///modules/nebula/apt/keyrings/hpe1_hpe2.gpg"
+          )
         end
       end
 

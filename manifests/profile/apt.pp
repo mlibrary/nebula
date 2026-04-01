@@ -61,26 +61,30 @@ class nebula::profile::apt (
     }
 
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
-      # `hpe1` is deprecated, but as of this writing is still used to sign HPE's Debian repos.
-      # At some point in 2025 this key should stop working, at which point we can move Debian
-      # to hpe2 as well. Due to an apparent bug in apt, hpe2 does not work when armored, so
-      # it has been included in this repo as a dearmored binary key.
-      # See also: https://downloads.linux.hpe.com/SDR/keys.html
-      $hpe_key = $facts['os']['distro']['codename'] ? {
-        'bullseye' => 'hpe1.gpg',
-        default => 'hpe2.gpg',
-      }
+      # HPE uses multiple keys to sign their repo. This is really unusual.
+      # apt can be configured to handle this, but we simply `cat` the keyrings
+      # together, which also works.
+      #
+      # For some reason hpe2 does not work when armored, so all hpe keys in
+      # this repo are in binary form.
+      #
+      # For reference, see:
+      # - https://downloads.linux.hpe.com/SDR/keys.html
+      # - https://wiki.debian.org/HP/ProLiant#HP_Repository
 
       apt::source { 'hpe':
         source_format => 'sources',
         location      => ['https://downloads.linux.hpe.com/SDR/repo/mcp'],
         release       => "${facts['os']['distro']['codename']}/current",
         repos         => ['non-free'],
-        keyring       => "/etc/apt/keyrings/${hpe_key}",
+        keyring       => '/etc/apt/keyrings/hpe1_hpe2.gpg',
       }
 
-      apt::keyring { $hpe_key:
-        source => "puppet:///modules/nebula/apt/keyrings/${hpe_key}",
+      # dist integral keys in case they are needed for debugging
+      ['hpe1.gpg', 'hpe2.gpg', 'hpe1_hpe2.gpg'].each |$key| {
+        apt::keyring { $key:
+          source => "puppet:///modules/nebula/apt/keyrings/${key}",
+        }
       }
     }
 
