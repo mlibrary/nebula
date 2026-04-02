@@ -9,7 +9,6 @@
 /coverage/
 /bin/
 /Gemfile.local
-/Gemfile.lock
 /junit/
 /log/
 /pkg/
