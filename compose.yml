@@ -16,6 +16,15 @@ services:
     command:
     - /bin/bash
     - '-c'
-    - 'bundle exec rake syntax lint && bundle exec rake metadata_lint; bundle exec rake standard'
+    - 'bundle exec rake syntax lint && bundle exec rake metadata_lint; standardrb'
+    volumes:
+      - .:/app
+
+  lint_fix:
+    build: .
+    command:
+    - /bin/bash
+    - '-c'
+    - 'bundle exec rake lint_fix; standardrb --fix'
     volumes:
       - .:/app

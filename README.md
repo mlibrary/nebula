@@ -9,7 +9,7 @@
 % cat .ruby-version
 3.2
 % ruby -v
-ruby 3.2.10
+ruby 3.2.11
 
 # bundle
 bundle
@@ -24,9 +24,15 @@ bundle exec rake parallel_spec
 bundle exec rake fixtures:prep
 bundle exec rspec specs/path/to/a_spec.rb
 
-# lint
-bundle exec standardrb # lint .rb files
-bundle exec rake lint # lint .pp files
+# lint .rb files
+gem install standard
+standardrb
+standardrb --fix
+
+# lint .pp files
+bundle exec rake syntax
+bundle exec rake lint
+bundle exec rake lint_fix
 
 # check puppet module dependencies for available updates
 bundle exec rake forge:outdated
@@ -38,10 +44,14 @@ bundle exec rake librarian
 ```
 
 ### with `docker compose`
+(or `podman compose`)
+
 ```sh
 docker compose build
 docker compose run spec_prep
 docker compose run specs
+docker compose run lint
+docker compose run lint_fix
 # or…
 docker compose run specs bundle exec rspec specs/path/to/a_spec.rb
 docker compose run specs bundle exec rake spec_standalone

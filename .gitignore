@@ -1,4 +1,5 @@
 .*.sw[op]
+.cache/
 .metadata
 .yardoc
 .yardwarns

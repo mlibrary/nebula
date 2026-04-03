@@ -38,14 +38,14 @@ jobs:
     - uses: ruby/setup-ruby@319994f95fa847cf3fb3cd3dbe89f6dcde9f178f # v1.295.0
       with:
         bundler-cache: true
-    - name: lint with Standard Ruby style guide
-      run: bundle exec standardrb
     - name: check Puppet syntax
       run: bundle exec rake syntax
     - name: Run puppet-lint
       run: bundle exec rake lint
     - name: lint metadata.json
       run: bundle exec rake metadata_lint
+    - run: gem install standardrb
+    - run: standardrb
   spec:
     name: "${{ matrix.os }}"
     needs: setup_tests

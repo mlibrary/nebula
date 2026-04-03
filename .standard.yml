@@ -1,6 +1,5 @@
 ---
 ignore:
-  - Gemfile
   - Puppetfile
   - Rakefile
   - modules/**/*

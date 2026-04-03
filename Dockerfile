@@ -4,7 +4,8 @@ ARG UID=1000
 ARG GID=1000
 ARG APP_HOME=/app
 
-RUN gem install 'bundler:~>2.5.22'
+RUN gem install 'bundler:~>4.0'
+RUN gem install 'standard:>=1.54.0'
 RUN groupadd -g $GID -o $UNAME
 RUN useradd -m -d $APP_HOME -u $UID -g $GID -o -s /bin/bash $UNAME
 RUN mkdir -p /gems && chown $UID:$GID /gems
