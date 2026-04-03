@@ -22,11 +22,11 @@ module RSpec::Puppet
       end
 
       def failure_message
-        "You probably need to add a hiera_config to spec/classes/all_roles.rb:\n #{super()}"
+        "You probably need to add a hiera_config to spec/classes/all_roles.rb:\n #{super}"
       end
 
       def failure_message_when_negated
-        "You probably need to add a hiera_config to spec/classes/all_roles.rb:\n #{super()}"
+        "You probably need to add a hiera_config to spec/classes/all_roles.rb:\n #{super}"
       end
     end
 
