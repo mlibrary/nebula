@@ -91,7 +91,6 @@ describe "nebula::profile::haproxy" do
 
       describe "packages" do
         it { is_expected.to contain_package("haproxy") }
-        it { is_expected.to contain_package("haproxyctl") }
         it { is_expected.to contain_package("keepalived") }
         it { is_expected.to contain_package("ipset") }
       end
@@ -108,7 +107,7 @@ describe "nebula::profile::haproxy" do
 
         it do
           expect(subject).to contain_nebula__authzd_user("haproxyctl")
-            .that_requires(["Package[haproxy]", "Package[haproxyctl]"])
+            .that_requires(["Package[haproxy]"])
         end
 
         it "grants ssh access to the monitoring user" do
