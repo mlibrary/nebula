@@ -63,7 +63,7 @@ class nebula::profile::haproxy (
     gid     => 'haproxy',
     home    => $monitoring_user['home'],
     key     => $monitoring_user['key'],
-    require => [Package['haproxy'], Package['haproxyctl']]
+    require => [Package['haproxy']]
   }
 
   file { "${monitoring_user['home']}/.ssh/id_ecdsa":
