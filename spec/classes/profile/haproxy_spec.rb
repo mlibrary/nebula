@@ -91,6 +91,7 @@ describe "nebula::profile::haproxy" do
 
       describe "packages" do
         it { is_expected.to contain_package("haproxy") }
+        it { is_expected.to contain_package("socat") }
         it { is_expected.to contain_package("keepalived") }
         it { is_expected.to contain_package("ipset") }
       end
