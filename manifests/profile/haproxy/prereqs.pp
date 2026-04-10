@@ -12,6 +12,10 @@ class nebula::profile::haproxy::prereqs {
     ensure => 'installed',
   }
 
+  package { 'socat':
+    ensure => 'installed',
+  }
+
   service { 'haproxy':
     ensure  => 'running',
     enable  => true,
