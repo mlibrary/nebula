@@ -36,6 +36,7 @@ class nebula::profile::www_lib::apache::misc (
       'digital.bentley.umich.edu',
       'digitalculture.org',
       'heartofdarknessarchive.org',
+      'lgbtheritage.org',
       'maps.publishing.umich.edu',
       'michiganelt.org',
       'med.lib.umich.edu',

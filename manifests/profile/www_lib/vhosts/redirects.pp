@@ -52,7 +52,12 @@ class nebula::profile::www_lib::vhosts::redirects (
     ],
   }
 
-  nebula::apache::redirect_vhost_http { 'lgbtheritage.org':
+  nebula::apache::redirect_vhost_https { 'lgbtheritage.org':
+    target        => 'https://www.lib.umich.edu/online-exhibits/exhibits/show/lgbtheritage',
+    ssl_cn        => 'lgbtheritage.org',
+    serveraliases => [
+      'www.lgbtheritage.org',
+    ],
   }
 
   nebula::apache::redirect_vhost_https { 'theater-historiography.org':
@@ -84,18 +89,6 @@ class nebula::profile::www_lib::vhosts::redirects (
   nebula::apache::redirect_vhost_http { 'sfx.lib.umich.edu':
     serveraliases => ['sfx.lib'],
     target        => 'http://mgetit.lib.umich.edu/'
-  }
-
-  apache::vhost { 'lgbtheritage.org-redirect-http-all':
-    priority   => false,
-    port       => 80,
-    docroot    => false,
-    servername => 'www.lgbtheritage.org',
-    rewrites   => [
-      {
-        rewrite_rule => ['^/.*$ http://www.lib.umich.edu/online-exhibits/exhibits/show/lgbtheritage/ [redirect,noescape]']
-      }
-    ]
   }
 
   apache::vhost { 'searchtools.lib.umich.edu-redirect-http':
