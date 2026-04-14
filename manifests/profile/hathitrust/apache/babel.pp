@@ -125,7 +125,6 @@ class nebula::profile::hathitrust::apache::babel (
       "ASSERTION_EMAIL ${sdremail}",
       "PTSEARCH_SOLR ${ptsearch_solr}",
       "PTSEARCH_SOLR_BASIC_AUTH ${ptsearch_solr_basic_auth}",
-      'USE_CATPROCIO 1'
     ] + if($prod_crms_instance) {
       ['CRMS_INSTANCE production']
     } else {[] },

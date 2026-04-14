@@ -9,10 +9,9 @@ SDRDATAROOT=<%= @sdrdataroot %>
 SDRROOT=<%= @sdrroot %>
 SDR_VIEW=<%= @sdrview %>
 BIND=<%= @bind %>
-USE_CATPROCIO=1
 SCRIPT=$SDRROOT/imgsrv/cgi/imgsrv
 
-export SDRROOT SDRDATAROOT SDR_VIEW USE_CATPROCIO
+export SDRROOT SDRDATAROOT SDR_VIEW
 
 /usr/bin/plackup -I $SDRROOT/plack-lib -E production \
        -R $SCRIPT.psgi,$SCRIPT,$SDRROOT/bin/rsync.timestamp -s FCGI \
