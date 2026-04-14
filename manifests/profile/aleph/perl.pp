@@ -27,6 +27,7 @@ class nebula::profile::aleph::perl () {
     'Mail::DWIM',
     'File::MMagic',
     'MIME::Lite',
+    'Text::CSV_XS',
     'Dotenv',
     'SMS::Send::Twilio']:
   }
