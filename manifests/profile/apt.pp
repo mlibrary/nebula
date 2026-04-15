@@ -13,7 +13,6 @@ class nebula::profile::apt (
   String $puppet_repo,
   Boolean $purge = true,
   String $ubuntu_mirror = 'http://us.archive.ubuntu.com/ubuntu',
-  Optional[Hash] $repos = undef,
 ) {
   if($facts['os']['family'] == 'Debian') {
     package { 'aptitude': }
@@ -51,13 +50,21 @@ class nebula::profile::apt (
       content => template('nebula/profile/apt/apt_no_ipv6.erb'),
     }
 
-    if $repos {
-      $repo_defaults = {
-        release      => $facts['os']['distro']['codename'],
-        repos        => 'main',
-        architecture => $facts['os']['architecture'],
-      }
-      create_resources(apt::source,$repos,$repo_defaults)
+    apt::keyring { 'mlibrary.asc':
+      source => 'puppet:///modules/nebula/apt/keyrings/mlibrary.asc',
+    }
+    apt::source {
+      default:
+        source_format => 'sources',
+        location      => ['https://apt.lib.umich.edu'],
+        release       => $facts['os']['distro']['codename'],
+        repos         => ['main'],
+        keyring       => '/etc/apt/keyrings/mlibrary.asc',
+        architecture  => $facts['os']['architecture'],
+      ;
+      'mlibrary': ;
+      'mlibrary-private':
+        location => ['http://apt-private.lib.umich.edu'];
     }
 
     if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {

@@ -90,12 +90,6 @@ describe "nebula::profile::apt" do
         end
       end
 
-      it {
-        is_expected.to contain_apt__source("local")
-          .with_architecture("amd64")
-          .with_location(["https://local-repo.default-invalid/debian"])
-      }
-
       case os
       when %r{^debian}
         it do
@@ -129,37 +123,6 @@ describe "nebula::profile::apt" do
           expect(subject).to contain_apt__keyring("adoptium.asc").with(
             source: "puppet:///modules/nebula/apt/keyrings/adoptium.asc"
           )
-        end
-
-        context "when given a local repo" do
-          let(:params) do
-            {repos:
-              {
-                "foobar" =>
-                  {
-                    "location" => "https://foobar.example.invalid/debs",
-                    "key" => {"name" => "foobar.asc", "source" => "https://foobar.example.invalid/key.asc"}
-                  },
-                "foobaz" =>
-                  {
-                    "location" => "https://www.foobaz.invalid/repo",
-                    "key" => {"name" => "baz.gpg", "source" => "https://www.foobaz.invalid/key.gpg"}
-                  }
-              }}
-          end
-
-          it do
-            expect(subject).not_to contain_apt__source("local")
-            expect(subject).to contain_apt__source("foobar").with(
-              location: ["https://foobar.example.invalid/debs"],
-              architecture: "amd64",
-              release: facts[:os]["distro"]["codename"].to_s,
-              repos: ["main"]
-            )
-            expect(subject).to contain_apt__source("foobaz").with(
-              location: ["https://www.foobaz.invalid/repo"]
-            )
-          end
         end
 
         it { is_expected.not_to contain_class("apt::backports") }
