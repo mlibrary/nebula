@@ -294,7 +294,7 @@ GEM
       rubocop-rspec (~> 2.20.0)
       syslog (~> 0.3.0)
       voxpupuli-puppet-lint-plugins (>= 6.0, < 8)
-    yard (0.9.41)
+    yard (0.9.42)
 
 PLATFORMS
   arm64-darwin-24
@@ -428,7 +428,7 @@ CHECKSUMS
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
   voxpupuli-puppet-lint-plugins (7.0.0) sha256=68d903c7b0bd3e27ef246cf0618762f68abeb8b8d700d77804a7546e5c6cfabd
   voxpupuli-test (13.2.0) sha256=2eb5fabc69778c83df80782c9854c5b96ab5962e08b21bb1b76a48323ab72276
-  yard (0.9.41) sha256=2fad2f362bceb63101f37aeb81d35cfc50b4ae1c11cf22f54b8d46626877a89f
+  yard (0.9.42)
 
 BUNDLED WITH
   4.0.9
