@@ -76,11 +76,4 @@ class nebula::profile::hathitrust::imgsrv (
     mode   => '0755',
     source => "https://${http_files}/ae-utils/bins/startup_app"
   }
-
-  file { '/etc/sudoers.d/imgsrv-catprocio':
-    ensure  => 'file',
-    content => 'nobody ALL=(root) NOPASSWD: /usr/local/bin/catprocio',
-    require => Package['sudo'],
-  }
-  ensure_packages(['sudo'])
 }

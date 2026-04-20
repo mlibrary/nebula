@@ -9,5 +9,4 @@
 class nebula::role::webhost::htvm::site_primary {
   include nebula::role::webhost::htvm::prod
   include nebula::profile::hathitrust::cron::mdp_misc
-  include nebula::profile::hathitrust::slip
 }

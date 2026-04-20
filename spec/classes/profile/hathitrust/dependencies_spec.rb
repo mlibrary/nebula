@@ -17,8 +17,6 @@ describe "nebula::profile::hathitrust::dependencies" do
       if os == "debian-11-x86_64"
         it { is_expected.to contain_package("mariadb-client") }
       end
-
-      it { is_expected.to contain_file("/usr/local/bin/catprocio") }
     end
   end
 end

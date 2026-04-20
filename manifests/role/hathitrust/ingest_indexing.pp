@@ -12,7 +12,6 @@ class nebula::role::hathitrust::ingest_indexing () {
   include nebula::profile::hathitrust::networking
 
   include nebula::profile::hathitrust::ingest_hosts
-  include nebula::profile::hathitrust::slip
 
   file { '/home/libadm':
     ensure => 'directory',
