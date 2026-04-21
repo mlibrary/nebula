@@ -30,8 +30,6 @@ class nebula::role::hathitrust::ingest_indexing () {
   include nebula::profile::hathitrust::dependencies
   include nebula::profile::hathitrust::perl
 
-  include nebula::profile::ruby
-
   class { 'nebula::profile::hathitrust::babel_logs':
     log_owner => 'slip',
     log_group => 'htprod'
