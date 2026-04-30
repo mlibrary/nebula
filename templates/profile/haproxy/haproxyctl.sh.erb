@@ -1,0 +1,70 @@
+#!/bin/bash
+SOCKET=/run/haproxy/admin.sock
+
+send_cmd() {
+  echo "$1" | socat - UNIX-CONNECT:"$SOCKET"
+}
+
+usage() {
+  echo "  USAGE:"
+  echo "---"
+  echo "  -h --help               - Help Menu"
+  echo "  health                  - Show Backend Serivice Health"
+  echo "  enable backend/service  - Enable Backend Service"
+  echo "  disable backend/service - Disable Backend Service"
+  echo "  weight backend/service  - Set weight for Backend Service"
+  echo "  shell, prompt           - start shell in haproxy cli"
+  echo "  -- *                    - use -- guard to send raw command to haproxyctl control socket"
+  echo "  *                       - any command we can't parse is sent directly to haproxy control socket"
+  echo "---"
+  echo "  EXAMPLE: haproxyctl enable www-lib-hatcher-https-back/hatcher-www-lib-001"
+}
+
+
+if [ -z "$1" -o "$1" = "-h" -o "$1" = "--help" ]; then
+   usage
+   exit 0;
+fi
+
+case "$1" in
+  info)  send_cmd "show info" ;;
+  stat)  send_cmd "show stat" ;;
+
+  health)
+    echo "Service Health:"
+    printf "%-30s %-30s %-15s %-10s\n" "BACKEND" "SERVICE" "STATUS" "WEIGHT"
+    send_cmd "show stat" | awk -F',' 'NR>1 {printf "%-30s %-30s %-15s %-10s\n", $1, $2, $18, $19}' | grep -v "stats"
+    ;;
+
+  weight)
+    if [[ -z "$2" || -z "$3" ]]; then
+      echo "Error: Weight requires <backend/server> and <value>"
+      usage
+    fi
+    send_cmd "set server $2 weight $3"
+    echo "Status: Weight for $2 updated to $3"
+    ;;
+
+  enable)
+    if [[ -z "$2" ]]; then usage; fi
+    send_cmd "enable server $2"
+    echo "Status: Sent ENABLE command for $2"
+    ;;
+
+  disable)
+    if [[ -z "$2" ]]; then usage; fi
+    send_cmd "disable server $2"
+    echo "Status: Sent DISABLE command for $2"
+    ;;
+
+  shell|prompt)
+    echo "Starting haproxy shell ('help' for help; ^D or 'quit' to exit)"
+    cat <(echo prompt timed) - | socat stdio UNIX-CONNECT:"$SOCKET"
+    ;;
+  --)
+    shift
+    ;&
+  *)
+    send_cmd "$*"
+    ;;
+esac

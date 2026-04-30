@@ -30,6 +30,13 @@ class nebula::profile::haproxy::prereqs {
     ensure => 'directory'
   }
 
+  file { '/usr/local/bin/haproxyctl':
+    ensure  => 'file',
+    require => Package['socat'],
+    mode    => '0744',
+    content => template('nebula/profile/haproxy/haproxyctl.sh.erb'),
+  }
+
   exec { 'check haproxy config':
     command => '/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -c -q -f /etc/haproxy/services.d',
   }
