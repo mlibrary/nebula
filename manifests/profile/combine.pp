@@ -3,7 +3,9 @@
 # BSD License. See LICENSE.txt for details.
 
 # Profile for a server running the Combine metadata harvester
-class nebula::profile::combine {
+class nebula::profile::combine (
+  String $server_name = $::networking['fqdn'],
+) {
   include nebula::profile::https_to_port
 
   $letsencrypt_directory = $facts['letsencrypt_directory'][$server_name]
