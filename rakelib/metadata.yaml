@@ -28,13 +28,13 @@ dependencies:
 - name: puppet/letsencrypt
 - name: puppet/logrotate
 - name: puppet/nginx
+  ref: 7.0.1
+  info: 8.0.0 requires puppet 8.19.0, upgrade after we replace puppet master
 - name: puppet/php
 - name: puppet/systemd
 - name: puppet/unattended_upgrades
 - name: puppetlabs/apache
 - name: puppetlabs/apt
-  ref: 10.0.1
-  info: regression in puppetlabs/apt 11 breaks hpe repo
 - name: puppetlabs/augeas_core
 - name: puppetlabs/concat
 - name: puppetlabs/cron_core
