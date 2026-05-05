@@ -10,5 +10,6 @@
 #   include nebula::role::app_host::prod
 class nebula::role::app_host::prod_mysql_metrics {
   include nebula::role::app_host::prod
+  include nebula::profile::nodejs
   include nebula::profile::prometheus::exporter::mysql
 }
