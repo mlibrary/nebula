@@ -5,6 +5,7 @@
 # Puppet Master
 #
 # @example
+#   DEPRECATED
 #   include nebula::role::puppet::master
 class nebula::role::puppet::master {
   include nebula::role::umich
