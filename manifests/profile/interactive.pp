@@ -14,4 +14,9 @@ class nebula::profile::interactive {
     'zsh',
     'git',
   ])
+  file { '/usr/local/bin/fd':
+    ensure  => link,
+    target  => '/usr/bin/fdfind',
+    require => Package['fd-find'],
+  }
 }
