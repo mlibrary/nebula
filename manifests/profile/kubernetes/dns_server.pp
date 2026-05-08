@@ -63,6 +63,19 @@ class nebula::profile::kubernetes::dns_server {
   concat { '/etc/ssh/ssh_known_hosts': }
   Concat_fragment <<| tag == "${cluster_name}_known_host_public_keys" |>>
 
+  exec { 'divert /etc/default/dnsmasq':
+    creates => '/etc/default/dnsmasq.dist',
+    command => '/usr/bin/dpkg-divert --rename --divert /etc/default/dnsmasq.dist --add /etc/default/dnsmasq',
+    notify  => Service['dnsmasq'],
+    require => Package['dnsmasq'],
+  }
+
+  file { '/etc/default/dnsmasq':
+    content => "CONFIG_DIR=/etc/dnsmasq.d,.dpkg-dist,.dpkg-old,.dpkg-new\nIGNORE_RESOLVCONF=yes\n",
+    notify  => Service['dnsmasq'],
+    require => Exec['divert /etc/default/dnsmasq'],
+  }
+
   file { '/etc/dnsmasq.d/local_domain':
     content => "local=/${private_domain}/\n",
     notify  => Service['dnsmasq']

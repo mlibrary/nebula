@@ -87,6 +87,24 @@ describe "nebula::profile::kubernetes::dns_server" do
         end
 
         it do
+          expect(subject).to contain_file("/etc/default/dnsmasq")
+            .with_content("CONFIG_DIR=/etc/dnsmasq.d,.dpkg-dist,.dpkg-old,.dpkg-new\nIGNORE_RESOLVCONF=yes\n")
+        end
+
+        it do
+          expect(subject).to contain_exec("divert /etc/default/dnsmasq")
+            .with_creates("/etc/default/dnsmasq.dist")
+            .with_command("/usr/bin/dpkg-divert --rename --divert /etc/default/dnsmasq.dist --add /etc/default/dnsmasq")
+        end
+
+        it do
+          expect(subject).to contain_exec("divert /etc/default/dnsmasq")
+            .that_notifies("Service[dnsmasq]")
+            .that_requires("Package[dnsmasq]")
+            .that_comes_before("File[/etc/default/dnsmasq]")
+        end
+
+        it do
           expect(subject).to contain_concat_fragment("/etc/hosts ipv6 debian")
             .with_target("/etc/hosts")
             .with_content("ff02::1 ip6-allnodes\nff02::2 ip6-allrouters\n")
