@@ -37,7 +37,6 @@ case "$1" in
     fi
     ;&
   health)
-    echo "Service Health:"
     printf "%-30s %-30s %-15s %-10s\n" "# BACKEND" "SERVICE" "STATUS" "WEIGHT"
     send_cmd "show stat" | awk -F',' 'NR>1 {printf "%-30s %-30s %-15s %-10s\n", $1, $2, $18, $19}' | grep -v "stats"
     ;;
