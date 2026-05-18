@@ -36,5 +36,6 @@ class nebula::role::minimum (
     include nebula::profile::plenary_utils
   }
 
+  include nebula::profile::unattended_upgrades
   include nebula::profile::taghosts::tags
 }
