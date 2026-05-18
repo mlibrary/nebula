@@ -33,7 +33,7 @@ fixtures:
       ref: 13.1.0
     apt:
       repo: puppetlabs/apt
-      ref: 11.2.0
+      ref: 11.3.0
     augeas_core:
       repo: puppetlabs/augeas_core
       ref: 2.0.1
@@ -78,4 +78,4 @@ fixtures:
       ref: 7.0.0
     debconf:
       repo: stm/debconf
-      ref: 7.0.1
+      ref: 8.0.0
