@@ -173,7 +173,7 @@ describe "nebula::profile::apt" do
 
         it do
           expect(subject).to contain_apt__source("hpe").with(
-            # source_format: "sources",
+            source_format: "sources",
             location: ["https://downloads.linux.hpe.com/SDR/repo/mcp"],
             release: "#{facts[:os]["distro"]["codename"]}/current",
             repos: ["non-free"],

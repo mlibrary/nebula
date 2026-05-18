@@ -79,18 +79,19 @@ class nebula::profile::apt (
       # - https://downloads.linux.hpe.com/SDR/keys.html
       # - https://wiki.debian.org/HP/ProLiant#HP_Repository
 
+      apt::source { 'hpe':
+        source_format => 'sources',
+        location      => ['https://downloads.linux.hpe.com/SDR/repo/mcp'],
+        release       => "${facts['os']['distro']['codename']}/current",
+        repos         => ['non-free'],
+        keyring       => '/etc/apt/keyrings/hpe1_hpe2.gpg',
+      }
+
       # dist integral keys in case they are needed for debugging
       ['hpe1.gpg', 'hpe2.gpg', 'hpe1_hpe2.gpg'].each |$key| {
         apt::keyring { $key:
           source => "puppet:///modules/nebula/apt/keyrings/${key}",
         }
-      }
-
-      apt::source { 'hpe':
-        location => 'https://downloads.linux.hpe.com/SDR/repo/mcp',
-        release  => "${facts['os']['distro']['codename']}/current",
-        repos    => 'non-free',
-        keyring  => '/etc/apt/keyrings/hpe1_hpe2.gpg',
       }
     }
 
