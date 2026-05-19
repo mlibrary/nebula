@@ -22,6 +22,9 @@ fixtures:
     php:
       repo: puppet/php
       ref: 12.0.0
+    ssh_keygen:
+      repo: puppet/ssh_keygen
+      ref: 6.0.0
     systemd:
       repo: puppet/systemd
       ref: 9.4.0
