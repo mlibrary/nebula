@@ -76,7 +76,7 @@
     },
     {
       "name": "puppetlabs/inifile",
-      "version_requirement": ">= 6.3.1 < 7.0.0"
+      "version_requirement": ">= 6.4.0 < 7.0.0"
     },
     {
       "name": "puppetlabs/lvm",
