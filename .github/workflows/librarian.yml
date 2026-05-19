@@ -7,14 +7,29 @@ on:
   pull_request:
     paths:
     - metadata.json
+  schedule:
+  - cron: '19 10 * * 1-5'
+
+permissions: {}
 
 jobs:
   librarian:
     runs-on: ubuntu-24.04-arm
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
     - uses: ruby/setup-ruby@c4e5b1316158f92e3d49443a9d58b31d25ac0f8f # v1.306.0
       with:
         bundler-cache: true
     - name: Resolve dependencies with librarian-puppet
       run: bundle exec librarian-puppet install --verbose
+    - name: Slack notification
+      if: failure() && github.event_name == 'schedule'
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"librarian-puppet dependency check failed on scheduled run: '"${GH_RUN_URL}"'"}' \
+          "$SLACK_WEBHOOK_URL"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        GH_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
