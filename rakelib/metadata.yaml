@@ -35,6 +35,8 @@ dependencies:
 - name: puppet/unattended_upgrades
 - name: puppetlabs/apache
 - name: puppetlabs/apt
+  ref: 11.2.0
+  info: librarian-puppet is confused, and puppetlabs/docker has unreasonable dependencies
 - name: puppetlabs/augeas_core
 - name: puppetlabs/concat
 - name: puppetlabs/cron_core

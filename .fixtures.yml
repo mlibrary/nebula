@@ -54,7 +54,7 @@ fixtures:
       ref: 2.0.1
     inifile:
       repo: puppetlabs/inifile
-      ref: 6.3.1
+      ref: 6.4.0
     lvm:
       repo: puppetlabs/lvm
       ref: 4.0.1
