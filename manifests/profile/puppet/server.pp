@@ -27,4 +27,16 @@ class nebula::profile::puppet::server (
       filename => "${g10k_home}/.ssh/${repo}",
     }
   }
+
+  file { default:
+    ensure  => directory,
+    user    => 'g10k',
+    group   => 'g10k',
+    require => User[$g10k_user],
+    ;
+    '/etc/puppetlabs/code/': ;
+    '/etc/puppetlabs/code/environments/': ;
+    '/etc/puppetlabs/code/environments/production/': ;
+    '/etc/puppetlabs/code/modules/': ;
+  }
 }
