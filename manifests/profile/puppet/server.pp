@@ -8,6 +8,10 @@ class nebula::profile::puppet::server (
   ensure_packages([
     'g10k',
   ])
+  package { 'librarian-puppet':
+    provider => gem,
+    command  => '/opt/puppetlabs/puppet/bin/gem',
+  }
 
   $g10k_user = 'g10k'
   $g10k_home = "/var/lib/${g10k_user}"
