@@ -345,12 +345,13 @@ describe "nebula::profile::haproxy" do
       end
 
       describe "server monitoring / dynamic weighting" do
-        it "includes the private key" do
-          expect(subject).to contain_file("/var/haproxyctl/.ssh/id_ecdsa")
+        it "includes no deprecated private key" do
+          expect(subject).not_to contain_file("/var/haproxyctl/.ssh/id_ecdsa")
         end
 
         it "includes the monitoring script" do
-          expect(subject).to contain_file("/usr/local/bin/set_weights.rb")
+          expect(subject).to contain_file("/usr/local/bin/reweight")
+            .with_content(%r{PROM_QUERY_URL=https://somedc-prometheus.default.invalid/api/v1/query})
         end
       end
 
