@@ -1,0 +1,63 @@
+#!/bin/sh
+
+set -u
+set -e
+
+PROM_QUERY_URL=https://<%= @facts['datacenter'] %>-prometheus.<%= @domain %>/api/v1/query
+
+CMD="hactl set server"
+while [ $# -gt 0 ]; do
+  case "$1" in
+  -h|--help)
+    echo "usage: $0 [-n] backend"
+    exit
+    ;;
+  -n|--dry-run)
+    CMD="echo $CMD"
+    shift
+    ;;
+  -*)
+    echo "invalid flag: $1" >&2
+    exit 1
+    ;;
+  *)
+    break
+    ;;
+  esac
+done 
+
+backend="$1"
+if [ -z "$backend" ]; then
+  echo "backend required" >&2
+  exit 1
+fi
+servers="$(hactl list | grep "^$backend/" | cut -d/ -f2 | tr '\n' '|')"
+servers="${servers%|}"
+
+if [ -z "$servers" ]; then
+  echo no backends found >&2
+  exit 1
+fi
+
+curl -fsG "$PROM_QUERY_URL" --data-urlencode 'query=node_load1{hostname=~"'"$servers"'"}' |
+jq -r '
+def weight(max_load):
+  if . < 1 then max_load + 2 | round
+  else
+    max_load / . + 2 | round
+  end
+;
+
+[
+  .data.result[] | {
+    host: .metric.hostname,
+    load: .value | last | tonumber,
+  }
+] as $data
+| [$data[].load] | max as $max
+| $data[] | .weight = (.load | weight($max))
+| "\(.host) \(.weight)"
+' |
+while read host weight; do
+  $CMD "$backend/$host" weight $weight
+done

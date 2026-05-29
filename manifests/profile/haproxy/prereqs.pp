@@ -12,10 +12,6 @@ class nebula::profile::haproxy::prereqs {
     ensure => 'installed',
   }
 
-  package { 'haproxyctl':
-    ensure => 'installed',
-  }
-
   service { 'haproxy':
     ensure  => 'running',
     enable  => true,

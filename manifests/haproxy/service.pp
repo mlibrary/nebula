@@ -42,9 +42,6 @@
 # server A = 1/2 * 5 + 2 = 4.5; rounded up, 5
 # server B = 1/5 * 5 + 2 = 3
 #
-# @param dynamic_weight_smoothing This value is added to the weight for each
-# backend server regardless of server load to help "smooth" the effect of the weighting
-#
 # @param cloudflare_protected This service is protected by Cloudflare's WAF / bot / DDoS
 #   service, so restrict all requests to Cloudflare's IP ranges. For now, we are only
 #   considering IPv4 and the list is kept at: /etc/haproxy/cloudflare-ipv4.txt
@@ -77,7 +74,6 @@ define nebula::haproxy::service (
   Hash             $whitelists = {},
   Boolean          $custom_503 = false,
   Boolean          $dynamic_weighting = false,
-  Integer          $dynamic_weight_smoothing = 2,
   Boolean          $cloudflare_protected = false,
   String           $badrobots = '/etc/haproxy/global_badrobots.txt',
   Optional[Integer] $check_timeout_milliseconds = undef
@@ -108,10 +104,9 @@ define nebula::haproxy::service (
 
   if $dynamic_weighting {
     cron { "dynamic weighting for ${service}":
-      command     => "/usr/bin/ruby /usr/local/bin/set_weights.rb ${facts['datacenter']} ${service} > /dev/null 2>&1",
-      user        => lookup('nebula::profile::haproxy::monitoring_user')['name'],
-      minute      => '*/5',
-      environment => ["HAPROXY_SMOOTHING_FACTOR=${dynamic_weight_smoothing}"]
+      command => "/usr/local/bin/reweight ${service}-${facts['datacenter']}-https-back > /dev/null 2>&1",
+      user    => lookup('nebula::profile::haproxy::monitoring_user')['name'],
+      minute  => '*/5',
     }
   }
 

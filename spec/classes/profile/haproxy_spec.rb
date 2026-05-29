@@ -91,7 +91,6 @@ describe "nebula::profile::haproxy" do
 
       describe "packages" do
         it { is_expected.to contain_package("haproxy") }
-        it { is_expected.to contain_package("haproxyctl") }
         it { is_expected.to contain_package("keepalived") }
         it { is_expected.to contain_package("ipset") }
       end
@@ -108,7 +107,7 @@ describe "nebula::profile::haproxy" do
 
         it do
           expect(subject).to contain_nebula__authzd_user("haproxyctl")
-            .that_requires(["Package[haproxy]", "Package[haproxyctl]"])
+            .that_requires(["Package[haproxy]"])
         end
 
         it "grants ssh access to the monitoring user" do
@@ -346,12 +345,13 @@ describe "nebula::profile::haproxy" do
       end
 
       describe "server monitoring / dynamic weighting" do
-        it "includes the private key" do
-          expect(subject).to contain_file("/var/haproxyctl/.ssh/id_ecdsa")
+        it "includes no deprecated private key" do
+          expect(subject).not_to contain_file("/var/haproxyctl/.ssh/id_ecdsa")
         end
 
         it "includes the monitoring script" do
-          expect(subject).to contain_file("/usr/local/bin/set_weights.rb")
+          expect(subject).to contain_file("/usr/local/bin/reweight")
+            .with_content(%r{PROM_QUERY_URL=https://somedc-prometheus.default.invalid/api/v1/query})
         end
       end
 
