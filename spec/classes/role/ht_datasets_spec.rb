@@ -25,7 +25,7 @@ describe "nebula::role::hathitrust::datasets" do
         it { is_expected.to contain_firewall("200 rsync: dataset dataset2 - Test User 3, University of East Westtestland, testuser3@default.invalid").with_source("192.0.2.108") }
         it { is_expected.to contain_firewall("200 rsync: dataset dataset2 - Test User 4, University of West Easttestland, testuser4@default.invalid").with_source("198.51.100.15") }
 
-        it { is_expected.to contain_file("/etc/rsyncd.conf").with_content(%r{path\s*=\s*/datasets/dataset1.*log file\s*=\s*/var/log/rsync/dataset1.log.*hosts allow =.*192.0.2.102.*198.51.100.10}m) }
+        it { is_expected.to contain_file("/etc/rsyncd.conf").with_content(%r{path\s*=\s*/./datasets/dataset1.*log file\s*=\s*/var/log/rsync/dataset1.log.*hosts allow =.*192.0.2.102.*198.51.100.10}m) }
         it { is_expected.to contain_file("/etc/rsyncd.conf").with_content(%r{/datasets/dataset2.*hosts allow =.*192.0.2.108.*198.51.100.15}m) }
       end
 
