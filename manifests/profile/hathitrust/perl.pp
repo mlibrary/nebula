@@ -100,6 +100,7 @@ class nebula::profile::hathitrust::perl () {
     'libpackage-stash-perl',
     'libparse-recdescent-perl',
     'libplack-perl',
+    'libplack-builder-conditionals-perl',
     'libpod-simple-perl',
     'libproc-processtable-perl',
     'libprometheus-tiny-shared-perl',
@@ -145,6 +146,7 @@ class nebula::profile::hathitrust::perl () {
     'Algorithm::LUHN',
     'EBook::EPUB',
     'MARC::File::MiJ',
+    'Net::CIDR::Lite',
     'Noid'
     ]:
   }
