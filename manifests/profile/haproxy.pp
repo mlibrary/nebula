@@ -84,8 +84,6 @@ class nebula::profile::haproxy (
     require    => Package['keepalived'],
   }
 
-  $email = lookup('nebula::root_email')
-
   concat { '/etc/keepalived/keepalived.conf':
     ensure  => 'present',
     require => Package['keepalived'],

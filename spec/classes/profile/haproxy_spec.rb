@@ -274,8 +274,6 @@ describe "nebula::profile::haproxy" do
         it {
           is_expected.to contain_concat_fragment("keepalived preamble")
             .with_content(%r{interface #{facts[:networking][:primary]}})
-            .with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m)
-            .with_content(%r{notification_email_from root@default.invalid})
         }
 
         context "when on a master node" do
