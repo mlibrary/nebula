@@ -228,8 +228,16 @@ describe "nebula::profile::haproxy" do
 
         it { is_expected.to contain_concat_fragment("keepalived preamble").with_target(keepalived_conf) }
 
-        it "has a vrrp_scripts check_haproxy section" do
-          expect(subject).to contain_concat_fragment("keepalived preamble").with_content(%r{^vrrp_script check_haproxy})
+        it "keepalived conf uses vrrp_track_process to track haproxy" do
+          is_expected.to contain_concat_fragment("keepalived preamble")
+            .with_content(/^vrrp_track_process track_haproxy {\n  process haproxy$/)
+            .with_content(/^vrrp_instance haproxy {\n.*state (BACKUP|MASTER)\n\s+priority \d+\n\n\s+track_process { track_haproxy }$/)
+        end
+
+        it "keepalived conf uses track_file to allow manual override" do
+          is_expected.to contain_concat_fragment("keepalived preamble")
+            .with_content(%r|^track_file etc_keepalived_weight { file /etc/keepalived/weight }$|)
+            .with_content(/^\s+track_file { etc_keepalived_weight }$/)
         end
 
         it "has the haproxy floating ip addresses" do
@@ -274,8 +282,6 @@ describe "nebula::profile::haproxy" do
         it {
           is_expected.to contain_concat_fragment("keepalived preamble")
             .with_content(%r{interface #{facts[:networking][:primary]}})
-            .with_content(%r{notification_email {\n\s.*root@default.invalid\n\s.*}}m)
-            .with_content(%r{notification_email_from root@default.invalid})
         }
 
         context "when on a master node" do

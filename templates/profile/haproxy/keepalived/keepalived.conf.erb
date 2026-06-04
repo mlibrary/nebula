@@ -1,0 +1,44 @@
+# `track_file` lets us manually setting an arbitrary offset to priority.
+# Below are some examples, but any offset may be set, just be sure to clear the
+# manual offset once maintenance is completed.
+#
+# Force backup to act as primary:
+#   echo 5 > /etc/keepalived/weight
+# Disable this server
+#   echo -10 > /etc/keepalived/weight
+# Reset manual weight (either of these commands will have the same effect):
+#   rm /etc/keepalived/weight
+#   echo 0 > /etc/keepalived/weight
+track_file etc_keepalived_weight { file /etc/keepalived/weight }
+
+vrrp_track_process track_haproxy {
+  process haproxy
+  weight 10
+}
+
+vrrp_instance haproxy {
+<% if @master -%>
+  state MASTER
+  priority 101
+<% else -%>
+  state BACKUP
+  priority 100
+<% end -%>
+
+  track_process { track_haproxy }
+  track_file { etc_keepalived_weight }
+
+  interface <%= @networking['primary'] %>
+  virtual_router_id 51
+  virtual_ipaddress {
+    <%- @services.each do |_,service| -%>
+      <%= service["floating_ip"] %>
+    <%- end -%>
+    <%- @extra_floating_ips.each do |_,floating_ip| -%>
+      <%= floating_ip %>
+    <%- end -%>
+  }
+
+  unicast_src_ip <%= @networking["ip"] %>
+  unicast_peer {
+<%# closing curly brackets intentionally omitted -%>

@@ -84,8 +84,6 @@ class nebula::profile::haproxy (
     require    => Package['keepalived'],
   }
 
-  $email = lookup('nebula::root_email')
-
   concat { '/etc/keepalived/keepalived.conf':
     ensure  => 'present',
     require => Package['keepalived'],
@@ -95,7 +93,7 @@ class nebula::profile::haproxy (
 
   concat_fragment { 'keepalived preamble':
     target  => '/etc/keepalived/keepalived.conf',
-    content => template('nebula/profile/haproxy/keepalived/keepalived_pre.erb'),
+    content => template('nebula/profile/haproxy/keepalived/keepalived.conf.erb'),
     order   => '01'
   }
 
@@ -111,7 +109,7 @@ class nebula::profile::haproxy (
 
   concat_fragment { 'keepalived postamble':
     target  => '/etc/keepalived/keepalived.conf',
-    content => template('nebula/profile/haproxy/keepalived/keepalived_post.erb'),
+    content => "  }\n}\n",
     order   => '03'
   }
 
