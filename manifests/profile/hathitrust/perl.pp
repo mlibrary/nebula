@@ -91,6 +91,7 @@ class nebula::profile::hathitrust::perl () {
     'libmoose-perl',
     'libmouse-perl',
     'libmro-compat-perl',
+    'libnet-cidr-lite-perl',
     'libnet-dns-perl',
     'libnet-http-perl',
     'libnet-libidn-perl',
@@ -146,7 +147,6 @@ class nebula::profile::hathitrust::perl () {
     'Algorithm::LUHN',
     'EBook::EPUB',
     'MARC::File::MiJ',
-    'Net::CIDR::Lite',
     'Noid'
     ]:
   }
