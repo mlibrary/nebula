@@ -234,6 +234,12 @@ describe "nebula::profile::haproxy" do
             .with_content(/^vrrp_instance haproxy {\n.*state (BACKUP|MASTER)\n\s+priority \d+\n\n\s+track_process { track_haproxy }$/)
         end
 
+        it "keepalived conf uses track_file to allow manual override" do
+          is_expected.to contain_concat_fragment("keepalived preamble")
+            .with_content(%r|^track_file etc_keepalived_weight { file /etc/keepalived/weight }$|)
+            .with_content(/^\s+track_file { etc_keepalived_weight }$/)
+        end
+
         it "has the haproxy floating ip addresses" do
           expect(subject).to contain_concat_fragment("keepalived preamble").with_content(%r{virtual_ipaddress {\n\s*12\.23\.32\.22\n\s*12\.23\.32\.23\n\s*}}m)
         end
