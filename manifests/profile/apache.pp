@@ -34,7 +34,8 @@ class nebula::profile::apache (
     default_ssl_vhost      => false,
     default_ssl_chain      => $ssl_chain,
     timeout                => 300,
-    keepalive_timeout      => 15,
+    keepalive              => 'Off'
+    keepalive_timeout      => 2,
     log_formats            => $log_formats,
     # configured below by explicitly declaring params for apache::mod::prefork class
     mpm_module             => false,
