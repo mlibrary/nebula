@@ -18,7 +18,7 @@ bundle
 bundle exec rake -T
 
 # run all tests
-bundle exec rake parallel_spec
+bundle exec rake test
 
 # run any single test
 bundle exec rake fixtures:prep
