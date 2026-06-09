@@ -1,0 +1,3 @@
+#!/bin/sh
+bundle install
+bundle install --gemfile="${0%/*}/../standard.gemfile"

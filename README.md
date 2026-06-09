@@ -12,8 +12,7 @@
 ruby 3.2.10
 
 # bundle
-bundle install
-bundle install --gemfile=standard.gemfile
+bin/bundle-install
 
 # list all rake tasks
 bin/rake -T
