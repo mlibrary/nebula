@@ -1,4 +1,4 @@
-name: Run CI
+name: CI
 
 on:
   push:
@@ -29,8 +29,22 @@ jobs:
     - if: ${{ steps.cache-fixtures.outputs.cache-hit != 'true' }}
       name: rake fixtures:prep
       run: bundle exec rake fixtures:prep
-  lint:
-    name: "All OSes: lint"
+
+  standardrb:
+    name: standardrb
+    runs-on: ubuntu-24.04-arm
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/standard.gemfile
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.310.0
+      with:
+        bundler-cache: true
+    - name: standardrb
+      run: bundle exec standardrb
+
+  validate:
+    name: rake validate
     needs: setup_tests
     runs-on: ubuntu-24.04-arm
     steps:
@@ -38,14 +52,16 @@ jobs:
     - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.310.0
       with:
         bundler-cache: true
-    - name: lint with Standard Ruby style guide
-      run: bundle exec standardrb
-    - name: check Puppet syntax
+    # identical to `rake validate` task, broken up into individual sub-tasks
+    - name: rake validate:ruby
+      run: bundle exec rake validate:ruby
+    - name: rake syntax
       run: bundle exec rake syntax
-    - name: Run puppet-lint
-      run: bundle exec rake lint
     - name: lint metadata.json
       run: bundle exec rake metadata_lint
+    - name: rake metadata.json
+      run: bundle exec rake validate:strings
+
   spec:
     name: "${{ matrix.os }}"
     needs: setup_tests
