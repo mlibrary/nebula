@@ -9,9 +9,11 @@ class nebula::profile::search::catalog::solr_monitor (
   String $reindex_metrics_bin = '/opt/catalog/reindex/bin/metrics',
   Integer $reindex_metrics_port = 9984,
   String $reindex_metrics_config = '/opt/catalog/reindex/config/metrics.xml',
+  Optional[String] $solr_user = undef,
 ) {
   $serve_port = lookup('nebula::profile::search::catalog::solr::serve_port', default_value => 8983)
   $reindex_port = lookup('nebula::profile::search::catalog::solr::reindex_port', default_value => 8984)
+  $solr_user_name = pick($solr_user, lookup('nebula::profile::search::catalog::solr::solr_user')['name'], 'default-solr-monitor-user')
 
   service { 'metrics-catalog-serve':
     ensure  => 'running',

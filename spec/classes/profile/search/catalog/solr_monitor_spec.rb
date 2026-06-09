@@ -25,6 +25,8 @@ describe "nebula::profile::search::catalog::solr_monitor" do
 
       it { is_expected.to contain_file("/etc/systemd/system/metrics-catalog-serve.service").with_content(/ExecStart=\/opt\/catalog\/serve\/bin\/metrics -p 9983 -b http:\/\/localhost:8983\/solr -f \/opt\/catalog\/serve\/config\/metrics\.xml/) }
       it { is_expected.to contain_file("/etc/systemd/system/metrics-catalog-reindex.service").with_content(/ExecStart=\/opt\/catalog\/reindex\/bin\/metrics -p 9984 -b http:\/\/localhost:8984\/solr -f \/opt\/catalog\/reindex\/config\/metrics\.xml/) }
+      it { is_expected.to contain_file("/etc/systemd/system/metrics-catalog-serve.service").with_content(/User=nebula-hiera-default-search-solr-user/) }
+      it { is_expected.to contain_file("/etc/systemd/system/metrics-catalog-reindex.service").with_content(/User=nebula-hiera-default-search-solr-user/) }
 
       context "when serve_port is set to 8765" do
         let(:hiera_config) { "spec/fixtures/hiera/search_solr_monitor_config.yaml" }
@@ -72,6 +74,13 @@ describe "nebula::profile::search::catalog::solr_monitor" do
         let(:params) { {reindex_metrics_config: "/etc/catalog/reindex/solr_metrics.xml"} }
 
         it { is_expected.to contain_file("/etc/systemd/system/metrics-catalog-reindex.service").with_content(/ExecStart=.*\s-f \/etc\/catalog\/reindex\/solr_metrics\.xml\s/) }
+      end
+
+      context "with solr_user set to mysolr" do
+        let(:params) { {solr_user: "mysolr"} }
+
+        it { is_expected.to contain_file("/etc/systemd/system/metrics-catalog-serve.service").with_content(/User=mysolr/) }
+        it { is_expected.to contain_file("/etc/systemd/system/metrics-catalog-reindex.service").with_content(/User=mysolr/) }
       end
     end
   end

@@ -3,7 +3,7 @@ Description=Catalog Search Solr Metrics (Reindex)
 After=network.target
 
 [Service]
-User=vufind
+User=<%= @solr_user_name %>
 ExecStart=<%= @reindex_metrics_bin %> -p <%= @reindex_metrics_port %> -b http://localhost:<%= @reindex_port %>/solr -f <%= @reindex_metrics_config %>
 TimeoutStopSec=20s
 StandardOutput=journal

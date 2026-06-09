@@ -1,0 +1,4 @@
+%<%= @solr_group_name %> ALL = NOPASSWD: /bin/systemctl status solr-catalog-serve , /bin/systemctl start solr-catalog-serve , /bin/systemctl stop solr-catalog-serve , /bin/systemctl restart solr-catalog-serve
+%<%= @solr_group_name %> ALL = NOPASSWD: /bin/systemctl status solr-catalog-reindex , /bin/systemctl start solr-catalog-reindex , /bin/systemctl stop solr-catalog-reindex , /bin/systemctl restart solr-catalog-reindex
+%<%= @solr_group_name %> ALL = NOPASSWD: /bin/systemctl status metrics-catalog-serve , /bin/systemctl start metrics-catalog-serve , /bin/systemctl stop metrics-catalog-serve , /bin/systemctl restart metrics-catalog-serve
+%<%= @solr_group_name %> ALL = NOPASSWD: /bin/systemctl status metrics-catalog-reindex , /bin/systemctl start metrics-catalog-reindex , /bin/systemctl stop metrics-catalog-reindex , /bin/systemctl restart metrics-catalog-reindex
