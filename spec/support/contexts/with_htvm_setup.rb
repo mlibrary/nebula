@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "./with_mocked_nodes"
+require_relative "with_mocked_nodes"
 require "faker"
 
 RSpec.shared_context "with setup for htvm node" do |os_facts|

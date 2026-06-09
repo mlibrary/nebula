@@ -12,29 +12,35 @@
 ruby 3.2.10
 
 # bundle
-bundle
+bundle install
+bundle install --gemfile=standard.gemfile
 
 # list all rake tasks
-bundle exec rake -T
+bin/rake -T
 
 # run all tests
-bundle exec rake parallel_spec
+bin/rake
 
 # run any single test
-bundle exec rake fixtures:prep
-bundle exec rspec specs/path/to/a_spec.rb
+bin/rake prep
+bin/rspec specs/path/to/a_spec.rb
+
+# optionally, remove test fixtures
+bin/rake clean
 
 # lint
-bundle exec standardrb # lint .rb files
-bundle exec rake lint # lint .pp files
+bin/rake validate # includes syntax task, other misc. checks
+bin/rake lint
+bin/standardrb # Standard Ruby
 
 # check puppet module dependencies for available updates
-bundle exec rake forge:outdated
+bin/rake forge:outdated
 # update dependencies
 vi rakelib/metadata.yaml
-bundle exec rake forge:update
+bin/rake forge:update
 # test for dependency conflicts
-bundle exec rake librarian
+bin/rake librarian
+bin/rake clean
 ```
 
 ### with `docker compose`

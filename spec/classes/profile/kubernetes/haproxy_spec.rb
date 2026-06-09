@@ -100,9 +100,9 @@ describe "nebula::profile::kubernetes::haproxy" do
             it { is_expected.to contain_concat_fragment(fragment).with_order("01") }
 
             [
-              %r{^frontend kubernetes-#{service.tr('_', '-')}-front$},
-              %r{^backend kubernetes-#{service.tr('_', '-')}-back$},
-              %r{^  default_backend kubernetes-#{service.tr('_', '-')}-back$}
+              %r{^frontend kubernetes-#{service.tr("_", "-")}-front$},
+              %r{^backend kubernetes-#{service.tr("_", "-")}-back$},
+              %r{^  default_backend kubernetes-#{service.tr("_", "-")}-back$}
             ].each do |line|
               it { is_expected.to contain_concat_fragment(fragment).with_content(line) }
             end
