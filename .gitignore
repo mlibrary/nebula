@@ -7,7 +7,6 @@
 /.idea/
 /.vagrant/
 /coverage/
-/bin/
 /Gemfile.local
 /junit/
 /log/

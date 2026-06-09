@@ -16,6 +16,6 @@ services:
     command:
     - /bin/bash
     - '-c'
-    - 'bundle exec rake syntax lint && bundle exec rake metadata_lint; bundle exec rake standard'
+    - 'bundle exec rake validate && bundle exec rake lint'
     volumes:
       - .:/app
