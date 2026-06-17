@@ -23,6 +23,9 @@ dependencies:
 # - name: example/foobar
 #   info: example/foobar 1.2.3 blocks example/baz 4.0.0
 - name: jdowning/rbenv
+- name: proxmox
+  repo: https://github.com/mlibrary/puppet-proxmox
+  ref: v0.1.0
 - name: puppet/archive
 - name: puppet/cron
 - name: puppet/kmod

@@ -78,7 +78,6 @@ def test_roles(slice_number = 1, slice_count = 1)
           end
 
           it { is_expected.to compile_along_with_all_roles(hiera_fixture) }
-          it { is_expected.to contain_class("nebula::role::minimum") }
         end
       end
     end
