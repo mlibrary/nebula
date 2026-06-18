@@ -264,6 +264,18 @@ class nebula::profile::hathitrust::apache::babel (
         shib_request_settings => { 'requireSession' => '0', 'discoveryURL' => "https://${servername}/cgi/wayf" }
       },
       {
+        provider  => 'location',
+        path      => '/cgi/pt',
+        auth_type =>  'shibboleth',
+        shib_request_settings => { 'requireSession' => '1', 'discoveryURL' => "https://${servername}/cgi/wayf" }
+      },
+      {
+        provider  => 'location',
+        path      => '/cgi/imgsrv',
+        auth_type =>  'shibboleth',
+        shib_request_settings => { 'requireSession' => '1', 'discoveryURL' => "https://${servername}/cgi/wayf" }
+      },
+      {
         provider => 'directory',
         path     => "${sdrroot}/firebird-common",
         require  => $default_access,
