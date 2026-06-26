@@ -9,6 +9,7 @@
 | hpe2.gpg                     | https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key2.pub
 | hpe1_hpe2.gpg                | `cat hpe1.gpg hpe2.gpg > hpe1_hpe2.gpg`
 | k8s.io.asc                   | https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
+| mariadb.asc                  | https://mariadb.org/mariadb_release_signing_key.pgp
 | mono-project.asc             | https://download.mono-project.com/repo/xamarin.gpg
 | nodesource.asc               | https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
 | openvox.asc                  | https://apt.voxpupuli.org/GPG-KEY-openvox.pub
