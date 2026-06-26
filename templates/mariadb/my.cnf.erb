@@ -1,0 +1,32 @@
+# Managed by puppet (nebula/templates/mariadb/my.cnf.erb)
+
+[mysqld]
+                                  # default setting (as of mariadb 12.2 / April 2026)
+skip_external_locking    = ON     # ON (MyISAM/Aria only)
+key_buffer_size          = 1536M  # 128M (MyISAM only)
+max_allowed_packet       = 32M    # 16M
+myisam_recover_options   = BACKUP # BACKUP,QUICK
+max_connections          = 750    # 151
+
+query_cache_limit        = 24M    # 1M
+query_cache_size         = 1536M  # 1M
+
+innodb_buffer_pool_size  = 8192M  # 128M
+innodb_log_file_size     = 256M   # 96M
+read_buffer_size         = 2M     # 128K
+read_rnd_buffer_size     = 8M     # 256K
+sort_buffer_size         = 8M     # 2M
+max_heap_table_size      = 768M   # 16M
+tmp_table_size           = 768M   # 16M
+
+max_connect_errors       = 1000   # 100
+skip_name_resolve        = ON     # OFF
+
+# replication / backup
+log_slave_updates        = ON     # OFF
+expire_logs_days         = 10     # 0.000000
+
+# only takes effect if slow log enabled
+log_queries_not_using_indexes = ON # OFF
+
+<%= @extra_conf %>
