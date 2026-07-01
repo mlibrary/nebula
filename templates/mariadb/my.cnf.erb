@@ -2,6 +2,7 @@
 
 [mysqld]
                                   # default setting (as of mariadb 12.2 / April 2026)
+bind-address             = 0.0.0.0
 skip_external_locking    = ON     # ON (MyISAM/Aria only)
 key_buffer_size          = 1536M  # 128M (MyISAM only)
 max_allowed_packet       = 32M    # 16M
