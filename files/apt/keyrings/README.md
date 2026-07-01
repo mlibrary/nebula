@@ -13,6 +13,7 @@
 | mono-project.asc             | https://download.mono-project.com/repo/xamarin.gpg
 | nodesource.asc               | https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
 | openvox.asc                  | https://apt.voxpupuli.org/GPG-KEY-openvox.pub
+| percona-keyring.asc          | https://repo.percona.com/apt/percona-release_latest.generic_all.deb
 | php-community-sury.org.gpg   | https://packages.sury.org/php/apt.gpg
 | tesseract-notesalexp.org.asc | https://notesalexp.org/debian/alexp_key.asc
 | yarnpkg.asc                  | https://dl.yarnpkg.com/debian/pubkey.gpg

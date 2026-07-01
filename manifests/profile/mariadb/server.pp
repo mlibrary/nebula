@@ -4,10 +4,14 @@ class nebula::profile::mariadb::server (
   Optional[String] $backup_nfs_target = undef,
   String $backup_nfs_options = 'auto,hard',
   Optional[String] $extra_conf = undef,
+  Boolean $percona_toolkit = false,
 ) {
   @nebula::taghosts::tag { 'mariadb': }
 
   include nebula::profile::mariadb
+  if $percona_toolkit {
+    include nebula::profile::percona_toolkit
+  }
 
   package { default:
     require => [Apt::Source['mariadb'], Package['mariadb-client']];

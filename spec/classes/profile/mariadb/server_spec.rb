@@ -46,6 +46,19 @@ describe "nebula::profile::mariadb::server" do
 
         it { is_expected.to contain_package("nfs-common") }
       end
+
+      it "does not install percona-toolkit" do
+        is_expected.not_to contain_package("percona-toolkit")
+      end
+      context "with backup_nfs_target set" do
+        let(:params) do
+          {percona_toolkit: true}
+        end
+
+        it "installs percona-toolkit" do
+          is_expected.to contain_package("percona-toolkit")
+        end
+      end
     end
   end
 end
