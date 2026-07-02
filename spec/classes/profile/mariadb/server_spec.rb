@@ -16,6 +16,10 @@ describe "nebula::profile::mariadb::server" do
         is_expected.to contain_package("mariadb-backup").that_requires("Package[mariadb-client]")
       end
 
+      it "removes /usr/bin/mariabackup symlink" do
+        is_expected.to contain_file("/usr/bin/mariabackup").with_ensure("absent")
+      end
+
       it "configures mariadb-server" do
         is_expected.to contain_file("/etc/mysql/mariadb.conf.d/90-mlibrary.cnf")
           .with_content(/^\[mysqld\]$/)
