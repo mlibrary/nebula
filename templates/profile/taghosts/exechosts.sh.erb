@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 PROG="$0"
-USAGE="[-1fhpPs] TAGS COMMAND [ARGS...]"
+USAGE="[-1fhpPsy] TAGS COMMAND [ARGS...]"
 STRATEGY="parallel"
 STREAM_OUTPUT=false
 ASK_ARE_YOU_SURE=true
@@ -22,7 +22,7 @@ a list of targets and runs the given command on those targets.
 
 optional arguments:
  -1           Run command one server at a time in serial
- -f           Run command without waiting for confirmation
+ -f,-y        Run command without waiting for confirmation
  -h           Show this help message and exit
  -p           Run command on all matching servers in parallel (default)
  -P           Use \`bolt plan run\` instead of \`bolt command run\`
@@ -35,13 +35,13 @@ if [ "$1" = "--help" ]; then
   exit 0
 fi
 
-while getopts ':1fhpPs' opt; do
+while getopts ':1fhpPsy' opt; do
   case "$opt" in
     1)
       STRATEGY="serial"
       ;;
 
-    f)
+    f|y)
       ASK_ARE_YOU_SURE=false
       ;;
 
