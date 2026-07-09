@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=<%= @rsync_home %>
+WorkingDirectory=/
 ExecStart=/usr/bin/stunnel <%= @rsync_home %>/stunnel.conf
 RemainAfterExit=no
 Restart=always
