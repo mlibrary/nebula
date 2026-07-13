@@ -163,7 +163,8 @@ describe "nebula::role::webhost::www_lib_vm" do
         # SSL offloading
         expect(subject).to contain_apache__vhost("maps.publishing-https")
           .with_servername("https://maps.publishing.umich.edu")
-          .with_ssl(false)
+          .with_ssl_cert("/etc/ssl/certs/maps.publishing.umich.edu.crt")
+          .with_ssl(true)
           .with_port(443)
       end
 

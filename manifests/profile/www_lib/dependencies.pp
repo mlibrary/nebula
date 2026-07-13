@@ -22,7 +22,7 @@ class nebula::profile::www_lib::dependencies {
       'git',
       'emacs',
       'imagemagick',
-      "${java_source}-${jdk_version}-jre",
+      'default-jre-headless',
     ]
   )
 }

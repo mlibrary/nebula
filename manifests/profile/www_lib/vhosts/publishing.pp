@@ -11,6 +11,7 @@
 # @example
 #   include nebula::profile::www_lib::vhosts::publishing
 class nebula::profile::www_lib::vhosts::publishing (
+  String $ssl_cn = 'maps.publishing.umich.edu',
   String $docroot = '/www/maps.publishing/web',
 ) {
   apache::vhost { 'maps.publishing-http':
@@ -33,7 +34,9 @@ class nebula::profile::www_lib::vhosts::publishing (
     servername     => 'https://maps.publishing.umich.edu',
     docroot        => $docroot,
     manage_docroot => false,
-    ssl            => false,
+    ssl            => true,
+    ssl_cert       => '/etc/ssl/certs/maps.publishing.umich.edu.crt',
+    ssl_key        => '/etc/ssl/private/maps.publishing.umich.edu.key',
     port           => 443,
     setenv         => ['HTTPS on'],
     setenvifnocase => '^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1',

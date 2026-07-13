@@ -44,6 +44,7 @@ class nebula::profile::apache::auth_openidc (
 
   file { '/var/cache/apache2/mod_auth_openidc':
     ensure => 'directory',
+    mode   => '0775'
   }
 
   file { '/var/cache/apache2/mod_auth_openidc/oidc-sessions':

@@ -83,14 +83,6 @@ class nebula::profile::www_lib::php (
     ]
   )
 
-  # Pear and database packages
-  ensure_packages (
-    [
-      'php-mdb2',
-      'php-mdb2-driver-mysql'
-    ]
-  )
-
   # Configure FPM config file
   php::config { 'fpm php.ini':
     file   => "/etc/php/${default_php_version}/fpm/php.ini",
@@ -168,8 +160,8 @@ class nebula::profile::www_lib::php (
       'HTTP_Request2'         => { package_prefix => '', provider => 'pear' },
       'HTTP_Session2'         => { ensure => 'beta', package_prefix => '', provider => 'pear' },
       'Log'                   => { package_prefix => '', provider => 'pear' },
-      # MDB2
-      # MDB2_Driver_mysql
+      'MDB2'                  => { package_prefix => '', provider => 'pear' },
+      'MDB2_Driver_mysql'     => { ensure => 'beta', package_prefix => '', provider => 'pear' },
       'Mail'                  => { package_prefix => '', provider => 'pear' },
       'Net_SMTP'              => { package_prefix => '', provider => 'pear' },
       'Net_Socket'            => { package_prefix => '', provider => 'pear' },

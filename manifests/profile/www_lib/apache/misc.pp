@@ -56,6 +56,11 @@ class nebula::profile::www_lib::apache::misc (
     }
   }
 
+  file { '/etc/ssl/private/machine-cert-deepblue.lib.pem':
+    ensure => 'link',
+    target => "/etc/ssl/private/${facts['networking']['fqdn']}.pem",
+  }
+
   include nebula::profile::www_lib::vhosts::midaily
   include nebula::profile::www_lib::vhosts::publishing
   include nebula::profile::www_lib::vhosts::med

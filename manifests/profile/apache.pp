@@ -66,6 +66,11 @@ class nebula::profile::apache (
     source => 'puppet:///apache/badrobots.conf'
   }
 
+  apache::custom_config { 'snipolicy':
+    content  => "SSLVHostSNIPolicy authonly\n",
+    priority => '10',
+  }
+
   file { '/etc/apache2/conf-available':
     ensure  => 'absent',
     force   => true,
