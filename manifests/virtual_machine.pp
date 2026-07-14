@@ -60,7 +60,7 @@
 #   }
 define nebula::virtual_machine (
   String  $addr            = '127.0.0.1',
-  String  $build           = 'bullseye',
+  String  $build           = 'trixie',
   Integer $cpus            = 2,
   Integer $disk            = 16,
   Integer $ram             = 1,
@@ -103,7 +103,7 @@ define nebula::virtual_machine (
     }
   } else {
     # If the VM does not already exist, create it.
-    if $build == 'bullseye' or $build == 'bookworm' or $build == 'trixie' {
+    if $build == 'bookworm' or $build == 'trixie' {
       file { "${tmpdir}/preseed.cfg":
         content => template("nebula/virtual_machine/${build}.cfg.erb"),
       }
