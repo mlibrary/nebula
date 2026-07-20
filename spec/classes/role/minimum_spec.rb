@@ -11,6 +11,7 @@ describe "nebula::role::minimum" do
       let(:facts) { os_facts }
 
       it { is_expected.to contain_class("nebula::profile::networking::firewall") }
+      it { is_expected.to contain_package("rsync") }
 
       context "manage_firewall false" do
         let(:params) do
