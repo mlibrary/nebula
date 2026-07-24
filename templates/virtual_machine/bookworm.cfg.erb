@@ -486,9 +486,14 @@ d-i preseed/late_command string                        \
     in-target apt-get install -qq -y openvox-agent;    \
     in-target apt-get install -qq -y qemu-guest-agent; \
     in-target systemctl enable puppet;                 \
-    wget -O /target/etc/puppetlabs/puppet/puppet.conf  \
-        https://<%= @filehost %>/puppet.conf;          \
-    wget -O /target/etc/iptables/rules.v4              \
-        https://<%= @filehost %>/rules.v4;             \
-    chmod 600 /target/etc/iptables/rules.v4
-
+    echo '*filter'                                                                                                 > /target/etc/puppetlabs/puppetlabs/puppet.conf; \
+    echo ':INPUT ACCEPT [0:0]'                                                                                    >> /target/etc/puppetlabs/puppetlabs/puppet.conf; \
+    echo ':FORWARD ACCEPT [0:0]'                                                                                  >> /target/etc/puppetlabs/puppetlabs/puppet.conf; \
+    echo ':OUTPUT ACCEPT [0:0]'                                                                                   >> /target/etc/puppetlabs/puppetlabs/puppet.conf; \
+    echo '-A INPUT -i lo -m comment --comment "001 accept all to lo interface" -j ACCEPT'                         >> /target/etc/puppetlabs/puppetlabs/puppet.conf; \
+    echo '-A INPUT -m state --state RELATED,ESTABLISHED -m comment --comment "001 established related" -j ACCEPT' >> /target/etc/puppetlabs/puppetlabs/puppet.conf; \
+    echo '-A INPUT -m comment --comment "999 drop all" -j DROP'                                                   >> /target/etc/puppetlabs/puppetlabs/puppet.conf; \
+    echo 'COMMIT'                                                                                                 >> /target/etc/puppetlabs/puppetlabs/puppet.conf; \
+    chmod 600 /target/etc/iptables/rules.v4;           \
+    echo '[agent]'                        > /target/etc/puppetlabs/puppet/puppet.conf; \
+    echo 'server = <%= @puppetserver %>' >> /target/etc/puppetlabs/puppet/puppet.conf
