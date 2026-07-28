@@ -15,6 +15,9 @@ class nebula::profile::mariadb::server (
     'mariadb-backup': ;
   }
 
+  # almost always needed for mariadb setup, not a hard dependency
+  stdlib::ensure_packages('rsync')
+
   # /usr/bin/mariabackup is a useless symlink, breaks tab completion
   file { '/usr/bin/mariabackup':
     ensure => absent,
