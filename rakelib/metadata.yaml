@@ -46,7 +46,6 @@ dependencies:
 - name: puppetlabs/inifile
 - name: puppetlabs/lvm
 - name: puppetlabs/mount_core
-- name: puppetlabs/mysql
 - name: puppetlabs/reboot
 - name: puppetlabs/sshkeys_core
 - name: puppetlabs/stdlib
