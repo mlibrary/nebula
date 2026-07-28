@@ -24,6 +24,7 @@ dependencies:
 #   info: example/foobar 1.2.3 blocks example/baz 4.0.0
 - name: jdowning/rbenv
 - name: puppet/archive
+- name: puppet/cron
 - name: puppet/kmod
 - name: puppet/letsencrypt
 - name: puppet/logrotate
