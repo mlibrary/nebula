@@ -61,9 +61,6 @@ fixtures:
     mount_core:
       repo: puppetlabs/mount_core
       ref: 2.0.1
-    mysql:
-      repo: puppetlabs/mysql
-      ref: 16.3.0
     reboot:
       repo: puppetlabs/reboot
       ref: 5.1.0
