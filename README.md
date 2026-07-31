@@ -13,7 +13,6 @@ ruby 3.2.10
 
 # bundle
 bundle install
-bundle install --gemfile=standard.gemfile
 
 # list all rake tasks
 bin/rake -T
@@ -31,7 +30,7 @@ bin/rake clean
 # lint
 bin/rake validate # includes syntax task, other misc. checks
 bin/rake lint
-bin/standardrb # Standard Ruby
+bin/standardrb # [Standard Ruby](https://github.com/standardrb/standard)
 
 # check puppet module dependencies for available updates
 bin/rake forge:outdated

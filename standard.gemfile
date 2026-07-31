@@ -1,7 +1,4 @@
 # Dedicated Gemfile for running standardrb
 source ENV["GEM_SOURCE"] || "https://rubygems.org"
 
-gem "standard", require: false
-# Keep the same maximum (but not minimum) version of rubocop as voxpupuli-test
-#   see: https://github.com/voxpupuli/voxpupuli-test/blob/master/voxpupuli-test.gemspec
-gem "rubocop", "< 1.86.0", require: false
+gem "standard", "~> 1.56.0", require: false
