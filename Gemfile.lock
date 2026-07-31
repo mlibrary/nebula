@@ -1,17 +1,35 @@
+GIT
+  remote: https://github.com/mlibrary/voxpupuli-test.git
+  revision: 9d96d971219cf23ae518e665ac72a4e5423c06a8
+  tag: v14.0.0-6
+  specs:
+    voxpupuli-test (14.0.0)
+      facterdb (>= 3.1, < 5.0)
+      metadata-json-lint (>= 4.0, < 6)
+      openvox-strings (>= 5.0, < 8)
+      parallel_tests (>= 4.2, < 6)
+      puppet-syntax (>= 6.0, < 8)
+      puppet_fixtures (>= 0.1, < 3)
+      rake (~> 13.0, >= 13.0.6)
+      rspec-github (>= 2.0, < 4)
+      rspec-puppet (~> 5.0)
+      rspec-puppet-facts (>= 5.4, < 7)
+      syslog (>= 0.3, < 0.5)
+      voxpupuli-puppet-lint-plugins (>= 6.0, < 8)
+
 GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
-    ast (2.4.3)
     base64 (0.3.0)
     benchmark (0.5.0)
     bigdecimal (4.1.2)
-    concurrent-ruby (1.3.7)
+    concurrent-ruby (1.3.8)
     date (3.5.1)
     deep_merge (1.2.2)
     diff-lcs (1.6.2)
-    erb (6.0.4)
+    erb (6.0.6)
     facterdb (4.4.0)
       jgrep (~> 1.5, >= 1.5.4)
     faker (3.8.0)
@@ -30,7 +48,6 @@ GEM
     fiddle (1.1.8)
     forwardable (1.4.0)
     getoptlong (0.2.1)
-    hana (1.3.7)
     hocon (1.4.0)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
@@ -41,28 +58,19 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jgrep (1.5.4)
-    json (2.20.0)
+    json (2.21.2)
     json-schema (6.2.0)
       addressable (~> 2.8)
       bigdecimal (>= 3.1, < 5)
-    json_schemer (2.5.0)
-      bigdecimal
-      hana (~> 1.3)
-      regexp_parser (~> 2.0)
-      simpleidn (~> 0.2)
-    language_server-protocol (3.17.0.5)
     librarian-puppet (7.0.0)
       librarianp (~> 1.1)
       puppet_forge (>= 2, < 7)
       rsync (~> 1.0)
     librarianp (1.2.0)
       thor (~> 1.0)
-    lint_roller (1.1.0)
     locale (2.1.5)
       fiddle
     logger (1.7.0)
-    mcp (0.21.0)
-      json_schemer (>= 2.4)
     metadata-json-lint (5.0.0)
       json-schema (>= 2.8, < 7.0)
       semantic_puppet (~> 1.0)
@@ -75,7 +83,7 @@ GEM
       uri (>= 0.11.1)
     net-protocol (0.2.2)
       timeout
-    openfact (5.6.1)
+    openfact (5.7.0)
       base64 (>= 0.1, < 0.4)
       benchmark (< 0.6)
       hocon (~> 1.3)
@@ -83,7 +91,7 @@ GEM
       ostruct (< 0.7)
       thor (>= 1.0.1, < 2)
       tsort (< 0.3)
-    openvox (8.28.0)
+    openvox (8.28.1)
       base64 (>= 0.1, < 0.4)
       benchmark (>= 0.2, < 0.6)
       concurrent-ruby (~> 1.0)
@@ -106,9 +114,6 @@ GEM
     parallel (1.28.0)
     parallel_tests (5.7.0)
       parallel
-    parser (3.3.11.1)
-      ast (~> 2.4.1)
-      racc
     pp (0.6.4)
       prettyprint
     prettyprint (0.2.0)
@@ -158,7 +163,7 @@ GEM
       puppet-lint (~> 5.1)
     puppet-lint-version_comparison-check (3.0.0)
       puppet-lint (~> 5.1)
-    puppet-resource_api (2.0.0)
+    puppet-resource_api (2.0.1)
       hocon (>= 1.0)
     puppet-syntax (7.2.0)
       openvox (>= 8, < 9)
@@ -172,13 +177,12 @@ GEM
       faraday-follow_redirects (>= 0.3, < 0.6)
       minitar (~> 1.0, >= 1.0.2)
       semantic_puppet (~> 1.0)
-    puppet_metadata (6.2.0)
+    puppet_metadata (6.3.0)
       metadata-json-lint (>= 2.0, < 6)
       semantic_puppet (~> 1.0)
     racc (1.8.1)
-    rainbow (3.1.1)
     rake (13.4.2)
-    rbs (4.0.3)
+    rbs (4.1.1)
       logger
       prism (>= 1.6.0)
       tsort
@@ -187,7 +191,6 @@ GEM
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
       tsort
-    regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
     rgen (0.10.2)
@@ -213,31 +216,8 @@ GEM
       openfact (~> 5.0)
     rspec-support (3.13.7)
     rsync (1.0.9)
-    rubocop (1.85.1)
-      json (~> 2.3)
-      language_server-protocol (~> 3.17.0.2)
-      lint_roller (~> 1.1.0)
-      mcp (~> 0.6)
-      parallel (~> 1.10)
-      parser (>= 3.3.0.2)
-      rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.49.0, < 2.0)
-      ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.49.1)
-      parser (>= 3.3.7.2)
-      prism (~> 1.7)
-    rubocop-rake (0.7.1)
-      lint_roller (~> 1.1)
-      rubocop (>= 1.72.1)
-    rubocop-rspec (3.9.0)
-      lint_roller (~> 1.1)
-      rubocop (~> 1.81)
-    ruby-progressbar (1.13.0)
     scanf (1.0.0)
     semantic_puppet (1.1.1)
-    simpleidn (0.2.3)
     singleton (0.3.0)
     spdx-licenses (1.4.0)
     syslog (0.4.0)
@@ -247,9 +227,6 @@ GEM
       date
     timeout (0.6.1)
     tsort (0.2.0)
-    unicode-display_width (3.2.0)
-      unicode-emoji (~> 4.1)
-    unicode-emoji (4.2.0)
     uri (1.1.1)
     voxpupuli-puppet-lint-plugins (7.0.0)
       puppet-lint (~> 5.1)
@@ -273,23 +250,7 @@ GEM
       puppet-lint-unquoted_string-check (~> 4.0)
       puppet-lint-variable_contains_upcase (~> 3.0)
       puppet-lint-version_comparison-check (~> 3.0)
-    voxpupuli-test (14.0.0)
-      facterdb (>= 3.1, < 5.0)
-      metadata-json-lint (>= 4.0, < 6)
-      openvox-strings (>= 5.0, < 8)
-      parallel_tests (>= 4.2, < 6)
-      puppet-syntax (>= 6.0, < 8)
-      puppet_fixtures (>= 0.1, < 3)
-      rake (~> 13.0, >= 13.0.6)
-      rspec-github (>= 2.0, < 4)
-      rspec-puppet (~> 5.0)
-      rspec-puppet-facts (>= 5.4, < 7)
-      rubocop (~> 1.85.1)
-      rubocop-rake (~> 0.7.1)
-      rubocop-rspec (~> 3.9.0)
-      syslog (>= 0.3, < 0.5)
-      voxpupuli-puppet-lint-plugins (>= 6.0, < 8)
-    yard (0.9.44)
+    yard (0.9.45)
 
 PLATFORMS
   arm64-darwin-24
@@ -302,19 +263,18 @@ DEPENDENCIES
   openvox (>= 8, < 9)
   puppet_metadata (~> 6.1)
   rake
-  voxpupuli-test (~> 14.0)
+  voxpupuli-test!
 
 CHECKSUMS
   addressable (2.9.0) sha256=7fdf6ac3660f7f4e867a0838be3f6cf722ace541dd97767fa42bc6cfa980c7af
-  ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
   bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
-  concurrent-ruby (1.3.7) sha256=4412caec3a5ea2e5fdc52076724c071a81f2c0593d83b2ac8cbb8ca63b3151b0
+  concurrent-ruby (1.3.8) sha256=b2f1be836e968ccc78ccfce277ea79c72a88633f22306782c16ff23fb415d1e1
   date (3.5.1) sha256=750d06384d7b9c15d562c76291407d89e368dda4d4fff957eb94962d325a0dc0
   deep_merge (1.2.2) sha256=83ced3a3d7f95f67de958d2ce41b1874e83c8d94fe2ddbff50c8b4b82323563a
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
-  erb (6.0.4) sha256=38e3803694be357fe2bfe312487c74beaf9fb4e5beb3e22498952fe1645b95d9
+  erb (6.0.6) sha256=a9b24986700f5bf127c4f297c5403c3ca41b83b0a316c0cd09a096b56e644ae5
   facterdb (4.4.0) sha256=821359d051290389f54aac80f52342809519cad67262f9c1c86fbdf9adee01af
   faker (3.8.0) sha256=c147b308df73a90f27a4fc84f18d4c22ef0ad9c2a64b2b61c86fd0ca71753efc
   faraday (2.14.3) sha256=1882247e6766615c8220b4392bf1d27f6ebb63d8e28267587cef1fb0bf37f278
@@ -324,34 +284,28 @@ CHECKSUMS
   fiddle (1.1.8) sha256=7fa8ee3627271497f3add5503acdbc3f40b32f610fc1cf49634f083ef3f32eee
   forwardable (1.4.0) sha256=f1cd40cc9812937980e1c76f1aa053660990a7c9b6a98fc37d945468afcce838
   getoptlong (0.2.1) sha256=fd23f07397b994bf9310d4531cfdb4332629a9b8e8c9c457c32b7edf5bf21ba5
-  hana (1.3.7) sha256=5425db42d651fea08859811c29d20446f16af196308162894db208cac5ce9b0d
   hocon (1.4.0) sha256=e71023ed7c56ae780ec34c0ce7789a233bcead08c045d50bc7b3af40f5afcd80
   i18n (1.15.2) sha256=00f9eb62412fe593b2a65a97daa75300d37abb8f7202ec748e94b6d46a9dd1b5
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   jgrep (1.5.4) sha256=521585588687103b4d65951c17d29e2ea64edc45babe97f34bce7cfebafe44db
-  json (2.20.0) sha256=9362bc6e55a952b056abf9167cf053358181c904cb70cd6eee0808ea830fc32b
+  json (2.21.2) sha256=1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a
   json-schema (6.2.0) sha256=e8bff46ed845a22c1ab2bd0d7eccf831c01fe23bb3920caa4c74db4306813666
-  json_schemer (2.5.0) sha256=2f01fb4cce721a4e08dd068fc2030cffd0702a7f333f1ea2be6e8991f00ae396
-  language_server-protocol (3.17.0.5) sha256=fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc
   librarian-puppet (7.0.0) sha256=8ac17916345049c0077292c6fff0872ae89dee447ade6a2d004d9d1eed95a077
   librarianp (1.2.0) sha256=660b8a9d82317715d5ef4275bd55a013abbe97cb8f4656542dd5807b56f35649
-  lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
   locale (2.1.5) sha256=1c6803e8aa6bdb2c29e91945d095050601bf6d58474993575adf6f3b89b32ef4
   logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
-  mcp (0.21.0) sha256=316385807c737697f7eba3787e5cceb26e8b0f2e24ee486e89d2b66debf81e70
   metadata-json-lint (5.0.0) sha256=401b277a9832d9dfde496113003bb88312fc3b4656f343056fa188b65d1964a0
   minitar (1.1.0) sha256=38db0cfb6f3801017946cdcd8dc53f2cf3fd41ff752892312bf9a1639c9ea23e
   net-ftp (0.3.9) sha256=307817ccf7f428f79d083f7e36dbb46a9d1d375e0d23027824de1866f0b13b65
   net-http (0.9.1) sha256=25ba0b67c63e89df626ed8fac771d0ad24ad151a858af2cc8e6a716ca4336996
   net-protocol (0.2.2) sha256=aa73e0cba6a125369de9837b8d8ef82a61849360eba0521900e2c3713aa162a8
-  openfact (5.6.1) sha256=4cc79ea89321a1b4f44a75a86cdde496b5f140172552339011947d661f2daba9
-  openvox (8.28.0) sha256=abb39a5f665d77bc4765e7357d0e38f22a183807f112e7b1c6e1fb466c979a1f
+  openfact (5.7.0) sha256=f540d77d93259d410a19e6aebc61f81e78e63c275f8eb01ffb832fdfc87f298c
+  openvox (8.28.1) sha256=a80a30863b817d82a54f076024288c0b1fad8b3efaa76ee162e65185ad639afe
   openvox-strings (7.1.0) sha256=54787ea8da5759657b3b94dac1af2ec458b4fa1d822c96ddefcde36b91ab39ab
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   parallel (1.28.0) sha256=33e6de1484baf2524792d178b0913fc8eb94c628d6cfe45599ad4458c638c970
   parallel_tests (5.7.0) sha256=3f1762c46ca2c223b8af8ef877217f9d76974e191bfa934f2580b58bcf1d005c
-  parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
   pp (0.6.4) sha256=dfcb0fce700c41456265922884f9fe195d7fbb0674a3578e6c0f69588e82b570
   prettyprint (0.2.0) sha256=2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193
   prime (0.1.4) sha256=4d755ebf7c2994a6f3a3fee0d072063be3fff2d4042ebff6cd5eebd4747a225e
@@ -378,17 +332,15 @@ CHECKSUMS
   puppet-lint-unquoted_string-check (4.1.0) sha256=98afd4e01f13da6795e6d510973e02bd275471b4ea4970f3aa4e6c980532a3de
   puppet-lint-variable_contains_upcase (3.0.0) sha256=eca505432445a6efad52d1d4da737245aa0b37976a757cd88596c64df2a65d59
   puppet-lint-version_comparison-check (3.0.0) sha256=7217ba1a56e636a361a924e2d30b3eb37470c9c3eb860f6db0625836cfcc218d
-  puppet-resource_api (2.0.0) sha256=4649fcb5d5e5f8cbda0887f706b95be5b52a089bcf98ce8ebf0496c3266fd9c4
+  puppet-resource_api (2.0.1) sha256=6c3c64450a5de34314867cfbb505a5837729a2639fa88885cde634cb76750a33
   puppet-syntax (7.2.0) sha256=f62f84c298fc37a20cca7b7b1155b95016335048bf5f7560121535b6bbad2bdc
   puppet_fixtures (2.2.2) sha256=22892ee8998c827b7068ee11a9ce62ca793199a8cd746678ee2c1eb2cf5d353d
   puppet_forge (6.2.0) sha256=9cde4841a7a6950afeb0c4fec02449931179863918c0a6e6909cb2a6c6998a0c
-  puppet_metadata (6.2.0) sha256=6911ff864badb70d926104842fea5ab5d20be79d4b11942ca0a3f571770adaa6
+  puppet_metadata (6.3.0) sha256=1a7363eea8e5be32ad603b0ddeb166e12dff2c520c8dd3b78e1d8d23b651c7c3
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
-  rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
-  rbs (4.0.3) sha256=5a7bf70e2628549d9a1f44eae447b2cfe55968a9c60cfff52693a4bdcc020e14
+  rbs (4.1.1) sha256=1bf118f2f95d1cd3956357645d495152b661e0257e57781d18ceecd461622b9e
   rdoc (8.0.0) sha256=03bf8c08a9639658855a0cfd77c0abca8325c227693f7f33f82957811348c469
-  regexp_parser (2.12.0) sha256=35a916a1d63190ab5c9009457136ae5f3c0c7512d60291d0d1378ba18ce08ebb
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
   rgen (0.10.2) sha256=d978f84887a0b4815ff3a0e0c4d43a15cdeeac9fd4da02db8ec3ecd0f222f371
   rspec (3.13.2) sha256=206284a08ad798e61f86d7ca3e376718d52c0bc944626b2349266f239f820587
@@ -400,14 +352,8 @@ CHECKSUMS
   rspec-puppet-facts (6.2.0) sha256=7dd8c357f257d9cb328d7e9313e11456fa12c40cb08981b489e13c51cafd5192
   rspec-support (3.13.7) sha256=0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c
   rsync (1.0.9) sha256=bbdb69727a7cf17a26be5dce197d15957dfaf8ed4814811da6b1ef17f0110b5d
-  rubocop (1.85.1) sha256=3dbcf9e961baa4c376eeeb2a03913dca5e3987033b04d38fa538aa1e7406cc77
-  rubocop-ast (1.49.1) sha256=4412f3ee70f6fe4546cc489548e0f6fcf76cafcfa80fa03af67098ffed755035
-  rubocop-rake (0.7.1) sha256=3797f2b6810c3e9df7376c26d5f44f3475eda59eb1adc38e6f62ecf027cbae4d
-  rubocop-rspec (3.9.0) sha256=8fa70a3619408237d789aeecfb9beef40576acc855173e60939d63332fdb55e2
-  ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   scanf (1.0.0) sha256=533db7f7e5acafea1a145d6c5329cef667a58fbcb7d64379a808ff1199ee1b00
   semantic_puppet (1.1.1) sha256=15ff5b48d7f856549eb66b927a8894d3668b211970c9d7dc07dd4db57f5c7a96
-  simpleidn (0.2.3) sha256=08ce96f03fa1605286be22651ba0fc9c0b2d6272c9b27a260bc88be05b0d2c29
   singleton (0.3.0) sha256=83ea1bca5f4aa34d00305ab842a7862ea5a8a11c73d362cb52379d94e9615778
   spdx-licenses (1.4.0) sha256=953820f3714b5f998b56a2a663ebeac51667a4017392ad53cd30709e8fa4f67d
   syslog (0.4.0) sha256=c4c38ae982fe72903ec41094b5e5f2dcbbc66f510d0225c9702e5e980d827472
@@ -415,12 +361,10 @@ CHECKSUMS
   time (0.4.2) sha256=f324e498c3bde9471d45a7d18f874c27980e9867aa5cfca61bebf52262bc3dab
   timeout (0.6.1) sha256=78f57368a7e7bbadec56971f78a3f5ecbcfb59b7fcbb0a3ed6ddc08a5094accb
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
-  unicode-display_width (3.2.0) sha256=0cdd96b5681a5949cdbc2c55e7b420facae74c4aaf9a9815eee1087cb1853c42
-  unicode-emoji (4.2.0) sha256=519e69150f75652e40bf736106cfbc8f0f73aa3fb6a65afe62fefa7f80b0f80f
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
   voxpupuli-puppet-lint-plugins (7.0.0) sha256=68d903c7b0bd3e27ef246cf0618762f68abeb8b8d700d77804a7546e5c6cfabd
-  voxpupuli-test (14.0.0) sha256=51151e50828949aa1512edde3f4701e8573757a60714ececaf157a9ed1ee7e93
-  yard (0.9.44) sha256=eb087e9b631ccd887b049f303d489963945452d5e2a7eb49a5a74a7cf6887f28
+  voxpupuli-test (14.0.0)
+  yard (0.9.45) sha256=52e211493f7cb8a3ebf7e104a25a1e73937a3103092545d34cb88fafebb3dc51
 
 BUNDLED WITH
   4.0.9
