@@ -61,6 +61,17 @@ jobs:
       run: bundle exec rake metadata_lint
     - name: rake metadata.json
       run: bundle exec rake validate:strings
+    # Forbid gems that we've seen show up as useless recursive dependencies,
+    # especially if they have a history of security vulnerabilities.
+    # Gems may be removed from this list if we decide to use them intentionally.
+    - name: Check for forbidden gems
+      run: |
+        for gem in mcp; do
+          if bundle list | grep -q "\b$gem\b"; then
+            echo "❌ Forbidden gem '$gem' found in bundle!"
+            exit 1
+          fi
+        done
 
   spec:
     name: "${{ matrix.os }}"
