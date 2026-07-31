@@ -203,14 +203,15 @@ describe "nebula::haproxy::service" do
                                          "path_end" => [".abc", ".def"]})
             end
 
-            ["acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt",
+            [
+              "acl whitelist_path_beg path_beg -n -f /etc/haproxy/svc1_whitelist_path_beg.txt",
               "acl whitelist_path_end path_end -n -f /etc/haproxy/svc1_whitelist_path_end.txt",
-              "use_backend svc1-dc1-https-back-exempt if whitelist_path_beg OR whitelist_path_end"]
-              .each do |fragment|
-                it do
-                  expect(subject).to contain_concat_fragment("svc1-dc1-https frontend")
-                    .with_content(%r{#{fragment}})
-                end
+              "use_backend svc1-dc1-https-back-exempt if whitelist_path_beg OR whitelist_path_end"
+            ].each do |fragment|
+              it do
+                expect(subject).to contain_concat_fragment("svc1-dc1-https frontend")
+                  .with_content(/#{Regexp.escape(fragment)}/)
+              end
             end
 
             it do
