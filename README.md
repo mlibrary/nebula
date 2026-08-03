@@ -13,6 +13,12 @@ ruby 3.2.10
 
 # bundle
 bundle install
+# check/update Gemfile.lock
+bundle outdated
+bundle update --all
+# check/update standard.gemfile.lock
+BUNDLE_GEMFILE=standard.gemfile bundle outdated
+BUNDLE_GEMFILE=standard.gemfile bundle update --all
 
 # list all rake tasks
 bin/rake -T
