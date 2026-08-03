@@ -395,24 +395,16 @@ groups:
     annotations:
       summary: 'MySQL Connection Count is approaching MAX on {{$labels.hostname}}'
       description: 'MySQL Connection Count is approaching MAX'
-  - alert: "EtcdDatabaseFillingUpFast"
+  - alert: "EtcdDatabaseTooBig"
     expr: >
-      max by (datacenter) (delta(etcd_debugging_mvcc_db_total_size_in_bytes[5m])) > 10000
-    for: "30m"
+      max by (datacenter) (etcd_mvcc_db_total_size_in_bytes) > 2 ^ 30
+    for: "5m"
     labels:
-      severity: "ticket"
+      severity: "page"
     annotations:
-      summary: "{{$labels.datacenter}} etcd db filling up fast"
+      summary: "{{$labels.datacenter}} etcd db larger than 1Gi"
       dashboard: "https://grafana.lib.umich.edu/d/aeihrf5qwmccge/all-etcd-clusters"
-  - alert: "BigEtcdDatabase"
-    expr: >
-      max by (datacenter) (etcd_debugging_mvcc_db_total_size_in_bytes) > 500 * 1024 * 1024
-    for: "30m"
-    labels:
-      severity: "ticket"
-    annotations:
-      summary: "{{$labels.datacenter}} etcd db larger than 500Mi"
-      dashboard: "https://grafana.lib.umich.edu/d/aeihrf5qwmccge/all-etcd-clusters"
+      documentation: "https://mlit.atlassian.net/wiki/spaces/AE/pages/11758764039/How+to+repair+etcd+when+its+mvcc+database+fills+up"
   - alert: "HAProxyRunningCloseToFrontendSessionLimit"
     expr: "haproxy_frontend_limit_sessions - haproxy_frontend_current_sessions < 5000"
     for: "30m"
