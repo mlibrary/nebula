@@ -397,7 +397,7 @@ groups:
       description: 'MySQL Connection Count is approaching MAX'
   - alert: "EtcdDatabaseTooBig"
     expr: >
-      max by (datacenter) (etcd_mvcc_db_total_size_in_bytes) > 2 ^ 30
+      max by (datacenter) (etcd_mvcc_db_total_size_in_bytes) > 1 * 1024 * 1024 * 1024
     for: "5m"
     labels:
       severity: "page"
