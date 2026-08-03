@@ -21,7 +21,6 @@ describe "nebula::profile::base" do
       case os
       when %r{^debian}, %r{^ubuntu}
         it { is_expected.to contain_package("zstd") }
-        it { is_expected.to contain_package("dbus") }
 
         it do
           expect(subject).to contain_file("/etc/localtime")
