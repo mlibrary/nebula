@@ -44,7 +44,7 @@ jobs:
       run: bundle exec standardrb
 
   validate:
-    name: rake validate
+    name: lint
     needs: setup_tests
     runs-on: ubuntu-24.04-arm
     steps:
@@ -52,7 +52,7 @@ jobs:
     - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
       with:
         bundler-cache: true
-    # identical to `rake validate` task, broken up into individual sub-tasks
+    # `rake test`, minus rspec
     - name: rake validate:ruby
       run: bundle exec rake validate:ruby
     - name: rake syntax
@@ -61,6 +61,8 @@ jobs:
       run: bundle exec rake metadata_lint
     - name: rake metadata.json
       run: bundle exec rake validate:strings
+    - name: lint puppet syntax
+      run: bundle exec rake lint
     # Forbid gems that we've seen show up as useless recursive dependencies,
     # especially if they have a history of security vulnerabilities.
     # Gems may be removed from this list if we decide to use them intentionally.
