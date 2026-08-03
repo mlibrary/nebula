@@ -20,7 +20,7 @@ class nebula::profile::mariadb::server (
 
   # /usr/bin/mariabackup is a useless symlink, breaks tab completion
   file { '/usr/bin/mariabackup':
-    ensure => absent,
+    ensure  => absent,
     require => Package['mariadb-backup'];
   }
 
