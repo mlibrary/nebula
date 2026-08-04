@@ -7,6 +7,9 @@ fixtures:
     archive:
       repo: puppet/archive
       ref: 8.1.0
+    cron:
+      repo: puppet/cron
+      ref: 5.0.0
     kmod:
       repo: puppet/kmod
       ref: 5.0.0

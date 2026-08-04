@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -euo pipefail
+
+BACKUP_DIR='<%= @backup_path %>/<%= @networking['hostname'] %>'
+BACKUP_WIP="${BACKUP_DIR}.backup_in_progress"
+
+# rm failed or incomplete backup
+trap 'rm -rf "$BACKUP_WIP"' ERR EXIT
+
+rm -rf "$BACKUP_WIP"
+mkdir -p "$BACKUP_WIP"
+
+START_TIMESTAMP=$(date '+%s')
+
+mariadb-dump --all-databases --opt --flush-logs --hex-blob --single-transaction --user=root \
+<% @_backup_ignore_table.each do |t| -%>
+  --ignore-table=<%= t %> \
+<% end -%>
+<% @_backup_ignore_table_data.each do |t| -%>
+  --ignore-table-data=<%= t %> \
+<% end -%>
+  | zstd --threads=0 --quiet -o "${BACKUP_WIP}/$(date +"%F%Z%T").sql.zst"
+
+# $BACKUP_WIP is a good backup, don't delete it if we __somehow__ fail now
+trap - ERR EXIT
+
+# pivot new backup into place
+rm -rf "$BACKUP_DIR"
+mv "$BACKUP_WIP" "$BACKUP_DIR"
+
+pushgateway -j db_backup -b "$START_TIMESTAMP"
