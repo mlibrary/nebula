@@ -3,7 +3,9 @@
 .yardoc
 .yardwarns
 *.iml
-/.bundle/
+!/.bundle/
+/.bundle/*
+!/.bundle/config
 /.idea/
 /.vagrant/
 /coverage/
