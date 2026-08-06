@@ -31,6 +31,8 @@ class nebula::profile::prometheus (
 
   file { '/var/lib/prometheus/pushgateway':
     ensure => 'directory',
+    owner  => 'prometheus',
+    group  => 'prometheus',
   }
 
   file { '/etc/default/prometheus-pushgateway':
