@@ -36,7 +36,12 @@ describe "nebula::profile::prometheus" do
           .that_requires("Exec[divert /etc/prometheus/prometheus.yml]")
       end
 
-      it { is_expected.to contain_file("/var/lib/prometheus/pushgateway").with_ensure("directory") }
+      it do
+        is_expected.to contain_file("/var/lib/prometheus/pushgateway")
+          .with_ensure("directory")
+          .with_owner("prometheus")
+          .with_group("prometheus")
+      end
 
       it do
         is_expected.to contain_file("/etc/default/prometheus-pushgateway")
