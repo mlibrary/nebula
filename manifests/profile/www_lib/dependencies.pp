@@ -9,20 +9,13 @@
 # @example
 #   include nebula::profile::www_lib::dependencies
 class nebula::profile::www_lib::dependencies {
-  $jdk_version = lookup('nebula::jdk_version')
-  if $jdk_version == '8' {
-    $java_source = 'temurin'
-  } else {
-    $java_source = 'openjdk'
-  }
-
   ensure_packages (
     [
       'curl',
       'git',
       'emacs',
       'imagemagick',
-      "${java_source}-${jdk_version}-jre",
+      'default-jre-headless',
     ]
   )
 }

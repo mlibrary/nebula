@@ -23,7 +23,7 @@ class nebula::profile::www_lib::apache::base {
 
   class { 'nebula::profile::monitor_pl':
     directory     => $nebula::profile::apache::monitoring::monitor_dir,
-    shibboleth    => true,
+    shibboleth    => false,
     solr_cores    => lookup('nebula::www_lib::monitor::solr_cores'),
     http_checks   => lookup('nebula::www_lib::monitor::http_checks',
     default_value => []),
@@ -57,18 +57,5 @@ class nebula::profile::www_lib::apache::base {
   include apache::mod::proxy_http
   include apache::mod::reqtimeout
   include apache::mod::setenvif
-  class { 'apache::mod::shib': }
   include apache::mod::xsendfile
-
-  file { '/etc/apache2/mods-available/shib2.conf':
-    ensure  => 'file',
-    content => template('nebula/profile/www_lib/shib2.conf.erb'),
-    require => File['/etc/apache2/mods-available'],
-  }
-
-  file { '/etc/apache2/mods-enabled/shib2.conf':
-    ensure  => 'link',
-    target  => '/etc/apache2/mods-available/shib2.conf',
-    require => File['/etc/apache2/mods-available/shib2.conf'],
-  }
 }

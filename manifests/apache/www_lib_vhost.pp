@@ -60,12 +60,6 @@ define nebula::apache::www_lib_vhost (
   if($auth_openidc) {
     $auth_openidc_fragment = @("EOT")
       OIDCRedirectURI ${auth_openidc_redirect_uri}
-      # For www_lib, we are sure that Shibboleth is installed, and we must
-      # disable its "compatibility mode" with valid-user, or mod_auth_openidc never
-      # gets a chance at the request. The name of the option and its docs
-      # imply the reverse, but we want Compat On.
-      # https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPApacheConfig#NativeSPApacheConfig-Server/VirtualHostOptions
-      ShibCompatValidUser On
     |EOT
   } else {
     $auth_openidc_fragment = ''

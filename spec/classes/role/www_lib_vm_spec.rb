@@ -25,23 +25,6 @@ describe "nebula::role::webhost::www_lib_vm" do
 
       it { is_expected.to contain_apache__vhost("000-default-ssl").with(ssl: true, ssl_cert: "/etc/ssl/certs/lib.umich.edu.crt") }
 
-      it "configures shibboleth" do
-        expect(subject).to contain_class("nebula::profile::shibboleth")
-          .with(startup_timeout: 900)
-          .with(watchdog_minutes: "*/30")
-      end
-
-      it do
-        expect(subject).to contain_file("/etc/apache2/mods-available/shib2.conf")
-          .with_content(%r{SetHandler shib-handler})
-      end
-
-      it do
-        expect(subject).to contain_file("/etc/apache2/mods-enabled/shib2.conf")
-          .with_ensure("link")
-          .with_target("/etc/apache2/mods-available/shib2.conf")
-      end
-
       it do
         expect(subject).to contain_apache__vhost("www.lib-ssl")
           .with(servername: "www.lib.umich.edu",
@@ -163,7 +146,8 @@ describe "nebula::role::webhost::www_lib_vm" do
         # SSL offloading
         expect(subject).to contain_apache__vhost("maps.publishing-https")
           .with_servername("https://maps.publishing.umich.edu")
-          .with_ssl(false)
+          .with_ssl_cert("/etc/ssl/certs/maps.publishing.umich.edu.crt")
+          .with_ssl(true)
           .with_port(443)
       end
 
@@ -198,7 +182,6 @@ describe "nebula::role::webhost::www_lib_vm" do
 
       it { is_expected.to contain_cron("purge apache access logs 1/2") }
       it { is_expected.to contain_cron("purge apache access logs 2/2") }
-      it { is_expected.to contain_cron("shibd existence check") }
       it { is_expected.to contain_cron("staff.lib parse") }
       it { is_expected.to contain_cron("Proactively scan the log files for suspcious activity") }
     end

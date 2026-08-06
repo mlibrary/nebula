@@ -42,7 +42,6 @@ class nebula::profile::apache::authz_umichlib (
   # not in ensure_packages.
   ensure_packages (
     [
-      'libdbd-oracle-perl',
       'libaprutil1-dbd-oracle',
       'oracle-instantclient12.1-basic',
       'oracle-instantclient12.1-devel',

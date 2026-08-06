@@ -69,10 +69,6 @@ class nebula::profile::www_lib::vhosts::redirects (
     ],
   }
 
-  nebula::apache::redirect_vhost_http { 'mazebooks.org':
-    serveraliases => ['www.mazebooks.org'],
-  }
-
   nebula::apache::redirect_vhost_http { 'www.maizebooks.org':
     target => 'http://www.publishing.umich.edu/'
   }

@@ -30,7 +30,6 @@ class nebula::profile::www_lib::perl {
     'libdata-section-simple-perl',
     'libdate-manip-perl',
     'libdbd-mysql-perl',
-    'libdbd-oracle-perl',
     'libdbi-perl',
     'libdbix-class-perl',
     'libdigest-sha-perl',
@@ -118,8 +117,8 @@ class nebula::profile::www_lib::perl {
     'libxml-sax-expat-perl',
     'libxml-sax-perl',
     'libxml-xpath-perl',
-    'libyaml-perl',
     'libyaml-syck-perl',
+    'libaio1t64',
   ])
 
   nebula::cpan { [
@@ -134,6 +133,13 @@ class nebula::profile::www_lib::perl {
     'UNIVERSAL::can',
     'UNIVERSAL::isa',
     'WebService::Solr::Tiny']:
+  }
+
+  # ONLY WORKS ON TRIXIE - libaio is symlinked as the oracle expects
+  file { '/usr/lib/x86_64-linux-gnu/libaio.so.1':
+    ensure  => 'link',
+    target  => '/usr/lib/x86_64-linux-gnu/libaio.so.1t64',
+    require => Package['libaio1t64'],
   }
 
   # Install all software before adding any cpan modules.
