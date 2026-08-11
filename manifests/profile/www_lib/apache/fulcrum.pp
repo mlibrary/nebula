@@ -19,57 +19,16 @@ class nebula::profile::www_lib::apache::fulcrum (
       ssl_cn   => 'fulcrum.org',
       priority => '08',
     ;
-
-    'northwestern.fulcrumscholar.org':
-      target        => 'https://www.fulcrum.org/northwestern',
-      serveraliases => ['northwestern.fulcrum.org', 'northwestern.fulcrumservices.org'],
-    ;
-
-    'minnesota.fulcrumscholar.org':
-      target        => 'https://www.fulcrum.org/minnesota',
-      serveraliases => ['minnesota.fulcrum.org', 'minnesota.fulcrumservices.org'],
-    ;
-
-    'michigan.fulcrumscholar.org':
-      target        => 'https://www.fulcrum.org/michigan',
-      serveraliases => ['michigan.fulcrum.org', 'michigan.fulcrumservices.org'],
-    ;
-
-    'indiana.fulcrumscholar.org':
-      target        => 'https://www.fulcrum.org/indiana',
-      serveraliases => ['indiana.fulcrum.org', 'indiana.fulcrumservices.org'],
-    ;
-
-    'pennstate.fulcrumscholar.org':
-      target        => 'https://www.fulcrum.org/pennstate',
-      serveraliases => ['pennstate.fulcrum.org', 'pennstate.fulcrumservices.org'],
-    ;
-
-    'nyupress.fulcrumscholar.org':
-      target        => 'https://www.fulcrum.org/nyupress',
-      serveraliases => ['nyupress.fulcrum.org', 'nyupress.fulcrumservices.org'],
-    ;
-
-    'dialogue.fulcrumscholar.org':
-      target        => 'https://www.fulcrum.org/dialogue',
-      serveraliases => ['dialogue.fulcrum.org', 'dialogue.fulcrumservices.org'],
-    ;
   }
 
   nebula::apache::redirect_vhost_https { 'fulcrum.org':
     priority      => '14',
     serveraliases => [
       'fulcrum.pub',
-      'fulcrumscholar.org',
-      'fulcrumscholar.com',
-      'fulcrumscholar.net',
       'fulcrumservices.org',
       'fulcrumservices.net',
       '*.fulcrum.org',
       '*.fulcrum.pub',
-      '*.fulcrumscholar.org',
-      '*.fulcrumscholar.com',
-      '*.fulcrumscholar.net',
       '*.fulcrumservices.org',
       '*.fulcrumservices.net'
     ],

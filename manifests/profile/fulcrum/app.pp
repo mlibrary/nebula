@@ -9,10 +9,6 @@ class nebula::profile::fulcrum::app (
   String $private_address_template = '192.168.0.%s',
   String $image_magick_secret = 'secret',
 ) {
-  # let's just try installing openjdk 11 headless
-  # openjdk 8 isn't available and there is no temurin headless
-  $jdk_version = '11'
-
   class { 'nebula::profile::networking::private':
     address_template => $private_address_template
   }
@@ -27,14 +23,18 @@ class nebula::profile::fulcrum::app (
     'ghostscript',
     'libreoffice',
     'libjemalloc2',
-    'netpbm-sf',
-    "openjdk-${jdk_version}-jre-headless",
+    'netpbm',
+    'temurin-11-jre',
     'pdftk',
     'qpdf',
     'shared-mime-info',
     'unzip',
     'zip',
     'screen',
+    'mediainfo',
+    'libmediainfo-dev',
+    'pkg-config',
+    'libyaml-perl',
     'poppler-utils',
   ])
 
@@ -56,6 +56,13 @@ class nebula::profile::fulcrum::app (
   file { '/etc/sudoers.d/fulcrum':
     content => template('nebula/profile/fulcrum/sudoers.erb'),
     require => Package['sudo'],
+  }
+
+  file { '/fulcrum':
+    ensure => 'directory',
+    owner  => 'fulcrum',
+    group  => 'fulcrum',
+    mode   => '0755',
   }
 
   file { '/fulcrum/data':
@@ -113,9 +120,9 @@ class nebula::profile::fulcrum::app (
     extract       => true,
     creates       => '/usr/local/fits/fits.sh',
     extract_path  => '/usr/local/fits',
-    source        => 'https://projects.iq.harvard.edu/files/fits/files/fits-1.3.0.zip',
-    checksum      => '9c1b020afdd2e9a65a62128fa5ec6a6f86f77de9',
-    checksum_type => 'sha1',
+    source        => 'https://github.com/fitstool/fits/releases/download/1.6.0/fits-1.6.0.zip',
+    checksum      => '32e436effe7251c5b067ec3f02321d5baf4944b3f0d1010fb8ec42039d9e3b73',
+    checksum_type => 'sha256',
     cleanup       => true,
     require       => [
       File['/usr/local/fits'],
@@ -127,12 +134,7 @@ class nebula::profile::fulcrum::app (
     ensure => directory,
   }
 
-  file { '/usr/local/bin/fits.sh':
-    ensure => 'symlink',
-    target => '/usr/local/fits/fits.sh',
-  }
-
-  file { '/etc/ImageMagick-6/policy.xml':
+  file { '/etc/ImageMagick-7/policy.xml':
     content => template('nebula/profile/fulcrum/imagemagick-policy.xml.erb'),
     require => Package['imagemagick'],
   }
@@ -188,6 +190,24 @@ class nebula::profile::fulcrum::app (
     enable  => true,
     require => [
       File['/etc/systemd/system/fulcrum.target'],
+    ],
+  }
+
+  service { 'fulcrum-resque':
+    ensure  => 'running',
+    name    => 'fulcrum-resque.service',
+    enable  => true,
+    require => [
+      File['/etc/systemd/system/fulcrum-resque.service'],
+    ],
+  }
+
+  service { 'fulcrum-rails':
+    ensure  => 'running',
+    name    => 'fulcrum-rails.service',
+    enable  => true,
+    require => [
+      File['/etc/systemd/system/fulcrum-rails.service'],
     ],
   }
 
