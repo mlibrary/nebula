@@ -35,10 +35,10 @@ class nebula::profile::networking (
   #       && echo "AEIM-1064 no longer applies; get rid of the fix" \
   #       || echo "AEIM-1064 still applies; leave the ugly hack alone"
   exec { default:
-    subscribe   => Service['procps', 'sshd'],
+    subscribe   => Service['procps', 'ssh'],
     refreshonly => true,
     ;
     '/bin/systemctl status procps':;
-    '/bin/systemctl status sshd':;
+    '/bin/systemctl status ssh':;
   }
 }

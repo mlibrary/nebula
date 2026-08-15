@@ -28,10 +28,10 @@ describe "nebula::profile::networking" do
 
       # This is an ugly hack for fixing AEIM-1064. See base.pp for
       # more details about when it might be safe to remove this.
-      %w[procps sshd].each do |service|
+      %w[procps ssh].each do |service|
         it do
           expect(subject).to contain_exec("/bin/systemctl status #{service}")
-            .that_subscribes_to(["Service[procps]", "Service[sshd]"])
+            .that_subscribes_to(["Service[procps]", "Service[ssh]"])
             .with_refreshonly(true)
         end
       end
