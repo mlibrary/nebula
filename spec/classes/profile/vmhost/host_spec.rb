@@ -55,7 +55,7 @@ describe "nebula::profile::vmhost::host" do
         it { is_expected.to contain_vm("vmname").with_disk(0) }
         it { is_expected.to contain_vm("vmname").with_ram(0) }
         it { is_expected.to contain_vm("vmname").with_domain("default.domain.invalid") }
-        it { is_expected.to contain_vm("vmname").with_filehost("default.filehost.invalid") }
+        it { is_expected.to contain_vm("vmname").with_puppetserver("default.puppetserver.invalid") }
         it { is_expected.to contain_vm("vmname").with_image_dir("default.image_dir.invalid") }
         it { is_expected.to contain_vm("vmname").with_net_interface("default.iface.invalid") }
         it { is_expected.to contain_vm("vmname").with_internet_bridge("br0") }
@@ -92,11 +92,11 @@ describe "nebula::profile::vmhost::host" do
           it { is_expected.to contain_vm("vmname").with_domain(domain) }
         end
 
-        context "with a random filehost" do
+        context "with a random puppetserver" do
           let(:domain) { Faker::Internet.domain_name }
-          let(:params) { super().merge(filehost: domain) }
+          let(:params) { super().merge(puppetserver: domain) }
 
-          it { is_expected.to contain_vm("vmname").with_filehost(domain) }
+          it { is_expected.to contain_vm("vmname").with_puppetserver(domain) }
         end
 
         context "with a net_interface of eth3" do
