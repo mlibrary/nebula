@@ -22,7 +22,8 @@ describe "nebula::profile::networking::sshd" do
         expect(subject).to contain_service("ssh").only_with(
           ensure: "running",
           enable: true,
-          hasrestart: true
+          hasrestart: true,
+          require: "Package[openssh-server]"
         )
       end
 

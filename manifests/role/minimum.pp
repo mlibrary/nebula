@@ -27,6 +27,7 @@ class nebula::role::minimum (
       package { 'iptables-persistent': ensure => purged }
     }
 
+    include nebula::profile::networking::sshd
     include nebula::profile::networking::firewall::private_ssh
     include nebula::profile::apt
     include nebula::profile::vim
