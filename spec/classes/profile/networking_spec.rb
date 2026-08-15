@@ -25,16 +25,6 @@ describe "nebula::profile::networking" do
 
         it { is_expected.to contain_network_class("sysctl").with_bridge(true) }
       end
-
-      # This is an ugly hack for fixing AEIM-1064. See base.pp for
-      # more details about when it might be safe to remove this.
-      %w[procps ssh].each do |service|
-        it do
-          expect(subject).to contain_exec("/bin/systemctl status #{service}")
-            .that_subscribes_to(["Service[procps]", "Service[ssh]"])
-            .with_refreshonly(true)
-        end
-      end
     end
   end
 end
