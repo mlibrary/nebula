@@ -82,4 +82,4 @@ fixtures:
   repositories:
     proxmox:
       repo: https://github.com/mlibrary/puppet-proxmox
-      ref: v0.1.0
+      ref: v0.1.3
