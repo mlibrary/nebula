@@ -3,7 +3,6 @@
 --no-strict_indent-check
 --no-trailing_comma-check
 --no-lookup_in_parameter-check
---no-parameter_documentation-check
 --no-parameter_types-check
 --no-params_empty_string_assignment-check
 --no-exec_idempotency-check
