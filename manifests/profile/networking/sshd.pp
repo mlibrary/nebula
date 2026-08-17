@@ -20,7 +20,7 @@ class nebula::profile::networking::sshd (
   include nebula::profile::networking::keytab
   $gssapi_auth = defined(File['/etc/krb5.keytab'])
 
-  service { 'sshd':
+  service { 'ssh':
     ensure     => 'running',
     enable     => true,
     hasrestart => true,
@@ -32,7 +32,7 @@ class nebula::profile::networking::sshd (
 
   file { '/etc/ssh/sshd_config.d/50-lit.conf':
     content => template('nebula/profile/networking/sshd_config.erb'),
-    notify  => Service['sshd'],
+    notify  => Service['ssh'],
   }
 
   exec { 'divert pam.d/sshd':

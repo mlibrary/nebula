@@ -53,6 +53,7 @@ describe "nebula::profile::kubernetes::router" do
       it "configures sshd MaxStartups" do
         is_expected.to contain_file("/etc/ssh/sshd_config.d/70-MaxStartups.conf")
           .with_content(/^MaxStartups 100$/)
+          .that_notifies("Service[ssh]")
       end
 
       context "with cluster set to second_cluster" do
