@@ -30,8 +30,6 @@ describe "nebula::profile::known_host_public_keys" do
           }
         end
 
-        it { is_expected.to compile }
-
         it "exports an ssh_known_hosts line for its ecdsa key" do
           expect(exported_resources).to contain_concat_fragment("known host example.invalid ecdsa")
             .with_target("/etc/ssh/ssh_known_hosts")
@@ -45,6 +43,19 @@ describe "nebula::profile::known_host_public_keys" do
             .with_tag("known_host_public_keys")
             .with_content("example.invalid ssh-rsa rsa_key\n")
         end
+      end
+
+      context "with fqdn of example.invalid and no ssh public keys" do
+        let(:facts) do
+          {
+            networking: {
+              ip: "0.1.2.3",
+              fqdn: "example.invalid"
+            }
+          }
+        end
+
+        it { is_expected.to compile }
       end
     end
   end
