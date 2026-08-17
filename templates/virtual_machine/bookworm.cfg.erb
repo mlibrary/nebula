@@ -481,5 +481,6 @@ d-i preseed/late_command string                        \
     in-target apt-get update -qq;                      \
     in-target apt-get install -qq -y openvox-agent;    \
     in-target systemctl enable puppet;                 \
-    echo '[agent]'                        > /target/etc/puppetlabs/puppet/puppet.conf; \
-    echo 'server = <%= @puppetserver %>' >> /target/etc/puppetlabs/puppet/puppet.conf
+    echo '[agent]'                            > /target/etc/puppetlabs/puppet/puppet.conf; \
+    echo 'environment = <%= @environment %>' >> /target/etc/puppetlabs/puppet/puppet.conf; \
+    echo 'server = <%= @puppetserver %>'     >> /target/etc/puppetlabs/puppet/puppet.conf
