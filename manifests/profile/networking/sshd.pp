@@ -20,18 +20,16 @@ class nebula::profile::networking::sshd (
   include nebula::profile::networking::keytab
   $gssapi_auth = defined(File['/etc/krb5.keytab'])
 
-  service { 'ssh':
-    ensure     => 'running',
-    enable     => true,
-    hasrestart => true,
-  }
+  include nebula::profile::networking::sshd::common
 
   file { '/etc/ssh/ssh_config.d/80-lit.conf':
     content => template('nebula/profile/networking/ssh_config.erb'),
+    require => Package['openssh-server'],
   }
 
   file { '/etc/ssh/sshd_config.d/50-lit.conf':
     content => template('nebula/profile/networking/sshd_config.erb'),
+    require => Package['openssh-server'],
     notify  => Service['ssh'],
   }
 
@@ -39,10 +37,12 @@ class nebula::profile::networking::sshd (
     creates => '/etc/pam.d/sshd-defaults',
     timeout => 30,
     command => '/usr/bin/dpkg-divert --rename --divert /etc/pam.d/sshd-defaults --add /etc/pam.d/sshd',
+    require => Package['openssh-server'],
   }
 
   concat_file { '/etc/pam.d/sshd':
     require => Exec['divert pam.d/sshd'],
+    notify  => Service['ssh'],
   }
 
   concat_fragment { '/etc/pam.d/sshd: base':
