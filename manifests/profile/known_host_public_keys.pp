@@ -13,14 +13,16 @@
 # only trusts the hosts; it does not actually grant access through a
 # firewall or anything.
 class nebula::profile::known_host_public_keys {
-  $facts['ssh'].each |$name, $key_obj| {
-    $type = $key_obj["type"]
-    $key = $key_obj["key"]
+  if $facts['ssh'] != undef {
+    $facts['ssh'].each |$name, $key_obj| {
+      $type = $key_obj["type"]
+      $key = $key_obj["key"]
 
-    @@concat_fragment { "known host ${::networking['fqdn']} ${name}":
-      tag     => 'known_host_public_keys',
-      target  => '/etc/ssh/ssh_known_hosts',
-      content => "${::networking['fqdn']} ${type} ${key}\n",
+      @@concat_fragment { "known host ${::networking['fqdn']} ${name}":
+        tag     => 'known_host_public_keys',
+        target  => '/etc/ssh/ssh_known_hosts',
+        content => "${::networking['fqdn']} ${type} ${key}\n",
+      }
     }
   }
 }
