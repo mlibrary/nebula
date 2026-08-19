@@ -21,8 +21,7 @@
 # @param gateway Preseed IPv4 gateway
 # @param nameservers Preseed IPv4 nameservers
 # @param domain Domain to enter in the preseed file
-# @param filehost URL to find preseed files puppetlabs-pc1-keyring.gpg
-#   and puppet.conf
+# @param puppetserver hostname of puppet server
 # @param timeout Number of seconds to wait for the VM to install before
 #   giving up
 #
@@ -41,7 +40,7 @@
 #   nebula::virtual_machine { 'supergood':
 #     $addr     => '2.4.6.8',
 #     $domain   => 'awesome.com',
-#     $filehost => 'preseedfiles.awesome.com',
+#     $puppetserver => 'puppetserver.awesome.com',
 #   }
 #
 # @example Declaring a VM that may take up to 20 minutes to install
@@ -74,7 +73,7 @@ define nebula::virtual_machine (
   String  $lan_bridge      = 'br1',
   Array   $nameservers     = ['192.168.1.1'],
   String  $domain          = 'default.invalid',
-  String  $filehost        = 'files.default.invalid',
+  String  $puppetserver    = 'puppet',
   Integer $timeout         = 600,
 ) {
   require nebula::profile::vmhost::prereqs

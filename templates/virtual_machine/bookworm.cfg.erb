@@ -152,7 +152,7 @@ d-i clock-setup/utc boolean true
 
 # You may set this to any valid setting for $TZ; see the contents of
 # /usr/share/zoneinfo/ for valid values.
-d-i time/zone string US/Eastern
+d-i time/zone string America/Detroit
 
 # Controls whether to use NTP to set the clock during the install
 d-i clock-setup/ntp boolean true
@@ -372,14 +372,10 @@ d-i apt-setup/local0/key string https://apt.voxpupuli.org/openvox-keyring.gpg
 
 
 ### Package selection
-tasksel tasksel/first multiselect standard, ssh-server
+tasksel tasksel/first multiselect standard
 
 # Individual additional packages to install
-d-i pkgsel/include string iptables-persistent dirmngr
-
-# Accept defaults for iptables-persistent package
-iptables-persistent iptables-persistent/autosave_v4 boolean false
-iptables-persistent iptables-persistent/autosave_v6 boolean false
+d-i pkgsel/include string qemu-guest-agent
 
 # Whether to upgrade packages after debootstrap.
 # Allowed values: none, safe-upgrade, full-upgrade
@@ -484,11 +480,6 @@ d-i finish-install/reboot_in_progress note
 d-i preseed/late_command string                        \
     in-target apt-get update -qq;                      \
     in-target apt-get install -qq -y openvox-agent;    \
-    in-target apt-get install -qq -y qemu-guest-agent; \
     in-target systemctl enable puppet;                 \
-    wget -O /target/etc/puppetlabs/puppet/puppet.conf  \
-        https://<%= @filehost %>/puppet.conf;          \
-    wget -O /target/etc/iptables/rules.v4              \
-        https://<%= @filehost %>/rules.v4;             \
-    chmod 600 /target/etc/iptables/rules.v4
-
+    echo '[agent]'                            > /target/etc/puppetlabs/puppet/puppet.conf; \
+    echo 'server = <%= @puppetserver %>'     >> /target/etc/puppetlabs/puppet/puppet.conf
