@@ -90,7 +90,7 @@ define nebula::apache::www_lib_vhost (
     ssl                         => $ssl,
     # unused if ssl is false
     ssl_protocol                => '+TLSv1.2',
-    ssl_cipher                  => 'ECDHE-RSA-AES256-GCM-SHA384',
+    ssl_cipher                  => 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384',
     ssl_cert                    => $ssl_cert,
     ssl_key                     => $ssl_key,
     rewrites                    => $rewrites,
