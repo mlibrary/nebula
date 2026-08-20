@@ -9,7 +9,6 @@
 # @example
 #   include nebula::profile::apache
 class nebula::profile::apache (
-  String $chain_crt = 'incommon_sha2.crt',
   String $ssl_cert_dir = '/etc/ssl/certs',
   String $ssl_key_dir = '/etc/ssl/private',
   Optional[Hash] $log_formats = undef,
@@ -18,21 +17,10 @@ class nebula::profile::apache (
     fact_for($nodename, 'networking')['ip']
   }
 
-  $ssl_chain = "${ssl_cert_dir}/${chain_crt}"
-
-  file { $ssl_chain:
-    mode   => '0644',
-    owner  => 'root',
-    group  => 'root',
-    notify => Class['Apache::Service'],
-    source => "puppet:///ssl-certs/${chain_crt}"
-  }
-
   @nebula::taghosts::tag { 'apache': }
   class { 'apache':
     default_vhost          => false,
     default_ssl_vhost      => false,
-    default_ssl_chain      => $ssl_chain,
     timeout                => 300,
     keepalive_timeout      => 2,
     log_formats            => $log_formats,

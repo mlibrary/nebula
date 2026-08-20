@@ -44,8 +44,6 @@ nebula::profile::www_lib::vhosts::fulcrum::logging_prefix: "heliotrope-productio
 nebula::profile::www_lib::vhosts::fulcrum::app_host: "app-heliotrope-production"
 nebula::profile::www_lib::vhosts::fulcrum::app_port: "30399"
 
-nebula::apache::ssl_keypair::chain_crt: foo.crt
-
 nebula::virtual::users::all_users:
   default_invalid: {}
   cron_friend: {}
