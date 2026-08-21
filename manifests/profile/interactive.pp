@@ -6,17 +6,10 @@
 # @example
 #   include nebula::profile::interactive
 class nebula::profile::interactive {
-  ensure_packages([
-    'fd-find',
+  stdlib::ensure_packages([
     'neovim',
-    'ripgrep',
     'tmux',
     'zsh',
     'git',
   ])
-  file { '/usr/local/bin/fd':
-    ensure  => link,
-    target  => '/usr/bin/fdfind',
-    require => Package['fd-find'],
-  }
 }
