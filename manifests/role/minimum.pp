@@ -33,6 +33,7 @@ class nebula::role::minimum (
     include nebula::profile::vim
     include nebula::profile::elastic::filebeat::configs::ulib
     include nebula::profile::ntp
+    include nebula::profile::plenary_utils
   }
 
   include nebula::profile::taghosts::tags
