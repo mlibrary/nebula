@@ -8,6 +8,5 @@
 #   include nebula::role::mgetit_log
 class nebula::role::mgetit_log {
   include nebula::role::umich
-  include nebula::profile::php73
   include nebula::profile::ruby
 }
