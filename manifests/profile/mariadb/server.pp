@@ -27,6 +27,7 @@ class nebula::profile::mariadb::server (
   @nebula::taghosts::tag { 'mariadb': }
 
   include nebula::profile::mariadb
+  include nebula::profile::prometheus::exporter::mysql
 
   package { default:
     require => [Apt::Source['mariadb'], Package['mariadb-client']];
