@@ -36,7 +36,7 @@ class nebula::profile::prometheus::exporter::mysql () {
     content => template('nebula/profile/prometheus/exporter/mysql/prometheus.my.cnf.erb')
   }
 
-  file { '/var/lib/prometheus/.my.cnf':
+  file { '/etc/systemd/system/prometheus-mysqld-exporter.service.d/override.conf':
     ensure  => file,
     owner   => 'root',
     group   => 'root',
