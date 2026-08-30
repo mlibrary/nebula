@@ -24,6 +24,7 @@ class nebula::profile::hathitrust::apache::babel (
   String $ptsearch_solr_basic_auth,
   Boolean $prod_crms_instance = true,
   Array[String] $cache_paths = [],
+  Boolean $pt_require_auth = false,
 ) {
   ### client cert
 
@@ -73,6 +74,143 @@ class nebula::profile::hathitrust::apache::babel (
   $servername = "${prefix}babel.${domain}"
 
   $imgsrv_address = lookup('nebula::profile::hathitrust::imgsrv::bind');
+
+  $directories1 = [
+      {
+        provider => 'filesmatch',
+        location => '~$',
+        require  => 'all denied'
+      },
+      {
+        provider       => 'directory',
+        location       => $sdrroot,
+        allow_override => ['None'],
+        require        => 'all denied'
+      },
+      {
+        provider              => 'location',
+        path                  => '/',
+        auth_type             => 'shibboleth',
+        require               => {
+          enforce  => 'all',
+          requires => ['shibboleth'] + $default_access['requires']
+        },
+        shib_request_settings => { 'requireSession' => '0', 'discoveryURL' => "https://${servername}/cgi/wayf" }
+      },
+  ]
+  $directories2 = [
+      {
+        provider  => 'location',
+        path      => '/cgi/pt',
+        auth_type =>  'shibboleth',
+        shib_request_settings => { 'requireSession' => '1', 'discoveryURL' => "https://${servername}/cgi/wayf" }
+      },
+      {
+        provider  => 'location',
+        path      => '/cgi/imgsrv',
+        auth_type =>  'shibboleth',
+        shib_request_settings => { 'requireSession' => '1', 'discoveryURL' => "https://${servername}/cgi/wayf" }
+      },
+  ]
+  $directories3 = [
+      {
+        provider => 'directory',
+        path     => "${sdrroot}/firebird-common",
+        require  => $default_access,
+      },
+      {
+        # Grant access to necessary directories under the document root:
+        # ${sdrroot}/*/cgi
+        # ${sdrroot}/*/web
+        # ${sdrroot}/cache
+        #
+        # 2010-10-01 skorner
+        provider => 'directorymatch',
+        path     => "^(${sdrroot}/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/)(.*)",
+        require  => $default_access
+      },
+      {
+        # Enable cgi execution under ${sdrroot}/*/cgi.
+        #
+        # 2010-10-01 skorner
+        provider       => 'directorymatch',
+        path           => "^${sdrroot}/([^/]+)/cgi",
+        allow_override => 'None',
+        options        => '+ExecCGI',
+        sethandler     => 'cgi-script',
+        require        => 'unmanaged'
+      },
+      {
+        # An Apache handler needs to be established for the "handler" location.
+        # This applies the handler to any requests for a resource with a ".sso"
+        # extension.
+        #
+        # Note: this makes *.sso files (and therefore shib session initiation)
+        # public to any shib idp, but the alternatives (maintaining separate
+        # ACLs for *.sso in each vhost, or devising a scheme with environment
+        # variables and ugly IP range regexps) seem unacceptably complex
+        provider   => 'files',
+        path       => '*.sso',
+        sethandler => 'shib-handler',
+        require    => 'all granted'
+      },
+      {
+        provider => 'locationmatch',
+        path     => '^/shibboleth-sp/main.css',
+        require  => 'all granted'
+      },
+      {
+        provider        => 'directory',
+        path            => "${sdrroot}/imgsrv/cgi",
+        require         => 'unmanaged',
+        allow_override  => false,
+        custom_fragment => "
+    <Files \"imgsrv\">
+      SetHandler proxy:fcgi://${imgsrv_address}
+    </Files>",
+      },
+      {
+        provider => 'location',
+        path     => '/monitor',
+        require  => $monitor_requires
+      },
+      {
+        provider => 'location',
+        path     => '/cgi/imgsrv/metrics',
+        require  => $metrics_requires
+      },
+      {
+        provider              => 'location',
+        path                  => '/otis',
+        auth_type             => 'shibboleth',
+        require               => 'shibboleth',
+        shib_request_settings => { 'requireSession' => '0' },
+      },
+      {
+        provider              => 'location',
+        path                  => '/dex/',
+        auth_type             => 'shibboleth',
+        require               => 'shibboleth',
+        shib_request_settings => { 'requireSession' => '0' },
+        request_headers       => ['unset X-Remote-User'],
+        proxy_pass            => [{ url => $dex_endpoint }],
+      },
+      {
+        provider              => 'location',
+        path                  => '/dex/callback/htrc-saml-proxy',
+        auth_type             => 'shibboleth',
+        require               => 'valid-user',
+        shib_request_settings => { 'requireSession' => '1' },
+        request_headers       => ['set X-Remote-User "expr=%{REMOTE_USER}'],
+        proxy_pass            => [{ url => "${dex_endpoint}callback/htrc-saml-proxy" }],
+      }
+  ]
+
+  if $pt_require_auth {
+    $directories = $directories1 + $directories2 + $directories3
+  } else {
+    $directories = $directories1 + $directories3
+  }
 
   apache::vhost { "${servername} ssl":
     servername                  => $servername,
@@ -241,120 +379,7 @@ class nebula::profile::hathitrust::apache::babel (
       },
     ],
 
-    directories                 => [
-      {
-        provider => 'filesmatch',
-        location => '~$',
-        require  => 'all denied'
-      },
-      {
-        provider       => 'directory',
-        location       => $sdrroot,
-        allow_override => ['None'],
-        require        => 'all denied'
-      },
-      {
-        provider              => 'location',
-        path                  => '/',
-        auth_type             => 'shibboleth',
-        require               => {
-          enforce  => 'all',
-          requires => ['shibboleth'] + $default_access['requires']
-        },
-        shib_request_settings => { 'requireSession' => '0', 'discoveryURL' => "https://${servername}/cgi/wayf" }
-      },
-      {
-        provider => 'directory',
-        path     => "${sdrroot}/firebird-common",
-        require  => $default_access,
-      },
-      {
-        # Grant access to necessary directories under the document root:
-        # ${sdrroot}/*/cgi
-        # ${sdrroot}/*/web
-        # ${sdrroot}/cache
-        #
-        # 2010-10-01 skorner
-        provider => 'directorymatch',
-        path     => "^(${sdrroot}/(([^/]+)/(web|cgi)|widgets/([^/]+)/web|cache|mdp-web)/)(.*)",
-        require  => $default_access
-      },
-      {
-        # Enable cgi execution under ${sdrroot}/*/cgi.
-        #
-        # 2010-10-01 skorner
-        provider       => 'directorymatch',
-        path           => "^${sdrroot}/([^/]+)/cgi",
-        allow_override => 'None',
-        options        => '+ExecCGI',
-        sethandler     => 'cgi-script',
-        require        => 'unmanaged'
-      },
-      {
-        # An Apache handler needs to be established for the "handler" location.
-        # This applies the handler to any requests for a resource with a ".sso"
-        # extension.
-        #
-        # Note: this makes *.sso files (and therefore shib session initiation)
-        # public to any shib idp, but the alternatives (maintaining separate
-        # ACLs for *.sso in each vhost, or devising a scheme with environment
-        # variables and ugly IP range regexps) seem unacceptably complex
-        provider   => 'files',
-        path       => '*.sso',
-        sethandler => 'shib-handler',
-        require    => 'all granted'
-      },
-      {
-        provider => 'locationmatch',
-        path     => '^/shibboleth-sp/main.css',
-        require  => 'all granted'
-      },
-      {
-        provider        => 'directory',
-        path            => "${sdrroot}/imgsrv/cgi",
-        require         => 'unmanaged',
-        allow_override  => false,
-        custom_fragment => "
-    <Files \"imgsrv\">
-      SetHandler proxy:fcgi://${imgsrv_address}
-    </Files>",
-      },
-      {
-        provider => 'location',
-        path     => '/monitor',
-        require  => $monitor_requires
-      },
-      {
-        provider => 'location',
-        path     => '/cgi/imgsrv/metrics',
-        require  => $metrics_requires
-      },
-      {
-        provider              => 'location',
-        path                  => '/otis',
-        auth_type             => 'shibboleth',
-        require               => 'shibboleth',
-        shib_request_settings => { 'requireSession' => '0' },
-      },
-      {
-        provider              => 'location',
-        path                  => '/dex/',
-        auth_type             => 'shibboleth',
-        require               => 'shibboleth',
-        shib_request_settings => { 'requireSession' => '0' },
-        request_headers       => ['unset X-Remote-User'],
-        proxy_pass            => [{ url => $dex_endpoint }],
-      },
-      {
-        provider              => 'location',
-        path                  => '/dex/callback/htrc-saml-proxy',
-        auth_type             => 'shibboleth',
-        require               => 'valid-user',
-        shib_request_settings => { 'requireSession' => '1' },
-        request_headers       => ['set X-Remote-User "expr=%{REMOTE_USER}'],
-        proxy_pass            => [{ url => "${dex_endpoint}callback/htrc-saml-proxy" }],
-      }
-    ],
+    directories                 => $directories,
 
     ssl_proxyengine             => true,
     ssl_proxy_check_peer_name   => 'on',
