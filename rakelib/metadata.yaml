@@ -32,6 +32,7 @@ dependencies:
   ref: 7.0.1
   info: 8.0.0 requires puppet 8.19.0, upgrade after we replace puppet master
 - name: puppet/php
+- name: puppet/ssh_keygen
 - name: puppet/systemd
   ref: 9.4.0
   info: 10.0.0 breaks logrotate 9.0.0
