@@ -114,7 +114,7 @@ namespace "forge" do
         mod["repo"] or
           raise "field 'repo' required for modules installed from git"
 
-        fixtures["repositories"] ||= []
+        fixtures["repositories"] ||= {}
         fixtures["repositories"][full_name] = {"repo" => mod["repo"]}
         mod["ref"] and
           fixtures["repositories"][full_name]["ref"] = mod["ref"]

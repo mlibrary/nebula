@@ -79,3 +79,7 @@ fixtures:
     debconf:
       repo: stm/debconf
       ref: 8.0.0
+  repositories:
+    proxmox:
+      repo: https://github.com/mlibrary/puppet-proxmox
+      ref: v0.1.3
