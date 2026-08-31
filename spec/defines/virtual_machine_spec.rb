@@ -97,7 +97,6 @@ describe "nebula::virtual_machine" do
           %r{ -r 1024},
           %r{ --vcpus 2},
           %r{ --location http://ftp\.us\.debian\.org/debian/dists/trixie/main/installer-amd64/},
-          %r{ --os-variant=debianbullseye},
           %r{ --disk '/var/lib/libvirt/images/vmname\.img,size=16'},
           %r{ --network bridge=br0,model=virtio .* --network bridge=br1,model=virtio}m,
           %r{ --console pty,target_type=virtio},
@@ -107,6 +106,13 @@ describe "nebula::virtual_machine" do
           %r{ --initrd-inject '/tmp/\.virtual\.vmname/preseed\.cfg'}
         ].each do |command|
           it { is_expected.to contain_install.with_command(command) }
+        end
+
+        case os
+        when "debian-12-x86_64"
+          it { is_expected.to contain_install.with_command(%r{ --os-variant=debianbullseye}) }
+        else
+          it { is_expected.to contain_install.with_command(%r{ --os-variant=debiantrixie}) }
         end
 
         context "with vmname in the vm_guests fact" do
@@ -321,8 +327,8 @@ describe "nebula::virtual_machine" do
         it { is_expected.not_to compile }
       end
 
-      context "with trixie build name" do
-        let(:params) { {build: "trixie"} }
+      context "with bookworm build name" do
+        let(:params) { {build: "bookworm"} }
 
         [
           %r{^d-i preseed/late_command string\b},
@@ -330,10 +336,17 @@ describe "nebula::virtual_machine" do
         ].each do |line|
           it { is_expected.to contain_preseed.with_content(line) }
         end
+
+        case os
+        when "debian-12-x86_64"
+          it { is_expected.to contain_install.with_command(%r{ --os-variant=debianbullseye}) }
+        else
+          it { is_expected.to contain_install.with_command(%r{ --os-variant=debianbookworm}) }
+        end
       end
 
-      context "with pre-bullseye build name" do
-        let(:params) { {build: "buster"} }
+      context "with pre-bookworm build name" do
+        let(:params) { {build: "bullseye"} }
 
         it { is_expected.not_to compile }
       end
