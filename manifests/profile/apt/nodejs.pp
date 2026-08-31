@@ -9,10 +9,10 @@ class nebula::profile::apt::nodejs (
   Integer $version = 22,
 ) {
   $dist_version = $facts['os']['distro']['codename'] ? {
-    'jammy'    => 12,
-    'bullseye' => 12,
     'bookworm' => 18,
+    'jammy'    => 12,
     'noble'    => 18,
+    'resolute' => 22,
     'trixie'   => 20,
     default    => 9999
   }

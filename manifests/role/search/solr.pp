@@ -13,15 +13,7 @@ class nebula::role::search::solr {
   include nebula::profile::search::catalog::solr
   include nebula::profile::search::catalog::solr_monitor
 
-  case $facts['os']['distro']['codename'] {
-    'bullseye': {
-      include nebula::profile::openjdk_java
-    }
-
-    default: {
-      include nebula::profile::search::openjdk_java
-    }
-  }
+  include nebula::profile::search::openjdk_java
 
   # These three are effectively the requirements for getting user login
   # with kerberos and duo.

@@ -46,7 +46,6 @@ class nebula::profile::afs (
 
   $kmod = $facts['os']['distro']['codename'] ? {
     'jammy'    => 'openafs.ko',
-    'bullseye' => 'openafs.ko',
     'bookworm' => 'openafs.ko',
     'noble'    => 'openafs.ko',
     'trixie'   => 'openafs.ko.xz',
