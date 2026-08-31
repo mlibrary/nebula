@@ -54,13 +54,9 @@ describe "nebula::role::webhost::htvm" do
         is_expected.to contain_class("nebula::profile::users")
       end
 
-      if os == "debian-11-x86_64"
-        it "contains expected php and apache packages" do
-          is_expected.not_to contain_package("php5-common")
-          is_expected.not_to contain_package("php5-dev")
-          is_expected.to contain_package("libapache2-mod-shib")
-          is_expected.not_to contain_package("libapache2-mod-shib2")
-        end
+      it "contains expected apache packages" do
+        is_expected.to contain_package("libapache2-mod-shib")
+        is_expected.not_to contain_package("libapache2-mod-shib2")
       end
 
       it "contains expected groups" do

@@ -35,24 +35,14 @@ describe "nebula::profile::apt" do
           expect(subject).to contain_apt__source("main").with(
             source_format: "sources",
             location: ["http://ftp.us.debian.org/debian/"],
-            repos: case os
-                   when "debian-11-x86_64"
-                     ["main", "contrib", "non-free"]
-                   else
-                     ["main", "contrib", "non-free", "non-free-firmware"]
-                   end
+            repos: ["main", "contrib", "non-free", "non-free-firmware"]
           )
         end
 
         it do
           expect(subject).to contain_apt__source("security").with(
             source_format: "sources",
-            repos: case os
-                   when "debian-11-x86_64"
-                     ["main", "contrib", "non-free"]
-                   else
-                     ["main", "contrib", "non-free", "non-free-firmware"]
-                   end
+            repos: ["main", "contrib", "non-free", "non-free-firmware"]
           )
         end
 
@@ -103,12 +93,7 @@ describe "nebula::profile::apt" do
             source_format: "sources",
             location: ["http://ftp.us.debian.org/debian/"],
             release: "#{facts[:os]["distro"]["codename"]}-updates",
-            repos: case os
-                   when "debian-11-x86_64"
-                     ["main", "contrib", "non-free"]
-                   else
-                     ["main", "contrib", "non-free", "non-free-firmware"]
-                   end
+            repos: ["main", "contrib", "non-free", "non-free-firmware"]
           )
         end
 
