@@ -17,7 +17,7 @@ class nebula::resolv_conf (
 
   # we never want systemd-resolved
   # on older Debian releases it's part of systemd, so we can't purge it
-  if $facts['os']['distro']['codename'] in ['jammy','bullseye'] {
+  if $facts['os']['distro']['codename'] in ['jammy'] {
     service { 'systemd-resolved':
       ensure => stopped,
       enable => false,

@@ -22,7 +22,7 @@ describe "nebula::profile::afs" do
       it { is_expected.to contain_class("nebula::profile::krb5") }
 
       case os
-      when "debian-11-x86_64", "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64"
+      when "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64"
         it do
           expect(subject).to contain_exec("reinstall kernel to enable afs").with(
             command: "/usr/bin/apt-get -y install --reinstall linux-headers-amd64",

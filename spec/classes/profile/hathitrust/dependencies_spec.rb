@@ -12,11 +12,7 @@ describe "nebula::profile::hathitrust::dependencies" do
     context "on #{os}" do
       include_context "with setup for htvm node", os_facts
 
-      it { is_expected.to compile }
-
-      if os == "debian-11-x86_64"
-        it { is_expected.to contain_package("mariadb-client") }
-      end
+      it { is_expected.to contain_package("mariadb-client") }
     end
   end
 end

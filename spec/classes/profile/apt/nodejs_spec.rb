@@ -50,7 +50,7 @@ describe "nebula::profile::apt::nodejs" do
         end
 
         case os
-        when "debian-11-x86_64", "ubuntu-22.04-x86_64"
+        when "ubuntu-22.04-x86_64"
           it "configures repo" do
             is_expected.to contain_apt__source("nodesource.com")
               .with_location(["https://deb.nodesource.com/node_18.x"])
@@ -78,7 +78,7 @@ describe "nebula::profile::apt::nodejs" do
         end
 
         case os
-        when "debian-11-x86_64", "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64"
+        when "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64"
           it "configures repo" do
             is_expected.to contain_apt__source("nodesource.com")
               .with_location(["https://deb.nodesource.com/node_20.x"])
@@ -106,7 +106,7 @@ describe "nebula::profile::apt::nodejs" do
         end
 
         case os
-        when "debian-11-x86_64", "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64", "debian-13-x86_64"
+        when "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64", "debian-13-x86_64"
           it "configures repo" do
             is_expected.to contain_apt__source("nodesource.com")
               .with_location(["https://deb.nodesource.com/node_22.x"])
