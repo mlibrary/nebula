@@ -110,14 +110,16 @@ define nebula::virtual_machine (
       $initrd_inject = "--initrd-inject '${tmpdir}/preseed.cfg'"
     }
 
-    # After bullseye, virt-install no longer supports specific debian
-    # variants. To install bookworm, trixie, or presumably anything
-    # newer, set the variant to bullseye but set the location to the
-    # installer that you actually want.
-    $os_variant = case $build {
-      'bookworm': { 'debianbullseye' }
-      'trixie': { 'debianbullseye' }
-      default: { "debian${build}" }
+    # On Debian 12 Bookworm, `libosinfo` supports Debian variants up through
+    # Debian 11 Bullseye. On Ubuntu 22.04 Jammy, Ubuntu 24.04 Noble, and Debian
+    # 13 Trixie, `libosinfo` supports all variants through Debian 13 Trixie.
+    #
+    # As long as we support Bookworm as a vmhost, we need to pretend we're
+    # installing Bullseye. This can be dropped once we've upgraded all Bookworm
+    # vmhosts.
+    $os_variant = $facts['os']['distro']['codename'] ? {
+      'bookworm' => 'debianbullseye',
+      default    => "debian${build}"
     }
 
     exec { "${prefix}::virt-install":
