@@ -59,5 +59,5 @@ class nebula::role::webhost::fulcrum_www_and_app (
     ;
   }
 
-  ensure_packages(['pigz'])
+  stdlib::ensure_packages(['pigz'])
 }

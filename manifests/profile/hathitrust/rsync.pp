@@ -17,11 +17,7 @@ class nebula::profile::hathitrust::rsync (
   String $log_path = '/var/log/rsync',
   String $rsync_user = 'nobody',
 ) {
-  ensure_packages (
-    [
-      'rsync'
-    ]
-  )
+  stdlib::ensure_packages('rsync')
 
   file { $log_path:
     ensure => 'directory',

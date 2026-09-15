@@ -17,12 +17,10 @@ class nebula::profile::hathitrust::secure_rsync (
   String $rsync_user = 'nobody',
   Integer $stunnel_port = 1873,
 ) {
-  ensure_packages (
-    [
+  stdlib::ensure_packages([
       'rsync',
-      'stunnel4'
-    ]
-  )
+      'stunnel4',
+  ])
 
   file { [$log_path, $rsync_home]:
     ensure => 'directory',

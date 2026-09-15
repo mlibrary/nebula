@@ -85,7 +85,7 @@ class nebula::profile::docker (
     }
   }
 
-  ensure_packages(['apparmor'])
+  stdlib::ensure_packages(['apparmor'])
 
   if $docker_compose_version != '' {
     class { 'docker::compose':

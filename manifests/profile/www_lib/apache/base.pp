@@ -10,7 +10,7 @@
 class nebula::profile::www_lib::apache::base {
   include nebula::profile::logrotate
 
-  ensure_packages(['bsd-mailx'])
+  stdlib::ensure_packages(['bsd-mailx'])
 
   class { 'nebula::profile::apache':
     log_formats => {

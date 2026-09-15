@@ -42,8 +42,7 @@ class nebula::profile::www_lib::php (
   # remove them below we will get duplicate warnings despite our
   # use of ensure_packages.
   #
-  ensure_packages (
-    [
+  stdlib::ensure_packages([
       "php${default_php_version}-igbinary",
       "php${default_php_version}-imagick",
       "php${default_php_version}-memcached",
@@ -61,12 +60,10 @@ class nebula::profile::www_lib::php (
       "php${default_php_version}-readline",
       "php${default_php_version}-sqlite3",
       "php${default_php_version}-xml",
-    ]
-  )
+  ])
 
   # Install php 5.6
-  ensure_packages (
-    [
+  stdlib::ensure_packages([
       'php5.6-cli',
       'php5.6-common',
       'php5.6-curl',
@@ -80,8 +77,7 @@ class nebula::profile::www_lib::php (
       'php5.6-readline',
       'php5.6-sqlite3',
       'php5.6-xml',
-    ]
-  )
+  ])
 
   # Configure FPM config file
   php::config { 'fpm php.ini':

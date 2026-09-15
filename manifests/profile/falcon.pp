@@ -5,7 +5,7 @@
 class nebula::profile::falcon (
   String $cid,
 ) {
-  ensure_packages(['falcon-sensor'])
+  stdlib::ensure_packages(['falcon-sensor'])
   service { 'falcon-sensor': }
   apt::mark {
     'falcon-sensor':

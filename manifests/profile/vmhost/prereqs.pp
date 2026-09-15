@@ -7,33 +7,13 @@
 # @example
 #   include nebula::profile::vmhost::prereqs
 class nebula::profile::vmhost::prereqs {
-  package { 'libvirt-clients':
-    ensure => 'installed',
-  }
-
-  # virt-install
-  package { 'virtinst':
-    ensure => 'installed',
-  }
-
-  package { 'libvirt-daemon':
-    ensure => 'installed'
-  }
-
-  package { 'libvirt-daemon-system':
-    ensure => 'installed'
-  }
-
-  package { 'virt-manager':
-    ensure => 'installed'
-  }
-
-  package { 'virt-viewer':
-    ensure => 'installed'
-  }
-
-  # virt-resize
-  package { 'libguestfs-tools':
-    ensure => 'installed'
-  }
+  stdlib::ensure_packages([
+    'libvirt-clients',
+    'virtinst', # virt-install
+    'libvirt-daemon',
+    'libvirt-daemon-system',
+    'virt-manager',
+    'virt-viewer',
+    'libguestfs-tools', # virt-resize
+  ])
 }

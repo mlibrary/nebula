@@ -43,7 +43,7 @@ class nebula::profile::exim4 (
     notify  => Exec['update exim4 config'],
   }
 
-  ensure_packages(['exim4', 'bsd-mailx'])
+  stdlib::ensure_packages(['exim4', 'bsd-mailx'])
 
   exec { 'load new email aliases':
     command     => '/usr/bin/newaliases',
