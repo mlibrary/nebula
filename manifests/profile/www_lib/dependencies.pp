@@ -9,13 +9,11 @@
 # @example
 #   include nebula::profile::www_lib::dependencies
 class nebula::profile::www_lib::dependencies {
-  ensure_packages (
-    [
+  stdlib::ensure_packages([
       'curl',
       'git',
       'emacs',
       'imagemagick',
       'default-jre-headless',
-    ]
-  )
+  ])
 }

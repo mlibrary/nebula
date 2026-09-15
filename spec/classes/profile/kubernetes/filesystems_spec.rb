@@ -12,7 +12,7 @@ describe "nebula::profile::kubernetes::filesystems" do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
-      it { is_expected.to contain_package("nfs-common") }
+      it { is_expected.to contain_package("nfs-common").with_ensure(/(present|installed)/) }
 
       context "when a cifs_mount is defined" do
         let(:params) do

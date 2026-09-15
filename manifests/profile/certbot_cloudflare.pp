@@ -14,7 +14,7 @@ class nebula::profile::certbot_cloudflare (
   String $letsencrypt_email = 'nope@nope.zone',
   String $cloudflare_api_token = 'default.invalid',
 ) {
-  ensure_packages([
+  stdlib::ensure_packages([
     'certbot',
     'python3-certbot-dns-cloudflare',
   ])

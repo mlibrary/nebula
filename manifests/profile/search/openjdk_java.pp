@@ -6,5 +6,5 @@
 #
 class nebula::profile::search::openjdk_java (
 ) {
-  ensure_packages('default-jdk-headless')
+  stdlib::ensure_packages('default-jdk-headless')
 }

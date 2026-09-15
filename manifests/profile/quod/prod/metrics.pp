@@ -11,7 +11,7 @@
 class nebula::profile::quod::prod::metrics (
   $mtail_port = 3903,
 ) {
-  ensure_packages([
+  stdlib::ensure_packages([
     'mtail'
   ])
 

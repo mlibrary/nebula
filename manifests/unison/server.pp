@@ -10,7 +10,7 @@ define nebula::unison::server (
   Integer $port = 2647,
   Optional[Array[String]] $ignores = undef,
 ) {
-  ensure_packages(['unison'])
+  stdlib::ensure_packages(['unison'])
 
   file { "/etc/systemd/system/unison-${title}.service":
     content => template('nebula/unison/server/service.erb'),

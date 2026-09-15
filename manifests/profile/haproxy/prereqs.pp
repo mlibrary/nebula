@@ -8,9 +8,7 @@
 # @example
 #   include nebula::profile::haproxy::prereqs
 class nebula::profile::haproxy::prereqs {
-  package { 'haproxy':
-    ensure => 'installed',
-  }
+  package { 'haproxy': }
 
   service { 'haproxy':
     ensure  => 'running',

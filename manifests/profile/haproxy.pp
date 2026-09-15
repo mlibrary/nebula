@@ -66,7 +66,7 @@ class nebula::profile::haproxy (
     require => [Package['haproxy']]
   }
 
-  ensure_packages(['jq','hactl'])
+  stdlib::ensure_packages(['jq','hactl'])
   $domain = lookup('umich::default_domain')
   file { '/usr/local/bin/reweight':
     ensure  => 'file',

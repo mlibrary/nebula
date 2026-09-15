@@ -29,7 +29,7 @@ class nebula::profile::base (
     package { 'vlan': }
   }
 
-  ensure_packages([
+  stdlib::ensure_packages([
     'zstd', # prevent warnings about fallback on `apt dist-upgrade`
   ])
 

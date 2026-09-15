@@ -10,7 +10,7 @@ class nebula::profile::openjdk_java (
   String $base_alternative = 'java-11-openjdk-amd64',
   String $java_alternative = 'java-1.11.0-openjdk-amd64'
 ) {
-  ensure_packages($jdk_packages)
+  stdlib::ensure_packages($jdk_packages)
   exec { 'ensure default java':
     command => "/usr/sbin/update-java-alternatives --jre -s ${java_alternative}",
     unless  => "/usr/bin/update-alternatives --query java | grep '^Value:.*${base_alternative}'",
