@@ -70,8 +70,10 @@ describe "nebula::profile::search::catalog::solr" do
       if os.start_with?("debian-11")
         it { is_expected.not_to contain_file("/etc/sudoers.d/solr-catalog") }
       else
+        it { is_expected.to contain_package("sudo") }
         it { is_expected.to contain_file("/etc/sudoers.d/solr-catalog").with_mode("0440") }
         it { is_expected.to contain_file("/etc/sudoers.d/solr-catalog").with_content(/^%search-catalog-solr ALL/) }
+        it { is_expected.to contain_file("/etc/sudoers.d/solr-catalog").that_requires("Package[sudo]") }
       end
 
       context "when serve_bin is set to /usr/bin/solr" do

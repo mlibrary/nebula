@@ -64,9 +64,12 @@ class nebula::profile::search::catalog::solr (
     require => File["${solr_user_home}/.ssh"],
   }
 
+  stdlib::ensure_packages('sudo')
+
   file { '/etc/sudoers.d/solr-catalog':
     mode    => '0440',
     content => template('nebula/profile/search_solr/sudoers.erb'),
+    require => Package['sudo'],
   }
 
   file { '/l/solr-vufind':
