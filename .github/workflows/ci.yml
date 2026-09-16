@@ -30,6 +30,27 @@ jobs:
       name: rake fixtures:prep
       run: bundle exec rake fixtures:prep
 
+  spec_changed:
+    name: spec:changed
+    runs-on: ubuntu-24.04-arm
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        fetch-depth: 0
+    - name: cache fixtures
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      id: cache-fixtures
+      with:
+        path: spec/fixtures/modules
+        key: cache-fixtures-modules-${{ hashFiles('.fixtures.yml') }}
+    - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+      with:
+        bundler-cache: true
+    - name: rake fixtures:prep
+      run: bundle exec rake fixtures:prep
+    - name: rake spec:changed
+      run: bundle exec rake spec:changed
+
   standardrb:
     name: standardrb
     runs-on: ubuntu-24.04-arm
@@ -80,7 +101,6 @@ jobs:
     needs: setup_tests
     runs-on: ubuntu-24.04-arm
     strategy:
-      fail-fast: false
       matrix:
         os: ${{ fromJSON(needs.setup_tests.outputs.os) }}
     steps:
