@@ -11,7 +11,7 @@ class nebula::profile::fulcrum::mysql (
   String $root_password,
 ) {
   # Install and configure mysql server
-  ensure_packages(['mariadb-common','mariadb-server', 'mariadb-client'])
+  stdlib::ensure_packages(['mariadb-common','mariadb-server', 'mariadb-client'])
 
 # at some point need to do equivalent to `mysql_install_db --user=mysql --ldata=/var/lib/mysql`
 

@@ -23,7 +23,7 @@ class nebula::profile::hathitrust::apache (
     }
   }
 
-  ensure_packages(['bsd-mailx'])
+  stdlib::ensure_packages(['bsd-mailx'])
 
   $default_access = {
     enforce  => 'all',

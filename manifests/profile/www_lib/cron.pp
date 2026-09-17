@@ -54,5 +54,5 @@ class nebula::profile::www_lib::cron (
     ;
   }
 
-  ensure_packages(['pigz'])
+  stdlib::ensure_packages(['pigz'])
 }

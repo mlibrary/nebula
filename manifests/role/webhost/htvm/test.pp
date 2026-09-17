@@ -17,7 +17,7 @@ class nebula::role::webhost::htvm::test {
     }
   }
 
-  ensure_packages([
+  stdlib::ensure_packages([
     'composer',
     'libxml2-utils',
     'perl-doc',
@@ -43,7 +43,7 @@ class nebula::role::webhost::htvm::test {
       %htprod  ALL=(root) NOPASSWD: /bin/systemctl start imgsrv,/bin/systemctl stop imgsrv,/bin/systemctl restart imgsrv,/bin/systemctl status imgsrv
     | SUDOERS
   }
-  ensure_packages(['sudo'])
+  stdlib::ensure_packages(['sudo'])
 
   @nebula::taghosts::tag { 'test': }
 }

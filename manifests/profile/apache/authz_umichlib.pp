@@ -40,13 +40,11 @@ class nebula::profile::apache::authz_umichlib (
 
   # Note: Packages for modules must be declared in the mod stanzas and
   # not in ensure_packages.
-  ensure_packages (
-    [
+  stdlib::ensure_packages([
       'libaprutil1-dbd-oracle',
       'oracle-instantclient12.1-basic',
       'oracle-instantclient12.1-devel',
-    ]
-  )
+  ])
 
   file { '/etc/ld.so.conf.d/oracle-instantclient.conf':
     content => "/usr/lib/oracle/12.1/client64/lib\n",

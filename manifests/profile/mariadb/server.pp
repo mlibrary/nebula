@@ -57,7 +57,7 @@ class nebula::profile::mariadb::server (
   }
 
   if $backup_nfs_target {
-    ensure_packages([
+    stdlib::ensure_packages([
       'nfs-common',
       'zstd',
     ])

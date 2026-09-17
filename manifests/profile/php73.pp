@@ -20,8 +20,7 @@ class nebula::profile::php73 (
     source => 'puppet:///modules/nebula/apt/keyrings/php-community-sury.org.gpg',
   }
 
-  ensure_packages (
-    [
+  stdlib::ensure_packages([
       'php7.3-igbinary',
       'php7.3-imagick',
       'php7.3-memcached',
@@ -43,8 +42,7 @@ class nebula::profile::php73 (
       'php7.3-readline',
       'php7.3-sqlite3',
       'php7.3-xml',
-    ]
-  )
+  ])
 
   php::config { 'fpm php.ini':
     file   => '/etc/php/7.3/fpm/php.ini',

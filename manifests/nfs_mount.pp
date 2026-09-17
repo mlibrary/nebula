@@ -23,7 +23,7 @@ define nebula::nfs_mount (
   Boolean $monitored = true,
   Boolean $private_network = true
 ) {
-  ensure_packages(['nfs-common'], { 'ensure' => 'present' })
+  stdlib::ensure_packages(['nfs-common'])
 
   file { $title:
     ensure => 'directory',

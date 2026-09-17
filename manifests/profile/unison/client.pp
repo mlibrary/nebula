@@ -11,7 +11,7 @@
 class nebula::profile::unison::client (
   String $home = '/root',
 ) {
-  ensure_packages(['unison'])
+  stdlib::ensure_packages(['unison'])
 
   file { "${home}/.unison":
     ensure => 'directory'

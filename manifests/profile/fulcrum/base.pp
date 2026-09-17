@@ -7,7 +7,7 @@ class nebula::profile::fulcrum::base (
   $uid = 717,
   $gid = 717,
 ) {
-  ensure_packages([
+  stdlib::ensure_packages([
     'sudo',
   ])
 

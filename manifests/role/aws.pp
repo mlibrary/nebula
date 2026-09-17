@@ -15,7 +15,7 @@ class nebula::role::aws (
 
   ########################################
   # this needs to be in a profile
-  ensure_packages(['iptables-persistent'])
+  stdlib::ensure_packages(['iptables-persistent'])
   ########################################
 
   include nebula::profile::aws::filesystem

@@ -31,5 +31,5 @@ class nebula::profile::fulcrum::perl (
     ;
   }
 
-  ensure_packages(['pigz'])
+  stdlib::ensure_packages(['pigz'])
 }

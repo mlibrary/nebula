@@ -35,7 +35,7 @@ define nebula::cifs_mount (
 
   realize File["/etc/default/${user}-credentials"]
 
-  ensure_packages(['cifs-utils'], { 'ensure' => 'present' })
+  stdlib::ensure_packages(['cifs-utils'])
 
   file { $title:
     ensure => 'directory',

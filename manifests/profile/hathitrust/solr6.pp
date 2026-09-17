@@ -17,7 +17,7 @@ class nebula::profile::hathitrust::solr6 (
   include nebula::profile::hathitrust::networking
   include nebula::profile::hathitrust::hosts
 
-  ensure_packages([
+  stdlib::ensure_packages([
     "temurin-${jdk_version}-jre",
     'solr',
   ])
