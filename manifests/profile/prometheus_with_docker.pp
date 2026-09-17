@@ -61,10 +61,26 @@ class nebula::profile::prometheus_with_docker (
     notify  => Docker::Run['prometheus'],
   }
 
+  file { '/opt/prometheus':
+    ensure => 'directory',
+    owner  => 65534,
+    group  => 65534,
+  }
+
+  file { '/opt/pushgateway':
+    ensure => 'directory',
+    owner  => 65534,
+    group  => 65534,
+  }
+
+  ####################################################################
+
   file { '/etc/prometheus/rules.yml':
     content => template('nebula/profile/prometheus/rules.yml.erb'),
     notify  => Docker::Run['prometheus'],
   }
+
+  ####################################################################
 
   concat_file { '/etc/prometheus/nodes.yml':
     notify  => Docker::Run['prometheus'],
@@ -81,6 +97,8 @@ class nebula::profile::prometheus_with_docker (
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_node_service_list" |>>
 
+  ####################################################################
+
   concat_file { '/etc/prometheus/haproxy.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
@@ -88,12 +106,16 @@ class nebula::profile::prometheus_with_docker (
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_haproxy_service_list" |>>
 
+  ####################################################################
+
   concat_file { '/etc/prometheus/mysql.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
   }
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_mysql_service_list" |>>
+
+  ####################################################################
 
   concat_file { '/etc/prometheus/ipmi.yml':
     notify  => Docker::Run['prometheus'],
@@ -108,12 +130,16 @@ class nebula::profile::prometheus_with_docker (
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_ipmi_exporter" |>>
 
+  ####################################################################
+
   concat_file { '/etc/prometheus/etcd.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
   }
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_etcd_service_list" |>>
+
+  ####################################################################
 
   concat_file { '/etc/prometheus/catalog_search.yml':
     notify  => Docker::Run['prometheus'],
@@ -122,12 +148,16 @@ class nebula::profile::prometheus_with_docker (
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_catalog_search_service_list" |>>
 
+  ####################################################################
+
   concat_file { '/etc/prometheus/quod.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
   }
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_quod_service_list" |>>
+
+  ####################################################################
 
   file { '/etc/prometheus':
     ensure => 'directory',
@@ -161,17 +191,7 @@ class nebula::profile::prometheus_with_docker (
     notify => Docker::Run['prometheus'],
   }
 
-  file { '/opt/prometheus':
-    ensure => 'directory',
-    owner  => 65534,
-    group  => 65534,
-  }
-
-  file { '/opt/pushgateway':
-    ensure => 'directory',
-    owner  => 65534,
-    group  => 65534,
-  }
+  ####################################################################
 
   if $manage_https {
     class { 'nebula::profile::https_to_port':
@@ -183,6 +203,8 @@ class nebula::profile::prometheus_with_docker (
       block => 'umich::networks::all_trusted_machines',
     }
   } else {
+    # Follow this pattern if possible, using either client certs for
+    # private kubernetes prometheus and DNS-01 certs for macc/ictc.
     class { 'nginx':
       server_tokens => 'off',
     }
@@ -208,6 +230,8 @@ class nebula::profile::prometheus_with_docker (
     }
   }
 
+  ####################################################################
+
   case $facts["mlibrary_ip_addresses"] {
     Hash[String, Array[String]]: {
       $all_public_addresses = $facts["mlibrary_ip_addresses"]["public"]
@@ -219,6 +243,8 @@ class nebula::profile::prometheus_with_docker (
       $all_private_addresses = []
     }
   }
+
+  ####################################################################
 
   if $all_public_addresses != [] {
     @@concat_fragment { "02 pushgateway advanced public url ${facts['datacenter']}":
@@ -239,6 +265,8 @@ class nebula::profile::prometheus_with_docker (
       content => "PUSHGATEWAY='http://${all_private_addresses[0]}:9091'\n",
     }
   }
+
+  ####################################################################
 
   $all_public_addresses.each |$address| {
     @@firewall {
@@ -319,6 +347,8 @@ class nebula::profile::prometheus_with_docker (
     state  => 'NEW',
     jump   => 'accept',
   }
+
+  ####################################################################
 
   Firewall <<| tag == "${facts['datacenter']}_pushgateway_node" |>>
 }

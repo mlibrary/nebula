@@ -6,9 +6,12 @@ class nebula::profile::prometheus (
   Array $alert_managers = [],
   Array $static_wmi_nodes = [],
 ) {
-  package { 'prometheus': }
+  stdlib::ensure_packages([
+    'prometheus',
+    'prometheus-pushgateway',
+  ])
+
   service { 'prometheus': }
-  package { 'prometheus-pushgateway': }
   service { 'prometheus-pushgateway': }
 
   exec { 'divert /etc/prometheus/prometheus.yml':
