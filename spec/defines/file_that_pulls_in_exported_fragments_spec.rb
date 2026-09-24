@@ -17,9 +17,10 @@ describe "nebula::file_that_pulls_in_exported_fragments" do
         it { is_expected.to contain_concat("/tmp/xyz") }
 
         context "when notify is set to Service[hello]" do
-          let(:params) { { fragment_tag: "abc", notify: "Service[hello]" } }
+          let(:pre_condition) { "service { 'prometheus': }" }
+          let(:params) { { fragment_tag: "abc", notify: "Service[prometheus]" } }
 
-          it { is_expected.to contain_concat("/tmp/xyz").that_notifies("Service[hello]") }
+          it { is_expected.to contain_concat("/tmp/xyz").that_notifies("Service[prometheus]") }
         end
       end
 

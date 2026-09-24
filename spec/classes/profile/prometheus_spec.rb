@@ -50,6 +50,80 @@ describe "nebula::profile::prometheus" do
           .that_requires("Exec[divert /etc/default/prometheus-pushgateway]")
           .that_requires("File[/var/lib/prometheus/pushgateway]")
       end
+
+      it do
+        is_expected.to contain_file("/etc/prometheus/rules.yml")
+          .that_notifies("Service[prometheus]")
+      end
+
+      [
+        %w[node /etc/prometheus/nodes.yml],
+        %w[haproxy /etc/prometheus/haproxy.yml],
+        %w[mysql /etc/prometheus/mysql.yml],
+        %w[ipmi /etc/prometheus/ipmi.yml],
+        %w[etcd /etc/prometheus/etcd.yml],
+        %w[catalog_search /etc/prometheus/catalog_search.yml],
+        %w[quod /etc/prometheus/quod.yml],
+      ].each do |exporter, config_path|
+        it do
+          is_expected.to contain_nebula__file_that_pulls_in_exported_fragments(config_path)
+            .with_fragment_tag("mydatacenter_prometheus_#{exporter}_service_list")
+        end
+
+        it do
+          is_expected.to contain_concat(config_path)
+            .that_notifies("Service[prometheus]")
+            .that_requires("Package[prometheus]")
+        end
+
+        context 'in datacenter abc' do
+          let(:facts) { os_facts.merge(datacenter: "abc") }
+
+          it do
+            is_expected.to contain_nebula__file_that_pulls_in_exported_fragments(config_path)
+              .with_fragment_tag("abc_prometheus_#{exporter}_service_list")
+          end
+        end
+      end
+
+      context 'with 2 static nodes, abc1 and abc2' do
+        let(:params) do
+          {
+            static_nodes: [
+              {
+                targets: ["10.1.1.1:9100"],
+                labels: {
+                  datacenter: facts["datacenter"],
+                  hostname: "abc1",
+                  role: "dont_care",
+                }
+              },
+              {
+                targets: ["10.2.2.2:9100"],
+                labels: {
+                  datacenter: facts["datacenter"],
+                  hostname: "abc2",
+                  role: "dont_care",
+                }
+              },
+            ]
+          }
+        end
+
+        it { is_expected.to contain_concat__fragment("prometheus node service abc1") }
+
+        it do
+          is_expected.to contain_concat__fragment("prometheus node service abc2")
+            .with_target("/etc/prometheus/nodes.yml")
+        end
+      end
+
+      it do
+        is_expected.to contain_concat__fragment("prometheus ipmi scrape config first line")
+          .with_target("/etc/prometheus/ipmi.yml")
+          .with_order("01")
+          .with_content("scrape_configs:\n")
+      end
     end
   end
 end

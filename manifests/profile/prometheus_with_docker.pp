@@ -73,14 +73,10 @@ class nebula::profile::prometheus_with_docker (
     group  => 65534,
   }
 
-  ####################################################################
-
   file { '/etc/prometheus/rules.yml':
     content => template('nebula/profile/prometheus/rules.yml.erb'),
     notify  => Docker::Run['prometheus'],
   }
-
-  ####################################################################
 
   concat_file { '/etc/prometheus/nodes.yml':
     notify  => Docker::Run['prometheus'],
@@ -97,8 +93,6 @@ class nebula::profile::prometheus_with_docker (
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_node_service_list" |>>
 
-  ####################################################################
-
   concat_file { '/etc/prometheus/haproxy.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
@@ -106,16 +100,12 @@ class nebula::profile::prometheus_with_docker (
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_haproxy_service_list" |>>
 
-  ####################################################################
-
   concat_file { '/etc/prometheus/mysql.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
   }
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_mysql_service_list" |>>
-
-  ####################################################################
 
   concat_file { '/etc/prometheus/ipmi.yml':
     notify  => Docker::Run['prometheus'],
@@ -130,8 +120,6 @@ class nebula::profile::prometheus_with_docker (
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_ipmi_exporter" |>>
 
-  ####################################################################
-
   concat_file { '/etc/prometheus/etcd.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
@@ -139,16 +127,12 @@ class nebula::profile::prometheus_with_docker (
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_etcd_service_list" |>>
 
-  ####################################################################
-
   concat_file { '/etc/prometheus/catalog_search.yml':
     notify  => Docker::Run['prometheus'],
     require => File['/etc/prometheus'],
   }
 
   Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_catalog_search_service_list" |>>
-
-  ####################################################################
 
   concat_file { '/etc/prometheus/quod.yml':
     notify  => Docker::Run['prometheus'],
