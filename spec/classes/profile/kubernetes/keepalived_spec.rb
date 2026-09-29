@@ -143,6 +143,20 @@ describe "nebula::profile::kubernetes::keepalived" do
             .with_content("public.first.cluster ssh-rsa abc123\n")
         end
       end
+
+      context "with null ssh host keys" do
+        let(:facts) do
+          {
+            networking: {
+              fqdn: "default.invalid",
+              ip: "0.1.2.3"
+            },
+            ssh: nil
+          }
+        end
+
+        it { is_expected.to compile }
+      end
     end
   end
 end

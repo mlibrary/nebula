@@ -62,6 +62,18 @@ describe "nebula::profile::kubernetes::dns_client" do
             .with_content("default ssh-rsa abc123\n")
         end
       end
+
+      context "with null ssh host keys" do
+        let(:node) { "default.invalid" }
+        let(:facts) do
+          {
+            "ssh" => nil,
+            :networking => {ip: "0.1.2.3"}
+          }
+        end
+
+        it { is_expected.to compile }
+      end
     end
   end
 end
