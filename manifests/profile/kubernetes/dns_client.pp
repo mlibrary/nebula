@@ -19,14 +19,16 @@ class nebula::profile::kubernetes::dns_client {
     content => template('nebula/profile/kubernetes/dns/resolv.conf.erb'),
   }
 
-  $facts['ssh'].each |$name, $key_obj| {
-    $type = $key_obj["type"]
-    $key = $key_obj["key"]
+  if $facts['ssh'] != undef {
+    $facts['ssh'].each |$name, $key_obj| {
+      $type = $key_obj["type"]
+      $key = $key_obj["key"]
 
-    @@concat_fragment { "known ${cluster_name} host ${::networking['hostname']} ${name}":
-      tag     => "${cluster_name}_known_host_public_keys",
-      target  => '/etc/ssh/ssh_known_hosts',
-      content => "${::networking['hostname']} ${type} ${key}\n",
+      @@concat_fragment { "known ${cluster_name} host ${::networking['hostname']} ${name}":
+        tag     => "${cluster_name}_known_host_public_keys",
+        target  => '/etc/ssh/ssh_known_hosts',
+        content => "${::networking['hostname']} ${type} ${key}\n",
+      }
     }
   }
 }

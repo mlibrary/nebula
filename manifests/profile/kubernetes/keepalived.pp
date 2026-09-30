@@ -60,14 +60,16 @@ class nebula::profile::kubernetes::keepalived (
   package { 'keepalived': }
   package { 'ipset': }
 
-  $facts['ssh'].each |$name, $key_obj| {
-    $type = $key_obj["type"]
-    $key = $key_obj["key"]
+  if $facts['ssh'] != undef {
+    $facts['ssh'].each |$name, $key_obj| {
+      $type = $key_obj["type"]
+      $key = $key_obj["key"]
 
-    @@concat_fragment { "known host ${control_dns} ${::networking['fqdn']} ${name}":
-      tag     => 'known_host_public_keys',
-      target  => '/etc/ssh/ssh_known_hosts',
-      content => "${control_dns} ${type} ${key}\n",
+      @@concat_fragment { "known host ${control_dns} ${::networking['fqdn']} ${name}":
+        tag     => 'known_host_public_keys',
+        target  => '/etc/ssh/ssh_known_hosts',
+        content => "${control_dns} ${type} ${key}\n",
+      }
     }
   }
 }
