@@ -178,6 +178,78 @@ describe "nebula::profile::prometheus" do
             .with_source("puppet:///ssl-certs/prometheus-pki/abc.example.net.key")
         end
       end
+
+      context "when on the public internet" do
+        let(:facts) do
+          os_facts.merge(
+            mlibrary_ip_addresses: {
+              "public"  => %w[10.1.1.1],
+              "private" => %w[10.2.2.2]
+            }
+          )
+        end
+
+        it { is_expected.not_to contain_nginx__resource__server("prometheus") }
+        it { is_expected.not_to contain_firewall("200 HTTPS: Client Cert") }
+
+        it { is_expected.to contain_class("nebula::profile::https_to_port").with_port(9090) }
+        it { is_expected.to contain_nebula__exposed_port("010 Prometheus HTTPS").with_port(443) }
+        it { is_expected.to contain_nebula__exposed_port("010 Prometheus HTTPS").with_block("umich::networks::all_trusted_machines") }
+      end
+
+      context "when behind a NAT router" do
+        let(:facts) do
+          os_facts.merge(
+            mlibrary_ip_addresses: {
+              "public"  => [],
+              "private" => %w[10.3.3.3]
+            }
+          )
+        end
+
+        it { is_expected.not_to contain_class("nebula::profile::https_to_port") }
+        it { is_expected.not_to contain_nebula__exposed_port("010 Prometheus HTTPS") }
+
+        it { is_expected.to contain_class("nginx").with_server_tokens("off") }
+
+        it do
+          is_expected.to contain_nginx__resource__server("prometheus")
+            .with_server_name([facts[:networking]["fqdn"]])
+            .with_listen_options("proxy_protocol default_server")
+            .with_listen_port(443)
+            .with_proxy("http://localhost:9090")
+            .with_ssl(true)
+            .with_ssl_cert("/etc/prometheus/tls/tls.crt")
+            .with_ssl_key("/etc/prometheus/tls/tls.key")
+            .with_server_cfg_append(
+              "ssl_client_certificate" => "/etc/prometheus/tls/ca.crt",
+              "ssl_verify_client"      => "on",
+              "ssl_verify_depth"       => 1
+            )
+        end
+
+        it do
+          is_expected.to contain_firewall("200 HTTPS: Client Cert")
+            .with_proto("tcp")
+            .with_dport([443])
+            .with_state("NEW")
+            .with_jump("accept")
+        end
+      end
+
+      context "when public ip addresses are null" do
+        let(:facts) do
+          os_facts.merge(
+            mlibrary_ip_addresses: {
+              "public"  => nil,
+              "private" => %w[10.3.3.3]
+            }
+          )
+        end
+
+        it { is_expected.not_to contain_class("nebula::profile::https_to_port") }
+        it { is_expected.not_to contain_nebula__exposed_port("010 Prometheus HTTPS") }
+      end
     end
   end
 end

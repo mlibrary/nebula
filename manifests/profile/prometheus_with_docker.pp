@@ -26,45 +26,6 @@ class nebula::profile::prometheus_with_docker (
 ) {
   $hostname = $::networking['hostname']
 
-  if $manage_https {
-    class { 'nebula::profile::https_to_port':
-      port => 9090,
-    }
-
-    nebula::exposed_port { '010 Prometheus HTTPS':
-      port  => 443,
-      block => 'umich::networks::all_trusted_machines',
-    }
-  } else {
-    # Follow this pattern if possible, using either client certs for
-    # private kubernetes prometheus and DNS-01 certs for macc/ictc.
-    class { 'nginx':
-      server_tokens => 'off',
-    }
-    nginx::resource::server { 'https-forwarder':
-      server_name       => [$::networking['fqdn']],
-      listen_options    => 'proxy_protocol default_server',
-      listen_port       => 443,
-      proxy             => 'http://localhost:9090',
-      ssl               => true,
-      ssl_cert          => '/etc/prometheus/tls/client.crt',
-      ssl_key           => '/etc/prometheus/tls/client.key',
-      server_cfg_append => {
-        'ssl_client_certificate' => '/etc/prometheus/tls/ca.crt',
-        'ssl_verify_client'      => 'on',
-        'ssl_verify_depth'       => 1,
-      },
-    }
-    firewall { '200 HTTPS: Client Cert':
-      proto => 'tcp',
-      dport => [443],
-      state => 'NEW',
-      jump  => 'accept',
-    }
-  }
-
-  ####################################################################
-
   case $facts["mlibrary_ip_addresses"] {
     Hash[String, Array[String]]: {
       $all_public_addresses = $facts["mlibrary_ip_addresses"]["public"]

@@ -2,7 +2,7 @@
 # All Rights Reserved. Licensed according to the terms of the Revised
 # BSD License. See LICENSE.txt for details.
 
-class nebula::profile::prometheus::tls {
+class nebula::profile::prometheus::client_certs {
   include nebula::profile::prometheus::prereqs
 
   file { '/etc/prometheus/tls':

@@ -8,7 +8,8 @@ class nebula::profile::prometheus (
   Array $static_nodes = [],
 ) {
   include nebula::profile::prometheus::prereqs
-  include nebula::profile::prometheus::tls
+  include nebula::profile::prometheus::client_certs
+  include nebula::profile::prometheus::https
 
   file { '/etc/prometheus/prometheus.yml':
     content => template('nebula/profile/prometheus/config.yml.erb'),
