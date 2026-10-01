@@ -54,6 +54,7 @@ describe "nebula::profile::prometheus" do
       it do
         is_expected.to contain_file("/etc/prometheus/rules.yml")
           .that_notifies("Service[prometheus]")
+          .that_requires("Package[prometheus]")
       end
 
       [
@@ -123,6 +124,59 @@ describe "nebula::profile::prometheus" do
           .with_target("/etc/prometheus/ipmi.yml")
           .with_order("01")
           .with_content("scrape_configs:\n")
+      end
+
+      it { is_expected.to contain_file("/etc/prometheus/tls").with_ensure("directory") }
+      it { is_expected.to contain_file("/etc/prometheus/tls").that_requires("Package[prometheus]") }
+
+      it do
+        is_expected.to contain_file("/etc/prometheus/tls/ca.crt")
+          .with_source("puppet:///ssl-certs/prometheus-pki/ca.crt")
+          .with_mode("0644")
+          .with_owner("prometheus")
+          .with_group("prometheus")
+          .that_notifies("Service[prometheus]")
+          .that_requires("File[/etc/prometheus/tls]")
+      end
+
+      it do
+        is_expected.to contain_file("/etc/prometheus/tls/tls.crt")
+          .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:networking]["fqdn"]}.crt")
+          .with_mode("0644")
+          .with_owner("prometheus")
+          .with_group("prometheus")
+          .that_notifies("Service[prometheus]")
+          .that_requires("File[/etc/prometheus/tls]")
+      end
+
+      it do
+        is_expected.to contain_file("/etc/prometheus/tls/tls.key")
+          .with_source("puppet:///ssl-certs/prometheus-pki/#{facts[:networking]["fqdn"]}.key")
+          .with_mode("0600")
+          .with_owner("prometheus")
+          .with_group("prometheus")
+          .that_notifies("Service[prometheus]")
+          .that_requires("File[/etc/prometheus/tls]")
+      end
+
+      context "with an fqdn of abc.example.net" do
+        let(:facts) do
+          os_facts.merge(
+            networking: os_facts[:networking].merge(
+              "fqdn" => "abc.example.net"
+            )
+          )
+        end
+
+        it do
+          is_expected.to contain_file("/etc/prometheus/tls/tls.crt")
+            .with_source("puppet:///ssl-certs/prometheus-pki/abc.example.net.crt")
+        end
+
+        it do
+          is_expected.to contain_file("/etc/prometheus/tls/tls.key")
+            .with_source("puppet:///ssl-certs/prometheus-pki/abc.example.net.key")
+        end
       end
     end
   end
