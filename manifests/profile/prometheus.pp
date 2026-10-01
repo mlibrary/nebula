@@ -25,8 +25,8 @@ class nebula::profile::prometheus (
 
   nebula::file_that_pulls_in_exported_fragments {
     default:
-      notify       => Service['prometheus'],
-      require      => Package['prometheus'],
+      notify  => Service['prometheus'],
+      require => Package['prometheus'],
     ;
 
     '/etc/prometheus/nodes.yml':

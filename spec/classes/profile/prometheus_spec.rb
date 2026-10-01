@@ -64,7 +64,7 @@ describe "nebula::profile::prometheus" do
         %w[ipmi /etc/prometheus/ipmi.yml],
         %w[etcd /etc/prometheus/etcd.yml],
         %w[catalog_search /etc/prometheus/catalog_search.yml],
-        %w[quod /etc/prometheus/quod.yml],
+        %w[quod /etc/prometheus/quod.yml]
       ].each do |exporter, config_path|
         it do
           is_expected.to contain_nebula__file_that_pulls_in_exported_fragments(config_path)
@@ -77,7 +77,7 @@ describe "nebula::profile::prometheus" do
             .that_requires("Package[prometheus]")
         end
 
-        context 'in datacenter abc' do
+        context "in datacenter abc" do
           let(:facts) { os_facts.merge(datacenter: "abc") }
 
           it do
@@ -87,7 +87,7 @@ describe "nebula::profile::prometheus" do
         end
       end
 
-      context 'with 2 static nodes, abc1 and abc2' do
+      context "with 2 static nodes, abc1 and abc2" do
         let(:params) do
           {
             static_nodes: [
@@ -96,7 +96,7 @@ describe "nebula::profile::prometheus" do
                 labels: {
                   datacenter: facts["datacenter"],
                   hostname: "abc1",
-                  role: "dont_care",
+                  role: "dont_care"
                 }
               },
               {
@@ -104,9 +104,9 @@ describe "nebula::profile::prometheus" do
                 labels: {
                   datacenter: facts["datacenter"],
                   hostname: "abc2",
-                  role: "dont_care",
+                  role: "dont_care"
                 }
-              },
+              }
             ]
           }
         end
@@ -183,7 +183,7 @@ describe "nebula::profile::prometheus" do
         let(:facts) do
           os_facts.merge(
             mlibrary_ip_addresses: {
-              "public"  => %w[10.1.1.1],
+              "public" => %w[10.1.1.1],
               "private" => %w[10.2.2.2]
             }
           )
@@ -201,7 +201,7 @@ describe "nebula::profile::prometheus" do
         let(:facts) do
           os_facts.merge(
             mlibrary_ip_addresses: {
-              "public"  => [],
+              "public" => [],
               "private" => %w[10.3.3.3]
             }
           )
@@ -223,8 +223,8 @@ describe "nebula::profile::prometheus" do
             .with_ssl_key("/etc/prometheus/tls/tls.key")
             .with_server_cfg_append(
               "ssl_client_certificate" => "/etc/prometheus/tls/ca.crt",
-              "ssl_verify_client"      => "on",
-              "ssl_verify_depth"       => 1
+              "ssl_verify_client" => "on",
+              "ssl_verify_depth" => 1
             )
         end
 
@@ -241,7 +241,7 @@ describe "nebula::profile::prometheus" do
         let(:facts) do
           os_facts.merge(
             mlibrary_ip_addresses: {
-              "public"  => nil,
+              "public" => nil,
               "private" => %w[10.3.3.3]
             }
           )
