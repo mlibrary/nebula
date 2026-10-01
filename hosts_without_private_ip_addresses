@@ -1,0 +1,13 @@
+fulcrum-demo
+hatcher-haproxy-000
+hatcher-haproxy-001
+ictc-ae-web-247
+ictc-haproxy-000
+ictc-haproxy-001
+macc-ae-web-239      (has a private address but on a different subnet)
+macc-haproxy-000
+macc-haproxy-001
+macc-puppetdb-243
+puppet-db-001
+puppet-master-002
+saison
