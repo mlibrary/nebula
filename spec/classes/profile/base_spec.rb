@@ -17,6 +17,12 @@ describe "nebula::profile::base" do
 
       it { is_expected.to contain_service("puppet").with_ensure("running") }
       it { is_expected.to contain_service("puppet").with_enable(true) }
+      it "has proper permissions on /usr/local/bin" do
+        is_expected.to contain_file("/usr/local/bin")
+          .with_owner("root")
+          .with_group("root")
+          .with_mode("0755")
+      end
 
       case os
       when %r{^debian}, %r{^ubuntu}
