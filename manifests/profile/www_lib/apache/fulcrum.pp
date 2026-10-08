@@ -14,26 +14,6 @@ class nebula::profile::www_lib::apache::fulcrum (
 
   include nebula::profile::www_lib::vhosts::fulcrum
 
-  nebula::apache::redirect_vhost_https {
-    default:
-      ssl_cn   => 'fulcrum.org',
-      priority => '08',
-    ;
-  }
-
-  nebula::apache::redirect_vhost_https { 'fulcrum.org':
-    priority      => '14',
-    serveraliases => [
-      'fulcrum.pub',
-      'fulcrumservices.org',
-      'fulcrumservices.net',
-      '*.fulcrum.org',
-      '*.fulcrum.pub',
-      '*.fulcrumservices.org',
-      '*.fulcrumservices.net'
-    ],
-  }
-
   class { 'apache::mod::shib': }
 
   file { '/etc/apache2/mods-available/shib2.conf':
