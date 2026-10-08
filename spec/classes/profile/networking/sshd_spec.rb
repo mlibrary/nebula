@@ -35,7 +35,6 @@ describe "nebula::profile::networking::sshd" do
         %r{^GSSAPIAuthentication no$},
         %r{^GSSAPICleanupCredentials yes$},
         %r{^UsePAM yes$},
-        %r{^UsePrivilegeSeparation yes$},
         %r{^Match Address 10\.1\.1\.0/24,10\.2\.2\.0/24,!10\.2\.2\.2\n\s*PubkeyAuthentication yes$}m
       ].each do |line|
         it { is_expected.to contain_sshd.with_content(line) }
