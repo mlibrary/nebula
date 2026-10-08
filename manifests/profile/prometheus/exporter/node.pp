@@ -118,7 +118,7 @@ class nebula::profile::prometheus::exporter::node (
     }
   }
 
-  ensure_packages(['curl', 'jq', 'prometheus-node-exporter'])
+  stdlib::ensure_packages(['curl', 'jq', 'prometheus-node-exporter'])
 
   file { '/usr/local/bin/pushgateway':
     content => template('nebula/profile/prometheus/exporter/node/pushgateway.sh.erb'),

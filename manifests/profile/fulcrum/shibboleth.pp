@@ -5,7 +5,7 @@
 # Configure the Shibboleth SP for Fulcrum in FastCGI mode.
 # See also the nginx profile that depends on these services.
 class nebula::profile::fulcrum::shibboleth {
-  ensure_packages([
+  stdlib::ensure_packages([
     'unixodbc',
     'shibboleth-sp-common',
     'shibboleth-sp-utils',

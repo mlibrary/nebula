@@ -9,8 +9,7 @@
 # @example
 #   include nebula::profile::quod::dependencies::packages
 class nebula::profile::quod::dependencies::packages () {
-  ensure_packages (
-    [
+  stdlib::ensure_packages([
       'curl',
       'emacs',
       'geoip-bin',
@@ -20,8 +19,7 @@ class nebula::profile::quod::dependencies::packages () {
       'libaprutil1-dbd-oracle',
       'oracle-instantclient12.1-basic',
       'oracle-instantclient12.1-devel',
-    ]
-  )
+  ])
   file { '/usr/share/GeoIP':
     target => '/quod/misc/g/geoip'
   }

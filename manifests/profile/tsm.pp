@@ -45,7 +45,7 @@ class nebula::profile::tsm (
   Array[String] $exclude_dirs = ['/afs/','/net/','/nfs/','/usr/vice/cache/'],
   Array[String] $opt_settings = ['* No custom settings']
 ) {
-  ensure_packages(['tivsm-ba',])
+  stdlib::ensure_packages(['tivsm-ba'])
   $tsm_home = '/opt/tivoli/tsm/client/ba/bin'
 
   file { '/etc/systemd/system/tsm.service':

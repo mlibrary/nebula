@@ -11,8 +11,7 @@
 class nebula::profile::hathitrust::dependencies () {
   include nebula::profile::imagemagick
 
-  ensure_packages (
-    [
+  stdlib::ensure_packages([
       'awscli',
       'emacs',
       'geoip-bin',
@@ -24,8 +23,7 @@ class nebula::profile::hathitrust::dependencies () {
       'rsync',
       'unzip',
       'zip',
-    ]
-  )
+  ])
 
   file { '/l':
     ensure => 'directory'
@@ -62,5 +60,5 @@ class nebula::profile::hathitrust::dependencies () {
     ]:
   }
 
-  ensure_packages(['mariadb-client'])
+  stdlib::ensure_packages(['mariadb-client'])
 }

@@ -15,7 +15,7 @@ class nebula::profile::certbot_route53 (
   String $aws_access_key_id = 'default.invalid',
   String $aws_secret_access_key = 'default.invalid',
 ) {
-  ensure_packages([
+  stdlib::ensure_packages([
     'certbot',
     'awscli',
     'python3-certbot-dns-route53',

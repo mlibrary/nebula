@@ -10,7 +10,7 @@ class nebula::profile::certbot_incommon (
   String $letsencrypt_email = 'nope@nope.zone',
   String $server = 'https://acme.sectigo.com/v2/InCommonECCOV'
 ) {
-  ensure_packages([
+  stdlib::ensure_packages([
     'certbot',
   ])
 
