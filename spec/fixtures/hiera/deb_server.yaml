@@ -1,3 +1,0 @@
-nebula::profile::http_fileserver::storage_path: somehost:/somewhere
-nebula::profile::deb_signing::sign_key: puppet:///somewhere/mykey.key
-nebula::profile::deb_signing::sign_script: puppet:///somewhere/signit.sh
