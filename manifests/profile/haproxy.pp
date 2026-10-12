@@ -7,9 +7,9 @@
 # @example
 #   include nebula::profile::haproxy
 class nebula::profile::haproxy (
+  String $organization,
   Hash $services,
   Hash $monitoring_user,
-  String $organization = 'legacy',
   Boolean $master = false,
   Optional[String] $cert_source = undef,
   Hash $extra_floating_ips = {},
@@ -19,12 +19,6 @@ class nebula::profile::haproxy (
   include nebula::profile::networking::sysctl
   class { 'nebula::profile::prometheus::exporter::haproxy':
     master => $master
-  }
-
-  if $services[$organization] == undef {
-    $supported_services = $services
-  } else {
-    $supported_services = $services[$organization]
   }
 
   file {
@@ -55,12 +49,14 @@ class nebula::profile::haproxy (
     group  => 'root'
   }
 
-  $supported_services.filter |$service, $params| {
-    'floating_ip' in $params
-  }.each |$service, $params| {
-    @nebula::haproxy::service { $service :
-      cert_source => $cert_source,
-      *           => $params
+  if $services[$organization] != undef {
+    $services[$organization].filter |$service, $params| {
+      'floating_ip' in $params
+    }.each |$service, $params| {
+      @nebula::haproxy::service { $service :
+        cert_source => $cert_source,
+        *           => $params
+      }
     }
   }
 
