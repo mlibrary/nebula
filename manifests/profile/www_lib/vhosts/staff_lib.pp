@@ -121,28 +121,12 @@ class nebula::profile::www_lib::vhosts::staff_lib (
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction auth true'
       },
-      # Those that need php-related settings too
-      {
-        provider        => 'directorymatch',
-        path            => "^${docroot}/coral",
-        auth_type       => 'openid-connect',
-        require         => 'valid-user',
-        custom_fragment => 'OIDCUnAuthAction auth true',
-        addhandlers     => [{
-          extensions => ['.php'],
-          handler    => 'application/x-httpd-php'
-        }]
-      },
       {
         provider        => 'directorymatch',
         path            => "^${docroot}/ptf",
         auth_type       => 'openid-connect',
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction auth true',
-        addhandlers     => [{
-          extensions => ['.php'],
-          handler    => 'application/x-httpd-php'
-        }]
       },
       {
         provider        => 'directorymatch',
@@ -150,10 +134,6 @@ class nebula::profile::www_lib::vhosts::staff_lib (
         auth_type       => 'openid-connect',
         require         => 'valid-user',
         custom_fragment => 'OIDCUnAuthAction auth true',
-        addhandlers     => [{
-          extensions => ['.php'],
-          handler    => 'application/x-httpd-php'
-        }]
       },
     ],
 

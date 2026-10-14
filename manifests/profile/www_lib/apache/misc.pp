@@ -18,19 +18,11 @@ class nebula::profile::www_lib::apache::misc (
   include nebula::profile::apache::authz_umichlib
   include nebula::profile::apache::auth_openidc
 
-  class { 'apache::mod::php':
-    # we'll configure php 7.3 separately
-    package_name => 'libapache2-mod-php5.6',
-    extensions   => ['.php','.phtml'],
-    php_version  => '5.6'
-  }
-
   # should be moved elsewhere to include as virtual all that might be present on the puppet master
   @nebula::apache::ssl_keypair {
     [
       'apps.lib.umich.edu',
       'apps.staff.lib.umich.edu',
-      'datamart.lib.umich.edu',
       'deepblue.lib.umich.edu',
       'developingwritersbook.com',
       'digital.bentley.umich.edu',
@@ -49,7 +41,7 @@ class nebula::profile::www_lib::apache::misc (
   # depends on ssl_keypairs above (or declared in includes like apache::fulcrum)
   include nebula::profile::www_lib::vhosts::redirects
 
-  $vhost_prefix = 'nebula::profile::www_lib::vhosts' ['default','www_lib','apps_lib','staff_lib','datamart','deepblue', 'openmich', 'mgetit', 'search'].each |$vhost| {
+  $vhost_prefix = 'nebula::profile::www_lib::vhosts' ['default','www_lib','apps_lib','staff_lib','deepblue', 'openmich', 'mgetit', 'search'].each |$vhost| {
     class { "nebula::profile::www_lib::vhosts::${vhost}":
       prefix => $prefix,
       domain => $domain,
