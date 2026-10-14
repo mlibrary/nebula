@@ -82,7 +82,7 @@ class nebula::profile::www_lib::vhosts::apps_lib (
         addhandlers    => [{
           extensions => ['.php'],
           # TODO: Extract version or socket path to params/hiera
-          handler    => 'proxy:unix:/run/php/php8.1-fpm.sock|fcgi://localhost'
+          handler    => 'proxy:unix:/run/php/php8.4-fpm.sock|fcgi://localhost'
         }],
       },
       {

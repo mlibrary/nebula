@@ -9,7 +9,7 @@
 # @example
 #   include nebula::profile::www_lib::php
 class nebula::profile::www_lib::php (
-  String $default_php_version = '8.1'
+  String $default_php_version = '8.4'
 ) {
   # Set the php repo
   apt::source { 'php-community':
