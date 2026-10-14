@@ -159,3 +159,6 @@ nebula::profile::kubernetes::apt::location: 'https://pkgs.k8s.io/core:/stable:/v
 
 nebula::profile::search::catalog::solr::solr_user:
   name: "nebula-hiera-default-search-solr-user"
+
+nebula::profile::nat_router::lan_cidr: "10.0.0.0/24"
+nebula::profile::nat_router::public_ip_address: "192.168.12.34"
