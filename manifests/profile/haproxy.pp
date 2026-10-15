@@ -103,12 +103,13 @@ class nebula::profile::haproxy (
   @@concat_fragment { "keepalived node ip ${::networking['hostname']}":
     target  => '/etc/keepalived/keepalived.conf',
     content => "    ${::networking['ip']}\n",
-    tag     => "keepalived-haproxy-ip-${facts['datacenter']}",
+    tag     => "keepalived-haproxy-ip-${facts['datacenter']}-${organization}",
     order   => '02'
   }
 
   # don't collect our own IP address, just the other haproxy nodes here
   Concat_fragment <<| tag == "keepalived-haproxy-ip-${facts['datacenter']}" and title != "keepalived node ip ${::networking['hostname']}" |>>
+  Concat_fragment <<| tag == "keepalived-haproxy-ip-${facts['datacenter']}-${organization}" and title != "keepalived node ip ${::networking['hostname']}" |>>
 
   concat_fragment { 'keepalived postamble':
     target  => '/etc/keepalived/keepalived.conf',
