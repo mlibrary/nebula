@@ -30,16 +30,14 @@ dependencies:
 - name: puppet/logrotate
 - name: puppet/nginx
   ref: 7.0.1
-  info: 8.0.0 requires puppet 8.19.0, upgrade after we replace puppet master
+  info: nginx 8.0.0 requires puppet 8.19.0, upgrade after we replace puppet master
 - name: puppet/php
 - name: puppet/systemd
   ref: 9.4.0
-  info: 10.0.0 breaks logrotate 9.0.0
+  info: systemd 10.0.0 breaks logrotate 9.0.0
 - name: puppet/unattended_upgrades
 - name: puppetlabs/apache
 - name: puppetlabs/apt
-  ref: 11.2.0
-  info: librarian-puppet is confused, and puppetlabs/docker has unreasonable dependencies
 - name: puppetlabs/augeas_core
 - name: puppetlabs/concat
   ref: 9.1.0
@@ -55,7 +53,7 @@ dependencies:
 - name: puppetlabs/sshkeys_core
 - name: puppetlabs/stdlib
   ref: 9.7.0
-  info: 10.0.0 breaks many other modules
+  info: stdlib 10.0.0 breaks many other modules
 - name: puppetlabs/vcsrepo
 - name: stm/debconf
 operatingsystem_support:
