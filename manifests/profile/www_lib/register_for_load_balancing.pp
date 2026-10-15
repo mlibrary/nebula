@@ -9,6 +9,7 @@ class nebula::profile::www_lib::register_for_load_balancing (
     @@nebula::haproxy::binding { "${::networking['hostname']} ${service}":
       service       => $service,
       datacenter    => $facts['datacenter'],
+      organization  => 'legacy',
       hostname      => $::networking['hostname'],
       ipaddress     => $::networking['ip'],
       https_offload => false,

@@ -108,7 +108,6 @@ class nebula::profile::haproxy (
   }
 
   # don't collect our own IP address, just the other haproxy nodes here
-  Concat_fragment <<| tag == "keepalived-haproxy-ip-${facts['datacenter']}" and title != "keepalived node ip ${::networking['hostname']}" |>>
   Concat_fragment <<| tag == "keepalived-haproxy-ip-${facts['datacenter']}-${organization}" and title != "keepalived node ip ${::networking['hostname']}" |>>
 
   concat_fragment { 'keepalived postamble':

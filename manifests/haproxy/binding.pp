@@ -31,6 +31,7 @@ define nebula::haproxy::binding (
   String $hostname,
   String $datacenter,
   String $ipaddress,
+  String $organization = 'legacy',
   Boolean $https_offload = true,
 ) {
   $last_octet = $ipaddress.split('\.')[-1]

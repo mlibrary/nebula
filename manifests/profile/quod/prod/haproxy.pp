@@ -11,6 +11,7 @@ class nebula::profile::quod::prod::haproxy {
     service       => 'quod',
     https_offload => true,
     datacenter    => $facts['datacenter'],
+    organization  => 'legacy',
     hostname      => $::networking['hostname'],
     ipaddress     => $::networking['ip'];
   }
