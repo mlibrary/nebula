@@ -9,23 +9,28 @@
 # @example
 #   include nebula::profile::apache
 class nebula::profile::apache (
-  String $chain_crt = 'incommon_sha2.crt',
   String $ssl_cert_dir = '/etc/ssl/certs',
   String $ssl_key_dir = '/etc/ssl/private',
+  Optional[String] $chain_crt = undef,
   Optional[Hash] $log_formats = undef,
 ) {
   $haproxy_ips = nodes_for_class('nebula::profile::haproxy').map |String $nodename| {
     fact_for($nodename, 'networking')['ip']
   }
 
-  $ssl_chain = "${ssl_cert_dir}/${chain_crt}"
+  $ssl_chain = $chain_crt ? {
+    undef   => undef,
+    default => "${ssl_cert_dir}/${chain_crt}"
+  }
 
-  file { $ssl_chain:
-    mode   => '0644',
-    owner  => 'root',
-    group  => 'root',
-    notify => Class['Apache::Service'],
-    source => "puppet:///ssl-certs/${chain_crt}"
+  if $ssl_chain != undef {
+    file { $ssl_chain:
+      mode   => '0644',
+      owner  => 'root',
+      group  => 'root',
+      notify => Class['Apache::Service'],
+      source => "puppet:///ssl-certs/${chain_crt}",
+    }
   }
 
   @nebula::taghosts::tag { 'apache': }
