@@ -28,6 +28,22 @@ class nebula::profile::prometheus::exporter::mysql () {
     content => template('nebula/profile/prometheus/exporter/mysql/target.yaml.erb')
   }
 
+  file { '/var/lib/prometheus/.my.cnf':
+    ensure  => file,
+    owner   => 'prometheus',
+    group   => 'prometheus',
+    mode    => '0644',
+    content => template('nebula/profile/prometheus/exporter/mysql/prometheus.my.cnf.erb')
+  }
+
+  file { '/etc/systemd/system/prometheus-mysqld-exporter.service.d/override.conf':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template('nebula/profile/prometheus/exporter/mysql/override.conf.erb')
+  }
+
   Firewall <<| tag == "${facts['datacenter']}_prometheus_mysql_exporter" |>>
 
   $role = lookup_role()
