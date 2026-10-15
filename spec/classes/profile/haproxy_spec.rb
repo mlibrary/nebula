@@ -295,8 +295,17 @@ describe "nebula::profile::haproxy" do
           expect(exported_resources).to contain_concat_fragment("keepalived node ip thisnode").with(
             target: keepalived_conf,
             content: "    #{my_ip}\n",
-            tag: "keepalived-haproxy-ip-somedc"
+            tag: "keepalived-haproxy-ip-somedc-legacy"
           )
+        end
+
+        context "with organization set to mlibrary" do
+          let(:params) { base_params.merge(organization: "mlibrary") }
+
+          it "exports its IP address tagged with mlibrary" do
+            expect(exported_resources).to contain_concat_fragment("keepalived node ip thisnode")
+              .with_tag("keepalived-haproxy-ip-somedc-mlibrary")
+          end
         end
 
         it {
