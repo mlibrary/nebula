@@ -24,189 +24,7 @@ class nebula::profile::prometheus_with_docker (
   String $version = 'latest',
   String $pushgateway_version = 'latest',
 ) {
-  include nebula::profile::docker
   $hostname = $::networking['hostname']
-
-  docker::run { 'prometheus':
-    image            => "prom/prometheus:${version}",
-    net              => 'host',
-    extra_parameters => ['--restart=always'],
-    volumes          => [
-      '/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml',
-      '/etc/prometheus/rules.yml:/etc/prometheus/rules.yml',
-      '/etc/prometheus/nodes.yml:/etc/prometheus/nodes.yml',
-      '/etc/prometheus/haproxy.yml:/etc/prometheus/haproxy.yml',
-      '/etc/prometheus/mysql.yml:/etc/prometheus/mysql.yml',
-      '/etc/prometheus/ipmi.yml:/etc/prometheus/ipmi.yml',
-      '/etc/prometheus/etcd.yml:/etc/prometheus/etcd.yml',
-      '/etc/prometheus/catalog_search.yml:/etc/prometheus/catalog_search.yml',
-      '/etc/prometheus/quod.yml:/etc/prometheus/quod.yml',
-      '/etc/prometheus/tls:/tls',
-      '/opt/prometheus:/prometheus',
-    ],
-    require          => File['/opt/prometheus', '/etc/prometheus/tls/ca.crt', '/etc/prometheus/tls/client.crt', '/etc/prometheus/tls/client.key'],
-  }
-
-  docker::run { 'pushgateway':
-    image            => "prom/pushgateway:${pushgateway_version}",
-    command          => '--persistence.file=/archive/pushgateway',
-    net              => 'host',
-    extra_parameters => ['--restart=always'],
-    volumes          => ['/opt/pushgateway:/archive'],
-    require          => File['/opt/pushgateway'],
-  }
-
-  file { '/etc/prometheus/prometheus.yml':
-    content => template('nebula/profile/prometheus/config.yml.erb'),
-    notify  => Docker::Run['prometheus'],
-  }
-
-  file { '/etc/prometheus/rules.yml':
-    content => template('nebula/profile/prometheus/rules.yml.erb'),
-    notify  => Docker::Run['prometheus'],
-  }
-
-  concat_file { '/etc/prometheus/nodes.yml':
-    notify  => Docker::Run['prometheus'],
-    require => File['/etc/prometheus'],
-  }
-
-  $static_nodes.each |$static_node| {
-    concat_fragment { "prometheus node service ${static_node['labels']['hostname']}":
-      tag     => "${facts['datacenter']}_prometheus_node_service_list",
-      target  => '/etc/prometheus/nodes.yml',
-      content => template('nebula/profile/prometheus/exporter/node/static_target.yaml.erb'),
-    }
-  }
-
-  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_node_service_list" |>>
-
-  concat_file { '/etc/prometheus/haproxy.yml':
-    notify  => Docker::Run['prometheus'],
-    require => File['/etc/prometheus'],
-  }
-
-  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_haproxy_service_list" |>>
-
-  concat_file { '/etc/prometheus/mysql.yml':
-    notify  => Docker::Run['prometheus'],
-    require => File['/etc/prometheus'],
-  }
-
-  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_mysql_service_list" |>>
-
-  concat_file { '/etc/prometheus/ipmi.yml':
-    notify  => Docker::Run['prometheus'],
-    require => File['/etc/prometheus'],
-  }
-
-  concat_fragment { 'prometheus ipmi scrape config first line':
-    target  => '/etc/prometheus/ipmi.yml',
-    order   => '01',
-    content => "scrape_configs:\n"
-  }
-
-  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_ipmi_exporter" |>>
-
-  concat_file { '/etc/prometheus/etcd.yml':
-    notify  => Docker::Run['prometheus'],
-    require => File['/etc/prometheus'],
-  }
-
-  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_etcd_service_list" |>>
-
-  concat_file { '/etc/prometheus/catalog_search.yml':
-    notify  => Docker::Run['prometheus'],
-    require => File['/etc/prometheus'],
-  }
-
-  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_catalog_search_service_list" |>>
-
-  concat_file { '/etc/prometheus/quod.yml':
-    notify  => Docker::Run['prometheus'],
-    require => File['/etc/prometheus'],
-  }
-
-  Concat_fragment <<| tag == "${facts['datacenter']}_prometheus_quod_service_list" |>>
-
-  file { '/etc/prometheus':
-    ensure => 'directory',
-  }
-
-  file { '/etc/prometheus/tls':
-    ensure => 'directory',
-  }
-
-  file { '/etc/prometheus/tls/ca.crt':
-    source => 'puppet:///ssl-certs/prometheus-pki/ca.crt',
-    mode   => '0644',
-    owner  => 'nobody',
-    group  => 'nogroup',
-    notify => Docker::Run['prometheus'],
-  }
-
-  file { '/etc/prometheus/tls/client.crt':
-    source => "puppet:///ssl-certs/prometheus-pki/${::networking['fqdn']}.crt",
-    mode   => '0644',
-    owner  => 'nobody',
-    group  => 'nogroup',
-    notify => Docker::Run['prometheus'],
-  }
-
-  file { '/etc/prometheus/tls/client.key':
-    source => "puppet:///ssl-certs/prometheus-pki/${::networking['fqdn']}.key",
-    mode   => '0600',
-    owner  => 'nobody',
-    group  => 'nogroup',
-    notify => Docker::Run['prometheus'],
-  }
-
-  file { '/opt/prometheus':
-    ensure => 'directory',
-    owner  => 65534,
-    group  => 65534,
-  }
-
-  file { '/opt/pushgateway':
-    ensure => 'directory',
-    owner  => 65534,
-    group  => 65534,
-  }
-
-  if $manage_https {
-    class { 'nebula::profile::https_to_port':
-      port => 9090,
-    }
-
-    nebula::exposed_port { '010 Prometheus HTTPS':
-      port  => 443,
-      block => 'umich::networks::all_trusted_machines',
-    }
-  } else {
-    class { 'nginx':
-      server_tokens => 'off',
-    }
-    nginx::resource::server { 'https-forwarder':
-      server_name       => [$::networking['fqdn']],
-      listen_options    => 'proxy_protocol default_server',
-      listen_port       => 443,
-      proxy             => 'http://localhost:9090',
-      ssl               => true,
-      ssl_cert          => '/etc/prometheus/tls/client.crt',
-      ssl_key           => '/etc/prometheus/tls/client.key',
-      server_cfg_append => {
-        'ssl_client_certificate' => '/etc/prometheus/tls/ca.crt',
-        'ssl_verify_client'      => 'on',
-        'ssl_verify_depth'       => 1,
-      },
-    }
-    firewall { '200 HTTPS: Client Cert':
-      proto => 'tcp',
-      dport => [443],
-      state => 'NEW',
-      jump  => 'accept',
-    }
-  }
 
   case $facts["mlibrary_ip_addresses"] {
     Hash[String, Array[String]]: {
@@ -219,6 +37,8 @@ class nebula::profile::prometheus_with_docker (
       $all_private_addresses = []
     }
   }
+
+  ####################################################################
 
   if $all_public_addresses != [] {
     @@concat_fragment { "02 pushgateway advanced public url ${facts['datacenter']}":
@@ -239,6 +59,8 @@ class nebula::profile::prometheus_with_docker (
       content => "PUSHGATEWAY='http://${all_private_addresses[0]}:9091'\n",
     }
   }
+
+  ####################################################################
 
   $all_public_addresses.each |$address| {
     @@firewall {
@@ -319,6 +141,8 @@ class nebula::profile::prometheus_with_docker (
     state  => 'NEW',
     jump   => 'accept',
   }
+
+  ####################################################################
 
   Firewall <<| tag == "${facts['datacenter']}_pushgateway_node" |>>
 }
