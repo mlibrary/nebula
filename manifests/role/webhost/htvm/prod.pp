@@ -23,5 +23,14 @@ class nebula::role::webhost::htvm::prod (
     ipaddress     => $::networking['ip']
   }
 
+  @@nebula::haproxy::binding { "${::networking['hostname']} private hathitrust":
+    service       => 'hathitrust',
+    https_offload => false,
+    datacenter    => $facts['datacenter'],
+    organization  => 'ht',
+    hostname      => $::networking['hostname'],
+    ipaddress     => $facts["mlibrary_ip_addresses"]["private"][0],
+  }
+
   @nebula::taghosts::tag { 'prod': }
 }
