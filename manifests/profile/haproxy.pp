@@ -60,7 +60,7 @@ class nebula::profile::haproxy (
     }
   }
 
-  Nebula::Haproxy::Binding <<| datacenter == $facts['datacenter'] |>>
+  Nebula::Haproxy::Binding <<| datacenter == $facts['datacenter'] and organization == $organization |>>
 
   nebula::authzd_user { $monitoring_user['name']:
     gid     => 'haproxy',
