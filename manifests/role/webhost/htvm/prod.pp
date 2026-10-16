@@ -18,6 +18,7 @@ class nebula::role::webhost::htvm::prod (
     service       => 'hathitrust',
     https_offload => false,
     datacenter    => $facts['datacenter'],
+    organization  => 'legacy',
     hostname      => $::networking['hostname'],
     ipaddress     => $::networking['ip']
   }
