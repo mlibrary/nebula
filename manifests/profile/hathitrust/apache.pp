@@ -133,6 +133,18 @@ class nebula::profile::hathitrust::apache (
     source => 'puppet:///apache/badrobots.conf'
   }
 
+  apache::custom_config { 'caching':
+    content => @("EOT"/L)
+      <FilesMatch ".+\.(js|css|woff2|png|svg|ico|jpg|ttf)$">
+        Header set Cache-Control "max-age=84600, public"
+      </FilesMatch>
+
+      <Location "/common/firebird/dist">
+          Header set Cache-Control "max-age=84600, public"
+      </Location>
+      | EOT
+  }
+
   file { '/etc/apache2/conf-available':
     ensure => 'absent',
     force  => true,
