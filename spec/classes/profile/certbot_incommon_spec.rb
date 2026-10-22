@@ -36,6 +36,7 @@ describe "nebula::profile::certbot_incommon" do
         end
 
         it { is_expected.to contain_concat("/certs/example.invalid.crt").with_group("puppet") }
+        it { is_expected.to contain_concat("/certs/example.invalid-chain.crt").with_group("puppet") }
         it { is_expected.to contain_concat("/certs/example.invalid.key").with_group("puppet") }
         it { is_expected.to contain_concat("/haproxy/onlyservice/example.invalid.pem").with_group("puppet") }
 
@@ -43,6 +44,12 @@ describe "nebula::profile::certbot_incommon" do
           expect(subject).to contain_concat_fragment("example.invalid.crt cert")
             .with_target("/certs/example.invalid.crt")
             .with_source("/etc/letsencrypt/live/example.invalid/fullchain.pem")
+        end
+
+        it do
+          expect(subject).to contain_concat_fragment("example.invalid-chain.crt cert")
+            .with_target("/certs/example.invalid-chain.crt")
+            .with_source("/etc/letsencrypt/live/example.invalid/chain.pem")
         end
 
         it do
@@ -142,6 +149,12 @@ describe "nebula::profile::certbot_incommon" do
           expect(subject).to contain_concat_fragment("/var/local/cert_dir/abc.example.crt cert")
             .with_target("/var/local/cert_dir/abc.example.crt")
             .with_source("/etc/letsencrypt/live/abc.example/fullchain.pem")
+        end
+
+        it do
+          expect(subject).to contain_concat_fragment("/var/local/cert_dir/abc.example-chain.crt cert")
+            .with_target("/var/local/cert_dir/abc.example-chain.crt")
+            .with_source("/etc/letsencrypt/live/abc.example/chain.pem")
         end
 
         it do
