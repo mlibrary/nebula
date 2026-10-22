@@ -64,25 +64,6 @@ class nebula::profile::www_lib::php (
     ]
   )
 
-  # Install php 5.6
-  ensure_packages (
-    [
-      'php5.6-cli',
-      'php5.6-common',
-      'php5.6-curl',
-      'php5.6-fpm',
-      'php5.6-gd',
-      'php5.6-json',
-      'php5.6-ldap',
-      'php5.6-mbstring',
-      'php5.6-mysql',
-      'php5.6-opcache',
-      'php5.6-readline',
-      'php5.6-sqlite3',
-      'php5.6-xml',
-    ]
-  )
-
   # Configure FPM config file
   php::config { 'fpm php.ini':
     file   => "/etc/php/${default_php_version}/fpm/php.ini",
@@ -174,44 +155,6 @@ class nebula::profile::www_lib::php (
       'XML_Parser'            => { package_prefix => '', provider => 'pear' },
       'XML_Serializer'        => { ensure => 'beta', package_prefix => '', provider => 'pear' },
       # XML_Util
-    },
-  }
-
-  # PHP 5.6 defaults to using www-data, while we need to use nobody:nogroup for sockets
-  file_line {
-    default:
-      path    => '/etc/php/5.6/fpm/pool.d/www.conf',
-      require => Package['php5.6-fpm'],
-      ;
-    'PHP 5.6 FPM user':
-      line  => 'user = nobody',
-      match => '^user =',
-      ;
-    'PHP 5.6 FPM group':
-      line  => 'group = nogroup',
-      match => '^group =',
-      ;
-    'PHP 5.6 FPM listen.owner':
-      line  => 'listen.owner = nobody',
-      match => '^listen\.owner =',
-      ;
-    'PHP 5.6 FPM listen.group':
-      line  => 'listen.group = nogroup',
-      match => '^listen\.group =',
-      ;
-  }
-
-  # Configure Apache PHP module
-  class { 'php::apache_config':
-    inifile  => '/etc/php/5.6/apache2/php.ini',
-    settings => {
-      'PHP/short_open_tag'          => 'On',
-      'PHP/max_input_vars'          => '2000',
-      'PHP/memory_limit'            => '256M',
-      'PHP/error_reporting'         => 'E_ALL & ~E_DEPRECATED',
-      'PHP/upload_max_filesize'     => '32M',
-      'Date/date.timezone'          => 'America/Detroit',
-      'mail function/sendmail_path' => '/usr/sbin/sendmail -t -i'
     },
   }
 }
