@@ -98,13 +98,13 @@ class nebula::profile::hathitrust::apache (
   class { 'apache::mod::expires':
     expires_active  => true,
     expires_by_type => [
-      { 'application/javascript'   => 'access plus 1 day' },
-      { 'text/css'                 => 'access plus 1 day' },
+      { 'application/javascript'   => 'access plus 1 year' },
+      { 'text/css'                 => 'access plus 1 year' },
       { 'image/svg+xml'            => 'access plus 1 day' },
       { 'image/png'                => 'access plus 1 day' },
       { 'image/jpeg'               => 'access plus 1 day' },
-      { 'font/ttf'                 => 'access plus 1 week' },
-      { 'font/woff2'               => 'access plus 1 week' },
+      { 'font/ttf'                 => 'access plus 1 year' },
+      { 'font/woff2'               => 'access plus 1 year' },
       { 'image/vnd.microsoft.icon' => 'access plus 1 week' },
     ],
   }
