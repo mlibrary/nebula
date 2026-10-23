@@ -98,10 +98,15 @@ class nebula::profile::hathitrust::apache (
   class { 'apache::mod::expires':
     expires_active  => true,
     expires_by_type => [
-      { 'application/javascript' => 'access plus 6 hours' },
-      { 'text/css' => 'access plus 6 hours' }
+      { 'application/javascript'   => 'access plus 1 year' },
+      { 'text/css'                 => 'access plus 1 year' },
+      { 'image/svg+xml'            => 'access plus 1 day' },
+      { 'image/png'                => 'access plus 1 day' },
+      { 'image/jpeg'               => 'access plus 1 day' },
+      { 'font/ttf'                 => 'access plus 1 year' },
+      { 'font/woff2'               => 'access plus 1 year' },
+      { 'image/vnd.microsoft.icon' => 'access plus 1 week' },
     ],
-    expires_default => 'modification plus 2 hours'
   }
   class { 'apache::mod::include': }
   class { 'apache::mod::mime_magic': }
@@ -131,18 +136,6 @@ class nebula::profile::hathitrust::apache (
 
   apache::custom_config { 'badrobots':
     source => 'puppet:///apache/badrobots.conf'
-  }
-
-  apache::custom_config { 'caching':
-    content => @("EOT"/L)
-      <FilesMatch ".+\.(js|css|woff2|png|svg|ico|jpg|ttf)$">
-        Header set Cache-Control "max-age=84600, public"
-      </FilesMatch>
-
-      <Location "/common/firebird/dist">
-          Header set Cache-Control "max-age=84600, public"
-      </Location>
-      | EOT
   }
 
   file { '/etc/apache2/conf-available':
