@@ -357,6 +357,7 @@ class nebula::profile::hathitrust::apache::babel (
       {
         provider        => 'locationmatch',
         path            => '^/(cgi|common/firebird/alerts/alert.json$)',
+        require         => 'unmanaged',
         custom_fragment => "
     ExpiresActive Off
     ",
