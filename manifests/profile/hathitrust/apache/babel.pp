@@ -353,7 +353,14 @@ class nebula::profile::hathitrust::apache::babel (
         shib_request_settings => { 'requireSession' => '1' },
         request_headers       => ['set X-Remote-User "expr=%{REMOTE_USER}'],
         proxy_pass            => [{ url => "${dex_endpoint}callback/htrc-saml-proxy" }],
-      }
+      },
+      {
+        provider        => 'locationmatch',
+        path            => '^/(cgi|common/firebird/alerts/alert.json$)',
+        custom_fragment => "
+    ExpiresActive Off
+    ",
+      },
     ],
 
     ssl_proxyengine             => true,

@@ -69,6 +69,13 @@ class nebula::profile::hathitrust::apache::www (
         path     => "${sdrroot}/common/web",
         require  => $default_access,
       },
+      {
+        provider        => 'location',
+        path            => '/common/firebird/alerts/alert.json',
+        custom_fragment => "
+    ExpiresActive Off
+    ",
+      }
     ],
 
     aliases            => [
