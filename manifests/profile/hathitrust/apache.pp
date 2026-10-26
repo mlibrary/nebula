@@ -99,6 +99,7 @@ class nebula::profile::hathitrust::apache (
     expires_active  => true,
     expires_by_type => [
       { 'application/javascript'   => 'access plus 1 year' },
+      { 'text/javascript'          => 'access plus 1 year' },
       { 'text/css'                 => 'access plus 1 year' },
       { 'image/svg+xml'            => 'access plus 1 day' },
       { 'image/png'                => 'access plus 1 day' },
