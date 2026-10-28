@@ -179,6 +179,45 @@ describe "nebula::profile::prometheus" do
         end
       end
 
+      it do
+        expect(exported_resources).to contain_concat__fragment("02 pushgateway advanced public url mydatacenter")
+          .with_target("/usr/local/bin/pushgateway_advanced")
+          .with_content("PUSHGATEWAY='http://123.123.123.123:9091'\n")
+      end
+
+      it do
+        expect(exported_resources).to contain_concat__fragment("02 pushgateway advanced private url mydatacenter")
+          .with_target("/usr/local/bin/pushgateway_advanced")
+          .with_content("PUSHGATEWAY='http://10.123.123.123:9091'\n")
+      end
+
+      it do
+        expect(exported_resources).to contain_firewall("010 prometheus public node exporter #{facts[:networking]["hostname"]} 123.123.123.123")
+          .with_tag("mydatacenter_prometheus_public_node_exporter")
+          .with_source("123.123.123.123")
+          .with_proto("tcp")
+          .with_state("NEW")
+          .with_jump("accept")
+          .with_dport(9100)
+      end
+
+      it do
+        expect(exported_resources).to contain_firewall("010 prometheus private node exporter #{facts[:networking]["hostname"]} 10.123.123.123")
+          .with_tag("mydatacenter_prometheus_private_node_exporter")
+          .with_source("10.123.123.123")
+          .with_proto("tcp")
+          .with_state("NEW")
+          .with_jump("accept")
+          .with_dport(9100)
+      end
+
+      context "in datacenter abc123" do
+        let(:facts) { os_facts.merge(datacenter: "abc123") }
+
+        it { expect(exported_resources).to contain_concat__fragment("02 pushgateway advanced public url abc123") }
+        it { expect(exported_resources).to contain_concat__fragment("02 pushgateway advanced private url abc123") }
+      end
+
       context "when on the public internet" do
         let(:facts) do
           os_facts.merge(
@@ -195,6 +234,16 @@ describe "nebula::profile::prometheus" do
         it { is_expected.to contain_class("nebula::profile::https_to_port").with_port(9090) }
         it { is_expected.to contain_nebula__exposed_port("010 Prometheus HTTPS").with_port(443) }
         it { is_expected.to contain_nebula__exposed_port("010 Prometheus HTTPS").with_block("umich::networks::all_trusted_machines") }
+
+        it do
+          expect(exported_resources).to contain_concat__fragment("02 pushgateway advanced public url mydatacenter")
+            .with_content("PUSHGATEWAY='http://10.1.1.1:9091'\n")
+        end
+
+        it do
+          expect(exported_resources).to contain_concat__fragment("02 pushgateway advanced private url mydatacenter")
+            .with_content("PUSHGATEWAY='http://10.2.2.2:9091'\n")
+        end
       end
 
       context "when behind a NAT router" do
@@ -235,6 +284,13 @@ describe "nebula::profile::prometheus" do
             .with_state("NEW")
             .with_jump("accept")
         end
+
+        it { expect(exported_resources).not_to contain_concat__fragment("02 pushgateway advanced public url mydatacenter") }
+
+        it do
+          expect(exported_resources).to contain_concat__fragment("02 pushgateway advanced private url mydatacenter")
+            .with_content("PUSHGATEWAY='http://10.3.3.3:9091'\n")
+        end
       end
 
       context "when public ip addresses are null" do
@@ -249,6 +305,7 @@ describe "nebula::profile::prometheus" do
 
         it { is_expected.not_to contain_class("nebula::profile::https_to_port") }
         it { is_expected.not_to contain_nebula__exposed_port("010 Prometheus HTTPS") }
+        it { expect(exported_resources).not_to contain_concat__fragment("02 pushgateway advanced public url mydatacenter") }
       end
     end
   end

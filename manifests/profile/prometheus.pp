@@ -11,6 +11,8 @@ class nebula::profile::prometheus (
   include nebula::profile::prometheus::client_certs
   include nebula::profile::prometheus::https
 
+  $ipaddrs = $facts["mlibrary_ip_addresses"]
+
   file { '/etc/prometheus/prometheus.yml':
     content => template('nebula/profile/prometheus/config.yml.erb'),
     notify  => Service['prometheus'],
@@ -69,5 +71,25 @@ class nebula::profile::prometheus (
     target  => '/etc/prometheus/ipmi.yml',
     order   => '01',
     content => "scrape_configs:\n"
+  }
+
+  ['public', 'private'].each |$network| {
+    if $ipaddrs[$network] != undef and $ipaddrs[$network] != [] {
+      @@concat::fragment { "02 pushgateway advanced $network url $datacenter":
+        target  => '/usr/local/bin/pushgateway_advanced',
+        content => "PUSHGATEWAY='http://${ipaddrs[$network][0]}:9091'\n",
+      }
+
+      $ipaddrs[$network].each |$address| {
+        @@firewall { "010 prometheus $network node exporter foo $address":
+          tag    => "mydatacenter_prometheus_${network}_node_exporter",
+          proto  => 'tcp',
+          source => $address,
+          state  => 'NEW',
+          jump   => 'accept',
+          dport  => 9100,
+        }
+      }
+    }
   }
 }
