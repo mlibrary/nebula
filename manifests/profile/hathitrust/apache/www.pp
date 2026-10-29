@@ -72,6 +72,7 @@ class nebula::profile::hathitrust::apache::www (
       {
         provider        => 'location',
         path            => '/common/firebird/alerts/alert.json',
+        require         => 'unmanaged',
         custom_fragment => "
     ExpiresActive Off
     ",
