@@ -1,0 +1,22 @@
+version: 2
+updates:
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: weekly
+  ignore:
+  - dependency-name: ruby/setup-ruby
+  groups:
+    github-actions:
+      patterns: ["*"]
+  cooldown:
+    default-days: 7
+
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: quarterly
+  allow:
+  - dependency-name: ruby/setup-ruby
+  cooldown:
+    default-days: 7
