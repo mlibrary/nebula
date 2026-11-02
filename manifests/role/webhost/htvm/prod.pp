@@ -26,6 +26,7 @@ class nebula::role::webhost::htvm::prod (
   @@nebula::haproxy::binding { "${::networking['hostname']} private hathitrust":
     service       => 'hathitrust',
     https_offload => false,
+    http          => false,
     datacenter    => $facts['datacenter'],
     organization  => 'ht',
     hostname      => $::networking['hostname'],
