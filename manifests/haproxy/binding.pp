@@ -17,6 +17,7 @@
 # @param datacenter The datacenter of the node to bind to
 # @param hostname The hostname of the node to bind to
 # @param ipaddress The ip address HAproxy should use to reach the node
+# @param http Bind port 80
 #
 # @example
 #   @@nebula::haproxy::binding { '${::networking['hostname']} myservice':
@@ -33,6 +34,7 @@ define nebula::haproxy::binding (
   String $ipaddress,
   String $organization = 'legacy',
   Boolean $https_offload = true,
+  Boolean $http = true,
 ) {
   $last_octet = $ipaddress.split('\.')[-1]
   $cookie = "cookie s${last_octet}"
@@ -44,11 +46,13 @@ define nebula::haproxy::binding (
     $ssl_opts = ' ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt'
   }
 
-  @concat_fragment { "${service}-${datacenter}-http ${hostname} binding":
-    target  => "/etc/haproxy/services.d/${service}-http.cfg",
-    order   => '04',
-    content => "server ${hostname} ${ipaddress}:80 ${track} ${cookie}\n",
-    tag     => "${service}-${datacenter}-http_binding"
+  if $http {
+    @concat_fragment { "${service}-${datacenter}-http ${hostname} binding":
+      target  => "/etc/haproxy/services.d/${service}-http.cfg",
+      order   => '04',
+      content => "server ${hostname} ${ipaddress}:80 ${track} ${cookie}\n",
+      tag     => "${service}-${datacenter}-http_binding"
+    }
   }
 
   @concat_fragment { "${service}-${datacenter}-https ${hostname} binding":
@@ -58,11 +62,13 @@ define nebula::haproxy::binding (
     tag     => "${service}-${datacenter}-https_binding"
   }
 
-  @concat_fragment { "${service}-${datacenter}-http ${hostname} exempt binding":
-    target  => "/etc/haproxy/services.d/${service}-http.cfg",
-    order   => '06',
-    content => "server ${hostname} ${ipaddress}:80 ${track} ${cookie}\n",
-    tag     => "${service}-${datacenter}-http_exempt_binding"
+  if $http {
+    @concat_fragment { "${service}-${datacenter}-http ${hostname} exempt binding":
+      target  => "/etc/haproxy/services.d/${service}-http.cfg",
+      order   => '06',
+      content => "server ${hostname} ${ipaddress}:80 ${track} ${cookie}\n",
+      tag     => "${service}-${datacenter}-http_exempt_binding"
+    }
   }
 
   @concat_fragment { "${service}-${datacenter}-https ${hostname} exempt binding":
