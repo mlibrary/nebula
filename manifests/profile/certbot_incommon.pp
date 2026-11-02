@@ -24,12 +24,21 @@ class nebula::profile::certbot_incommon (
         group => 'puppet',
       }
 
+      concat { "${cert_dir}/${main_domain}-chain.crt":
+        group => 'puppet',
+      }
+
       concat { "${cert_dir}/${main_domain}.key":
         group => 'puppet',
       }
 
       concat { "${haproxy_cert_dir}/${service}/${main_domain}.pem":
         group => 'puppet',
+      }
+
+      concat_fragment { "${main_domain}-chain.crt cert":
+        target => "${cert_dir}/${main_domain}-chain.crt",
+        source => "/etc/letsencrypt/live/${main_domain}/chain.pem"
       }
 
       concat_fragment { "${main_domain}.crt cert":
@@ -61,6 +70,10 @@ class nebula::profile::certbot_incommon (
       group => 'puppet',
     }
 
+    concat { "${cert_dir}/${domain}-chain.crt":
+      group => 'puppet',
+    }
+
     concat { "${cert_dir}/${domain}.key":
       group => 'puppet',
     }
@@ -68,6 +81,11 @@ class nebula::profile::certbot_incommon (
     concat_fragment { "${cert_dir}/${domain}.crt cert":
       target => "${cert_dir}/${domain}.crt",
       source => "/etc/letsencrypt/live/${domain}/fullchain.pem",
+    }
+
+    concat_fragment { "${cert_dir}/${domain}-chain.crt cert":
+      target => "${cert_dir}/${domain}-chain.crt",
+      source => "/etc/letsencrypt/live/${domain}/chain.pem",
     }
 
     concat_fragment { "${cert_dir}/${domain}.key key":
