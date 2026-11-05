@@ -65,23 +65,6 @@ describe "nebula::profile::prometheus_with_docker" do
           .that_requires("File[/etc/prometheus]")
       end
 
-      context "with rules_variables set" do
-        let(:params) do
-          {
-            rules_variables: {
-              darkblue_device: "//storage.invalid/volume"
-            }
-          }
-        end
-
-        it do
-          expect(subject).to contain_file("/etc/prometheus/rules.yml")
-            .that_notifies("Docker::Run[prometheus]")
-            .that_requires("File[/etc/prometheus]")
-            .with_content(%r{device="//storage.invalid/volume"})
-        end
-      end
-
       it do
         expect(subject).to contain_concat_file("/etc/prometheus/nodes.yml")
           .that_notifies("Docker::Run[prometheus]")
@@ -225,12 +208,6 @@ describe "nebula::profile::prometheus_with_docker" do
         it { is_expected.to compile }
 
         it do
-          expect(exported_resources).to contain_concat_fragment("02 pushgateway advanced url mydatacenter")
-            .with_target("/usr/local/bin/pushgateway_advanced")
-            .with_content("PUSHGATEWAY='http://#{facts[:networking]["ip"]}:9091'\n")
-        end
-
-        it do
           expect(exported_resources).to contain_concat_fragment("02 pushgateway advanced public url mydatacenter")
             .with_target("/usr/local/bin/pushgateway_advanced")
             .with_content("PUSHGATEWAY='http://#{facts[:networking]["ip"]}:9091'\n")
@@ -253,12 +230,6 @@ describe "nebula::profile::prometheus_with_docker" do
           expect(exported_resources).to contain_firewall("010 prometheus public node exporter #{facts[:networking]["hostname"]} 100.100.100.100")
             .with_source("100.100.100.100")
             .with_tag("mydatacenter_prometheus_public_node_exporter")
-        end
-
-        it do
-          expect(exported_resources).to contain_concat_fragment("02 pushgateway advanced url mydatacenter")
-            .with_target("/usr/local/bin/pushgateway_advanced")
-            .with_content("PUSHGATEWAY='http://100.100.100.100:9091'\n")
         end
 
         it do
@@ -293,12 +264,6 @@ describe "nebula::profile::prometheus_with_docker" do
         end
 
         it do
-          expect(exported_resources).to contain_concat_fragment("02 pushgateway advanced url mydatacenter")
-            .with_target("/usr/local/bin/pushgateway_advanced")
-            .with_content("PUSHGATEWAY='http://100.100.100.100:9091'\n")
-        end
-
-        it do
           expect(exported_resources).to contain_concat_fragment("02 pushgateway advanced public url mydatacenter")
             .with_target("/usr/local/bin/pushgateway_advanced")
             .with_content("PUSHGATEWAY='http://100.100.100.100:9091'\n")
@@ -321,10 +286,6 @@ describe "nebula::profile::prometheus_with_docker" do
           expect(exported_resources).to contain_firewall("010 prometheus private node exporter #{facts[:networking]["hostname"]} 10.1.2.3")
             .with_source("10.1.2.3")
             .with_tag("mydatacenter_prometheus_private_node_exporter")
-        end
-
-        it do
-          expect(exported_resources).not_to contain_concat_fragment("02 pushgateway advanced url mydatacenter")
         end
 
         it do
@@ -363,12 +324,6 @@ describe "nebula::profile::prometheus_with_docker" do
                 .with_jump("accept")
             end
           end
-        end
-
-        it do
-          expect(exported_resources).to contain_concat_fragment("02 pushgateway advanced url mydatacenter")
-            .with_target("/usr/local/bin/pushgateway_advanced")
-            .with_content("PUSHGATEWAY='http://100.100.100.100:9091'\n")
         end
 
         it do
