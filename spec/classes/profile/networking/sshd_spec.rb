@@ -31,7 +31,7 @@ describe "nebula::profile::networking::sshd" do
         %r{^PermitRootLogin (prohibit|without)-password$},
         %r{^PubkeyAuthentication no$},
         %r{^PasswordAuthentication no$},
-        %r{^ChallengeResponseAuthentication yes$},
+        %r{^KbdInteractiveAuthentication yes$},
         %r{^GSSAPIAuthentication no$},
         %r{^GSSAPICleanupCredentials yes$},
         %r{^UsePAM yes$},
