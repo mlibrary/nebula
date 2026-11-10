@@ -55,9 +55,11 @@ class nebula::profile::taghosts::index (
     content => template('nebula/profile/taghosts/bash_completion.erb'),
   }
 
-  file { '/usr/local/share/zsh/site-functions/_taghosts':
+  file { '/usr/local/share/zsh' : ensure => directory }
+  -> file { '/usr/local/share/zsh/site-functions' : ensure => directory }
+  -> file { '/usr/local/share/zsh/site-functions/_taghosts':
     owner   => 'root',
-    mode    => '0755',
+    mode    => '0644',
     content => template('nebula/profile/taghosts/zsh_completion.erb'),
   }
 
