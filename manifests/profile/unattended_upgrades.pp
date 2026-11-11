@@ -17,10 +17,6 @@ class nebula::profile::unattended_upgrades {
     ],
     only_on_ac_power                   => false,
     skip_updates_on_metered_connection => false,
-    blacklist                          => [
-      'falcon-sensor',
-      'apache2','apache2-bin','apache2-data','apache2-utils',
-      'mariadb-server','mariadb-server-.*',
-    ],
+    blacklist                          => ['falcon-sensor'],
   }
 }
