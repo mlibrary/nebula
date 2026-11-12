@@ -6,6 +6,9 @@ class nebula::profile::prometheus (
   Array $alert_managers = [],
   Array $static_wmi_nodes = [],
   Array $static_nodes = [],
+  String $client_ca = '/etc/prometheus/tls/ca.crt',
+  String $client_cert = '/etc/prometheus/tls/tls.crt',
+  String $client_key = '/etc/prometheus/tls/tls.key',
 ) {
   include nebula::profile::prometheus::prereqs
   include nebula::profile::prometheus::client_certs

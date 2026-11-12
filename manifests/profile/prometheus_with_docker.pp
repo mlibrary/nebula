@@ -23,6 +23,9 @@ class nebula::profile::prometheus_with_docker (
   Hash $rules_variables = {},
   String $version = 'latest',
   String $pushgateway_version = 'latest',
+  String $client_ca = '/tls/ca.crt',
+  String $client_cert = '/tls/client.crt',
+  String $client_key = '/tls/client.key',
 ) {
   include nebula::profile::docker
   $hostname = $::networking['hostname']
