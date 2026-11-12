@@ -23,6 +23,9 @@ class nebula::profile::prometheus_with_docker (
   Hash $rules_variables = {},
   String $version = 'latest',
   String $pushgateway_version = 'latest',
+  String $client_ca = '/tls/ca.crt',
+  String $client_cert = '/tls/client.crt',
+  String $client_key = '/tls/client.key',
 ) {
   include nebula::profile::docker
   $hostname = $::networking['hostname']
@@ -222,12 +225,6 @@ class nebula::profile::prometheus_with_docker (
 
   if $all_public_addresses != [] {
     @@concat_fragment { "02 pushgateway advanced public url ${facts['datacenter']}":
-      target  => '/usr/local/bin/pushgateway_advanced',
-      content => "PUSHGATEWAY='http://${all_public_addresses[0]}:9091'\n",
-    }
-
-    # Legacy resource name, delete when no longer in use.
-    @@concat_fragment { "02 pushgateway advanced url ${facts['datacenter']}":
       target  => '/usr/local/bin/pushgateway_advanced',
       content => "PUSHGATEWAY='http://${all_public_addresses[0]}:9091'\n",
     }
