@@ -41,7 +41,14 @@ describe "nebula::profile::prometheus::exporter::node" do
       end
 
       it "exports itself to the default datacenter's service discovery" do
-        expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
+        expect(exported_resources).to contain_concat_fragment("legacy prometheus node service #{facts[:networking]["hostname"]}")
+          .with_tag("default_prometheus_node_service_list")
+          .with_target("/etc/prometheus/nodes.yml")
+          .with_content(%r{'123.123.123.123:9100'})
+      end
+
+      it "exports itself to the default datacenter's service discovery" do
+        expect(exported_resources).to contain_concat__fragment("prometheus node service #{facts[:networking]["hostname"]}")
           .with_tag("default_prometheus_node_service_list")
           .with_target("/etc/prometheus/nodes.yml")
           .with_content(%r{'123.123.123.123:9100'})
@@ -66,7 +73,14 @@ describe "nebula::profile::prometheus::exporter::node" do
         end
 
         it "exports itself to the default datacenter's service discovery" do
-          expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
+          expect(exported_resources).to contain_concat_fragment("legacy prometheus node service #{facts[:networking]["hostname"]}")
+            .with_tag("default_prometheus_node_service_list")
+            .with_target("/etc/prometheus/nodes.yml")
+            .with_content(%r{'100\.100\.100\.100:9100'})
+        end
+
+        it "exports itself to the default datacenter's service discovery" do
+          expect(exported_resources).to contain_concat__fragment("prometheus node service #{facts[:networking]["hostname"]}")
             .with_tag("default_prometheus_node_service_list")
             .with_target("/etc/prometheus/nodes.yml")
             .with_content(%r{'100\.100\.100\.100:9100'})
@@ -100,7 +114,12 @@ describe "nebula::profile::prometheus::exporter::node" do
         let(:params) { {covered_datacenters: %w[mydatacenter]} }
 
         it "exports itself to its datacenter's service discovery" do
-          expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
+          expect(exported_resources).to contain_concat_fragment("legacy prometheus node service #{facts[:networking]["hostname"]}")
+            .with_tag("mydatacenter_prometheus_node_service_list")
+        end
+
+        it "exports itself to its datacenter's service discovery" do
+          expect(exported_resources).to contain_concat__fragment("prometheus node service #{facts[:networking]["hostname"]}")
             .with_tag("mydatacenter_prometheus_node_service_list")
         end
 
@@ -119,7 +138,14 @@ describe "nebula::profile::prometheus::exporter::node" do
           end
 
           it "exports itself to the default datacenter's service discovery" do
-            expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
+            expect(exported_resources).to contain_concat_fragment("legacy prometheus node service #{facts[:networking]["hostname"]}")
+              .with_tag("mydatacenter_prometheus_node_service_list")
+              .with_target("/etc/prometheus/nodes.yml")
+              .with_content(%r{'10\.1\.2\.3:9100'})
+          end
+
+          it "exports itself to the default datacenter's service discovery" do
+            expect(exported_resources).to contain_concat__fragment("prometheus node service #{facts[:networking]["hostname"]}")
               .with_tag("mydatacenter_prometheus_node_service_list")
               .with_target("/etc/prometheus/nodes.yml")
               .with_content(%r{'10\.1\.2\.3:9100'})
@@ -147,7 +173,14 @@ describe "nebula::profile::prometheus::exporter::node" do
           end
 
           it "exports itself to the default datacenter's service discovery" do
-            expect(exported_resources).to contain_concat_fragment("prometheus node service #{facts[:networking]["hostname"]}")
+            expect(exported_resources).to contain_concat_fragment("legacy prometheus node service #{facts[:networking]["hostname"]}")
+              .with_tag("mydatacenter_prometheus_node_service_list")
+              .with_target("/etc/prometheus/nodes.yml")
+              .with_content(%r{'100\.100\.100\.100:9100'})
+          end
+
+          it "exports itself to the default datacenter's service discovery" do
+            expect(exported_resources).to contain_concat__fragment("prometheus node service #{facts[:networking]["hostname"]}")
               .with_tag("mydatacenter_prometheus_node_service_list")
               .with_target("/etc/prometheus/nodes.yml")
               .with_content(%r{'100\.100\.100\.100:9100'})
@@ -187,7 +220,12 @@ describe "nebula::profile::prometheus::exporter::node" do
         let(:node) { "dogbone.default.invalid" }
 
         it "exports only its hostname to prometheus service discovery" do
-          expect(exported_resources).to contain_concat_fragment("prometheus node service dogbone")
+          expect(exported_resources).to contain_concat_fragment("legacy prometheus node service dogbone")
+            .with_content(%r{hostname: 'dogbone'})
+        end
+
+        it "exports only its hostname to prometheus service discovery" do
+          expect(exported_resources).to contain_concat__fragment("prometheus node service dogbone")
             .with_content(%r{hostname: 'dogbone'})
         end
       end
@@ -196,7 +234,12 @@ describe "nebula::profile::prometheus::exporter::node" do
         let(:node) { "dogbone.doghouse.default.invalid" }
 
         it "exports its full fqdn to prometheus service discovery" do
-          expect(exported_resources).to contain_concat_fragment("prometheus node service dogbone")
+          expect(exported_resources).to contain_concat_fragment("legacy prometheus node service dogbone")
+            .with_content(%r{hostname: 'dogbone\.doghouse\.default\.invalid'})
+        end
+
+        it "exports its full fqdn to prometheus service discovery" do
+          expect(exported_resources).to contain_concat__fragment("prometheus node service dogbone")
             .with_content(%r{hostname: 'dogbone\.doghouse\.default\.invalid'})
         end
       end
@@ -205,7 +248,12 @@ describe "nebula::profile::prometheus::exporter::node" do
         let(:node) { "world.of.dogs" }
 
         it "exports its full fqdn to prometheus service discovery" do
-          expect(exported_resources).to contain_concat_fragment("prometheus node service world")
+          expect(exported_resources).to contain_concat_fragment("legacy prometheus node service world")
+            .with_content(%r{hostname: 'world\.of\.dogs'})
+        end
+
+        it "exports its full fqdn to prometheus service discovery" do
+          expect(exported_resources).to contain_concat__fragment("prometheus node service world")
             .with_content(%r{hostname: 'world\.of\.dogs'})
         end
       end
