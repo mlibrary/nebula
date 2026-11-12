@@ -45,7 +45,7 @@ class nebula::profile::hathitrust::apache::crms_training (
     aliases               => [
       {
         aliasmatch => '^/robots.txt$',
-        path       => "${sdrroot}/common/web/robots.txt"
+        path       => "${sdrroot}/firebird-common/dist/robots/babel/robots.txt"
       },
       {
         aliasmatch => '^/favicon.ico$',
