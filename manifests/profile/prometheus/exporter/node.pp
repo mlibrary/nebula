@@ -139,7 +139,13 @@ class nebula::profile::prometheus::exporter::node (
     content => template('nebula/profile/prometheus/exporter/node/pushgateway_advanced.sh.erb'),
   }
 
-  @@concat_fragment { "prometheus node service ${::networking['hostname']}":
+  @@concat_fragment { "legacy prometheus node service ${::networking['hostname']}":
+    tag     => "${monitoring_datacenter}_prometheus_node_service_list",
+    target  => '/etc/prometheus/nodes.yml',
+    content => template('nebula/profile/prometheus/exporter/node/target.yaml.erb'),
+  }
+
+  @@concat::fragment { "prometheus node service ${::networking['hostname']}":
     tag     => "${monitoring_datacenter}_prometheus_node_service_list",
     target  => '/etc/prometheus/nodes.yml',
     content => template('nebula/profile/prometheus/exporter/node/target.yaml.erb'),
