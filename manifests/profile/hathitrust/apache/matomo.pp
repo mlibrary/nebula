@@ -50,7 +50,7 @@ class nebula::profile::hathitrust::apache::matomo (
     aliases                     => [
       {
         aliasmatch => '^/robots.txt$',
-        path       => "${sdrroot}/common/web/robots.txt"
+        path       => "${sdrroot}/firebird-common/dist/robots/babel/robots.txt"
       },
       {
         aliasmatch => '^/favicon.ico$',

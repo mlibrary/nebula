@@ -94,7 +94,7 @@ class nebula::profile::hathitrust::apache::babel (
       },
       {
         aliasmatch => '^/robots.txt$',
-        path       => "${sdrroot}/common/web/robots.txt"
+        path       => "${sdrroot}/firebird-common/dist/robots/babel/robots.txt"
       },
       {
         # Support Google Webmaster Tools by making its verification file
