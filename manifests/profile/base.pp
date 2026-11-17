@@ -29,10 +29,6 @@ class nebula::profile::base (
     package { 'vlan': }
   }
 
-  ensure_packages([
-    'zstd', # prevent warnings about fallback on `apt dist-upgrade`
-  ])
-
   file { '/etc/localtime':
     ensure => 'link',
     target => "/usr/share/zoneinfo/${timezone}",
@@ -59,4 +55,5 @@ class nebula::profile::base (
   if $facts['dmi'] and ($facts['dmi']['manufacturer'] == 'HP' or $facts['dmi']['manufacturer'] == 'HPE') {
     include nebula::profile::base::hp
   }
+  include nebula::profile::base::packages
 }
