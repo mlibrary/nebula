@@ -10,7 +10,6 @@ class nebula::profile::apt::nodejs (
 ) {
   $dist_version = $facts['os']['distro']['codename'] ? {
     'bookworm' => 18,
-    'jammy'    => 12,
     'noble'    => 18,
     'resolute' => 22,
     'trixie'   => 20,
