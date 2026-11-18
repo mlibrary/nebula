@@ -25,7 +25,7 @@ describe "nebula::profile::nodejs" do
         end
 
         case os
-        when "ubuntu-22.04-x86_64", "debian-12-x86_64", "ubuntu-24.04-x86_64"
+        when "debian-12-x86_64", "ubuntu-24.04-x86_64"
           it "configures repo" do
             is_expected.to contain_apt__source("nodesource.com")
               .with_location(["https://deb.nodesource.com/node_20.x"])
@@ -41,9 +41,7 @@ describe "nebula::profile::nodejs" do
             is_expected.not_to contain_apt__source("nodesource.com")
           end
         else
-          it "fails" do
-            is_expected.not_to compile
-          end
+          raise "unsupported os: #{os}"
         end
       end
     end
