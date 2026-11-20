@@ -17,8 +17,8 @@ class nebula::role::bastion {
   }
 
   # These three are effectively the requirements for getting user login
-  # with kerberos and duo.
-  include nebula::profile::duo
+  # with kerberos and okta.
+  include nebula::profile::okta
   include nebula::profile::krb5
   include nebula::profile::networking
 }
