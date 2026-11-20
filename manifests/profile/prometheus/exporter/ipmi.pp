@@ -39,8 +39,15 @@ class nebula::profile::prometheus::exporter::ipmi (
       Firewall <<| tag == "${facts['datacenter']}_prometheus_public_ipmi_exporter" |>>
     }
 
-    @@concat_fragment { "prometheus ipmi scrape config ${::networking['hostname']}":
+    @@concat_fragment { "legacy prometheus ipmi scrape config ${::networking['hostname']}":
       tag     => "${facts['datacenter']}_prometheus_ipmi_exporter",
+      target  => '/etc/prometheus/ipmi.yml',
+      order   => '02',
+      content => template('nebula/profile/prometheus/exporter/ipmi/scrape_config.yaml.erb')
+    }
+
+    @@concat::fragment { "prometheus ipmi scrape config ${::networking['hostname']}":
+      tag     => "${facts['datacenter']}_prometheus_ipmi_service_list",
       target  => '/etc/prometheus/ipmi.yml',
       order   => '02',
       content => template('nebula/profile/prometheus/exporter/ipmi/scrape_config.yaml.erb')

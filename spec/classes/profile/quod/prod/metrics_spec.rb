@@ -17,7 +17,13 @@ describe "nebula::profile::quod::prod::metrics" do
       end
 
       it "exports the target to the datacenter's service discovery" do
-        expect(exported_resources).to contain_concat_fragment("prometheus quod scrape config #{facts[:networking]["hostname"]}")
+        expect(exported_resources).to contain_concat_fragment("legacy prometheus quod scrape config #{facts[:networking]["hostname"]}")
+          .with_tag("mydatacenter_prometheus_quod_service_list")
+          .with_target("/etc/prometheus/quod.yml")
+      end
+
+      it "exports the target to the datacenter's service discovery" do
+        expect(exported_resources).to contain_concat__fragment("prometheus quod scrape config #{facts[:networking]["hostname"]}")
           .with_tag("mydatacenter_prometheus_quod_service_list")
           .with_target("/etc/prometheus/quod.yml")
       end

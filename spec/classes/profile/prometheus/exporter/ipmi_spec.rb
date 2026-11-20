@@ -19,7 +19,8 @@ describe "nebula::profile::prometheus::exporter::ipmi" do
       it { is_expected.not_to contain_service("kubelet") }
       it { is_expected.not_to contain_file("/etc/prometheus") }
       it { is_expected.not_to contain_file("/etc/prometheus/ipmi.yaml") }
-      it { expect(exported_resources).not_to contain_concat_fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}") }
+      it { expect(exported_resources).not_to contain_concat_fragment("legacy prometheus ipmi scrape config #{facts[:networking]["hostname"]}") }
+      it { expect(exported_resources).not_to contain_concat__fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}") }
 
       context "with an account set" do
         let(:params) do
@@ -49,8 +50,19 @@ describe "nebula::profile::prometheus::exporter::ipmi" do
         end
 
         it do
-          expect(exported_resources).to contain_concat_fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+          expect(exported_resources).to contain_concat_fragment("legacy prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
             .with_tag("mydatacenter_prometheus_ipmi_exporter")
+            .with_target("/etc/prometheus/ipmi.yml")
+            .with_order("02")
+            .with_content(%r{^ +- +"remote-ipmi.example"$})
+            .with_content(%r{^ +datacenter: "mydatacenter"$})
+            .with_content(%r{^ +via: "#{facts[:networking]["hostname"]}"$})
+            .with_content(%r{^ +replacement: "#{facts[:networking]["ip"]}:9290"$})
+        end
+
+        it do
+          expect(exported_resources).to contain_concat__fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+            .with_tag("mydatacenter_prometheus_ipmi_service_list")
             .with_target("/etc/prometheus/ipmi.yml")
             .with_order("02")
             .with_content(%r{^ +- +"remote-ipmi.example"$})
@@ -85,7 +97,13 @@ describe "nebula::profile::prometheus::exporter::ipmi" do
         end
 
         it do
-          expect(exported_resources).to contain_concat_fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+          expect(exported_resources).to contain_concat_fragment("legacy prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+            .with_content(%r{^ +- +"ipmi-1.example"$})
+            .with_content(%r{^ +- +"ipmi-2.example"$})
+        end
+
+        it do
+          expect(exported_resources).to contain_concat__fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
             .with_content(%r{^ +- +"ipmi-1.example"$})
             .with_content(%r{^ +- +"ipmi-2.example"$})
         end
@@ -108,7 +126,12 @@ describe "nebula::profile::prometheus::exporter::ipmi" do
         end
 
         it do
-          expect(exported_resources).to contain_concat_fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+          expect(exported_resources).to contain_concat_fragment("legacy prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+            .with_content(%r{^ +- +"ipmi.example"$})
+        end
+
+        it do
+          expect(exported_resources).to contain_concat__fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
             .with_content(%r{^ +- +"ipmi.example"$})
         end
       end
@@ -234,7 +257,12 @@ describe "nebula::profile::prometheus::exporter::ipmi" do
           end
 
           it do
-            expect(exported_resources).to contain_concat_fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+            expect(exported_resources).to contain_concat_fragment("legacy prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+              .with_content(%r{^ +replacement: "100.100.100.100:9290"$})
+          end
+
+          it do
+            expect(exported_resources).to contain_concat__fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
               .with_content(%r{^ +replacement: "100.100.100.100:9290"$})
           end
 
@@ -247,7 +275,12 @@ describe "nebula::profile::prometheus::exporter::ipmi" do
             end
 
             it do
-              expect(exported_resources).to contain_concat_fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+              expect(exported_resources).to contain_concat_fragment("legacy prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+                .with_content(%r{^ +replacement: "10.23.45.67:9290"$})
+            end
+
+            it do
+              expect(exported_resources).to contain_concat__fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
                 .with_content(%r{^ +replacement: "10.23.45.67:9290"$})
             end
           end
@@ -262,7 +295,15 @@ describe "nebula::profile::prometheus::exporter::ipmi" do
           end
 
           it "chooses the first private IP address" do
-            expect(exported_resources).to contain_concat_fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+            expect(exported_resources).to contain_concat_fragment("legacy prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
+              .with_content(%r{^ +replacement: "192.168.0.100:9290"$})
+              .without_content(%r{100.100.100.100})
+              .without_content(%r{100.200.200.200})
+              .without_content(%r{10.23.45.67})
+          end
+
+          it "chooses the first private IP address" do
+            expect(exported_resources).to contain_concat__fragment("prometheus ipmi scrape config #{facts[:networking]["hostname"]}")
               .with_content(%r{^ +replacement: "192.168.0.100:9290"$})
               .without_content(%r{100.100.100.100})
               .without_content(%r{100.200.200.200})
