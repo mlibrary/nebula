@@ -1,13 +1,11 @@
+# nebula::profile::login
+#
+# Role for login server.
+#
+# @example
+#   include nebula::role::login
 class nebula::role::login {
   include nebula::role::minimum
-
-  include nebula::profile::interactive
-  include nebula::profile::taghosts::index
-  @nebula::taghosts::tag { 'login': }
-
+  include nebula::profile::login
   include nebula::profile::networking
-
-  include nebula::profile::okta
-  include nebula::profile::krb5
-  include nebula::profile::users
 }
