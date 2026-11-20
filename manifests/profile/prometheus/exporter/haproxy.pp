@@ -38,4 +38,5 @@ class nebula::profile::prometheus::exporter::haproxy (
   }
 
   Firewall <<| tag == "${facts['datacenter']}_prometheus_haproxy_exporter" |>>
+  Firewall <<| tag == "${facts['datacenter']}_prometheus_public_haproxy_exporter" |>>
 }
