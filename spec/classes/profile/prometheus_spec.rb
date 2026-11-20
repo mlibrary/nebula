@@ -222,7 +222,7 @@ describe "nebula::profile::prometheus" do
           end
 
           context "with hostname abcdefg" do
-            let(:trusted_facts) { super().merge(hostname: "abcdefg") }
+            let(:facts) { super().merge(networking: super()[:networking].merge( "hostname" => "abcdefg" )) }
 
             it do
               expect(exported_resources).to contain_firewall("010 prometheus #{network} #{exporter} exporter abcdefg #{address}")
@@ -233,7 +233,7 @@ describe "nebula::profile::prometheus" do
             let(:facts) { os_facts.merge(datacenter: "abc123") }
 
             it do
-              expect(exported_resources).to contain_firewall("010 prometheus #{network} #{exporter} exporter #{facts[:networking]["hostname"]} #{address}")
+              expect(exported_resources).to contain_firewall("010 prometheus #{network} #{exporter} exporter foo #{address}")
                 .with_tag("abc123_prometheus_#{network}_#{exporter.tr(" ", "_")}_exporter")
             end
           end
