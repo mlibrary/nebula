@@ -35,6 +35,7 @@ class nebula::profile::prometheus::exporter::mysql () {
   }
 
   Firewall <<| tag == "${facts['datacenter']}_prometheus_mysql_exporter" |>>
+  Firewall <<| tag == "${facts['datacenter']}_prometheus_public_mysql_exporter" |>>
 
   $role = lookup_role()
 }
