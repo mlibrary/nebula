@@ -99,12 +99,12 @@ class nebula::profile::prometheus::exporter::node (
   } elsif $all_private_addresses != [] and $monitoring_datacenter == $datacenter {
     $ipaddresses = $all_private_addresses
     Firewall <<| tag == "${monitoring_datacenter}_prometheus_private_node_exporter" |>>
-    Concat_fragment <<| title == "legacy 02 pushgateway advanced private url ${monitoring_datacenter}" |>>
+    Concat_fragment <<| title == "02 legacy pushgateway advanced private url ${monitoring_datacenter}" |>>
     Concat::Fragment <<| title == "02 pushgateway advanced private url ${monitoring_datacenter}" |>>
   } else {
     $ipaddresses = $all_public_addresses
     Firewall <<| tag == "${monitoring_datacenter}_prometheus_public_node_exporter" |>>
-    Concat_fragment <<| title == "legacy 02 pushgateway advanced public url ${monitoring_datacenter}" |>>
+    Concat_fragment <<| title == "02 legacy pushgateway advanced public url ${monitoring_datacenter}" |>>
     Concat::Fragment <<| title == "02 pushgateway advanced public url ${monitoring_datacenter}" |>>
   }
 
