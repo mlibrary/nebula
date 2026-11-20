@@ -104,7 +104,7 @@ const PAGEFIND_REQUEST /(?P<base>\/a-z\/pagefind)\//
   quod_http_request_time_seconds[$request_method][$request_status][prefix][collid] = $micro_time / 1000000.0
 
   quod_http_requests_total[$request_method][$request_status][prefix][collid]++
-  $response_size > 0 {
+  $response_size != "-" {
       quod_http_bytes_total[$request_method][$request_status][prefix][collid] += $response_size
   }
 }
