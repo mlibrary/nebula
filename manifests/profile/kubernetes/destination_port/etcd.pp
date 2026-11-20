@@ -12,7 +12,13 @@ class nebula::profile::kubernetes::destination_port::etcd {
     tag     => "${cluster_name}_haproxy_kubernetes_etcd",
   }
 
-  @@concat_fragment { "prometheus etcd service ${::networking['hostname']}":
+  @@concat_fragment { "legacy prometheus etcd service ${::networking['hostname']}":
+    tag     => "${facts['datacenter']}_prometheus_etcd_service_list",
+    target  => '/etc/prometheus/etcd.yml',
+    content => template('nebula/profile/prometheus/exporter/etcd/target.yaml.erb')
+  }
+
+  @@concat::fragment { "prometheus etcd service ${::networking['hostname']}":
     tag     => "${facts['datacenter']}_prometheus_etcd_service_list",
     target  => '/etc/prometheus/etcd.yml',
     content => template('nebula/profile/prometheus/exporter/etcd/target.yaml.erb')

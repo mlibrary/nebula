@@ -30,7 +30,14 @@ class nebula::profile::quod::prod::metrics (
     }
   }
 
-  @@concat_fragment { "prometheus quod scrape config ${hostname}":
+  @@concat_fragment { "legacy prometheus quod scrape config ${hostname}":
+    tag     => "${datacenter}_prometheus_quod_service_list",
+    target  => '/etc/prometheus/quod.yml',
+    order   => '02',
+    content => template('nebula/profile/prometheus/exporter/quod/target.yaml.erb')
+  }
+
+  @@concat::fragment { "prometheus quod scrape config ${hostname}":
     tag     => "${datacenter}_prometheus_quod_service_list",
     target  => '/etc/prometheus/quod.yml',
     order   => '02',

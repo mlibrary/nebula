@@ -76,7 +76,14 @@ class nebula::profile::search::catalog::solr_monitor (
     }
   }
 
-  @@concat_fragment { "prometheus solr scrape config ${::networking['hostname']}":
+  @@concat_fragment { "legacy prometheus solr scrape config ${::networking['hostname']}":
+    tag     => "${facts['datacenter']}_prometheus_catalog_search_service_list",
+    target  => '/etc/prometheus/catalog_search.yml',
+    order   => '02',
+    content => template('nebula/profile/search_solr/prometheus_targets.yaml.erb')
+  }
+
+  @@concat::fragment { "prometheus solr scrape config ${::networking['hostname']}":
     tag     => "${facts['datacenter']}_prometheus_catalog_search_service_list",
     target  => '/etc/prometheus/catalog_search.yml',
     order   => '02',

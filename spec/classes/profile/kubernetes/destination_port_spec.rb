@@ -34,7 +34,13 @@ require "spec_helper"
 
           if service == "etcd"
             it do
-              expect(subject).to contain_concat_fragment("prometheus #{service.tr("_", " ")} service #{facts[:networking]["hostname"]}")
+              expect(subject).to contain_concat_fragment("legacy prometheus #{service.tr("_", " ")} service #{facts[:networking]["hostname"]}")
+                .with_target("/etc/prometheus/#{service}.yml")
+                .with_tag("mydatacenter_prometheus_etcd_service_list")
+            end
+
+            it do
+              expect(subject).to contain_concat__fragment("prometheus #{service.tr("_", " ")} service #{facts[:networking]["hostname"]}")
                 .with_target("/etc/prometheus/#{service}.yml")
                 .with_tag("mydatacenter_prometheus_etcd_service_list")
             end

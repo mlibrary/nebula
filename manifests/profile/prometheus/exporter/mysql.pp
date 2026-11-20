@@ -22,7 +22,13 @@ class nebula::profile::prometheus::exporter::mysql () {
     content => template('nebula/profile/prometheus/exporter/mysql/defaults.sh.erb')
   }
 
-  @@concat_fragment { "prometheus mysql service ${::networking['hostname']}":
+  @@concat_fragment { "legacy prometheus mysql service ${::networking['hostname']}":
+    tag     => "${facts['datacenter']}_prometheus_mysql_service_list",
+    target  => '/etc/prometheus/mysql.yml',
+    content => template('nebula/profile/prometheus/exporter/mysql/target.yaml.erb')
+  }
+
+  @@concat::fragment { "prometheus mysql service ${::networking['hostname']}":
     tag     => "${facts['datacenter']}_prometheus_mysql_service_list",
     target  => '/etc/prometheus/mysql.yml',
     content => template('nebula/profile/prometheus/exporter/mysql/target.yaml.erb')
