@@ -225,13 +225,13 @@ describe "nebula::profile::prometheus_with_docker" do
         it { is_expected.to compile }
 
         it do
-          expect(exported_resources).to contain_concat_fragment("legacy 02 pushgateway advanced public url mydatacenter")
+          expect(exported_resources).to contain_concat_fragment("02 legacy pushgateway advanced public url mydatacenter")
             .with_target("/usr/local/bin/pushgateway_advanced")
             .with_content("PUSHGATEWAY='http://#{facts[:networking]["ip"]}:9091'\n")
         end
 
         it do
-          expect(exported_resources).not_to contain_concat_fragment("legacy 02 pushgateway advanced private url mydatacenter")
+          expect(exported_resources).not_to contain_concat_fragment("02 legacy pushgateway advanced private url mydatacenter")
         end
       end
 
@@ -250,13 +250,13 @@ describe "nebula::profile::prometheus_with_docker" do
         end
 
         it do
-          expect(exported_resources).to contain_concat_fragment("legacy 02 pushgateway advanced public url mydatacenter")
+          expect(exported_resources).to contain_concat_fragment("02 legacy pushgateway advanced public url mydatacenter")
             .with_target("/usr/local/bin/pushgateway_advanced")
             .with_content("PUSHGATEWAY='http://100.100.100.100:9091'\n")
         end
 
         it do
-          expect(exported_resources).not_to contain_concat_fragment("legacy 02 pushgateway advanced private url mydatacenter")
+          expect(exported_resources).not_to contain_concat_fragment("02 legacy pushgateway advanced private url mydatacenter")
         end
       end
 
@@ -281,13 +281,13 @@ describe "nebula::profile::prometheus_with_docker" do
         end
 
         it do
-          expect(exported_resources).to contain_concat_fragment("legacy 02 pushgateway advanced public url mydatacenter")
+          expect(exported_resources).to contain_concat_fragment("02 legacy pushgateway advanced public url mydatacenter")
             .with_target("/usr/local/bin/pushgateway_advanced")
             .with_content("PUSHGATEWAY='http://100.100.100.100:9091'\n")
         end
 
         it do
-          expect(exported_resources).not_to contain_concat_fragment("legacy 02 pushgateway advanced private url mydatacenter")
+          expect(exported_resources).not_to contain_concat_fragment("02 legacy pushgateway advanced private url mydatacenter")
         end
       end
 
@@ -306,11 +306,11 @@ describe "nebula::profile::prometheus_with_docker" do
         end
 
         it do
-          expect(exported_resources).not_to contain_concat_fragment("legacy 02 pushgateway advanced public url mydatacenter")
+          expect(exported_resources).not_to contain_concat_fragment("02 legacy pushgateway advanced public url mydatacenter")
         end
 
         it do
-          expect(exported_resources).to contain_concat_fragment("legacy 02 pushgateway advanced private url mydatacenter")
+          expect(exported_resources).to contain_concat_fragment("02 legacy pushgateway advanced private url mydatacenter")
             .with_target("/usr/local/bin/pushgateway_advanced")
             .with_content("PUSHGATEWAY='http://10.1.2.3:9091'\n")
         end
@@ -344,13 +344,13 @@ describe "nebula::profile::prometheus_with_docker" do
         end
 
         it do
-          expect(exported_resources).to contain_concat_fragment("legacy 02 pushgateway advanced public url mydatacenter")
+          expect(exported_resources).to contain_concat_fragment("02 legacy pushgateway advanced public url mydatacenter")
             .with_target("/usr/local/bin/pushgateway_advanced")
             .with_content("PUSHGATEWAY='http://100.100.100.100:9091'\n")
         end
 
         it do
-          expect(exported_resources).to contain_concat_fragment("legacy 02 pushgateway advanced private url mydatacenter")
+          expect(exported_resources).to contain_concat_fragment("02 legacy pushgateway advanced private url mydatacenter")
             .with_target("/usr/local/bin/pushgateway_advanced")
             .with_content("PUSHGATEWAY='http://10.1.2.3:9091'\n")
         end

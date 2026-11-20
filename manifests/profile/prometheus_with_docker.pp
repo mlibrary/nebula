@@ -221,14 +221,14 @@ class nebula::profile::prometheus_with_docker (
   }
 
   if $all_public_addresses != [] {
-    @@concat_fragment { "legacy 02 pushgateway advanced public url ${facts['datacenter']}":
+    @@concat_fragment { "02 legacy pushgateway advanced public url ${facts['datacenter']}":
       target  => '/usr/local/bin/pushgateway_advanced',
       content => "PUSHGATEWAY='http://${all_public_addresses[0]}:9091'\n",
     }
   }
 
   if $all_private_addresses != [] {
-    @@concat_fragment { "legacy 02 pushgateway advanced private url ${facts['datacenter']}":
+    @@concat_fragment { "02 legacy pushgateway advanced private url ${facts['datacenter']}":
       target  => '/usr/local/bin/pushgateway_advanced',
       content => "PUSHGATEWAY='http://${all_private_addresses[0]}:9091'\n",
     }
