@@ -35,5 +35,6 @@ class nebula::role::minimum (
     include nebula::profile::ntp
   }
 
+  include nebula::profile::unattended_upgrades
   include nebula::profile::taghosts::tags
 }
