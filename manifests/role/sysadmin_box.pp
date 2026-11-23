@@ -9,7 +9,17 @@
 # @example
 #   include nebula::role::sysadmin_box
 class nebula::role::sysadmin_box {
-  include nebula::role::umich
+  # The following 9 lines are just nebula::role::umich s/duo/okta/
+  include nebula::role::minimum
+  include nebula::profile::okta
+  include nebula::profile::exim4
+  include nebula::profile::grub
+  include nebula::profile::ntp
+  include nebula::profile::networking
+  include nebula::profile::dns::standard
+  include nebula::profile::elastic::metricbeat
+  include nebula::profile::elastic::filebeat::configs::ulib
+
   include nebula::profile::users
   include nebula::profile::ruby
   include nebula::profile::root_ssh_private_keys
