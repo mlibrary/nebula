@@ -9,6 +9,7 @@ class nebula::profile::interactive {
   stdlib::ensure_packages([
     'neovim',
     'tmux',
+    'unzip',
     'zsh',
     'git',
   ])
