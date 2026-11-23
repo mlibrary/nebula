@@ -8,4 +8,5 @@ class nebula::role::login {
   include nebula::role::minimum
   include nebula::profile::login
   include nebula::profile::networking
+  include nebula::profile::managed_known_hosts
 }
