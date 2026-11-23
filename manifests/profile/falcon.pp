@@ -6,7 +6,9 @@ class nebula::profile::falcon (
   String $cid,
 ) {
   ensure_packages(['falcon-sensor'])
-  service { 'falcon-sensor': }
+  service { 'falcon-sensor':
+    ensure => 'running',
+  }
   apt::mark {
     'falcon-sensor':
       setting => hold,
