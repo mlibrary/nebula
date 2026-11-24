@@ -11,6 +11,6 @@
 class nebula::profile::networking::firewall::ssh {
   nebula::exposed_port { '100 SSH':
     port  => 22,
-    block => 'umich::networks::all_trusted_machines',
+    block => 'umich::networks::datacenter',
   }
 }
