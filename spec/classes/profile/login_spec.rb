@@ -10,6 +10,13 @@ describe "nebula::profile::login" do
 
       it { is_expected.to contain_class("nebula::profile::okta") }
 
+      it "opens port 22 to staff networks" do
+        is_expected.to contain_nebula__exposed_port("100 Staff SSH").with(
+          port: 22,
+          block: "umich::networks::staff"
+        )
+      end
+
       context "groups == [examplegroup1]" do
         let(:params) { {groups: ["examplegroup1"]} }
 
