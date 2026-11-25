@@ -17,7 +17,6 @@ class nebula::role::umich (
   }
 
   if $facts['os']['family'] == 'Debian' {
-    include nebula::profile::duo
     include nebula::profile::exim4
     include nebula::profile::grub
     include nebula::profile::ntp

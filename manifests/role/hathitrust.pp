@@ -22,7 +22,6 @@ class nebula::role::hathitrust (
     if $afs {
       include nebula::profile::afs
     }
-    include nebula::profile::duo
     include nebula::profile::exim4
     include nebula::profile::grub
     include nebula::profile::ntp
