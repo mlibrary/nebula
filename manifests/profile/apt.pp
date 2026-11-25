@@ -23,7 +23,7 @@ class nebula::profile::apt (
 
     # Ensure that apt repos are set up and updated before attempting to install a
     # new package. Tag some packages as 'preinstalled' to avoid dependency cycles.
-    ensure_packages(['dirmngr'], {
+    stdlib::ensure_packages(['dirmngr'], {
       tag => 'package-preinstalled'
     })
 

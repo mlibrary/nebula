@@ -11,16 +11,14 @@ class nebula::profile::ntp (
   Optional[Array[String[1]]] $pools = undef,
   Optional[Array[String[1]]] $servers = undef,
 ) {
-  ensure_packages(
-    [
-      'ntp',
-      'ntpsec',
-      'sntp',
-      'ntpstat',
-      'systemd-timesyncd',
-    ],
-    { ensure => purged }
-  )
+  package {
+    default: ensure => purged ;
+    'ntp': ;
+    'ntpsec': ;
+    'ntpstat': ;
+    'sntp': ;
+    'systemd-timesyncd': ;
+  }
 
   package { 'chrony': }
 

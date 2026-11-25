@@ -11,9 +11,7 @@
 class nebula::profile::quod::prod::metrics (
   $mtail_port = 3903,
 ) {
-  ensure_packages([
-    'mtail'
-  ])
+  stdlib::ensure_packages(['mtail'])
 
   $role = lookup_role()
   $hostname = $::networking['hostname']

@@ -11,7 +11,7 @@
 class nebula::profile::www_lib::perl {
   include nebula::profile::www_lib::dependencies
 
-  ensure_packages([
+  stdlib::ensure_packages([
     'libalgorithm-c3-perl',
     'libany-moose-perl',
     'libcapture-tiny-perl',

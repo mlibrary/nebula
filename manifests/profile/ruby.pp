@@ -26,7 +26,7 @@ class nebula::profile::ruby (
   # These should be removed as soon as practical in coordination with devs.
   String $manage_blacklist = '^jruby-(1\.7|9\.0)\.',
 ) {
-  ensure_packages([
+  stdlib::ensure_packages([
     'autoconf',
     'build-essential',
     'bison',
