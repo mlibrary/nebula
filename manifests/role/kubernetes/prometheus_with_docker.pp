@@ -4,7 +4,6 @@
 
 class nebula::role::kubernetes::prometheus_with_docker {
   include nebula::role::prometheus_with_docker
-  include nebula::profile::unattended_upgrades
   include nebula::profile::kubernetes::dns_client
   include nebula::profile::kubernetes::destination_port::prometheus
   class { 'nebula::profile::kubernetes::kubelet':
