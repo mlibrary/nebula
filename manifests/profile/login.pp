@@ -16,4 +16,9 @@ class nebula::profile::login (
   $groups.each |$group| {
     nebula::usergroup { $group: }
   }
+
+  nebula::exposed_port { '100 Staff SSH':
+    port  => 22,
+    block => 'umich::networks::staff',
+  }
 }

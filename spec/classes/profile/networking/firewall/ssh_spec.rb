@@ -25,7 +25,7 @@ describe "nebula::profile::networking::firewall::ssh" do
         it do
           expect(subject).to contain_nebula__exposed_port("100 SSH").with(
             port: 22,
-            block: "umich::networks::all_trusted_machines"
+            block: "umich::networks::datacenter"
           )
         end
       end
@@ -45,7 +45,7 @@ describe "nebula::profile::networking::firewall::ssh" do
         it do
           expect(subject).to contain_nebula__exposed_port("100 SSH").with(
             port: 22,
-            block: "umich::networks::all_trusted_machines"
+            block: "umich::networks::datacenter"
           )
         end
       end
