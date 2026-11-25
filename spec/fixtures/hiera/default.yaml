@@ -62,12 +62,6 @@ nebula::profile::exim4::relay_domain: exim.default.invalid
 nebula::profile::ntp::pools:
 - ntp.example.invalid
 
-nebula::profile::duo::ikey: ikey.default.invalid
-nebula::profile::duo::skey: skey.default.invalid
-nebula::profile::duo::host: host.default.invalid
-nebula::profile::duo::pushinfo: push.default.invalid
-nebula::profile::duo::failmode: fail.default.invalid
-
 nebula::profile::networking::sshd::whitelist:
 - '10.1.1.0/24'
 - '10.2.2.0/24'

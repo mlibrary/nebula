@@ -15,9 +15,7 @@ class nebula::role::search::solr {
 
   include nebula::profile::search::openjdk_java
 
-  # These three are effectively the requirements for getting user login
-  # with kerberos and duo.
-  include nebula::profile::duo
+  # user login w/ kerberos
   include nebula::profile::krb5
   include nebula::profile::networking
 }

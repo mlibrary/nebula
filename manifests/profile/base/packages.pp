@@ -5,6 +5,9 @@
 # @example
 #   include nebula::profile::base::packages
 class nebula::profile::base::packages {
+  # TODO: this line may be removed at any time after it has been merged
+  package { 'duo-unix': ensure => absent }
+
   stdlib::ensure_packages([
     'fd-find',
     'ripgrep',

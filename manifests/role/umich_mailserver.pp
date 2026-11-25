@@ -17,7 +17,6 @@ class nebula::role::umich_mailserver (
   }
 
   if $facts['os']['family'] == 'Debian' {
-    include nebula::profile::duo
     include nebula::profile::postfix
     include nebula::profile::grub
     include nebula::profile::ntp
