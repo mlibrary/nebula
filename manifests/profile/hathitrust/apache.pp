@@ -13,7 +13,8 @@ class nebula::profile::hathitrust::apache (
   String $domain = 'hathitrust.org',
   String $sdrroot = '/htapps/babel',
   String $monitoring_user = 'haproxyctl',
-  Optional[Hash] $monitoring_pubkey = undef
+  Array[String[1]] $private_cidrs = [],
+  Optional[Hash] $monitoring_pubkey = undef,
 ) {
   if($monitoring_pubkey) {
     nebula::authzd_user { $monitoring_user:
@@ -34,9 +35,10 @@ class nebula::profile::hathitrust::apache (
     ]
   }
 
-  $haproxy_ips = nodes_for_class('nebula::profile::haproxy').map |String $nodename| {
+  $haproxy_public_ips = nodes_for_class('nebula::profile::haproxy').map |String $nodename| {
     fact_for($nodename, 'networking')['ip']
   }
+  $haproxy_ips = $private_cidrs + $haproxy_public_ips
 
   $staff_networks = lookup('hathitrust::networks::staff', default_value => []).flatten.unique.map |$network| {
     "ip ${network['block']}"
