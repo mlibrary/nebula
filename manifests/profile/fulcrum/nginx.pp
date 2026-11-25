@@ -14,7 +14,7 @@ class nebula::profile::fulcrum::nginx (
     package_source => 'nginx-stable',
   }
 
-  ensure_packages([
+  stdlib::ensure_packages([
     'nginx-module-shibboleth',
     'nginx-module-headersmore',
   ])

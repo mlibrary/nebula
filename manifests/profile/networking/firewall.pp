@@ -19,7 +19,7 @@ class nebula::profile::networking::firewall (
   # Include standard SSH rules by default
   include nebula::profile::networking::firewall::ssh
 
-  ensure_packages(['netfilter-persistent','iptables-persistent'])
+  stdlib::ensure_packages(['netfilter-persistent','iptables-persistent'])
 
   package { 'lokkit':
     ensure => absent

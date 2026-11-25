@@ -14,7 +14,7 @@ class nebula::profile::fulcrum::fedora (
 
   nebula::usergroup { 'fulcrum': }
 
-  ensure_packages([
+  stdlib::ensure_packages([
     'tomcat9-user',
     "temurin-${jdk_version}-jre",
   ])

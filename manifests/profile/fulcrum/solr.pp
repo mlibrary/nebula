@@ -18,7 +18,7 @@ class nebula::profile::fulcrum::solr (
   String $timezone = 'America/Detroit',
   String $solr_bin = '/opt/solr/bin/solr',
 ) {
-  ensure_packages([
+  stdlib::ensure_packages([
     "temurin-${jdk_version}-jre",
     'solr',
     'lsof',

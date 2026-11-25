@@ -13,7 +13,7 @@ class nebula::profile::fulcrum::app (
     address_template => $private_address_template
   }
 
-  ensure_packages([
+  stdlib::ensure_packages([
     'clamav',
     'clamav-daemon',
     'clamav-freshclam',
